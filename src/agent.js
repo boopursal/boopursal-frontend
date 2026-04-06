@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URL_SITE } from './app/@fuse/Constants';
+import { URL_SITE } from './@fuse/Constants';
 
 console.log('🚀 SYSTEME : Chargement de l\'Agent API sur : ' + URL_SITE);
 
