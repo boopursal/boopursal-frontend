@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { URL_SITE } from './@fuse/Constants';
 
-console.log('🚀 SYSTEME : Chargement de l\'Agent API sur : ' + URL_SITE);
+// Utilisation de l'adresse de production STABLE du Backend
+const URL_BACKEND = "https://boopursal-backend.vercel.app";
+
+console.log('🚀 SYSTEME : Forçage de l\'Agent API sur : ' + URL_BACKEND);
 
 const instance = axios.create({
-    baseURL: URL_SITE,
+    baseURL: URL_BACKEND,
     headers: {
         'Content-Type': 'application/json',
     },
