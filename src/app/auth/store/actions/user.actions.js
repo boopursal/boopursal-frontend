@@ -3,7 +3,6 @@ import { setDefaultSettings, setInitialSettings } from 'app/store/actions/fuse';
 import _ from '@lodash';
 import store from 'app/store';
 import * as Actions from 'app/store/actions';
-import firebase from 'firebase/app';
 import firebaseService from 'app/services/firebaseService';
 import auth0Service from 'app/services/auth0Service';
 import jwtService from 'app/services/jwtService';
@@ -61,7 +60,7 @@ export function createUserSettingsFirebase(authUser) {
     return (dispatch, getState) => {
         const guestUser = getState().auth.user;
         const fuseDefaultSettings = getState().fuse.settings.defaults;
-        const currentUser = firebase.auth().currentUser;
+        const currentUser = null;
 
         /**
          * Merge with current Settings
