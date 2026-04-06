@@ -96,7 +96,7 @@
     },
     "scripts": {
         "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider npm run tailwind && react-scripts start",
-        "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider npm run tailwind && node ./purge-tailwindcss.js && cross-env GENERATE_SOURCEMAP=false react-scripts build",
+        "build": "npm run tailwind && node ./purge-tailwindcss.js && cross-env NODE_OPTIONS=--openssl-legacy-provider GENERATE_SOURCEMAP=false react-scripts build",
         "tailwind": "npx tailwind build ./src/styles/tailwind.base.css -c ./tailwind.js -o ./src/styles/tailwind.css",
         "test": "react-scripts test --env=node",
         "eject": "react-scripts eject",
