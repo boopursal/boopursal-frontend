@@ -9,33 +9,39 @@
     <base href="/">
     <link rel="manifest" href="./manifest.json">
     <link rel="shortcut icon" href="./favicon.ico">
-    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
     <link href="./assets/fonts/material-outline-icons/styles.css" rel="stylesheet">
     <link href="./assets/fonts/meteocons/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="apple-touch-icon" href="./assets/images/logos/logo192.png">
 
     <noscript id="jss-insertion-point"></noscript>
-    <!-- Smartsupp Live Chat script -->
-    <!-- Smartsupp Live Chat script -->
-<script type="text/javascript">
-var _smartsupp = _smartsupp || {};
-_smartsupp.key = '8f4b8dbaaf4d5ddc18184abcfbbb25674ceeca5c';
-window.smartsupp||(function(d) {
-  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-  s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-  c.type='text/javascript';c.charset='utf-8';c.async=true;
-  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-})(document);
-</script> 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105310719-1"></script>
 
+    <script type="text/javascript">
+        if (typeof window.process === 'undefined') {
+            window.process = { env: { NODE_ENV: 'development' } };
+        }
+        var process = window.process;
+        var global = window;
+    </script>
+
+    <!-- Smartsupp Live Chat script -->
+    <script type="text/javascript">
+        var _smartsupp = _smartsupp || {};
+        _smartsupp.key = '8f4b8dbaaf4d5ddc18184abcfbbb25674ceeca5c';
+        window.smartsupp || (function (d) {
+            var s, c, o = smartsupp = function () { o._.push(arguments) }; o._ = [];
+            s = d.getElementsByTagName('script')[0]; c = d.createElement('script');
+            c.type = 'text/javascript'; c.charset = 'utf-8'; c.async = true;
+            c.src = 'https://www.smartsuppchat.com/loader.js?'; s.parentNode.insertBefore(c, s);
+        })(document);
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105310719-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'UA-105310719-1');
     </script>
 
@@ -44,16 +50,10 @@ window.smartsupp||(function(d) {
     <script>smartsupp('group', 'VRKl1HXakd'); //group Vente</script>
 
     <title>Boopursal | La place de marché BtoB</title>
-    <meta name="description" content="Boopursal est une place de marché b2b qui permet aux Acheteurs et aux Fournisseurs de se rencontrer dans une même plate-forme."
-    />
+    <meta name="description"
+        content="Boopursal est une place de marché b2b qui permet aux Acheteurs et aux Fournisseurs de se rencontrer dans une même plate-forme." />
 
-    <!-- FUSE Splash Screen CSS -->
     <style type="text/css">
-        
-        .MuiAppBar-colorPrimary-628 {
-        color: #3C4252;
-        background-color: #fff;
-        }
         #fuse-splash-screen {
             display: block;
             position: absolute;
@@ -145,7 +145,6 @@ window.smartsupp||(function(d) {
             left: 0;
             border-right-color: transparent;
             animation: left-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
-            -webkit-animation: left-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
         }
 
         #fuse-splash-screen .spinner-wrapper .spinner .inner .right {
@@ -156,7 +155,6 @@ window.smartsupp||(function(d) {
             right: 0;
             border-left-color: transparent;
             animation: right-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
-            -webkit-animation: right-wobble 1.3125s cubic-bezier(0.35, 0, 0.25, 1) infinite;
         }
 
         @keyframes outer-rotate {
@@ -210,25 +208,11 @@ window.smartsupp||(function(d) {
                 transform: rotate(540deg);
             }
 
-            62.5% {
-                transform: rotate(675deg);
-            }
-
-            75% {
-                transform: rotate(810deg);
-            }
-
-            87.5% {
-                transform: rotate(945deg);
-            }
-
             100% {
                 transform: rotate(1080deg);
             }
         }
     </style>
-    <!-- / FUSE Splash Screen CSS -->
-
 </head>
 
 <body>
@@ -236,16 +220,11 @@ window.smartsupp||(function(d) {
         Vous devez activer JavaScript pour exécuter cette application.
     </noscript>
     <div id="root" class="flex">
-        <!-- FUSE Splash Screen -->
         <div id="fuse-splash-screen">
-
             <div class="center">
-
                 <div class="logo">
                     <img width="128" src="assets/images/logos/icon.png" alt="logo">
                 </div>
-
-                <!-- Material Design Spinner -->
                 <div class="spinner-wrapper">
                     <div class="spinner">
                         <div class="inner">
@@ -259,24 +238,9 @@ window.smartsupp||(function(d) {
                         </div>
                     </div>
                 </div>
-                <!-- / Material Design Spinner -->
-
             </div>
-
         </div>
-        <!-- / FUSE Splash Screen -->
     </div>
-
-    <!--
-          This HTML file is a template.
-          If you open it directly in the browser, you will see an empty page.
-
-          You can add webfonts, meta tags, or analytics to this file.
-          The build step will place the bundled scripts into the <body> tag.
-
-          To begin the development, run `npm start` or `yarn start`.
-          To create a production bundle, use `npm run build` or `yarn build`.
-        -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -286,8 +250,6 @@ window.smartsupp||(function(d) {
             })
         }
     </script>
-
-
 </body>
 
 </html>

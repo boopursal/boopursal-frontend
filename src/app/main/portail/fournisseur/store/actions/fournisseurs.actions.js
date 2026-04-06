@@ -48,14 +48,15 @@ export function getFournisseurs(params, pays, parametres, ville, q) {
         parametre += `&ville.slug=${ville}`
     }
     if (q) {
-        parametre += `&societeLower=${q}`
+        parametre += `&q=${q}`
     }
 
-    if (parametre) {
-        parametre = '&' + parametre;
-    }
     let order = _.split(parametres.filter.id, '-');
-    const request = agent.get(`/api/fournisseurs?page=${parametres.page}&exists[parent]=false&isactif=true&isComplet=true&itemsPerPage=${parametres.itemsPerPage}&order[${order[0]}]=${order[1]}` + (parametre ? parametre : ''));
+    let requestUrl = `/api/fournisseurs?page=${parametres.page}&exists[parent]=false&isactif=true&isComplet=true&itemsPerPage=${parametres.itemsPerPage}&order[${order[0]}]=${order[1]}`;
+    if (parametre) {
+        requestUrl += (parametre.startsWith('&') ? parametre : '&' + parametre);
+    }
+    const request = agent.get(requestUrl);
 
     return (dispatch) => {
         dispatch({
@@ -79,7 +80,7 @@ export function getFournisseurs(params, pays, parametres, ville, q) {
 
 export function getSecteursCounts(params, pays, ville, q) {
     const { secteur, activite } = params;
-    const request = agent.get(`/count_fournisseur_categorie?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&pays=${pays ? pays : ''}&ville=${ville ? ville : ''}&q=${q ? q : ''}`);
+    const request = agent.get(`/api/count_fournisseur_categorie?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&pays=${pays ? pays : ''}&ville=${ville ? ville : ''}&q=${q ? q : ''}`);
 
     return (dispatch) => {
         dispatch({
@@ -104,7 +105,7 @@ export function getSecteursCounts(params, pays, ville, q) {
 
 export function getActivitesCounts(params, pays, ville, q) {
     const { secteur, activite } = params;
-    const request = agent.get(`/count_fournisseur_categorie?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&pays=${pays ? pays : ''}&ville=${ville ? ville : ''}&q=${q ? q : ''}`);
+    const request = agent.get(`/api/count_fournisseur_categorie?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&pays=${pays ? pays : ''}&ville=${ville ? ville : ''}&q=${q ? q : ''}`);
 
     return (dispatch) => {
         dispatch({
@@ -126,7 +127,7 @@ export function getActivitesCounts(params, pays, ville, q) {
 
 export function getCategoriesCounts(params, pays, ville, q) {
     const { secteur, activite, categorie } = params;
-    const request = agent.get(`/count_fournisseur_categorie?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&categorie=${categorie ? categorie : ''}&pays=${pays ? pays : ''}&ville=${ville ? ville : ''}&q=${q ? q : ''}`);
+    const request = agent.get(`/api/count_fournisseur_categorie?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&categorie=${categorie ? categorie : ''}&pays=${pays ? pays : ''}&ville=${ville ? ville : ''}&q=${q ? q : ''}`);
 
     return (dispatch) => {
         dispatch({
@@ -147,7 +148,7 @@ export function getCategoriesCounts(params, pays, ville, q) {
 
 export function getVilleCounts(params, pays, q) {
     const { secteur, activite, categorie } = params;
-    const request = agent.get(`/count_fournisseur_pays?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&categorie=${categorie ? categorie : ''}&pays=${pays ? pays : ''}&q=${q ? q : ''}`);
+    const request = agent.get(`/api/count_fournisseur_pays?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&categorie=${categorie ? categorie : ''}&pays=${pays ? pays : ''}&q=${q ? q : ''}`);
 
     return (dispatch) => {
         dispatch({
@@ -171,7 +172,7 @@ export function getVilleCounts(params, pays, q) {
 }
 export function getPaysCounts(params, pays, q) {
     const { secteur, activite, categorie } = params;
-    const request = agent.get(`/count_fournisseur_pays?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&categorie=${categorie ? categorie : ''}&pays=${pays ? pays : ''}&q=${q ? q : ''}`);
+    const request = agent.get(`/api/count_fournisseur_pays?secteur=${secteur ? secteur : ''}&sousSecteur=${activite ? activite : ''}&categorie=${categorie ? categorie : ''}&pays=${pays ? pays : ''}&q=${q ? q : ''}`);
 
     return (dispatch) => {
         dispatch({
@@ -197,8 +198,8 @@ export function getPaysCounts(params, pays, q) {
 
 export function getSecteursAndPaysCounts(q) {
 
-    const request = agent.get(`/count_fournisseur_categorie?q=${q ? q : ''}`);
-    const request2 = agent.get(`/count_fournisseur_pays?q=${q ? q : ''}`);
+    const request = agent.get(`/api/count_fournisseur_categorie?q=${q ? q : ''}`);
+    const request2 = agent.get(`/api/count_fournisseur_pays?q=${q ? q : ''}`);
     return (dispatch) => {
         dispatch({
             type: REQUEST_PAYS_COUNT,

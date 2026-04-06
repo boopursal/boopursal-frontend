@@ -156,11 +156,11 @@ function CommercialsList(props) {
                 <HtmlTooltip
                   title={
                     <React.Fragment>
-                      {Object.keys(row.original.villes).length === 0 ? (
+                      {Object.keys(row.original.villes || {}).length === 0 ? (
                         "Il n'y aucun villes"
                       ) : (
                         <ul>
-                          {_.map(row.original.villes, function (value, key) {
+                          {_.map(row.original.villes || {}, function (value, key) {
                             return <li key={key}> {value.name} </li>;
                           })}
                         </ul>
@@ -173,7 +173,7 @@ function CommercialsList(props) {
                       ev.stopPropagation();
                     }}
                   >
-                    {Object.keys(row.original.villes).length}
+                    {Object.keys(row.original.villes || {}).length}
                   </Button>
                 </HtmlTooltip>
               </div>

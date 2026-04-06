@@ -23,7 +23,7 @@ export function cleanUp() {
 
 
 export function getSecteur(id_secteur) {
-    const request = agent.get(`/api/secteurs/${id_secteur}&props[]=name&props[]=id&props[]=image&props[]=del`);
+    const request = agent.get(`/api/secteurs/${id_secteur}?props[]=name&props[]=id&props[]=image&props[]=del`);
 
     return (dispatch) => {
         dispatch({

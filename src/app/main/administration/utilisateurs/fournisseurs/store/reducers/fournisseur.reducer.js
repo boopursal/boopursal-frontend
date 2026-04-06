@@ -3,7 +3,6 @@ import FuseUtils from '@fuse/FuseUtils';
 
 const initialState = {
     pays: null,
-    sousSecteurs: null,
     loading: false,
     requestFournisseur: false,
     villes: null,

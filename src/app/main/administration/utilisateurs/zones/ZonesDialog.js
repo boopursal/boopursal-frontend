@@ -70,7 +70,7 @@ function ZonesDialog(props) {
      * Dialog type: 'edit'
      */
     if (zonesDialog.type === "edit" && zonesDialog.data) {
-      let pays = zonesDialog.data.pays.map((item) => ({
+      let pays = (zonesDialog.data.pays || []).map((item) => ({
         value: item["@id"],
         label: item.name,
       }));
@@ -125,7 +125,7 @@ function ZonesDialog(props) {
     } else {
       setForm(_.set({ ...form }, "avatar", null));
     }
-  }, [avatar]);
+  }, [avatar, form, setForm]);
 
   function closeComposeDialog() {
     zonesDialog.type === "edit"

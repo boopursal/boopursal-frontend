@@ -1,43 +1,42 @@
 import React from 'react';
-import {Snackbar, IconButton, Icon, SnackbarContent} from '@material-ui/core';
-import {green, amber, blue} from '@material-ui/core/colors';
-import {useDispatch, useSelector} from 'react-redux';
+import { Snackbar, IconButton, Icon, SnackbarContent } from '@material-ui/core';
+import { green, amber, blue } from '@material-ui/core/colors';
+import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 import * as Actions from 'app/store/actions';
-import {makeStyles} from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
-    root   : {},
+    root: {},
     success: {
         backgroundColor: green[600],
-        color          : '#FFFFFF'
+        color: '#FFFFFF'
     },
-    error  : {
+    error: {
         backgroundColor: theme.palette.error.dark,
-        color          : theme.palette.getContrastText(theme.palette.error.dark)
+        color: theme.palette.getContrastText(theme.palette.error.dark)
     },
-    info   : {
+    info: {
         backgroundColor: blue[600],
-        color          : '#FFFFFF'
+        color: '#FFFFFF'
     },
     warning: {
         backgroundColor: amber[600],
-        color          : '#FFFFFF'
+        color: '#FFFFFF'
     }
 }));
 
 const variantIcon = {
     success: "check_circle",
     warning: "warning",
-    error  : "error_outline",
-    info   : "info"
+    error: "error_outline",
+    info: "info"
 };
 
-function FuseMessage(props)
-{
+function FuseMessage(props) {
     const dispatch = useDispatch();
-    const state = useSelector(({fuse}) => fuse.message.state);
-    const options = useSelector(({fuse}) => fuse.message.options);
+    const state = useSelector(({ fuse }) => fuse.message.state);
+    const options = useSelector(({ fuse }) => fuse.message.options);
 
     const classes = useStyles();
 
@@ -50,7 +49,7 @@ function FuseMessage(props)
                 root: classes.root
             }}
             ContentProps={{
-                variant        : 'body2',
+                variant: 'body2',
                 headlineMapping: {
                     body1: 'div',
                     body2: 'div'
@@ -64,7 +63,7 @@ function FuseMessage(props)
                         {variantIcon[options.variant] && (
                             <Icon className="mr-8" color="inherit">{variantIcon[options.variant]}</Icon>
                         )}
-                        {options.message}
+                        {typeof options.message === 'string' ? options.message : JSON.stringify(options.message)}
                     </div>
                 }
                 action={[

@@ -20,45 +20,100 @@ const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        // minHeight      : '100%',
         position: 'relative',
         flex: '1 0 auto',
         height: 'auto',
-        backgroundColor: theme.palette.background.default
+        backgroundColor: '#f8fafc'
     },
-    middle: {
-        background: 'linear-gradient(to right, ' + theme.palette.primary.dark + ' 0%, ' + theme.palette.primary.main + ' 100%)',
+    header: {
+        background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+        color: 'white',
+        padding: '40px 0 80px',
         position: 'relative',
-        marginBottom: theme.spacing(4),
+        overflow: 'hidden',
+        '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'url("assets/images/backgrounds/pattern-dot.svg") repeat',
+            opacity: 0.1
+        }
     },
-    overlay: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        backgroundColor: 'rgba(0,0,0,.3)',
+    headerContent: {
+        position: 'relative',
+        zIndex: 10
     },
     breadcrumbs: {
-        fontSize: 11,
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: '0.8125rem',
+        marginBottom: 16,
+        '& a': {
+            color: 'white',
+            textDecoration: 'none',
+            '&:hover': {
+                textDecoration: 'underline'
+            }
+        }
     },
-    link: {
-        display: 'flex',
-        'align-items': 'center',
-    },
-    img: {
-        width: '70%'
-
-    },
-    icon: {
-        marginRight: theme.spacing(0.5),
-        width: 20,
-        height: 20,
-    },
-    grid: {
+    mainTitle: {
+        fontSize: '2.5rem',
+        fontWeight: 900,
+        letterSpacing: '-0.02em',
+        textShadow: '0 2px 4px rgba(0,0,0,0.1)',
         [theme.breakpoints.down('xs')]: {
-            width: '100%'
+            fontSize: '1.75rem'
+        }
+    },
+    container: {
+        maxWidth: 1400,
+        margin: '0 auto',
+        width: '100%',
+        padding: '0 24px'
+    },
+    contentWrapper: {
+        marginTop: -40,
+        position: 'relative',
+        zIndex: 20,
+        paddingBottom: 80
+    },
+    switchContainer: {
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        padding: '6px',
+        borderRadius: 20,
+        display: 'inline-flex',
+        alignItems: 'center',
+        border: '1px solid rgba(255,255,255,0.1)',
+        backdropFilter: 'blur(8px)'
+    },
+    switchBtn: {
+        borderRadius: 16,
+        padding: '10px 28px',
+        fontWeight: 800,
+        fontSize: '0.875rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        minWidth: 160,
+        '&.active': {
+            backgroundColor: 'white',
+            color: '#f39c12',
+            boxShadow: '0 10px 20px -5px rgba(0,0,0,0.2)',
+            zIndex: 1,
+            '&:hover': {
+                backgroundColor: 'white',
+            }
         },
+        '&.inactive': {
+            backgroundColor: 'transparent',
+            color: 'rgba(255,255,255,0.9)',
+            '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                color: 'white',
+            }
+        }
     }
 }));
 
@@ -83,311 +138,128 @@ function FournisseursApp(props) {
     const categories = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.categories);
 
     useEffect(() => {
-
-        function updateFournisseurState() {
-            dispatch(Actions.getFournisseurs(params, pays, parametres, ville, q));
-        }
-
-        updateFournisseurState();
+        dispatch(Actions.getFournisseurs(params, pays, parametres, ville, q));
     }, [dispatch, params, pays, parametres, ville, q]);
 
     useEffect(() => {
-
-        function updateFournisseurState() {
-            if (!secteur && !pays) {
-                dispatch(Actions.getSecteursAndPaysCounts(q));
-            }
-            if (!secteur && pays) {
-                dispatch(Actions.getSecteursCounts(params, pays, ville, q));
-                dispatch(Actions.getVilleCounts(params, pays, q));
-            }
-            if (secteur && !pays) {
-                if (activite) {
-                    dispatch(Actions.getCategoriesCounts(params, pays, ville, q));
-
-                } else {
-                    dispatch(Actions.getActivitesCounts(params, pays, ville, q));
-
-                }
-                dispatch(Actions.getPaysCounts(params, pays, q));
-            }
-            if (secteur && pays) {
-                if (activite) {
-                    dispatch(Actions.getCategoriesCounts(params, pays, ville, q));
-
-                } else {
-                    dispatch(Actions.getActivitesCounts(params, pays, ville, q));
-
-                }
-                dispatch(Actions.getVilleCounts(params, pays, q));
-            }
+        if (!secteur && !pays) dispatch(Actions.getSecteursAndPaysCounts(q));
+        if (!secteur && pays) {
+            dispatch(Actions.getSecteursCounts(params, pays, ville, q));
+            dispatch(Actions.getVilleCounts(params, pays, q));
         }
-
-        updateFournisseurState();
-    }, [dispatch, params, pays, ville, q]);
-
-    function handleUrlProduits() {
-
-        let secteurParm = '';
-        let activiteParm = '';
-        let categorieParm = '';
-
         if (secteur) {
-            secteurParm = '/' + secteur;
+            if (activite) dispatch(Actions.getCategoriesCounts(params, pays, ville, q));
+            else dispatch(Actions.getActivitesCounts(params, pays, ville, q));
+            if (!pays) dispatch(Actions.getPaysCounts(params, pays, q));
+            else dispatch(Actions.getVilleCounts(params, pays, q));
         }
-        if (activite) {
-            activiteParm = '/' + activite;
-        }
-        if (categorie) {
-            categorieParm = '/' + categorie;
-        }
+    }, [dispatch, params, pays, ville, q, activite, secteur]);
 
-        let searchText;
+    const handleUrlProduits = () => {
+        const path = (secteur ? '/' + secteur : '') + (activite ? '/' + activite : '') + (categorie ? '/' + categorie : '');
+        const searchText = pays ? (q ? '&q=' + q : '') : (q ? 'q=' + q : '');
+        props.history.push({ pathname: '/vente-produits' + path, search: (pays ? 'pays=' + pays : '') + searchText });
+    };
 
-        if (pays)
-            searchText = (q ? '&q=' + q : '')
-        else searchText = (q ? 'q=' + q : '')
+    const getSecteurTitle = () => secteurs.length > 0 ? secteurs.find(x => x.slug === secteur)?.name : (secteur ? _.capitalize(secteur.replace(/-/g, ' ')) : '');
+    const getActiviteTitle = () => activites.length > 0 ? activites.find(x => x.slug === activite)?.name : (activite ? _.capitalize(activite.replace(/-/g, ' ')) : '');
+    const getCategorieTitle = () => categories.length > 0 ? categories.find(x => x.slug === categorie)?.name : (categorie ? _.capitalize(categorie.replace(/-/g, ' ')) : '');
 
-        const path = secteurParm + activiteParm + categorieParm;
-        props.history.push({ pathname: '/vente-produits' + path, search: (pays ? 'pays=' + pays : '') + searchText })
+    const getBreadcrumbTitle = () => {
+        if (categorie) return getCategorieTitle();
+        if (activite) return getActiviteTitle();
+        if (secteur) return getSecteurTitle();
+        return null;
+    };
 
-    }
-    function getPath(fournisseurs) {
-        return categorie ? 'de [ ' + getCategorieTitle() + ' ]' :
-            activite ? 'de [ ' + getActiviteTitle() + ' ]' :
-                secteur ? 'de [ ' + getSecteurTitle() + ' ]' : '';
-    }
-
-    function getSecteurTitle() {
-        return secteurs.length > 0 ? secteurs.filter(x => x.slug === secteur)[0] && _.capitalize(secteurs.filter(x => x.slug === secteur)[0].name) : _.capitalize(secteur.replace('-', ' '))
-    }
-    function getActiviteTitle() {
-        return activites.length > 0 ? activites.filter(x => x.slug === activite)[0] && _.capitalize(activites.filter(x => x.slug === activite)[0].name) : _.capitalize(activite.replace('-', ' '))
-    }
-    function getCategorieTitle() {
-        return categories.length > 0 ? categories.filter(x => x.slug === categorie)[0] && _.capitalize(categories.filter(x => x.slug === categorie)[0].name) : _.capitalize(categorie.replace('-', ' '))
-    }
-    if (loading) {
+    if (loading && !fournisseurs.length) {
         return (
-            <div className="flex flex-col min-h-md">
-                <LinearProgress color="secondary" />
-            </div>)
-    }
-
-    if (!loading && fournisseurs.length === 0) {
-        return (
-            <div className={clsx(classes.root, props.innerScroll && classes.innerScroll, 'min-h-md')}>
-                <div
-                    className={clsx(classes.middle, "mb-0 relative overflow-hidden flex flex-col flex-shrink-0 ")}>
-                    <Grid container spacing={2}
-                        classes={{
-                            'spacing-xs-2': classes.grid
-                        }}
-                        className="max-w-2xl mx-auto py-8  sm:px-16 items-center z-9999">
-                        <Grid item sm={12} xs={12}>
-                            <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-
-                                <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs} aria-label="breadcrumb">
-                                    <Link color="inherit" to="/" className={classes.link}>
-                                        <HomeIcon className={classes.icon} />
-                                        Accueil
-                                </Link>
-                                    {
-                                        secteur ?
-                                            <Link color="inherit" to={`/entreprises/${secteur}`} className={classes.link}>
-                                                {_.capitalize(secteur.replace('-', ' '))}
-                                            </Link>
-                                            : ''
-                                    }
-
-                                    {
-                                        activite &&
-                                        <span className="text-white">
-                                            {_.capitalize(activite.replace('-', ' '))}
-                                        </span>
-
-                                    }
-                                    {
-                                        categorie &&
-                                        <span className="text-white">
-                                            {_.capitalize(categorie.replace('-', ' '))}
-                                        </span>
-
-                                    }
-                                    {
-                                        q &&
-                                        <span className="text-white">
-                                            {'#' + _.capitalize(q)}
-                                        </span>
-
-                                    }
-
-
-                                </Breadcrumbs>
-
-                            </FuseAnimate>
-                        </Grid>
-                    </Grid>
-                </div>
-
-                <div className="w-full max-w-2xl mx-auto   min-h-md">
-                    <Helmet>
-                        <title>{'Fournisseurs ' + (
-                            categorie ? 'de ' + _.capitalize(categorie) :
-                                activite ? 'de ' + _.capitalize(activite) :
-                                    secteur ? 'de ' + _.capitalize(secteur) : ''
-                        ) + (pays ? _.capitalize(pays) : '') + (q ? ' #' + _.capitalize(q) : '')
-                        }</title>
-                        <meta name="robots" content="noindex, nofollow" />
-                        <meta name="googlebot" content="noindex" />
-                    </Helmet>
-
-
-                    <Paper className="p-32 w-full my-6 text-center">
-                        <img className={classes.img} alt="product not found" src="assets/images/product_not_found.jpg" />
-                        <Typography variant="h6" className="mb-16 uppercase" >
-
-                            Oups! Nous n'avons pas pu trouver de résultats pour votre recherche
-                        </Typography>
-
-                        <Typography variant="h6" className="mb-16 uppercase" color="primary">
-                            Les fournisseurs de ce secteur seront affichés prochainement
-                        </Typography>
-
-                        <Button variant="outlined" size="small" color="secondary" onClick={() => props.history.goBack()} className={clsx(classes.btn, "mr-8")}>
-                            <Icon>chevron_left</Icon> <span className="transition ease-in-out duration-700 ">Retour</span>
-                        </Button>
-
-                    </Paper>
-                </div>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+                <LinearProgress className="w-full max-w-xs rounded-full h-4" color="primary" />
+                <Typography className="mt-16 text-slate-500 font-semibold animate-pulse">Chargement des entreprises...</Typography>
             </div>
-        )
+        );
     }
+
     return (
-        <div className={clsx(classes.root, props.innerScroll && classes.innerScroll, 'min-h-md')}>
-            {
-                fournisseurs.length > 0 &&
-                <Helmet>
-                    <title>{_.truncate('Fournisseurs ' + (getPath(fournisseurs)) + (pays ? _.capitalize(fournisseurs[0].pays && ' au ' + fournisseurs[0].pays.name) : '')
-                        , { 'length': 70, 'separator': ' ' })}</title>
-                    {
-                        q && <meta property="keyword" content={q} />
-                    }
-                    <meta name="description" content={_.truncate('Les achats industriels la place de marché numéro 1 au maroc, trouver vos fournisseurs de ' + (categorie && getCategorieTitle() + ', ') + (activite && getActiviteTitle() + ', ') + (secteur && getSecteurTitle()), { 'length': 160, 'separator': ' ' })} />
-                    <meta property="og:title" content={_.truncate('Fournisseurs ' + (getPath(fournisseurs)) + (pays ? _.capitalize(fournisseurs[0].pays && ' au ' + fournisseurs[0].pays.name) : ''), { 'length': 70, 'separator': ' ' })} />
-                    <meta property="twitter:title" content={_.truncate('Vente de fournisseurs ' + (getPath(fournisseurs)) + (pays ? _.capitalize(fournisseurs[0].pays && ' au ' + fournisseurs[0].pays.name) : ''), { 'length': 70, 'separator': ' ' })} />
-                </Helmet>
+        <div className={classes.root}>
+            <Helmet>
+                <title>{`Fournisseurs ${getBreadcrumbTitle() || ''} ${pays ? 'au ' + _.capitalize(pays) : ''} - Boopursal`}</title>
+            </Helmet>
 
-            }
+            <div className={classes.header}>
+                <div className={classes.container}>
+                    <div className={classes.headerContent}>
+                        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
+                            <Link to="/" className="flex items-center"><HomeIcon className="text-16 mr-4" /> Accueil</Link>
+                            <Link to="/entreprises">Entreprises</Link>
+                            {secteur && <Typography color="inherit" className="font-bold text-white">{getBreadcrumbTitle()}</Typography>}
+                        </Breadcrumbs>
 
+                        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-24">
+                            <div className="flex-1">
+                                <Typography className={classes.mainTitle}>
+                                    Fournisseurs {getBreadcrumbTitle() && <span>{getBreadcrumbTitle()}</span>}
+                                    {q && <span className="text-yellow-400"> #{q}</span>}
+                                </Typography>
+                                {pays && (
+                                    <div className="flex items-center mt-8 text-blue-100 font-medium">
+                                        <Icon className="text-18 mr-4">location_on</Icon>
+                                        Localisation: {_.capitalize(pays)} {ville && `, ${_.capitalize(ville)}`}
+                                    </div>
+                                )}
+                            </div>
 
-            <div
-                className={clsx(classes.middle, "mb-0 relative overflow-hidden flex flex-col flex-shrink-0 ")}>
-                <Grid container spacing={2}
-                    classes={{
-                        'spacing-xs-2': classes.grid
-                    }}
-                    className="max-w-2xl mx-auto py-8  sm:px-16 items-center z-9999">
-                    <Grid item sm={12} xs={12}>
-                        <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-
-                            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs} aria-label="breadcrumb">
-                                <Link color="inherit" to="/" className={classes.link}>
-                                    <HomeIcon className={classes.icon} />
-                                    Accueil
-                                </Link>
-                                {
-                                    secteur ?
-                                        <Link color="inherit" to={`/entreprises/${secteur}`} className={classes.link}>
-                                            {getSecteurTitle()}
-                                        </Link>
-                                        : ''
-                                }
-
-                                {
-                                    fournisseurs.length > 0 && activite &&
-                                    <Link color="inherit" to={`/entreprises/${secteur}/${activite}`} className={classes.link}>
-                                        {getActiviteTitle()}
-                                    </Link>
-
-                                }
-                                {
-                                    fournisseurs.length > 0 && categorie &&
-                                    <span className="text-white">
-                                        {getCategorieTitle()}
-                                    </span>
-
-                                }
-                                {
-                                    q &&
-                                    <span className="text-white">
-                                        {'#' + _.capitalize(q)}
-                                    </span>
-
-                                }
-
-
-                            </Breadcrumbs>
-
-                        </FuseAnimate>
-                    </Grid>
-                </Grid>
+                            <div className={classes.switchContainer}>
+                                <Button onClick={handleUrlProduits} className={clsx(classes.switchBtn, "inactive")}>
+                                    Produits
+                                </Button>
+                                <Button className={clsx(classes.switchBtn, "active")}>
+                                    Entreprises
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <Grid container spacing={2}
-                classes={{
-                    'spacing-xs-2': classes.grid
-                }}
-                className="max-w-2xl mx-auto sm:px-16 pt-24 items-center">
-                <Grid item sm={3} xs={12}>
-                    {
-                        fournisseurs.length > 0 &&
-                        <Typography variant="h1" className="text-24 font-bold" style={{ color: '#333' }}>
-                            {'Fournisseurs ' + (getPath(fournisseurs)) + (pays ? _.capitalize(fournisseurs[0].pays && ' au ' + fournisseurs[0].pays.name) : '')
-                        }
-                    </Typography>
-                }
-            </Grid>
-            <Grid item sm={9} xs={12} className="flex items-center justify-start">
-                <Typography className="text-13 mr-16" style={{ color: '#333', fontWeight: 'bold' }}>
-                    Voir résultats de:
-                </Typography>
-                <Button 
-                    onClick={handleUrlProduits} 
-                    size="small" 
-                    variant="outlined" 
-                    style={{ borderColor: '#ff9800', color: '#ff9800' }} // Couleur orange pour le bouton "Produits"
-                >
-                    Produits
-                </Button>
-                <span className="mx-2" style={{ color: '#1976d2' }}>|</span>
-                <Button 
-                   size="small" 
-                   disabled 
-                   variant="outlined" 
-                   style={{ borderColor: '#1976d2', color: '#1976d2' }} // Couleur orange pour le bouton "Fournisseurs"
-                >
-                    Fournisseurs
-                </Button>
-            </Grid>
-        </Grid>
-        <Grid container spacing={2}
-            classes={{
-                'spacing-xs-2': classes.grid
-            }}
-            className="max-w-2xl mx-auto py-24 sm:px-16 items-start">
 
-            <Grid item sm={4} md={3} xs={12} className="sticky top-0 order-last sm:order-first">
-                <SideBareSearch  {...props} />
-            </Grid>
-            <Grid item sm={8} md={9} xs={12}>
-                <ContentList />
-            </Grid>
-        </Grid>
-        <ContactFournisseurDialog />
-    </div>
+            <div className={classes.container}>
+                <div className={classes.contentWrapper}>
+                    {fournisseurs.length === 0 ? (
+                        <Paper className="p-64 w-full text-center flex flex-col items-center justify-center rounded-32 shadow-xl border-0">
+                            <div className="w-120 h-120 bg-slate-50 rounded-full flex items-center justify-center mb-24">
+                                <Icon className="text-64 text-slate-300">business_off</Icon>
+                            </div>
+                            <Typography variant="h4" className="mb-16 font-900 text-slate-800">Aucun résultat trouvé</Typography>
+                            <Typography className="mb-40 text-slate-500 max-w-md mx-auto text-lg leading-relaxed">
+                                Nous n'avons trouvé aucune entreprise correspondant à "<strong>{q || 'votre recherche'}</strong>".
+                                Essayez de modifier vos filtres ou d'explorer d'autres catégories.
+                            </Typography>
+                            <div className="flex gap-16">
+                                <Button variant="contained" color="primary" onClick={() => props.history.push('/')} className="px-32 py-12 rounded-12 font-bold shadow-lg">
+                                    Retour à l'accueil
+                                </Button>
+                                <Button variant="outlined" onClick={() => props.history.goBack()} className="px-32 py-12 rounded-12 font-bold border-slate-200">
+                                    Page précédente
+                                </Button>
+                            </div>
+                        </Paper>
+                    ) : (
+                        <Grid container spacing={4}>
+                            <Grid item lg={3} md={4} xs={12} className="sticky top-24">
+                                <SideBareSearch {...props} />
+                            </Grid>
+                            <Grid item lg={9} md={8} xs={12}>
+                                <ContentList />
+                            </Grid>
+                        </Grid>
+                    )}
+                </div>
+            </div>
 
-
-    )
+            <ContactFournisseurDialog />
+        </div>
+    );
 }
 
 export default withReducer('fournisseursApp', reducer)(FournisseursApp);

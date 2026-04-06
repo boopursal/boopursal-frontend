@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
-import { Typography, Grid, Breadcrumbs, Button, Icon, Paper, LinearProgress } from '@material-ui/core';
+import { Typography, Grid, Breadcrumbs, Button, LinearProgress, Paper, Icon } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
@@ -13,52 +13,106 @@ import HomeIcon from '@material-ui/icons/Home';
 import ContentList from './ContentList';
 import _ from '@lodash';
 import { Helmet } from "react-helmet";
-import DemandeDevisDialog from '../detailProduit/DemandeDevisDialog';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        // minHeight      : '100%',
         position: 'relative',
         flex: '1 0 auto',
         height: 'auto',
-        backgroundColor: theme.palette.background.default
+        backgroundColor: '#f8fafc'
     },
-    middle: {
-        background: 'linear-gradient(to right, ' + theme.palette.primary.dark + ' 0%, ' + theme.palette.primary.main + ' 100%)',
+    header: {
+        background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+        color: 'white',
+        padding: '40px 0 80px',
         position: 'relative',
-        marginBottom: theme.spacing(4),
+        overflow: 'hidden',
+        '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'url("assets/images/backgrounds/pattern-dot.svg") repeat',
+            opacity: 0.1
+        }
     },
-    overlay: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        backgroundColor: 'rgba(0,0,0,.3)',
+    headerContent: {
+        position: 'relative',
+        zIndex: 10
     },
     breadcrumbs: {
-        fontSize: 11,
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: '0.8125rem',
+        marginBottom: 16,
+        '& a': {
+            color: 'white',
+            textDecoration: 'none',
+            '&:hover': {
+                textDecoration: 'underline'
+            }
+        }
     },
-    link: {
-        display: 'flex',
-        'align-items': 'center',
-    },
-    img: {
-        width: '70%'
-
-    },
-    icon: {
-        marginRight: theme.spacing(0.5),
-        width: 20,
-        height: 20,
-    },
-    grid: {
+    mainTitle: {
+        fontSize: '2.5rem',
+        fontWeight: 900,
+        letterSpacing: '-0.02em',
+        textShadow: '0 2px 4px rgba(0,0,0,0.1)',
         [theme.breakpoints.down('xs')]: {
-            width: '100%'
+            fontSize: '1.75rem'
+        }
+    },
+    container: {
+        maxWidth: 1400,
+        margin: '0 auto',
+        width: '100%',
+        padding: '0 24px'
+    },
+    contentWrapper: {
+        marginTop: -40,
+        position: 'relative',
+        zIndex: 20,
+        paddingBottom: 80
+    },
+    switchContainer: {
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        padding: '6px',
+        borderRadius: 20,
+        display: 'inline-flex',
+        alignItems: 'center',
+        border: '1px solid rgba(255,255,255,0.1)',
+        backdropFilter: 'blur(8px)'
+    },
+    switchBtn: {
+        borderRadius: 16,
+        padding: '10px 28px',
+        fontWeight: 800,
+        fontSize: '0.875rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        minWidth: 160,
+        '&.active': {
+            backgroundColor: 'white',
+            color: '#f39c12', // Premium orange
+            boxShadow: '0 10px 20px -5px rgba(0,0,0,0.2)',
+            zIndex: 1,
+            '&:hover': {
+                backgroundColor: 'white',
+            }
         },
+        '&.inactive': {
+            backgroundColor: 'transparent',
+            color: 'rgba(255,255,255,0.9)',
+            '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                color: 'white',
+            }
+        }
     }
 }));
 
@@ -75,362 +129,135 @@ function ProduitsApp(props) {
     const pays = query.get("pays");
     const q = query.get("q");
     const ville = query.get("ville");
+
     const parametres = useSelector(({ produitsApp }) => produitsApp.produits.parametres);
     const produits = useSelector(({ produitsApp }) => produitsApp.produits.data);
     const loading = useSelector(({ produitsApp }) => produitsApp.produits.loading);
+    const secteurs = useSelector(({ produitsApp }) => produitsApp.produits.secteurs);
+    const activites = useSelector(({ produitsApp }) => produitsApp.produits.activites);
+    const categories = useSelector(({ produitsApp }) => produitsApp.produits.categories);
 
     useEffect(() => {
-
-        function updateProduitState() {
-            dispatch(Actions.getProduits(params, pays, parametres, ville, q));
-        }
-
-        updateProduitState();
-    }, [dispatch, params, pays, q, ville, parametres]);
+        dispatch(Actions.getProduits(params, pays, parametres, ville, q));
+    }, [dispatch, params, pays, parametres, ville, q]);
 
     useEffect(() => {
-
-        function updateProduitState() {
-
-            if (!secteur && !pays) {
-                dispatch(Actions.getSecteursAndPaysCounts(q));
-            }
-            if (!secteur && pays) {
-                dispatch(Actions.getSecteursCounts(params, pays, ville, q));
-                dispatch(Actions.getVilleCounts(params, pays, q));
-
-            }
-            if (secteur && !pays) {
-
-                if (activite) {
-                    dispatch(Actions.getCategoriesCounts(params, pays, ville, q));
-
-                } else {
-                    dispatch(Actions.getActivitesCounts(params, pays, ville, q));
-
-                }
-
-                dispatch(Actions.getPaysCounts(params, pays, q));
-            }
-            if (secteur && pays) {
-
-                if (activite) {
-                    dispatch(Actions.getCategoriesCounts(params, pays, ville, q));
-
-                } else {
-                    dispatch(Actions.getActivitesCounts(params, pays, ville, q));
-
-                }
-                dispatch(Actions.getVilleCounts(params, pays, q));
-
-            }
+        if (!secteur && !pays) dispatch(Actions.getSecteursAndPaysCounts(q));
+        if (!secteur && pays) {
+            dispatch(Actions.getSecteursCounts(params, pays, ville, q));
+            dispatch(Actions.getVilleCounts(params, pays, q));
         }
-
-        updateProduitState();
-    }, [dispatch, params, pays, ville, q]);
-
-    function handleUrlFournisseurs() {
-        let secteurParm = '';
-        let activiteParm = '';
-        let categorieParm = '';
-
-
         if (secteur) {
-            secteurParm = '/' + secteur;
+            if (activite) dispatch(Actions.getCategoriesCounts(params, pays, ville, q));
+            else dispatch(Actions.getActivitesCounts(params, pays, ville, q));
+            if (!pays) dispatch(Actions.getPaysCounts(params, pays, q));
+            else dispatch(Actions.getVilleCounts(params, pays, q));
         }
-        if (activite) {
-            activiteParm = '/' + activite;
-        }
-        if (categorie) {
-            categorieParm = '/' + categorie;
-        }
+    }, [dispatch, params, pays, ville, q, activite, secteur]);
 
-        let searchText;
-        if (pays)
-            searchText = (q ? '&q=' + q : '')
-        else searchText = (q ? 'q=' + q : '')
+    const handleUrlEntreprises = () => {
+        const path = (secteur ? '/' + secteur : '') + (activite ? '/' + activite : '') + (categorie ? '/' + categorie : '');
+        const searchText = pays ? (q ? '&q=' + q : '') : (q ? 'q=' + q : '');
+        props.history.push({ pathname: '/entreprises' + path, search: (pays ? 'pays=' + pays : '') + searchText });
+    };
 
-        const path = secteurParm + activiteParm + categorieParm;
-        props.history.push({ pathname: '/entreprises' + path, search: (pays ? 'pays=' + pays : '') + (ville ? '&ville=' + ville : '') + searchText })
-    }
+    const getSecteurTitle = () => secteurs.length > 0 ? secteurs.find(x => x.slug === secteur)?.name : (secteur ? _.capitalize(secteur.replace(/-/g, ' ')) : '');
+    const getActiviteTitle = () => activites.length > 0 ? activites.find(x => x.slug === activite)?.name : (activite ? _.capitalize(activite.replace(/-/g, ' ')) : '');
+    const getCategorieTitle = () => categories.length > 0 ? categories.find(x => x.slug === categorie)?.name : (categorie ? _.capitalize(categorie.replace(/-/g, ' ')) : '');
 
-    if (loading) {
+    const getBreadcrumbTitle = () => {
+        if (categorie) return getCategorieTitle();
+        if (activite) return getActiviteTitle();
+        if (secteur) return getSecteurTitle();
+        return null;
+    };
+
+    if (loading && !produits.length) {
         return (
-            <div className="flex flex-col min-h-md">
-                <LinearProgress color="secondary" />
-            </div>)
-    }
-
-    if (!loading && produits.length === 0) {
-        return (
-            <div className={clsx(classes.root, props.innerScroll && classes.innerScroll, 'min-h-md')}>
-                <div
-                    className={clsx(classes.middle, "mb-0 relative overflow-hidden flex flex-col flex-shrink-0 ")}>
-                    <Grid container
-                        classes={{
-                            'spacing-xs-2': classes.grid
-                        }}
-                        className="max-w-2xl mx-auto py-8  sm:px-16 items-center z-9999">
-                        <Grid item sm={12} xs={12}>
-                            <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-
-                                <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
-                                    <Link color="inherit" to="/" className={classes.link}>
-                                        <HomeIcon className={classes.icon} />
-                                        Accueil
-                                </Link>
-                                    {
-                                        produits.length > 0 && secteur &&
-                                        <Link color="inherit" to={`/vente-produits/${secteur}`} className={classes.link}>
-                                            {_.capitalize(produits[0].secteur && produits[0].secteur.name)}
-                                        </Link>
-
-                                    }
-                                    {
-                                        produits.length > 0 && activite &&
-                                        <Link color="inherit" to={`/vente-produits/${secteur}/${activite}`} className={classes.link}>
-                                            {_.capitalize(produits[0].sousSecteurs && produits[0].sousSecteurs.name)}
-                                        </Link>
-
-                                    }
-                                    {
-                                        produits.length > 0 && categorie &&
-                                        <span className="text-white">
-                                            {_.capitalize(produits[0].categorie && produits[0].categorie.name)}
-                                        </span>
-
-                                    }
-
-                                    {
-                                        q &&
-                                        <span className="text-white">
-                                            {'#' + _.capitalize(q)}
-                                        </span>
-
-                                    }
-
-
-
-                                </Breadcrumbs>
-
-                            </FuseAnimate>
-                        </Grid>
-                    </Grid>
-                </div>
-
-                <div className="w-full max-w-2xl mx-auto   min-h-md">
-                    <Helmet>
-                        <title>Résultats de recherche {(
-                            activite ? 'de [ ' + _.capitalize(activite) + ' ]' :
-                                secteur ? 'de [ ' + _.capitalize(secteur) + ' ]' :
-                                    ''
-                        ) + (pays ? ' au ' + _.capitalize(pays) : '') + (q ? ' #' + _.capitalize(q) : '')
-                        }</title>
-                        <meta name="robots" content="noindex, nofollow" />
-                        <meta name="googlebot" content="noindex" />
-                    </Helmet>
-                    {
-                        /**
-                         * <Typography color="secondary" className="mt-16 flex items-center uppercase" variant="h6">
-                         <Icon className="mr-8">search</Icon>
-                         <span>Résultats de recherche {(
-                             categorie ? 'de [ ' + _.capitalize(categorie) + ' ]' :
-                                 activite ? 'de [ ' + _.capitalize(activite) + ' ]' :
-                                     secteur ? 'de [ ' + _.capitalize(secteur) + ' ]' :
-                                         ''
-                         ) + (pays ? ' au ' + _.capitalize(pays) : '') + (q ? ' #' + _.capitalize(q) : '')
-                         }</span>
-                     </Typography>
-                         */
-                    }
-
-
-                    <Paper className="p-32 w-full my-16 text-center">
-                        <img className={classes.img} alt="product not found" src="assets/images/product_not_found.jpg" />
-                        <Typography variant="h6" className="mb-16 uppercase" >
-
-                            Oups! Nous n'avons pas pu trouver de résultats pour votre recherche
-                        </Typography>
-
-                        <Typography variant="h6" className="mb-16 uppercase" color="primary">
-                            Le produit sera affiché prochainement
-                        </Typography>
-
-                        <Button variant="outlined" size="small" color="secondary" onClick={() => props.history.goBack()} className={clsx(classes.btn, "mr-8")}>
-                            <Icon>chevron_left</Icon> <span className="transition ease-in-out duration-700 ">Retour</span>
-                        </Button>
-
-                    </Paper>
-                </div>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+                <LinearProgress className="w-full max-w-xs rounded-full h-4" color="primary" />
+                <Typography className="mt-16 text-slate-500 font-semibold animate-pulse">Chargement des produits...</Typography>
             </div>
-        )
+        );
     }
 
     return (
-        <div className={clsx(classes.root, props.innerScroll && classes.innerScroll, 'min-h-md')}>
-            {
-                produits.length > 0 &&
-                <Helmet>
-                    <title>{_.truncate('Vente de produits ' + (
-                        categorie ? _.capitalize(produits[0].categorie && produits[0].categorie.name) : (
-                            activite ? _.capitalize(produits[0].sousSecteurs && produits[0].sousSecteurs.name) :
-                                secteur ? _.capitalize(produits[0].secteur && produits[0].secteur.name) : ''
-                        )
-                    ) + (pays ? _.capitalize(produits[0].pays && ' au ' + produits[0].pays.name) : '')
-                        , { 'length': 70, 'separator': ' ' })}</title>
-                    {
-                        q && <meta property="keyword" content={q} />
-                    }
-                    <meta name="description" content={_.truncate('Les achats industriels la place de marché numéro 1 au maroc, trouver vos produits dans ' + (produits[0].categorie && produits[0].categorie.name) +
-                        ', ' + (produits[0].sousSecteurs && produits[0].sousSecteurs.name) + ', ' + (produits[0].secteur && produits[0].secteur.name), { 'length': 160, 'separator': ' ' })} />
-                    <meta property="og:title" content={_.truncate('Vente de produits ' + (
-                        categorie ? _.capitalize(produits[0].categorie && produits[0].categorie.name) : (
-                            activite ? _.capitalize(produits[0].sousSecteurs && produits[0].sousSecteurs.name) :
-                                secteur ? _.capitalize(produits[0].secteur && produits[0].secteur.name) : ''
-                        )
-                    ) + (pays ? _.capitalize(produits[0].pays && ' au ' + produits[0].pays.name) : ''), { 'length': 70, 'separator': ' ' })} />
-                    <meta property="og:description" content={_.truncate('Les achats industriels la place de marché numéro 1 au maroc, trouver vos produits dans ' + (produits[0].categorie && produits[0].categorie.name) +
-                        ', ' + (produits[0].sousSecteurs && produits[0].sousSecteurs.name) + ', ' + (produits[0].secteur && produits[0].secteur.name), { 'length': 160, 'separator': ' ' })} />
-                    <meta property="twitter:title" content={_.truncate('Vente de produits ' + (
-                        categorie ? _.capitalize(produits[0].categorie && produits[0].categorie.name) : (
-                            activite ? _.capitalize(produits[0].sousSecteurs && produits[0].sousSecteurs.name) :
-                                secteur ? _.capitalize(produits[0].secteur && produits[0].secteur.name) : ''
-                        )
-                    ) + (pays ? _.capitalize(produits[0].pays && ' au ' + produits[0].pays.name) : ''), { 'length': 70, 'separator': ' ' })} />
-                    <meta property="twitter:description" content={_.truncate('Les achats industriels la place de marché numéro 1 au maroc, trouver vos produits dans ' + (produits[0].categorie && produits[0].categorie.name) +
-                        ', ' + (produits[0].sousSecteurs && produits[0].sousSecteurs.name) + ', ' + (produits[0].secteur && produits[0].secteur.name), { 'length': 160, 'separator': ' ' })} />
-                </Helmet>
+        <div className={classes.root}>
+            <Helmet>
+                <title>{`Produits ${getBreadcrumbTitle() || ''} ${pays ? 'au ' + _.capitalize(pays) : ''} - Boopursal`}</title>
+            </Helmet>
 
-            }
+            <div className={classes.header}>
+                <div className={classes.container}>
+                    <div className={classes.headerContent}>
+                        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
+                            <Link to="/" className="flex items-center"><HomeIcon className="text-16 mr-4" /> Accueil</Link>
+                            <Link to="/vente-produits">Produits</Link>
+                            {secteur && <Typography color="inherit" className="font-bold text-white">{getBreadcrumbTitle()}</Typography>}
+                        </Breadcrumbs>
 
-            <div
-                className={clsx(classes.middle, "mb-0 relative overflow-hidden flex flex-col flex-shrink-0 ")}>
-                <Grid container
-                    classes={{
-                        'spacing-xs-2': classes.grid
-                    }}
-                    spacing={2}
-                    className="max-w-2xl mx-auto py-8  sm:px-16 items-center z-9999">
-                    <Grid item sm={12} xs={12}>
-                        <FuseAnimate animation="transition.slideLeftIn" delay={300}>
+                        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-24">
+                            <div className="flex-1">
+                                <Typography className={classes.mainTitle}>
+                                    Produits {getBreadcrumbTitle() && <span>{getBreadcrumbTitle()}</span>}
+                                    {q && <span className="text-yellow-400"> #{q}</span>}
+                                </Typography>
+                                {pays && (
+                                    <div className="flex items-center mt-8 text-blue-100 font-medium">
+                                        <Icon className="text-18 mr-4">location_on</Icon>
+                                        Localisation: {_.capitalize(pays)} {ville && `, ${_.capitalize(ville)}`}
+                                    </div>
+                                )}
+                            </div>
 
-                            <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
-                                <Link color="inherit" to="/" className={classes.link}>
-                                    <HomeIcon className={classes.icon} />
-                                    Accueil
-                                </Link>
-                                {
-                                    produits.length > 0 && secteur &&
-                                    <Link color="inherit" to={`/vente-produits/${secteur}`} className={classes.link}>
-                                        {_.capitalize(produits[0].secteur && produits[0].secteur.name)}
-                                    </Link>
-
-                                }
-                                {
-                                    produits.length > 0 && activite &&
-                                    <Link color="inherit" to={`/vente-produits/${secteur}/${activite}`} className={classes.link}>
-                                        {_.capitalize(produits[0].sousSecteurs && produits[0].sousSecteurs.name)}
-                                    </Link>
-
-                                }
-                                {
-                                    produits.length > 0 && categorie &&
-                                    <span className="text-white">
-                                        {_.capitalize(produits[0].categorie && produits[0].categorie.name)}
-                                    </span>
-
-                                }
-
-                                {
-                                    q &&
-                                    <span className="text-white">
-                                        {'#' + _.capitalize(q)}
-                                    </span>
-
-                                }
-
-
-
-                            </Breadcrumbs>
-
-                        </FuseAnimate>
-                    </Grid>
-                </Grid>
+                            <div className={classes.switchContainer}>
+                                <Button className={clsx(classes.switchBtn, "active")}>
+                                    Produits
+                                </Button>
+                                <Button onClick={handleUrlEntreprises} className={clsx(classes.switchBtn, "inactive")}>
+                                    Entreprises
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-           
-            <Grid container
-                classes={{
-                    'spacing-xs-2': classes.grid
-                }}
-                spacing={2}
-                className="max-w-2xl  mx-auto sm:px-16 pt-24 items-center">
-                    
-                <Grid item sm={3} xs={12}>
-
-
-                    <Typography variant="h1" className="text-24 font-bold">
-                        {
-                            produits.length > 0 ? 'Vente de produits ' + (
-                                categorie ? _.capitalize(produits[0].categorie && produits[0].categorie.name) : (
-                                    activite ? _.capitalize(produits[0].sousSecteurs && produits[0].sousSecteurs.name) :
-                                        secteur ? _.capitalize(produits[0].secteur && produits[0].secteur.name) : ''
-                                )
-                            ) + (pays ? _.capitalize(produits[0].pays && ' au ' + produits[0].pays.name) : '')
-                                : ''
-                        }
-
-                    </Typography>
-                    
-                </Grid>
-                <Grid item sm={9} xs={12} className="flex items-center justify-start">
-                <Typography variant="body1" className="text-13 mr-16" style={{ color: '#333', fontWeight: 'bold' }}>
-                             Voir résultats de :
-                        </Typography>
-                        <div className="flex items-center">
-                            <Button 
-                                disabled 
-                                size="small" 
-                                className={clsx(classes.button, "mr-2")} 
-                                variant="outlined" 
-                                style={{ borderColor: '#1976d2', color: '#1976d2' }} // Couleur du bouton "Produits"
-                            >
-                                Produits
-                            </Button>
-                            <span className="mx-2" style={{ color: '#1976d2' }}>|</span> {/* Couleur de la barre de séparation */}
-                            <Button 
-                                size="small" 
-                                onClick={handleUrlFournisseurs} 
-                                color="secondary" 
-                                className={classes.button} 
-                                variant="outlined" 
-                                style={{ borderColor: '#ff9800', color: '#ff9800' }} // Couleur orange pour le bouton "Fournisseurs"
-                            >
-                                Fournisseurs
-                            </Button>
-                        </div>
-                </Grid>
-                
-            </Grid>
-            <Grid container
-                classes={{
-                    'spacing-xs-2': classes.grid
-                }}
-                spacing={2}
-                className="max-w-2xl mx-auto py-24 sm:px-16 items-start">
-
-                <Grid item sm={4} md={3} xs={12} className="sticky top-0 order-last sm:order-first">
-                    <SideBareSearch  {...props} />
-                </Grid>
-                <Grid item sm={8} md={9} xs={12}>
-                    <ContentList />
-                </Grid>
-            </Grid>
-            <DemandeDevisDialog />
+            <div className={classes.container}>
+                <div className={classes.contentWrapper}>
+                    {produits.length === 0 ? (
+                        <Paper className="p-64 w-full text-center flex flex-col items-center justify-center rounded-32 shadow-xl border-0">
+                            <div className="w-120 h-120 bg-slate-50 rounded-full flex items-center justify-center mb-24">
+                                <Icon className="text-64 text-slate-300">inventory_off</Icon>
+                            </div>
+                            <Typography variant="h4" className="mb-16 font-900 text-slate-800">Aucun produit trouvé</Typography>
+                            <Typography className="mb-40 text-slate-500 max-w-md mx-auto text-lg leading-relaxed">
+                                Nous n'avons trouvé aucun produit correspondant à "<strong>{q || 'votre recherche'}</strong>".
+                                Essayez de modifier vos filtres ou d'explorer d'autres catégories.
+                            </Typography>
+                            <div className="flex gap-16">
+                                <Button variant="contained" color="primary" onClick={() => props.history.push('/')} className="px-32 py-12 rounded-12 font-bold shadow-lg">
+                                    Retour à l'accueil
+                                </Button>
+                                <Button variant="outlined" onClick={() => props.history.goBack()} className="px-32 py-12 rounded-12 font-bold border-slate-200">
+                                    Page précédente
+                                </Button>
+                            </div>
+                        </Paper>
+                    ) : (
+                        <Grid container spacing={4}>
+                            <Grid item lg={3} md={4} xs={12} className="sticky top-24">
+                                <SideBareSearch {...props} />
+                            </Grid>
+                            <Grid item lg={9} md={8} xs={12}>
+                                <ContentList />
+                            </Grid>
+                        </Grid>
+                    )}
+                </div>
+            </div>
         </div>
-
-
-    )
+    );
 }
 
 export default withReducer('produitsApp', reducer)(ProduitsApp);

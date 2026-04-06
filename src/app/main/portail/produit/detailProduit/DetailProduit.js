@@ -10,9 +10,6 @@ import {
   Button,
   Chip,
   Divider,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Paper,
   IconButton,
 } from "@material-ui/core";
@@ -22,10 +19,7 @@ import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { FuseAnimate } from "@fuse";
 import { useDispatch, useSelector } from "react-redux";
-import ContentLoader from "react-content-loader";
 import YouTube from "react-youtube";
-import Tooltip from "@material-ui/core/Tooltip";
-import PropTypes from "prop-types";
 import Produit from "../../index/Produit";
 import * as Actions from "../store/actions";
 import { Helmet } from "react-helmet";
@@ -35,905 +29,453 @@ import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { URL_SITE } from "@fuse/Constants";
 
-function SampleNextArrow(props) {
-  const { style, onClick } = props;
-  return (
-    <IconButton
-      aria-label="Next"
-      style={{
-        ...style,
-        display: "block",
-        backgroundColor: "rgba(255,255,255,0.7)",
-        border: "1px solid #bfbfbf",
-        color: "#4a4a4a",
-        right: "-25px",
-        position: "absolute",
-        top: "50%",
-      }}
-      onClick={onClick}
-    >
-      <Icon fontSize="small">arrow_forward_ios</Icon>
-    </IconButton>
-  );
-}
-function SamplePrevArrow(props) {
-  const { style, onClick } = props;
-  return (
-    <IconButton
-      aria-label="Previous"
-      style={{
-        ...style,
-        display: "block",
-        zIndex: "999",
-        backgroundColor: "rgba(255,255,255,0.7)",
-        border: "1px solid #bfbfbf",
-        color: "#4a4a4a",
-        left: "-25px",
-        position: "absolute",
-        top: "50%",
-      }}
-      onClick={onClick}
-    >
-      <Icon fontSize="small">arrow_back_ios</Icon>
-    </IconButton>
-  );
-}
-function arrowGenerator(color) {
-  return {
-    '&[x-placement*="bottom"] $arrow': {
-      top: 0,
-      left: 0,
-      marginTop: "-0.95em",
-      width: "3em",
-      height: "1em",
-      "&::before": {
-        borderWidth: "0 1em 1em 1em",
-        borderColor: `transparent transparent ${color} transparent`,
-      },
-    },
-    '&[x-placement*="top"] $arrow': {
-      bottom: 0,
-      left: 0,
-      marginBottom: "-0.95em",
-      width: "3em",
-      height: "1em",
-      "&::before": {
-        borderWidth: "1em 1em 0 1em",
-        borderColor: `${color} transparent transparent transparent`,
-      },
-    },
-    '&[x-placement*="right"] $arrow': {
-      left: 0,
-      marginLeft: "-0.95em",
-      height: "3em",
-      width: "1em",
-      "&::before": {
-        borderWidth: "1em 1em 1em 0",
-        borderColor: `transparent ${color} transparent transparent`,
-      },
-    },
-    '&[x-placement*="left"] $arrow': {
-      right: 0,
-      marginRight: "-0.95em",
-      height: "3em",
-      width: "1em",
-      "&::before": {
-        borderWidth: "1em 0 1em 1em",
-        borderColor: `transparent transparent transparent ${color}`,
-      },
-    },
-  };
-}
-const useStylesBootstrap = makeStyles((theme) => ({
-  arrow: {
-    position: "absolute",
-    fontSize: 6,
-    width: "3em",
-    height: "3em",
-    "&::before": {
-      content: '""',
-      margin: "auto",
-      display: "block",
-      width: 0,
-      height: 0,
-      borderStyle: "solid",
-    },
-  },
-  popper: arrowGenerator(theme.palette.common.black),
-  tooltip: {
-    backgroundColor: theme.palette.common.black,
-  },
-  tooltipPlacementLeft: {
-    margin: "0 8px",
-  },
-  tooltipPlacementRight: {
-    margin: "0 8px",
-  },
-  tooltipPlacementTop: {
-    margin: "8px 0",
-  },
-  tooltipPlacementBottom: {
-    margin: "8px 0",
-  },
-}));
-function BootstrapTooltip(props) {
-  const { arrow, ...classes } = useStylesBootstrap();
-  const [arrowRef, setArrowRef] = React.useState(null);
-
-  return (
-    <Tooltip
-      classes={classes}
-      PopperProps={{
-        popperOptions: {
-          modifiers: {
-            arrow: {
-              enabled: Boolean(arrowRef),
-              element: arrowRef,
-            },
-          },
-        },
-      }}
-      {...props}
-      title={
-        <React.Fragment>
-          {props.title}
-          <span className={arrow} ref={setArrowRef} />
-        </React.Fragment>
-      }
-    />
-  );
-}
-BootstrapTooltip.propTypes = {
-  title: PropTypes.node,
-};
 const useStyles = makeStyles((theme) => ({
   root: {
-    minWidth: 275,
+    maxWidth: 1280,
+    margin: '0 auto',
+    width: '100%',
+    padding: '0 24px',
+    marginTop: -100,
+    position: 'relative',
+    zIndex: 50,
+    paddingBottom: 100
   },
-  img: {
-    width: "70%",
+  mainPaper: {
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(20px)',
+    boxShadow: '0 40px 100px -20px rgba(15, 23, 42, 0.15)',
+    overflow: 'hidden',
+    border: '1px solid rgba(255, 255, 255, 0.5)',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    transition: 'all 0.5s ease'
   },
-  progress: {
-    margin: theme.spacing(2),
+  leftCol: {
+    padding: 48,
+    flex: '1 1 50%',
+    minWidth: 400,
+    borderRight: '1px solid rgba(241, 245, 249, 0.5)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    [theme.breakpoints.down('sm')]: {
+        padding: 24,
+        borderRight: 'none',
+        borderBottom: '1px solid rgba(241, 245, 249, 0.5)'
+    }
   },
-  title: {
-    fontSize: 20,
-    textTransform: "capitalize",
+  rightCol: {
+    padding: 56,
+    flex: '1 1 50%',
+    minWidth: 400,
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.down('sm')]: {
+        padding: 32
+    }
   },
-  price: {
-    fontSize: 15,
-    position: "relative",
-    paddingRight: 20,
+  imageWrapper: {
+    width: '100%',
+    height: 480,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'zoom-in',
+    overflow: 'hidden',
+    borderRadius: 32,
+    background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+    boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.02)',
+    '&:hover img': {
+        transform: 'scale(1.05)'
+    }
   },
-  ht: {
-    position: "absolute",
-    top: 0,
-    fontSize: 11,
-    right: 0,
-    color: "black",
+  mainImg: {
+    maxWidth: '90%',
+    maxHeight: '90%',
+    objectFit: 'contain',
+    transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
   },
-  pos: {
-    marginBottom: 12,
+  thumblist: {
+    display: 'flex',
+    gap: 16,
+    marginTop: 32,
+    justifyContent: 'center',
+    flexWrap: 'wrap'
   },
-  businessIcon: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    color: "white",
-    fontSize: 40,
-    width: 40,
-    height: 40,
-    pointerEvents: "none",
-  },
-  businessDownIcon: {
-    position: "absolute",
-    top: 28,
-    left: 25,
-    color: "#cbd5e0",
-    fontSize: 80,
+  thumb: {
     width: 80,
     height: 80,
-    pointerEvents: "none",
-  },
-  avatar: {
-    width: 80,
-    height: 80,
+    borderRadius: 20,
     padding: 8,
-    background: theme.palette.background.default,
-    boxSizing: "content-box",
-    "& > img": {
-      borderRadius: "50%",
-      border: "10px solid #cbd5e0",
-      transition: theme.transitions.create("all", {
-        duration: theme.transitions.duration.shortest,
-        easing: theme.transitions.easing.easeInOut,
-      }),
+    border: '2px solid transparent',
+    backgroundColor: '#fff',
+    cursor: 'pointer',
+    objectFit: 'contain',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+    '&:hover': {
+      transform: 'translateY(-4px)',
+      boxShadow: '0 8px 20px rgba(0,0,0,0.1)'
     },
+    '&.active': {
+      borderColor: theme.palette.primary.main,
+      transform: 'translateY(-4px)',
+      boxShadow: '0 12px 24px rgba(37, 99, 235, 0.2)'
+    }
   },
-  avatar2: {
-    width: 80,
-    height: 80,
-    padding: 8,
-    boxSizing: "content-box",
+  categoryLabel: {
+    fontSize: '0.85rem',
+    fontWeight: 900,
+    color: '#2563eb',
+    textTransform: 'uppercase',
+    letterSpacing: '0.15em',
+    marginBottom: 20,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    '&::before': {
+        content: '""',
+        width: 12,
+        height: 12,
+        borderRadius: 4,
+        backgroundColor: '#f59e0b'
+    }
   },
-  vendeur: {
-    "&:hover": {
-      "& H6": {
-        color: "#55c39e",
-      },
-      "& img": {
-        border: "10px solid #55c39e",
-      },
+  productTitle: {
+    fontSize: '2.75rem',
+    fontWeight: 900,
+    color: '#0f172a',
+    lineHeight: 1.1,
+    marginBottom: 24,
+    letterSpacing: '-0.03em'
+  },
+  priceBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '16px 32px',
+    borderRadius: 24,
+    backgroundColor: 'rgba(37, 99, 235, 0.05)',
+    border: '1px solid rgba(37, 99, 235, 0.1)',
+    marginBottom: 40,
+    '& .val': {
+      fontSize: '2.25rem',
+      fontWeight: 950,
+      color: '#1e3a8a',
+      marginRight: 12,
+      letterSpacing: '-0.02em'
     },
+    '& .cur': {
+      fontSize: '1rem',
+      fontWeight: 800,
+      color: '#64748b',
+      textTransform: 'uppercase'
+    }
   },
-  grid: {
-    marginBottom: "-16px",
-    marginTop: "-16px",
-    marginLeft: "auto",
-    marginRight: "auto",
-    "& > .MuiGrid-item": {
-      padding: "16px",
+  description: {
+    fontSize: '1.05rem',
+    color: '#475569',
+    lineHeight: 1.7,
+    marginBottom: 48,
+    whiteSpace: 'pre-line',
+    fontWeight: 500
+  },
+  devisBtn: {
+    borderRadius: 24,
+    padding: '20px 48px',
+    fontSize: '1.15rem',
+    fontWeight: 900,
+    textTransform: 'none',
+    boxShadow: '0 20px 40px -10px rgba(245, 158, 11, 0.4)',
+    backgroundColor: '#f59e0b',
+    color: 'white',
+    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    '&:hover': {
+      backgroundColor: '#d97706',
+      transform: 'translateY(-4px) scale(1.02)',
+      boxShadow: '0 25px 50px -12px rgba(245, 158, 11, 0.5)'
     },
+    '& .MuiIcon-root': {
+        fontSize: 28,
+        marginRight: 16
+    }
   },
+  supplierBadge: {
+    marginTop: 48,
+    padding: '28px',
+    borderRadius: 32,
+    backgroundColor: 'white',
+    border: '1px solid #e2e8f0',
+    textDecoration: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 24,
+    transition: 'all 0.4s ease',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.03)',
+    '&:hover': {
+      borderColor: '#2563eb',
+      transform: 'translateY(-6px)',
+      boxShadow: '0 20px 40px rgba(37, 99, 235, 0.08)',
+      '& $supplierName': {
+          color: '#2563eb'
+      }
+    }
+  },
+  supplierAvatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 18,
+    backgroundColor: '#fff',
+    border: '1px solid #f1f5f9',
+    padding: 10,
+    boxShadow: '0 4px 10px rgba(0,0,0,0.04)',
+    '& img': {
+      objectFit: 'contain'
+    }
+  },
+  supplierName: {
+      fontSize: '1.15rem',
+      fontWeight: 900,
+      color: '#1e293b',
+      marginBottom: 4,
+      transition: 'color 0.3s ease'
+  },
+  infoTabs: {
+    marginTop: 64,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backdropFilter: 'blur(20px)',
+    borderRadius: 40,
+    padding: 48,
+    border: '1px solid rgba(255, 255, 255, 0.5)',
+    boxShadow: '0 40px 100px -20px rgba(15, 23, 42, 0.1)'
+  }
 }));
 
 function DetailProduit(props) {
-  const dispatch = useDispatch();
   const classes = useStyles();
+  const dispatch = useDispatch();
   const produit = useSelector(({ produitsApp }) => produitsApp.detailProduit);
 
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [images, setImages] = useState([]);
 
-  const opts = {
-    width: "100%",
-    playerVars: {
-      // https://developers.google.com/youtube/player_parameters
-      showinfo: 0,
-      fs: 0,
-      modestbranding: 1,
-      rel: 0,
-    },
-  };
-  const settings = {
-    speed: 500,
-    slidesToScroll:
-      produit.produitsSimilaires && produit.produitsSimilaires.length < 4
-        ? produit.produitsSimilaires.length
-        : 4,
-    slidesToShow:
-      produit.produitsSimilaires && produit.produitsSimilaires.length < 4
-        ? produit.produitsSimilaires.length
-        : 4,
-    dots: false,
-    infinite:
-      produit.produitsSimilaires && produit.produitsSimilaires.length > 4,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          infinite: true,
-          dots: true,
-          arrows: false,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: true,
-          className: "slick-slider-m m-auto",
-          arrows: false,
-        },
-      },
-    ],
-  };
-  const settings2 = {
-    customPaging: function (i) {
-      return (
-        <a>
-          <img
-            src={
-              produit.data.images && produit.data.images.length > 0
-                ? URL_SITE + produit.data.images[i].url
-                : `assets/images/ecommerce/product-placeholder.jpg`
-            }
-          />
-        </a>
-      );
-    },
-    dots: true,
-    dotsClass: "slick-dots slick-thumb",
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-  };
-
   useEffect(() => {
-    if (produit.data) {
-      if (produit.data.images) {
-        setImages(produit.data.images.map((item) => URL_SITE + item.url));
-      }
+    if (produit.data?.images) {
+      setImages(produit.data.images.map((item) => URL_SITE + item.url));
     }
   }, [produit.data]);
 
-  if (produit.data.length === 0 && !produit.loading) {
+  const similarSliderSettings = {
+    dots: true,
+    infinite: produit.produitsSimilaires?.length > 4,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 3 } },
+      { breakpoint: 640, settings: { slidesToShow: 2, slidesToScroll: 2 } }
+    ]
+  };
+
+  if (produit.loading) {
     return (
-      <div className="w-full max-w-2xl mx-auto   min-h-md">
-        <Helmet>
-          <title>Produit inexistant</title>
-          <meta name="robots" content="noindex, nofollow" />
-          <meta name="googlebot" content="noindex" />
-        </Helmet>
-
-        <Paper className="p-32 w-full my-6 text-center">
-          <img
-            className={classes.img}
-            alt="product not found"
-            src="assets/images/product_not_found.jpg"
-          />
-          <Typography variant="h6" className="mb-16 uppercase">
-            Oups! Nous n'avons pas pu trouver ce produit
-          </Typography>
-
-          <Button
-            variant="outlined"
-            size="small"
-            color="secondary"
-            onClick={() => props.history.goBack()}
-            className={clsx(classes.btn, "mr-8")}
-          >
-            <Icon>chevron_left</Icon>{" "}
-            <span className="transition ease-in-out duration-700 ">Retour</span>
-          </Button>
+      <div className={classes.root}>
+        <Paper className={classes.mainPaper}>
+          <div className={classes.leftCol} style={{ minHeight: 400 }}>
+            <CircularProgress color="primary" />
+          </div>
+          <div className={classes.rightCol} style={{ gap: 24 }}>
+            <div className="h-32 w-3/4 bg-slate-100 rounded animate-pulse" />
+            <div className="h-100 w-full bg-slate-100 rounded animate-pulse" />
+          </div>
         </Paper>
       </div>
     );
   }
 
-  function hadnleDownload(fiche) {
-    dispatch(Actions.getFile(fiche));
-  }
+  if (!produit.data) return null;
+
+  const data = produit.data;
 
   return (
-    <>
-      {produit.data && (
-        <Helmet>
-          <title>
-            {_.truncate(
-              produit.data.titre +
-                " | " +
-                (produit.data.fournisseur && produit.data.fournisseur.societe),
-              { length: 70, separator: " " }
-            )}
-          </title>
-          <meta
-            name="description"
-            content={_.truncate(produit.data.description, {
-              length: 160,
-              separator: " ",
-            })}
-          />
-          <meta
-            property="og:title"
-            content={_.truncate(
-              produit.data.titre +
-                " | " +
-                (produit.data.fournisseur && produit.data.fournisseur.societe),
-              { length: 70, separator: " " }
-            )}
-          />
-          <meta
-            property="og:description"
-            content={_.truncate(produit.data.description, {
-              length: 160,
-              separator: " ",
-            })}
-          />
-          <meta
-            property="twitter:title"
-            content={_.truncate(
-              produit.data.titre +
-                " | " +
-                (produit.data.fournisseur && produit.data.fournisseur.societe),
-              { length: 70, separator: " " }
-            )}
-          />
-          <meta
-            property="twitter:description"
-            content={_.truncate(produit.data.description, {
-              length: 160,
-              separator: " ",
-            })}
-          />
-          {produit.data.featuredImageId && (
-            <meta
-              property="og:image"
-              content={URL_SITE + produit.data.featuredImageId.url}
-            />
-          )}
-        </Helmet>
-      )}
-      <Grid
-        container
-        className={clsx(
-          classes.grid,
-          "max-w-2xl mx-auto py-48 sm:px-16 items-start"
-        )}
-      >
-        {produit.loading ? (
-          <Grid item xs={12} sm={12}>
-            <ContentLoader
-              speed={2}
-              width={480}
-              height={400}
-              viewBox="0 0 480 400"
-            >
-              <rect x="5" y="5" rx="3" ry="3" width="121" height="13" />
-              <rect x="219" y="7" rx="3" ry="3" width="85" height="8" />
-              <rect x="6" y="27" rx="3" ry="3" width="297" height="160" />
-              <rect x="92" y="199" rx="0" ry="0" width="22" height="19" />
-              <rect x="122" y="199" rx="0" ry="0" width="22" height="19" />
-              <rect x="153" y="199" rx="0" ry="0" width="22" height="19" />
-              <rect x="181" y="199" rx="0" ry="0" width="22" height="19" />
-              <rect x="4" y="228" rx="3" ry="3" width="299" height="18" />
-              <rect x="3" y="255" rx="3" ry="3" width="299" height="82" />
-              <rect x="354" y="4" rx="3" ry="3" width="121" height="20" />
-              <circle cx="373" cy="51" r="20" />
-              <rect x="398" y="35" rx="3" ry="3" width="69" height="13" />
-              <rect x="399" y="57" rx="3" ry="3" width="69" height="7" />
-              <rect x="362" y="79" rx="3" ry="3" width="102" height="23" />
-              <rect x="362" y="109" rx="3" ry="3" width="102" height="23" />
-            </ContentLoader>
-          </Grid>
-        ) : (
-          produit.data && (
-            <>
-              <Grid item xs={12} sm={8}>
-                <Card className={classes.root}>
-                  <CardContent>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <Typography
-                          className={classes.title}
-                          component="h1"
-                          color="primary"
-                        >
-                          {produit.data.titre}
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {produit.data.reference &&
-                            "Réf." + produit.data.reference}
-                        </Typography>
-                      </div>
-                      <Typography
-                        className={classes.price}
-                        //className="uppercase"
-                        color="secondary"
-                      >
-                        {produit.data.pu
-                          ? parseFloat(produit.data.pu).toLocaleString(
-                              "fr", // leave undefined to use the browser's locale,
-                              // or use a string like 'en-US' to override it.
-                              { minimumFractionDigits: 2 }
-                            ) +
-                            (produit.data.currency &&
-                              " " + produit.data.currency.name) +
-                            " HT"
-                          : "Prix sur demande"}
-                      </Typography>
-                    </div>
-                    <div className="p-28">
-                      <Slider {...settings2}>
-                        {produit.data.images &&
-                        produit.data.images.length > 0 ? (
-                          produit.data.images.map((item, index) => (
-                            <div key={index} className="flex items-center ">
-                              <img
-                                src={URL_SITE + item.url}
-                                style={{ cursor: "pointer" }}
-                                alt={produit.data.titre}
-                                className="m-auto"
-                                onClick={() => {
-                                  setIsOpen(true);
-                                  setPhotoIndex(index);
-                                }}
-                              />
-                            </div>
-                          ))
-                        ) : (
-                          <div className="justify-center">
-                            <img
-                              src="assets/images/ecommerce/product-placeholder.jpg"
-                              alt="Product not found img"
-                            />
-                          </div>
-                        )}
-                      </Slider>
-                    </div>
-                    <div className="my-16 p-12 bg-gray-300 uppercase font-bold text-16">
-                      Description
-                    </div>
+    <div className={classes.root}>
+      <Helmet>
+        <title>{`${data.titre} | Boopursal`}</title>
+      </Helmet>
 
-                    <Typography component="p" className="whitespace-pre-line">
-                      {produit.data.description}
-                    </Typography>
-                    {produit.data.videos ? (
-                      <>
-                        <div className="my-16 p-12 bg-gray-300 uppercase font-bold text-16">
-                          Vidéo
-                        </div>
-                        <YouTube videoId={produit.data.videos} opts={opts} />
-                      </>
-                    ) : (
-                      ""
-                    )}
-                    {produit.data.ficheTechnique ? (
-                      <>
-                        <div className="my-16 p-12 bg-gray-300 uppercase font-bold text-16 ">
-                          Fiche technique
-                        </div>
-                        <Chip
-                          icon={<Icon className="text-16 mr-0">save_alt</Icon>}
-                          onClick={() => {
-                            hadnleDownload(produit.data.ficheTechnique);
-                          }}
-                          label="Télécharger"
-                          classes={{
-                            root: clsx("h-24", props.className),
-                            label: "pl-4 pr-6 py-4 text-11",
-                            deleteIcon: "w-16 ml-0",
-                            ...props.classes,
-                          }}
-                          variant="outlined"
-                          className="mr-4 cursor-pointer"
-                        />
-                      </>
-                    ) : (
-                      ""
-                    )}
-
-                    <br />
-                    <br />
-                    <br />
-                    <Divider className="mb-6" />
-                    <Chip
-                      icon={<Icon className="text-16 mr-0">label</Icon>}
-                      component={Link}
-                      to={
-                        "/vente-produits/" +
-                        (produit.data.secteur && produit.data.secteur.slug) +
-                        "/" +
-                        (produit.data.sousSecteurs &&
-                          produit.data.sousSecteurs.slug)
-                      }
-                      label={
-                        produit.data.sousSecteurs
-                          ? produit.data.sousSecteurs.name
-                          : ""
-                      }
-                      classes={{
-                        root: clsx("h-24", props.className),
-                        label: "pl-4 pr-6 py-4 text-11",
-                        deleteIcon: "w-16 ml-0",
-                        ...props.classes,
-                      }}
-                      variant="outlined"
-                      className="mr-4 cursor-pointer"
-                    />
-
-                    <Chip
-                      icon={<Icon className="text-16 mr-0">label</Icon>}
-                      component={Link}
-                      to={
-                        "/vente-produits/" +
-                        (produit.data.secteur && produit.data.secteur.slug) +
-                        "/" +
-                        (produit.data.sousSecteurs &&
-                          produit.data.sousSecteurs.slug) +
-                        "/" +
-                        (produit.data.categorie && produit.data.categorie.slug)
-                      }
-                      label={
-                        produit.data.categorie
-                          ? produit.data.categorie.name
-                          : ""
-                      }
-                      classes={{
-                        root: clsx("h-24", props.className),
-                        label: "pl-4 pr-6 py-4 text-11",
-                        deleteIcon: "w-16 ml-0",
-                        ...props.classes,
-                      }}
-                      variant="outlined"
-                      className="mr-4 cursor-pointer"
-                    />
-
-                    <Divider className="mt-6" />
-                  </CardContent>
-                </Card>
-                <div className="flex justify-end items-center mt-16">
-                  <div className="mr-8 font-bold">Partager sur :</div>
-                  <div>
-                    <InlineShareButtons
-                      config={{
-                        alignment: "center", // alignment of buttons (left, center, right)
-                        color: "social", // set the color of buttons (social, white)
-                        enabled: true, // show/hide buttons (true, false)
-                        font_size: 16, // font size for the buttons
-                        labels: "null", // button labels (cta, counts, null)
-                        language: "fr", // which language to use (see LANGUAGES)
-                        networks: [
-                          // which networks to include (see SHARING NETWORKS)
-                          "linkedin",
-                          "facebook",
-                          "twitter",
-                          "email",
-                          "messenger",
-                          "whatsapp",
-                        ],
-                        padding: 8, // padding within buttons (INTEGER)
-                        radius: 4, // the corner radius on each button (INTEGER)
-                        show_total: false,
-                        size: 30, // the size of each button (INTEGER)
-
-                        // OPTIONAL PARAMETERS
-                        // url: 'https://www.sharethis.com', // (defaults to current url)
-                        image:
-                          produit.data.featuredImageId &&
-                          URL_SITE + produit.data.featuredImageId.url, // (defaults to og:image or twitter:image)
-                        description: produit.data.description, // (defaults to og:description or twitter:description)
-                        title: `${produit.data.titre} | Les Achats Industriels`, // (defaults to og:title or twitter:title)
-                        quote: produit.data.titre,
-
-                        //message: 'custom email text',     // (only for email sharing)
-                        //subject: 'custom email subject',  // (only for email sharing)
-                        //username: 'custom twitter handle' // (only for twitter sharing)
-                      }}
-                    />
-                  </div>
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={4} className="sticky top-0">
-                <Card className={clsx("", classes.root)}>
-                  <div className="p-20 bg-gray-400 uppercase relative text-center font-bold text-16 ">
-                    Mini-site
-                    <Icon className={classes.businessIcon}>business</Icon>
-                    <Icon className={classes.businessDownIcon}>
-                      arrow_drop_down
-                    </Icon>
-                  </div>
-                  <CardContent>
-                    <BootstrapTooltip
-                      placement="top"
-                      title="Voir la page entreprise"
-                    >
-                      <Grid
-                        container
-                        spacing={2}
-                        component={Link}
-                        to={
-                          produit.data.fournisseur &&
-                          (produit.data.fournisseur.parent
-                            ? `/entreprise/${produit.data.fournisseur.parent.id}-${produit.data.fournisseur.parent.slug}`
-                            : `/entreprise/${produit.data.fournisseur.id}-${produit.data.fournisseur.slug}`)
-                        }
-                        className={clsx(classes.vendeur, "items-center my-1")}
-                      >
-                        <Grid item xs={4} sm={4}>
-                          {produit.data.fournisseur &&
-                          produit.data.fournisseur.avatar ? (
-                            <Avatar
-                              className={clsx(classes.avatar, "avatar")}
-                              alt={produit.data.fournisseur.societe}
-                              src={
-                                URL_SITE + produit.data.fournisseur.avatar.url
-                              }
-                            />
-                          ) : (
-                            <Avatar
-                              className={clsx(
-                                classes.avatar2,
-                                "avatar text-40 "
-                              )}
-                            >
-                              <Icon>business</Icon>
-                            </Avatar>
-                          )}
-                        </Grid>
-                        <Grid item xs={8} sm={8}>
-                          <Typography
-                            variant="h6"
-                            color="textPrimary"
-                            className="uppercase font-bold"
-                          >
-                            {produit.data.fournisseur
-                              ? produit.data.fournisseur.societe
-                              : ""}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            {produit.data.fournisseur &&
-                            produit.data.fournisseur.ville
-                              ? produit.data.fournisseur.ville.name + ", "
-                              : ""}
-                            {produit.data.fournisseur &&
-                            produit.data.fournisseur.pays
-                              ? produit.data.fournisseur.pays.name
-                              : ""}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </BootstrapTooltip>
-                    {produit.data["@id"] && (
-                      <FuseAnimate
-                        animation="transition.slideRightIn"
-                        delay={300}
-                      >
-                        <Button
-                          size="large"
-                          onClick={(ev) =>
-                            dispatch(
-                              Actions.openNewDemandeDevisDialog(
-                                produit.data["@id"]
-                              )
-                            )
-                          }
-                          className="whitespace-no-wrap upercase mb-8 mt-2 w-full"
-                          color="primary"
-                          variant="contained"
-                        >
-                          Demandez un devis
-                        </Button>
-                      </FuseAnimate>
-                    )}
-                    {/* {produit.loadingsPhone ? (
-                      <Typography
-                        variant="h6"
-                        color="textPrimary"
-                        className="uppercase font-bold w-full items-center flex justify-center"
-                      >
-                        <CircularProgress className={classes.progress} />
-                      </Typography>
-                    ) : produit.showPhone ? (
-                      <FuseAnimate
-                        animation="transition.slideRightIn"
-                        delay={300}
-                      >
-                        <Typography
-                          variant="h6"
-                          color="textPrimary"
-                          className="uppercase font-bold w-full items-center flex justify-center"
-                        >
-                          <Icon>phone</Icon> <span>{produit.phone}</span>
-                        </Typography>
-                      </FuseAnimate>
-                    ) : (
-                      <FuseAnimate
-                        animation="transition.slideRightIn"
-                        delay={300}
-                      >
-                        <Button
-                          size="large"
-                          onClick={(ev) =>
-                            dispatch(
-                              Actions.updateVuPhoneProduit(produit.data.id)
-                            )
-                          }
-                          // onClick={ev => dispatch(Actions.openNewVillesDialog())}
-                          className="whitespace-no-wrap upercase w-full"
-                          variant="outlined"
-                        >
-                          Affichez le téléphone
-                        </Button>
-                      </FuseAnimate>
-                    )} */}
-                  </CardContent>
-                </Card>
-              </Grid>
-              {isOpen && (
-                <Lightbox
-                  mainSrc={images[photoIndex]}
-                  nextSrc={images[(photoIndex + 1) % images.length]}
-                  prevSrc={
-                    images[(photoIndex + images.length - 1) % images.length]
-                  }
-                  onCloseRequest={() => setIsOpen(false)}
-                  onMovePrevRequest={() =>
-                    setPhotoIndex(
-                      (photoIndex + images.length - 1) % images.length
-                    )
-                  }
-                  onMoveNextRequest={() =>
-                    setPhotoIndex((photoIndex + 1) % images.length)
-                  }
-                />
-              )}
-            </>
-          )
-        )}
-      </Grid>
-      <Grid container className="max-w-2xl mx-auto pb-48">
-        <Grid item sm={12}>
-          {produit.loadingPS ? (
-            <ContentLoader
-              viewBox="0 0 1360 400"
-              height={400}
-              width={1360}
-              speed={2}
-            >
-              <rect x="30" y="20" rx="8" ry="8" width="200" height="200" />
-              <rect x="30" y="250" rx="0" ry="0" width="200" height="18" />
-              <rect x="30" y="275" rx="0" ry="0" width="120" height="20" />
-              <rect x="250" y="20" rx="8" ry="8" width="200" height="200" />
-              <rect x="250" y="250" rx="0" ry="0" width="200" height="18" />
-              <rect x="250" y="275" rx="0" ry="0" width="120" height="20" />
-              <rect x="470" y="20" rx="8" ry="8" width="200" height="200" />
-              <rect x="470" y="250" rx="0" ry="0" width="200" height="18" />
-              <rect x="470" y="275" rx="0" ry="0" width="120" height="20" />
-              <rect x="690" y="20" rx="8" ry="8" width="200" height="200" />
-              <rect x="690" y="250" rx="0" ry="0" width="200" height="18" />
-              <rect x="690" y="275" rx="0" ry="0" width="120" height="20" />
-              <rect x="910" y="20" rx="8" ry="8" width="200" height="200" />
-              <rect x="910" y="250" rx="0" ry="0" width="200" height="18" />
-              <rect x="910" y="275" rx="0" ry="0" width="120" height="20" />
-              <rect x="1130" y="20" rx="8" ry="8" width="200" height="200" />
-              <rect x="1130" y="250" rx="0" ry="0" width="200" height="18" />
-              <rect x="1130" y="275" rx="0" ry="0" width="120" height="20" />
-            </ContentLoader>
-          ) : (
-            produit.produitsSimilaires.length > 1 && (
-              <div>
-                <ListItem className="mb-16">
-                  <ListItemAvatar>
-                    <Avatar className={classes.mainAvatar}>
-                      <Icon>collections_bookmark</Icon>
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        variant="h2"
-                        component="h2"
-                        className="text-20 uppercase font-bold xs:text-11 mb-1"
-                      >
-                        Produits similaires
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-                <Slider {...settings}>
-                  {produit.produitsSimilaires.map(
-                    (item, index) =>
-                      item["@id"] !== produit.data["@id"] && (
-                        <Produit produit={item} key={index} />
-                      )
-                  )}
-                </Slider>
+      <Paper className={classes.mainPaper}>
+        {/* Gallery Section */}
+        <div className={classes.leftCol} style={{ flexBasis: '50%' }}>
+          <div className={classes.imageWrapper} onClick={() => setIsOpen(true)}>
+            {images.length > 0 ? (
+              <img
+                src={images[photoIndex]}
+                className={classes.mainImg}
+                alt={data.titre}
+              />
+            ) : (
+              <div className="flex flex-col items-center gap-16">
+                <Icon className="text-128 text-slate-200">image</Icon>
+                <Typography className="text-slate-300 font-bold uppercase tracking-widest text-xs">Aucun visuel disponible</Typography>
               </div>
-            )
+            )}
+          </div>
+          {images.length > 1 && (
+            <div className={classes.thumblist}>
+              {images.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  className={clsx(classes.thumb, photoIndex === idx && "active")}
+                  onClick={() => setPhotoIndex(idx)}
+                  alt={`thumbnail ${idx}`}
+                />
+              ))}
+            </div>
           )}
+        </div>
+
+        {/* Info Section */}
+        <div className={classes.rightCol}>
+          <div className={classes.categoryLabel}>
+            {data.sousSecteurs?.name || 'Catégorie'} • Réf: {data.reference || 'N/A'}
+          </div>
+
+          <Typography className={classes.productTitle}>
+            {data.titre}
+          </Typography>
+
+          <div className={classes.priceBadge}>
+            <span className="val">
+              {data.pu ? parseFloat(data.pu).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) : "Sur demande"}
+            </span>
+            {data.pu ? <span className="cur">{data.currency?.name || 'MAD'} HT</span> : <span className="cur">Estimation gratuite</span>}
+          </div>
+
+          <Typography className={classes.description}>
+            {_.truncate(data.description, { length: 450 })}
+          </Typography>
+
+          <Button
+            variant="contained"
+            fullWidth
+            className={classes.devisBtn}
+            onClick={() => dispatch(Actions.openNewDemandeDevisDialog(data["@id"]))}
+          >
+            <Icon>receipt_long</Icon>
+            Demander un devis personnalisé
+          </Button>
+
+          {/* Supplier Info */}
+          <Link
+            to={data.fournisseur ? `/entreprise/${data.fournisseur.id}-${data.fournisseur.slug}` : "#"}
+            className={classes.supplierBadge}
+          >
+            <Avatar
+              src={data.fournisseur?.avatar?.url ? URL_SITE + data.fournisseur.avatar.url : ""}
+              variant="rounded"
+              className={classes.supplierAvatar}
+            >
+              <Icon>business</Icon>
+            </Avatar>
+            <div className="flex-1">
+              <Typography className={classes.supplierName}>{data.fournisseur?.societe}</Typography>
+              <Typography className="text-sm text-slate-400 font-bold flex items-center gap-8">
+                <Icon style={{ fontSize: 16, color: '#94a3b8' }}>location_on</Icon>
+                {data.fournisseur?.ville?.name}, {data.fournisseur?.pays?.name}
+              </Typography>
+            </div>
+            <Icon className="text-slate-300">arrow_forward_ios</Icon>
+          </Link>
+        </div>
+      </Paper>
+
+      {/* Detailed Tabs Area */}
+      <div className={classes.infoTabs}>
+        <Grid container spacing={4}>
+          <Grid item md={7} xs={12}>
+            <Typography variant="h6" className="font-900 text-slate-800 mb-16 uppercase text-14 tracking-widest">Description Complète</Typography>
+            <Typography className="text-slate-500 whitespace-pre-line leading-relaxed">
+              {data.description}
+            </Typography>
+
+            {data.videos && (
+              <div className="mt-40">
+                <Typography variant="h6" className="font-900 text-slate-800 mb-24 uppercase text-14 tracking-widest">Présentation Vidéo</Typography>
+                <div className="rounded-24 overflow-hidden shadow-xl">
+                  <YouTube videoId={data.videos} opts={{ width: '100%', playerVars: { rel: 0 } }} />
+                </div>
+              </div>
+            )}
+          </Grid>
+          <Grid item md={5} xs={12}>
+            {data.ficheTechnique && (
+              <div className="p-32 bg-slate-50 rounded-24 flex flex-col items-center border border-slate-100">
+                <Icon className="text-64 text-blue-500 mb-16">cloud_download</Icon>
+                <Typography variant="h6" className="font-900 text-slate-800 mb-8">Documentation</Typography>
+                <Typography className="text-slate-400 text-center mb-32 text-13">Consultez la fiche technique détaillée (PDF) pour plus de caractéristiques.</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="rounded-12 font-bold px-32 shadow-xl"
+                  onClick={() => dispatch(Actions.getFile(data.ficheTechnique))}
+                >
+                  Télécharger
+                </Button>
+              </div>
+            )}
+
+            <div className="mt-32 p-32 bg-white rounded-24 border border-slate-100">
+              <Typography className="font-black text-slate-300 uppercase text-xs tracking-widest mb-16">Partager le produit</Typography>
+              <InlineShareButtons
+                key={data.id}
+                config={{
+                  alignment: 'left',
+                  enabled: true,
+                  networks: ['whatsapp', 'messenger', 'linkedin', 'facebook', 'email'],
+                  radius: 12,
+                  size: 36,
+                  title: data.titre
+                }}
+              />
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </>
+      </div>
+
+      {/* Similarities Area */}
+      {produit.produitsSimilaires?.length > 1 && (
+        <div className="mt-64">
+          <div className="flex items-center gap-16 mb-40">
+            <div className="w-12 h-32 bg-yellow-400 rounded-full" />
+            <Typography variant="h4" className="font-900 text-slate-800 tracking-tight">Ceci peut vous intéresser</Typography>
+          </div>
+          <Slider {...similarSliderSettings}>
+            {produit.produitsSimilaires.map((item, idx) => (
+              item["@id"] !== data["@id"] && (
+                <div key={idx} className="px-12">
+                  <Produit produit={item} />
+                </div>
+              )
+            ))}
+          </Slider>
+        </div>
+      )}
+
+      {isOpen && (
+        <Lightbox
+          mainSrc={images[photoIndex]}
+          nextSrc={images[(photoIndex + 1) % images.length]}
+          prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+          onCloseRequest={() => setIsOpen(false)}
+          onMovePrevRequest={() => setPhotoIndex((photoIndex + images.length - 1) % images.length)}
+          onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % images.length)}
+        />
+      )}
+    </div>
   );
 }
 

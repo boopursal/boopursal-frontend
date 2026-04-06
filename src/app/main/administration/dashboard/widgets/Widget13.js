@@ -43,7 +43,7 @@ function Widget13(props) {
           <Line
             data={{
               labels: widget13.data.years,
-              datasets: widget13.data.datasets.map((obj, index) => {
+              datasets: (widget13.data.datasets || []).map((obj, index) => {
                 const palette =
                   theme.palette[index === 0 ? "secondary" : "primary"];
                 return {

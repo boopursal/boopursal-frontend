@@ -1,41 +1,42 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     root: {
+        transition: 'all 0.3s ease-in-out',
         '& .logo-icon': {
-            width: 24,
-            height: 24,
+            width: 32,
+            height: 32,
             transition: theme.transitions.create(['width', 'height'], {
                 duration: theme.transitions.duration.shortest,
                 easing: theme.transitions.easing.easeInOut
             })
         },
-        '& .react-badge, & .logo-text': {
-            transition: theme.transitions.create('opacity', {
-                duration: theme.transitions.duration.shortest,
-                easing: theme.transitions.easing.easeInOut
-            })
+        "& img": {
+            height: 48,
+            width: "auto",
+            transition: 'all 0.3s ease'
+        },
+        "&.inverted img": {
+            filter: 'brightness(0) invert(1)',
         }
-    },
-    reactBadge: {
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        color: '#61DAFB'
     }
 }));
 
-function Logo() {
+function Logo({ inverted, folded }) {
     const classes = useStyles();
 
     return (
-        <div className={clsx(classes.root, "flex items-center w-200")}>
-
-            <Link to="/">
-                <img className="" src="assets/images/logos/logo-dashboard.png" alt="Les Achats Industriels LOGO" />
+        <div className={clsx(classes.root, "flex items-center", inverted && "inverted")}>
+            <Link to="/" className="flex items-center">
+                {folded ? (
+                    <img className="w-32 h-auto" src="assets/images/logos/icon.png" alt="Boopursal Icon" />
+                ) : (
+                    <img className="" src="assets/images/logos/logo.png" alt="Boopursal" />
+                )}
             </Link>
-
         </div>
     );
 }

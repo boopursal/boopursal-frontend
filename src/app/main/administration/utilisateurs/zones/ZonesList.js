@@ -139,7 +139,7 @@ function ZonesList(props) {
                 <HtmlTooltip
                   title={
                     <React.Fragment>
-                      {Object.keys(row.original.pays).length === 0 ? (
+                      {Object.keys(row.original.pays || {}).length === 0 ? (
                         "Il n'y aucun pays"
                       ) : (
                         <ul>
@@ -156,7 +156,7 @@ function ZonesList(props) {
                       ev.stopPropagation();
                     }}
                   >
-                    {Object.keys(row.original.pays).length}
+                    {Object.keys(row.original.pays || {}).length}
                   </Button>
                 </HtmlTooltip>
               </div>

@@ -11,7 +11,7 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Avatar,
-  ListItemAvatar,
+
   Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -78,23 +78,35 @@ const useStyles = makeStyles((theme) => ({
   inline: {
     display: "inline",
   },
-  businessDownIcon: {
-    position: "absolute",
-    top: 10,
-    left: 5,
-    color: "white",
-    opacity: 0.5,
-    fontSize: 100,
-    pointerEvents: "none",
+  top5Header: {
+    padding: 24,
+    background: 'linear-gradient(to right, #1e3a8a, #1d4ed8)',
+    color: 'white',
+    position: 'relative',
+    overflow: 'hidden'
   },
-  top: {
-    position: "absolute",
-    bottom: 0,
-    left: 80,
-    color: "white",
-    opacity: 0.5,
-    fontSize: 20,
-    pointerEvents: "none",
+  top5Title: {
+    fontWeight: 800,
+    fontSize: 18,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
+  },
+  top5Subtitle: {
+    fontSize: 12,
+    opacity: 0.8
+  },
+  top5Icon: {
+    fontSize: 48,
+    opacity: 0.2,
+    position: 'absolute',
+    right: -8,
+    top: -8
+  },
+  top5Container: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    border: '1px solid #e2e8f0',
+    marginTop: 16
   },
   grid: {
     marginBottom: "-16px",
@@ -115,14 +127,16 @@ function Secteur(props) {
   );
   const params = props.match.params;
   const { id, slug } = params;
-  useEffect(() => {
-    dispatch(Actions.getSecteur(id));
-    dispatch(Actions.getPActivites(id));
-  }, [dispatch, id]);
+  const targetId = id || slug;
 
   useEffect(() => {
-    dispatch(Actions.getTopFounrisseurs(slug));
-  }, [dispatch, slug]);
+    dispatch(Actions.getSecteur(targetId));
+    dispatch(Actions.getPActivites(targetId));
+  }, [dispatch, targetId]);
+
+  useEffect(() => {
+    dispatch(Actions.getTopFounrisseurs(targetId));
+  }, [dispatch, targetId]);
 
   return (
     <div
@@ -398,82 +412,99 @@ function Secteur(props) {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={4} className="sticky top-0 ">
-          <Paper className="my-16">
-            <div className="p-20 bg-gray-400  relative text-center font-bold text-16 ">
-              Entreprises les plus consultées du secteur
-              <Icon className={classes.businessDownIcon}>star_rate</Icon>
-              <div className={clsx(classes.top, "uppercase")}>top 5</div>
+          <Paper elevation={0} className={classes.top5Container}>
+            <div className={classes.top5Header}>
+              <div className="flex items-center justify-between relative z-10">
+                <div>
+                  <Typography className={classes.top5Title}>Top 5</Typography>
+                  <Typography className={classes.top5Subtitle}>Entreprises à la une</Typography>
+                </div>
+                <Icon className={classes.top5Icon}>stars</Icon>
+              </div>
             </div>
+
             {activites.loadingFournisseurs ? (
-              <ContentLoader
-                speed={2}
-                width={400}
-                height={150}
-                viewBox="0 0 400 150"
-              >
-                <circle cx="34" cy="20" r="17" />
-                <rect x="57" y="9" rx="5" ry="5" width="200" height="9" />
-                <rect x="57" y="22" rx="5" ry="5" width="100" height="9" />
-                <circle cx="34" cy="57" r="17" />
-                <rect x="57" y="46" rx="5" ry="5" width="200" height="9" />
-                <rect x="57" y="59" rx="5" ry="5" width="100" height="9" />
-                <circle cx="34" cy="94" r="17" />
-                <rect x="57" y="83" rx="5" ry="5" width="200" height="9" />
-                <rect x="57" y="96" rx="5" ry="5" width="100" height="9" />
-                <circle cx="34" cy="131" r="17" />
-                <rect x="57" y="120" rx="5" ry="5" width="200" height="9" />
-                <rect x="57" y="133" rx="5" ry="5" width="100" height="9" />
-              </ContentLoader>
+              <div className="p-24">
+                <ContentLoader
+                  speed={2}
+                  width={300}
+                  height={200}
+                  viewBox="0 0 300 200"
+                >
+                  <rect x="0" y="10" rx="10" ry="10" width="300" height="40" />
+                  <rect x="0" y="60" rx="10" ry="10" width="300" height="40" />
+                  <rect x="0" y="110" rx="10" ry="10" width="300" height="40" />
+                </ContentLoader>
+              </div>
             ) : (
-              <List className={classes.root}>
-                {activites.fournisseurs &&
-                  activites.fournisseurs.map((fournisseur, index) => (
-                    <React.Fragment key={index}>
-                      <ListItem
-                        alignItems="flex-start"
-                        button
-                        component="a"
-                        href={`/entreprise/${fournisseur.id}-${fournisseur.slug}`}
-                      >
-                        <ListItemAvatar>
-                          {fournisseur.avatar ? (
-                            <Avatar
-                              className={clsx(classes.avatar, "avatar")}
-                              alt={fournisseur.societe}
-                              src={URL_SITE + fournisseur.avatar.url}
-                            />
-                          ) : (
-                            <Avatar
-                              className={clsx(
-                                classes.avatar2,
-                                "avatar text-40 "
-                              )}
-                            >
-                              <Icon>business</Icon>
-                            </Avatar>
-                          )}
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={fournisseur.societe}
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                className={classes.inline}
-                                color="textPrimary"
+              <List className="p-0">
+                {activites.fournisseurs && activites.fournisseurs.length > 0 ? (
+                  activites.fournisseurs.map((fournisseur, index) => {
+                    const rankColors = ['#fbbf24', '#94a3b8', '#d97706']; // Gold, Silver, Bronze
+                    const isPodium = index < 3;
+
+                    return (
+                      <React.Fragment key={index}>
+                        <ListItem
+                          button
+                          component="a"
+                          href={`/entreprise/${fournisseur.id}-${fournisseur.slug}`}
+                          className="px-24 py-16 hover:bg-blue-50 transition-colors"
+                        >
+                          <div className="flex items-center w-full">
+                            <div className="mr-16 relative">
+                              <Avatar
+                                className="w-48 h-48 border-2 border-white shadow-sm"
+                                alt={fournisseur.societe}
+                                src={fournisseur.avatar ? URL_SITE + fournisseur.avatar.url : null}
                               >
-                                {fournisseur.pays && fournisseur.pays.name}
+                                {fournisseur.societe[0]}
+                              </Avatar>
+                              <div
+                                className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full flex items-center justify-center text-10 font-900 text-white shadow-md"
+                                style={{
+                                  background: isPodium ? rankColors[index] : '#64748b',
+                                  border: '2px solid white'
+                                }}
+                              >
+                                {index + 1}
+                              </div>
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <Typography className="font-700 text-14 truncate text-blue-900">
+                                {fournisseur.societe}
                               </Typography>
-                            </React.Fragment>
-                          }
-                        />
-                      </ListItem>
-                      <Divider variant="inset" component="li" />
-                    </React.Fragment>
-                  ))}
+                              <Typography className="text-12 text-gray-500 flex items-center">
+                                <Icon className="text-14 mr-4 text-gray-400">location_on</Icon>
+                                {fournisseur.pays ? fournisseur.pays.name : 'International'}
+                              </Typography>
+                            </div>
+
+                            <Icon className="text-16 text-gray-300 ml-8">chevron_right</Icon>
+                          </div>
+                        </ListItem>
+                        {index < activites.fournisseurs.length - 1 && <Divider className="mx-24" />}
+                      </React.Fragment>
+                    );
+                  })
+                ) : (
+                  <div className="p-32 text-center text-gray-400">
+                    <Icon className="text-48 mb-8 opacity-20">business</Icon>
+                    <Typography>Aucune entreprise disponible</Typography>
+                  </div>
+                )}
               </List>
             )}
+            <div className="p-16 bg-gray-50 text-center border-t-1 border-gray-100">
+              <Button
+                component={Link}
+                to={`/entreprises?categories.sousSecteurs.secteur.id=${params.id}`}
+                className="text-12 font-700 text-blue-700"
+              >
+                Voir tout le secteur
+              </Button>
+            </div>
           </Paper>
         </Grid>
       </Grid>

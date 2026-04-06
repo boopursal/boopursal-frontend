@@ -121,15 +121,17 @@ function NavbarWrapperLayout1(props)
     const config = useSelector(({fuse}) => fuse.settings.current.layout.config);
     const navbarTheme = useSelector(({fuse}) => fuse.settings.navbarTheme);
     const navbar = useSelector(({fuse}) => fuse.navbar);
-
+    const themes = useSelector(({fuse}) => fuse.settings.themes);
     const classes = useStyles();
 
     const folded = config.navbar.folded;
     const foldedAndClosed = folded && !navbar.foldedOpen;
     const foldedAndOpened = folded && navbar.foldedOpen;
 
+    const activeSidebarTheme = themes.tailadmin || navbarTheme;
+
     return (
-        <ThemeProvider theme={navbarTheme}>
+        <ThemeProvider theme={activeSidebarTheme}>
             <div id="fuse-navbar"
                  className={
                      clsx(
@@ -150,9 +152,9 @@ function NavbarWrapperLayout1(props)
                         }
                         onMouseEnter={() => foldedAndClosed && dispatch(Actions.navbarOpenFolded())}
                         onMouseLeave={() => foldedAndOpened && dispatch(Actions.navbarCloseFolded())}
-                        style={{backgroundColor: navbarTheme.palette.background.default}}
+                        style={{backgroundColor: '#ffffff', color: '#1C2434'}}
                     >
-                        <NavbarLayout1 className={classes.navbarContent}/>
+                        <NavbarLayout1 className={classes.navbarContent} folded={foldedAndClosed}/>
                     </div>
                 </Hidden>
 
@@ -164,12 +166,13 @@ function NavbarWrapperLayout1(props)
                         classes={{
                             paper: classes.navbar
                         }}
+                        style={{backgroundColor: '#ffffff', color: '#1C2434'}}
                         onClose={() => dispatch(Actions.navbarCloseMobile())}
                         ModalProps={{
                             keepMounted: true // Better open performance on mobile.
                         }}
                     >
-                        <NavbarLayout1 className={classes.navbarContent}/>
+                        <NavbarLayout1 className={classes.navbarContent} folded={false}/>
                     </Drawer>
                 </Hidden>
             </div>

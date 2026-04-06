@@ -423,7 +423,7 @@ const navigationConfig = [
       },
     ],
   },
-  
+
 
   {
     id: "black_listes_ha",
@@ -481,22 +481,22 @@ const navigationConfig = [
       count: 0,
     },
   },
-    {
-    //id: "demandes-suggestions",
+  {
+    id: "demandes-suggestions",
     title: "Demande de suggestions",
     auth: authRoles.acheteur,
     icon: "apps",
     type: "collapse",
     children: [
       {
-      id: "demande_sugg",
+        id: "demande_sugg",
         title: "Nouvelle suggestion",
         auth: authRoles.acheteur,
         exact: true,
         type: "item",
         url: "/acheteur/suggetion",
       },
-      
+
     ],
   },
   {
@@ -515,7 +515,7 @@ const navigationConfig = [
         exact: true,
         url: "/facturation",
       },
-      
+
     ],
   },
   /** FIN ACHETEUR Navigations */
@@ -703,16 +703,16 @@ const navigationConfig = [
     type: 'group',
     auth: authRoles.acheteur,
     children: [
-        {
-            id: 'import-fournisseurs',
-            title: 'Import Fournisseurs',
-            type: 'item',
-            icon: 'cloud_upload',
-            url: '/ac/import',
-            auth: authRoles.acheteur
-        }
+      {
+        id: 'import-fournisseurs',
+        title: 'Import Fournisseurs',
+        type: 'item',
+        icon: 'cloud_upload',
+        url: '/ac/import',
+        auth: authRoles.acheteur
+      }
     ]
-  }, 
+  },
   /** FIN FOURNISSEUR Navigations */
 ];
 export const filterNavigationByUser = (navigation, user) => {
@@ -792,7 +792,7 @@ export const filterNavigationByUser = (navigation, user) => {
           },
         ],
       },
-    
+
       {
         id: "message-fournisseur",
         title: "Destination Fournisseur",
@@ -880,7 +880,7 @@ export const filterNavigationByUser = (navigation, user) => {
       },
     ];
   }
-  
+
 
   // Fonction récursive pour filtrer selon le rôle
   const filterItemsByRole = (items) => {

@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     },
     innerScroll              : {
         flex  : '1 1 auto',
-        height: '100%'
+        height: 'auto'
     },
     wrapper                  : {
         display        : 'flex',
@@ -190,7 +190,7 @@ const FusePageSimple = React.forwardRef(function (props, ref) {
                     {/*    className={clsx(classes.contentCardWrapper, props.sidebarInner && classes.contentCardWrapperInnerSidebar)}*/}
                     {/*    enable={props.innerScroll && props.sidebarInner}*/}
                     {/*>*/}
-                    <FuseScrollbars className={classes.contentWrapper} enable={props.innerScroll && !props.sidebarInner}>
+                    <div className={classes.contentWrapper}>
 
                         {props.header && !props.sidebarInner && (
                             <FusePageSimpleHeader header={props.header} classes={classes}/>
@@ -207,7 +207,7 @@ const FusePageSimple = React.forwardRef(function (props, ref) {
                                 {props.content}
                             </div>
                         )}
-                    </FuseScrollbars>
+                    </div>
                     {/*</FuseScrollbars>*/}
 
                     {(props.rightSidebarHeader || props.rightSidebarContent) && (

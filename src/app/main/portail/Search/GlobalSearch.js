@@ -248,7 +248,7 @@ function GlobalSearch(props) {
     };
 
     return (
-        <div ref={ResultsNode} className={clsx("mx-auto w-full max-w-640 border border-gray-600 rounded-lg", props.className)}>
+        <div ref={ResultsNode} className={clsx("mx-auto w-full max-w-1600 border border-gray-600 rounded-lg", props.className)}>
             <FuseAnimate animation="transition.slideUpIn" duration={400} delay={100}>
                 <Paper className="flex p-4 items-center w-full rounded-lg" elevation={1}>
                     <Icon className="mr-8 ml-8" color="action">search</Icon>

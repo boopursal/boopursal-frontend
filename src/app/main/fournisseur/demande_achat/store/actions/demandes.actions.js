@@ -10,10 +10,10 @@ export const ERRORS = '[DEMANDES FOURNISSEUR APP] ERRORS';
 export const ERROR_404 = '[DEMANDES FOURNISSEUR APP] ERROR_404';
 export const SET_DEMANDES_SEARCH_TEXT = '[DEMANDES FOURNISSEUR APP] SET DEMANDES SEARCH TEXT';
 
-export function getDemandes(parametres,id_frs) {
+export function getDemandes(parametres, id_frs) {
     var search = '';
     if (parametres.search.length > 0) {
-        parametres.search.map(function (item, i) {
+        parametres.search.forEach(function (item, i) {
             if (item.value) {
                 if (item.id === 'created' || item.id === 'dateExpiration') {
                     search += '&' + item.id + '[after]=' + item.value
@@ -35,7 +35,7 @@ export function getDemandes(parametres,id_frs) {
                     else if (item.value === '2') {
                         search += `&historiques.fournisseur=${id_frs}`;
                     }
-                    
+
                 }
                 else {
                     search += '&' + item.id + '=' + item.value

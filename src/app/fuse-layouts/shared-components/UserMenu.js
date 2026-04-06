@@ -1,216 +1,129 @@
 import React, { useState } from "react";
-import {
-  Avatar,
-  Button,
-  Icon,
-  ListItemIcon,
-  ListItemText,
-  Popover,
-  MenuItem,
-  Typography,
-  Hidden,
-  Tooltip,
-} from "@material-ui/core";
+import { Avatar, Button, Icon, ListItemIcon, ListItemText, Popover, MenuItem, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import { useSelector, useDispatch } from "react-redux";
 import * as authActions from "app/auth/store/actions";
 import { Link } from "react-router-dom";
 import { URL_SITE } from "@fuse";
-import LockIcon from '@material-ui/icons/Lock';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-
 import clsx from "clsx";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
-function UserMenu(props) {
+const useStyles = makeStyles((theme) => ({
+  userButton: {
+    height: 52,
+    borderRadius: 30,
+    padding: '0 12px',
+    background: 'transparent !important',
+    border: 'none',
+    transition: "all 0.2s ease",
+    '&:hover': {
+      background: 'var(--portal-nav-hover-bg) !important',
+    }
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    border: '2px solid var(--portal-border)',
+    boxShadow: 'var(--portal-shadow)',
+  },
+  name: {
+    fontSize: '0.95rem',
+    fontWeight: 800,
+    color: 'var(--portal-text)',
+    marginLeft: 12,
+    textTransform: 'none'
+  },
+  connexionBtn: {
+    background: 'linear-gradient(135deg, #ff5a5a 0%, #ff2a2a 100%) !important',
+    color: '#ffffff !important',
+    borderRadius: '30px',
+    padding: '10px 28px',
+    fontWeight: 800,
+    fontSize: '0.95rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    boxShadow: '0 4px 15px rgba(255, 90, 90, 0.3) !important',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 8px 25px rgba(255, 90, 90, 0.5) !important',
+      background: 'linear-gradient(135deg, #ff6b6b 0%, #ff3b3b 100%) !important',
+    }
+  }
+}));
+
+function UserMenu() {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const user = useSelector(({ auth }) => auth.user);
   const [userMenu, setUserMenu] = useState(null);
-  const [userMenu2, setUserMenu2] = useState(null);
-  const config = useSelector(({ fuse }) => fuse.settings.current.layout);
 
-  const userMenuClick = (event) => {
-    setUserMenu(event.currentTarget);
-  };
-  const userMenuClick2 = (event) => {
-    setUserMenu2(event.currentTarget);
-  };
+  const userMenuClick = (event) => setUserMenu(event.currentTarget);
+  const userMenuClose = () => setUserMenu(null);
 
-  const userMenuClose = () => {
-    setUserMenu(null);
-  };
-  const userMenuClose2 = () => {
-    setUserMenu2(null);
-  };
+  if (!user.role || user.role.length === 0) {
+    return (
+        <Button component={Link} to="/login" className={classes.connexionBtn}>
+            Connexion
+        </Button>
+    )
+  }
 
   return (
     <React.Fragment>
-      {/* ============= TOKENS FOURNISSEURS ============*/}
-      {user.role === "ROLE_FOURNISSEUR" && config.style === "layout1" ? (
-        !user.requestJeton ? (
-          <div
-            className={clsx(
-              "flex items-center px-8 py-4 mr-8 rounded-sm",
-              !user.jetons ? "bg-red text-white" : "bg-green text-white"
-            )}
-          >
-            <Tooltip title="Les jetons vous donnent accès au profil de l'acheteur ciblé (Après avoir consulté sa demande d'achat).">
-              <Icon className="text-20 mr-4">info</Icon>
-            </Tooltip>
-            <Hidden only={["xs"]}>
-              {" "}
-              <span>Actuellement vous avez</span>
-            </Hidden>
-            &ensp;
-            <b className="text-20">{user.jetons}</b> &ensp;
-            <Hidden only={["xs"]}>
-              {" "}
-              <span>Jeton(s).</span>
-            </Hidden>
-            <Link
-              to="/abonnement/commandes/true"
-              className="ml-2 text-blue font-bold uppercase"
-            >
-              Charger
-            </Link>
-          </div>
+      <Button className={classes.userButton} onClick={userMenuClick}>
+        {user.data.photoURL ? (
+          <Avatar className={classes.avatar} alt="user photo" src={URL_SITE + user.data.photoURL} />
         ) : (
-          <div className="flex items-center px-8 py-4 mr-8 ">
-            <CircularProgress color="secondary" />
-          </div>
-        )
-      ) : (
-        ""
-      )}
-      {/* ============= FIN TOKENS FOURNISSEURS ============*/}
-      {!user.role || user.role.length === 0 ? (
-        <div className="flex items-center mr-2">
-          <Button
-            component={Link}
-            to="/login"
-            size="small"
-            variant="contained"
-            color="primary"
-            className="mr-2 h-40"
-            startIcon={<LockIcon />}
-          >
-            Se connecter
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="primary"
-            className=" h-40"
-            onClick={userMenuClick2}
-          >
-            Inscrivez-vous
-          </Button>
-          <Popover
-            open={Boolean(userMenu2)}
-            anchorEl={userMenu2}
-            onClose={userMenuClose2}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
+          <Avatar className={classes.avatar}>
+            <Icon className="text-16">person</Icon>
+          </Avatar>
+        )}
+
+        <Typography className={clsx(classes.name, "hidden md:inline-block")}>
+          {user.data.displayName}
+        </Typography>
+      </Button>
+
+      <Popover
+        open={Boolean(userMenu)}
+        anchorEl={userMenu}
+        onClose={userMenuClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        PaperProps={{
+          style: { 
+            borderRadius: 16, 
+            marginTop: 8, 
+            minWidth: 220, 
+            border: '1px solid var(--portal-border)', 
+            boxShadow: 'var(--portal-shadow)',
+            background: 'var(--portal-surface)',
+            color: 'var(--portal-text)',
+            backdropFilter: 'blur(20px)'
+          }
+        }}
+      >
+        <div className="p-8">
+           <div className="px-16 py-8 border-b border-gray-100 mb-8">
+               <Typography className="text-12 font-800 uppercase tracking-widest text-gray-400">Compte Admin</Typography>
+           </div>
+          <MenuItem component={Link} to="/dashboard" onClick={userMenuClose} style={{ borderRadius: 8, padding: '12px 16px' }}>
+            <ListItemIcon style={{ minWidth: 40 }}><Icon className="text-18" style={{ color: 'var(--portal-text)' }}>dashboard</Icon></ListItemIcon>
+            <ListItemText primary={<Typography style={{ fontWeight: 600, color: 'var(--portal-text)' }}>Tableau de bord</Typography>} />
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              dispatch(authActions.logoutUser());
+              userMenuClose();
             }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            classes={{
-              paper: "py-8",
-            }}
+            style={{ borderRadius: 8, padding: '12px 16px', color: '#f5365c' }}
           >
-            <React.Fragment>
-              <MenuItem component={Link} to="/register/2">
-                <ListItemText className="pl-0" primary="Acheteur" />
-              </MenuItem>
-              <MenuItem component={Link} to="/register/1">
-                <ListItemText className="pl-0" primary="Fournisseur" />
-              </MenuItem>
-            </React.Fragment>
-          </Popover>
+            <ListItemIcon style={{ minWidth: 40 }}><Icon className="text-18" style={{ color: '#f5365c' }}>exit_to_app</Icon></ListItemIcon>
+            <ListItemText primary={<Typography style={{ fontWeight: 600 }}>Déconnexion</Typography>} />
+          </MenuItem>
         </div>
-      ) : (
-        <>
-          <Button className="h-64" onClick={userMenuClick}>
-            {user.data.photoURL ? (
-              <Avatar
-                className=""
-                alt="user photo"
-                src={URL_SITE + user.data.photoURL}
-              />
-            ) : (
-              <Avatar className="">
-                <Icon>account_circle</Icon>
-              </Avatar>
-            )}
-
-            <div className="hidden md:flex flex-col ml-12 items-start">
-              <Typography
-                component="span"
-                className="normal-case font-600 flex"
-              >
-                {user.data.displayName}
-              </Typography>
-              <Typography className="text-11 capitalize" color="textSecondary">
-                {(user.role.toString() === "ROLE_FOURNISSEUR_PRE" ||
-                  user.role.toString() === "ROLE_FOURNISSEUR") &&
-                  "FOURNISSEUR"}
-                {(user.role.toString() === "ROLE_ACHETEUR_PRE" ||
-                  user.role.toString() === "ROLE_ACHETEUR") &&
-                  "ACHETEUR"}
-                {(user.role.toString() === "ROLE_ADMIN" ||
-                  user.role.toString() === "ROLE_ADMIN") &&
-                  "ADMINISTRATEUR"}
-              </Typography>
-            </div>
-            <Icon className="text-16 ml-12 hidden sm:flex" variant="action">
-              keyboard_arrow_down
-            </Icon>
-          </Button>
-
-          <Popover
-            open={Boolean(userMenu)}
-            anchorEl={userMenu}
-            onClose={userMenuClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            classes={{
-              paper: "py-8",
-            }}
-          >
-            <React.Fragment>
-              {user.role.toString() !== "ROLE_FOURNISSEUR_PRE" &&
-                user.role.toString() !== "ROLE_ACHETEUR_PRE" && (
-                  <MenuItem component={Link} to="/dashboard">
-                    <ListItemIcon className="min-w-40">
-                      <Icon>dashboard</Icon>
-                    </ListItemIcon>
-                    <ListItemText className="pl-0" primary="Tableau de bord" />
-                  </MenuItem>
-                )}
-
-              <MenuItem
-                onClick={() => {
-                  dispatch(authActions.logoutUser());
-                  userMenuClose();
-                }}
-              >
-                <ListItemIcon className="min-w-40">
-                  <Icon>exit_to_app</Icon>
-                </ListItemIcon>
-                <ListItemText className="pl-0" primary="Déconnexion" />
-              </MenuItem>
-            </React.Fragment>
-          </Popover>
-        </>
-      )}
+      </Popover>
     </React.Fragment>
   );
 }

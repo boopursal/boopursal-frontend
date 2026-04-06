@@ -1,22 +1,31 @@
 import React, { useState } from "react";
-import {
-  Card,
-  Collapse,
-  IconButton,
-  Tab,
-  Tabs,
-  Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { Card, Collapse, IconButton, Tab, Tabs, Typography, makeStyles, Box } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Widget4 from "./widgets/Widget4";
 import Widget5 from "./widgets/Widget5";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    borderRadius: 20,
+    background: "#ffffff",
+    border: "1px solid #f0f0f0",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+    overflow: 'hidden',
+  },
+  header: {
+    padding: theme.spacing(3),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontSize: "1.1rem",
+    fontWeight: 700,
+    color: "#1f2937",
+  },
   expand: {
     transform: "rotate(0deg)",
-    marginLeft: "auto",
     transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest,
     }),
@@ -24,6 +33,27 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
+  tabsWrapper: {
+    padding: theme.spacing(0, 3),
+    borderBottom: "1px solid #f3f4f6",
+  },
+  tabs: {
+    minHeight: 48,
+    "& .MuiTabs-indicator": {
+      height: 3,
+      background: "#2563eb",
+    }
+  },
+  tab: {
+    textTransform: "none",
+    fontWeight: 600,
+    minWidth: 120,
+    fontSize: "0.9375rem",
+    color: "#6b7280",
+    "&.Mui-selected": {
+      color: "#2563eb",
+    }
+  }
 }));
 
 function ClientParVille(props) {
@@ -31,51 +61,37 @@ function ClientParVille(props) {
   const [expanded, setExpanded] = useState(true);
   const [tabValue, setTabValue] = useState(0);
 
-  function handleExpandClick() {
-    setExpanded(!expanded);
-  }
-  function handleChangeTab(event, tabValue) {
-    setTabValue(tabValue);
-  }
   return (
-    <Card className="w-full rounded-8 shadow-none border-1">
-      <div className="p-16 pr-4 flex flex-row items-center justify-between">
-        <Typography variant="h6">Clients par ville</Typography>
-        <div>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="Show more"
-          >
-            <ExpandMoreIcon />
-          </IconButton>
-        </div>
+    <div className={classes.root}>
+      <div className={classes.header}>
+        <Typography className={classes.title}>Clients par ville</Typography>
+        <IconButton
+          className={clsx(classes.expand, expanded && classes.expandOpen)}
+          onClick={() => setExpanded(!expanded)}
+          size="small"
+        >
+          <ExpandMoreIcon />
+        </IconButton>
       </div>
+
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <div className="flex flex-row ">
+        <div className={classes.tabsWrapper}>
           <Tabs
             value={tabValue}
-            onChange={handleChangeTab}
-            indicatorColor="secondary"
-            textColor="secondary"
-            scrollButtons="on"
-            classes={{ root: "w-ful" }}
+            onChange={(e, v) => setTabValue(v)}
+            className={classes.tabs}
           >
-            <Tab className="normal-case" label="Fournisseurs" />
-            <Tab className="normal-case" label="Acheteurs" />
+            <Tab className={classes.tab} label="Fournisseurs" />
+            <Tab className={classes.tab} label="Acheteurs" />
           </Tabs>
         </div>
 
-        {/** FOURNISSEURS */}
-        {tabValue === 0 && <Widget4 />}
-
-        {/** ACHETEURS */}
-        {tabValue === 1 && <Widget5 />}
+        <Box p={2}>
+          {tabValue === 0 && <Widget4 />}
+          {tabValue === 1 && <Widget5 />}
+        </Box>
       </Collapse>
-    </Card>
+    </div>
   );
 }
 

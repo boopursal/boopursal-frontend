@@ -110,10 +110,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const defaultFormState = {
-  categories: null,
-  autreCategories: null,
-};
+
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -213,7 +210,7 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
 }
 
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+  const { classes, inputRef = () => { }, ref, ...other } = inputProps;
   return (
     <TextField
       fullWidth
@@ -251,7 +248,7 @@ function Step3App(props) {
   const step3 = useSelector(({ step3App }) => step3App.step3);
 
   //const { form, handleChange, setForm } = useForm(defaultFormState);
-  const [expanded, setExpanded] = React.useState(false);
+
 
   /*const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -263,7 +260,7 @@ function Step3App(props) {
         props.history.push(step3.redirect_success);
       }
     }
-  }, [step3.success]);
+  }, [props.history, step3.redirect_success, step3.success]);
   /*
         function disableButton() {
             setIsFormValid(false);
@@ -481,8 +478,8 @@ function Step3App(props) {
                             searchCategories.loading
                           }
                           placement="bottom-start" // 👈 Ajoute ceci
-  popperOptions={{ positionFixed: false }} // 👈 ou retire cette ligne si pas nécessaire
-  className="z-9999"
+                          popperOptions={{ positionFixed: false }} // 👈 ou retire cette ligne si pas nécessaire
+                          className="z-9999"
                         >
                           <div ref={suggestionsNode}>
                             <Paper

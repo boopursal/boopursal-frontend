@@ -164,7 +164,7 @@ function Abonnement(props) {
       dispatch(Actions.cleanUp());
       props.history.push("/admin/offres/abonnement");
     }
-  }, [abonnement.success, dispatch]);
+  }, [abonnement.success, dispatch, props.history]);
 
   useEffect(() => {
     function updateAbonnementState() {
@@ -194,9 +194,9 @@ function Abonnement(props) {
     ) {
       if (abonnement.data.sousSecteurs) {
         setSousSecteurs(
-          abonnement.data.sousSecteurs.map((item) => ({
+          (abonnement.data.sousSecteurs || []).map((item) => ({
             value: item["@id"],
-            label: item.secteur.name + ": " + item.name,
+            label: (item.secteur ? item.secteur.name : "") + ": " + item.name,
           }))
         );
       }
@@ -300,7 +300,7 @@ function Abonnement(props) {
   }, [offre, abonnement.offres, setOffre]);
 
   useEffect(() => {
-    if (abonnement.fournisseur) {
+    if (abonnement.fournisseur && duree && offre) {
       setFournisseur(abonnement.fournisseur);
 
       if (
@@ -367,7 +367,7 @@ function Abonnement(props) {
     return () => {
       dispatch(Actions.cleanUpFrs());
     };
-  }, [fournisseur, abonnement.fournisseur, setFournisseur]);
+  }, [fournisseur, abonnement.fournisseur, setFournisseur, discount, dispatch, duree, offre]);
 
   useEffect(() => {
     if (abonnement.paiements && !mode) {
@@ -403,7 +403,7 @@ function Abonnement(props) {
         }
       }
     }
-  }, [duree, abonnement.durees, setDuree]);
+  }, [duree, abonnement.durees, setDuree, offre]);
 
   function handleChangeTab(event, tabValue) {
     setTabValue(tabValue);
@@ -768,107 +768,107 @@ function Abonnement(props) {
       header={
         !abonnement.loading
           ? form && (
-              <div className="flex flex-1 w-full items-center justify-between">
-                <div className="flex flex-col items-start max-w-full">
-                  <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                    <Typography
-                      className="normal-case flex items-center sm:mb-12"
-                      component={Link}
-                      role="button"
-                      to="/admin/offres/abonnement"
-                      color="inherit"
-                    >
-                      <Icon className="mr-4 text-20">arrow_back</Icon>
-                      Retour
-                    </Typography>
-                  </FuseAnimate>
+            <div className="flex flex-1 w-full items-center justify-between">
+              <div className="flex flex-col items-start max-w-full">
+                <FuseAnimate animation="transition.slideRightIn" delay={300}>
+                  <Typography
+                    className="normal-case flex items-center sm:mb-12"
+                    component={Link}
+                    role="button"
+                    to="/admin/offres/abonnement"
+                    color="inherit"
+                  >
+                    <Icon className="mr-4 text-20">arrow_back</Icon>
+                    Retour
+                  </Typography>
+                </FuseAnimate>
 
-                  <div className="flex items-center max-w-full">
-                    <div className="flex flex-col min-w-0">
-                      <FuseAnimate
-                        animation="transition.slideLeftIn"
-                        delay={300}
-                      >
-                        <div className="text-16 sm:text-20 truncate">
-                          {abonnement.data.reference
-                            ? abonnement.data.reference +
-                              ", Fournisseur : " +
-                              (fournisseur ? fournisseur.societe : "")
-                            : ""}
-                        </div>
-                      </FuseAnimate>
-                    </div>
+                <div className="flex items-center max-w-full">
+                  <div className="flex flex-col min-w-0">
+                    <FuseAnimate
+                      animation="transition.slideLeftIn"
+                      delay={300}
+                    >
+                      <div className="text-16 sm:text-20 truncate">
+                        {abonnement.data.reference
+                          ? abonnement.data.reference +
+                          ", Fournisseur : " +
+                          (fournisseur ? fournisseur.societe : "")
+                          : ""}
+                      </div>
+                    </FuseAnimate>
                   </div>
                 </div>
-                <Dialog
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="form-dialog-title"
-                >
-                  <DialogTitle id="form-dialog-title">
-                    Confirmation{" "}
-                  </DialogTitle>
-                  <DialogContent className="mb-12">
-                    {!paiement
-                      ? "Voullez-vous vraiment valider la abonnement sans confirmation du paiment?"
-                      : "Vous êtes sur le point d'affecter une nouveau abonnement"}
-                  </DialogContent>
-                  <Divider />
-                  <DialogActions>
-                    <Button
-                      onClick={handleClose}
-                      variant="outlined"
-                      color="secondary"
-                    >
-                      Annuler
-                    </Button>
-                    <Button
-                      onClick={() => handleSubmit(form, sousSecteurs)}
-                      variant="contained"
-                      color="secondary"
-                      disabled={abonnement.loading}
-                    >
-                      Sauvegarder
-                      {abonnement.loading && (
-                        <CircularProgress
-                          size={24}
-                          className={classes.buttonProgress}
-                        />
-                      )}
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-                <div className="flex items-end max-w-full">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={paiement}
-                        onChange={(e) => handleCheckBoxChange(e)}
-                        value={paiement}
-                      />
-                    }
-                    label="Confirmer le paiement de cette entreprise"
-                  />
-
-                  <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                    <Button
-                      className="whitespace-no-wrap"
-                      variant="contained"
-                      disabled={abonnement.loading || sousSecteurs.length === 0}
-                      onClick={handleClickOpen}
-                    >
-                      Valider l'abonnement
-                      {abonnement.loading && (
-                        <CircularProgress
-                          size={24}
-                          className={classes.buttonProgress}
-                        />
-                      )}
-                    </Button>
-                  </FuseAnimate>
-                </div>
               </div>
-            )
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="form-dialog-title"
+              >
+                <DialogTitle id="form-dialog-title">
+                  Confirmation{" "}
+                </DialogTitle>
+                <DialogContent className="mb-12">
+                  {!paiement
+                    ? "Voullez-vous vraiment valider la abonnement sans confirmation du paiment?"
+                    : "Vous êtes sur le point d'affecter une nouveau abonnement"}
+                </DialogContent>
+                <Divider />
+                <DialogActions>
+                  <Button
+                    onClick={handleClose}
+                    variant="outlined"
+                    color="secondary"
+                  >
+                    Annuler
+                  </Button>
+                  <Button
+                    onClick={() => handleSubmit(form, sousSecteurs)}
+                    variant="contained"
+                    color="secondary"
+                    disabled={abonnement.loading}
+                  >
+                    Sauvegarder
+                    {abonnement.loading && (
+                      <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                      />
+                    )}
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              <div className="flex items-end max-w-full">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={paiement}
+                      onChange={(e) => handleCheckBoxChange(e)}
+                      value={paiement}
+                    />
+                  }
+                  label="Confirmer le paiement de cette entreprise"
+                />
+
+                <FuseAnimate animation="transition.slideRightIn" delay={300}>
+                  <Button
+                    className="whitespace-no-wrap"
+                    variant="contained"
+                    disabled={abonnement.loading || sousSecteurs.length === 0}
+                    onClick={handleClickOpen}
+                  >
+                    Valider l'abonnement
+                    {abonnement.loading && (
+                      <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                      />
+                    )}
+                  </Button>
+                </FuseAnimate>
+              </div>
+            </div>
+          )
           : ""
       }
       contentToolbar={
@@ -902,957 +902,956 @@ function Abonnement(props) {
       content={
         !abonnement.loading
           ? form && (
-              <Formsy className="flex flex-col ">
-                <div className="p-10  sm:p-24 max-w-2xl">
-                  {tabValue === 0 && (
-                    <>
-                      <Grid container spacing={3} className="">
-                        <Grid item xs={12} sm={6}>
-                          <Typography className="mb-16" variant="h6">
-                            1- Fournisseurs & Offres
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography className="mb-16" variant="h6">
-                            Récapitulatif de votre abonnement
-                          </Typography>
-                        </Grid>
+            <Formsy className="flex flex-col ">
+              <div className="p-10  sm:p-24 max-w-2xl">
+                {tabValue === 0 && (
+                  <>
+                    <Grid container spacing={3} className="">
+                      <Grid item xs={12} sm={6}>
+                        <Typography className="mb-16" variant="h6">
+                          1- Fournisseurs & Offres
+                        </Typography>
                       </Grid>
-                      <Divider />
-                      <Grid container spacing={3} className="mt-16 mb-16">
-                        <Grid item xs={12} sm={6}>
-                          {form["@id"] ? (
+                      <Grid item xs={12} sm={6}>
+                        <Typography className="mb-16" variant="h6">
+                          Récapitulatif de votre abonnement
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Divider />
+                    <Grid container spacing={3} className="mt-16 mb-16">
+                      <Grid item xs={12} sm={6}>
+                        {form["@id"] ? (
+                          <TextFieldFormsy
+                            className="disabled mb-16 "
+                            type="text"
+                            name="fournisseur"
+                            id="fournisseur"
+                            value={form.fournisseur.label}
+                            label="Fournisseur"
+                            disabled
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                            fullWidth
+                          />
+                        ) : abonnement.fournisseurs ? (
+                          <SelectReactFormsy
+                            id="fournisseur"
+                            name="fournisseur"
+                            readOnly="true"
+                            value={form.fournisseur}
+                            placeholder="Sélectionner une société"
+                            textFieldProps={{
+                              label: "Sociétés",
+                              InputLabelProps: {
+                                shrink: true,
+                                readOnly: true,
+                              },
+                              variant: "outlined",
+                              readOnly: true,
+                            }}
+                            className="mb-16 z-9999"
+                            options={abonnement.fournisseurs}
+                            onChange={(value) =>
+                              handleFounrisseurChange(value, "fournisseur")
+                            }
+                            required
+                          />
+                        ) : (
+                          <ContentLoader
+                            height={70}
+                            width={400}
+                            speed={2}
+                            primaryColor="#f3f3f3"
+                            secondaryColor="#ecebeb"
+                          >
+                            <rect
+                              x="1"
+                              y="13"
+                              rx="5"
+                              ry="5"
+                              width="220"
+                              height="24"
+                            />
+                          </ContentLoader>
+                        )}
+                        <Divider className="mt-8 mb-8" />
+                        {!abonnement.loadingFournisseurs ? (
+                          abonnement.offres &&
+                          offre &&
+                          abonnement.offres.map((item, index) => (
+                            <Grid container key={index} spacing={3}>
+                              <Grid item xs={6} sm={6}>
+                                <strong className="p-1">{item.name}</strong>{" "}
+                                <br />
+                                <span className="p-1">
+                                  {item.description}
+                                </span>
+                              </Grid>
+                              <Grid item xs={6} sm={6}>
+                                <FormGroup row>
+                                  <FormControlLabel
+                                    control={
+                                      <Switch
+                                        checked={offre.id === item.id}
+                                        onChange={() => {
+                                          handleChangeOffre(item);
+                                        }}
+                                        value={item["@id"]}
+                                      />
+                                    }
+                                    label={
+                                      fournisseur
+                                        ? fournisseur.currency &&
+                                          fournisseur.currency.name !==
+                                          LOCAL_CURRENCY
+                                          ? parseFloat(
+                                            item.prixEur
+                                          ).toLocaleString(
+                                            "fr", // leave undefined to use the browser's locale,
+                                            // or use a string like 'en-US' to override it.
+                                            { minimumFractionDigits: 2 }
+                                          ) + " € HT / mois"
+                                          : parseFloat(
+                                            item.prixMad
+                                          ).toLocaleString(
+                                            "fr", // leave undefined to use the browser's locale,
+                                            // or use a string like 'en-US' to override it.
+                                            { minimumFractionDigits: 2 }
+                                          ) +
+                                          LOCAL_CURRENCY +
+                                          " HT / mois"
+                                        : parseFloat(
+                                          item.prixMad
+                                        ).toLocaleString(
+                                          "fr", // leave undefined to use the browser's locale,
+                                          // or use a string like 'en-US' to override it.
+                                          { minimumFractionDigits: 2 }
+                                        ) +
+                                        LOCAL_CURRENCY +
+                                        " HT / mois"
+                                    }
+                                  />
+                                </FormGroup>
+                              </Grid>
+                            </Grid>
+                          ))
+                        ) : (
+                          <ContentLoader
+                            height={160}
+                            width={400}
+                            speed={2}
+                            primaryColor="#f3f3f3"
+                            secondaryColor="#ecebeb"
+                          >
+                            <circle cx="10" cy="20" r="8" />
+                            <rect
+                              x="25"
+                              y="15"
+                              rx="5"
+                              ry="5"
+                              width="220"
+                              height="10"
+                            />
+                            <circle cx="10" cy="50" r="8" />
+                            <rect
+                              x="25"
+                              y="45"
+                              rx="5"
+                              ry="5"
+                              width="220"
+                              height="10"
+                            />
+                            <circle cx="10" cy="80" r="8" />
+                            <rect
+                              x="25"
+                              y="75"
+                              rx="5"
+                              ry="5"
+                              width="220"
+                              height="10"
+                            />
+                          </ContentLoader>
+                        )}
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        {!abonnement.loadingFournisseurs ? (
+                          abonnement.offres &&
+                          offre &&
+                          duree && (
+                            <Table className="w-full -striped">
+                              <TableHead className="bg-gray-200">
+                                <TableRow>
+                                  <TableCell className="font-bold  text-black">
+                                    Offre
+                                  </TableCell>
+                                  <TableCell className="font-bold text-black text-right">
+                                    Total HT
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                <TableRow>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate text-11"
+                                  >
+                                    <strong>{offre ? offre.name : ""}</strong>
+                                    <br />
+                                    {fournisseur
+                                      ? fournisseur.currency &&
+                                        fournisseur.currency.name !==
+                                        LOCAL_CURRENCY
+                                        ? parseFloat(
+                                          offre.prixEur
+                                        ).toLocaleString(
+                                          "fr", // leave undefined to use the browser's locale,
+                                          // or use a string like 'en-US' to override it.
+                                          { minimumFractionDigits: 2 }
+                                        )
+                                        : parseFloat(
+                                          offre.prixMad
+                                        ).toLocaleString(
+                                          "fr", // leave undefined to use the browser's locale,
+                                          // or use a string like 'en-US' to override it.
+                                          { minimumFractionDigits: 2 }
+                                        )
+                                      : parseFloat(
+                                        offre.prixMad
+                                      ).toLocaleString(
+                                        "fr", // leave undefined to use the browser's locale,
+                                        // or use a string like 'en-US' to override it.
+                                        { minimumFractionDigits: 2 }
+                                      ) + " "}
+                                    * {duree.name + " mois"}
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate text-11 text-right"
+                                  >
+                                    {parseFloat(prixht).toLocaleString(
+                                      "fr", // leave undefined to use the browser's locale,
+                                      // or use a string like 'en-US' to override it.
+                                      { minimumFractionDigits: 2 }
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow className="bg-gray-200">
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate text-11 text-right"
+                                  >
+                                    Total HT
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate text-11 text-right"
+                                  >
+                                    {parseFloat(prixht).toLocaleString(
+                                      "fr", // leave undefined to use the browser's locale,
+                                      // or use a string like 'en-US' to override it.
+                                      { minimumFractionDigits: 2 }
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                                {duree.remise ? (
+                                  <TableRow className="">
+                                    <TableCell
+                                      component="th"
+                                      scope="row"
+                                      className="truncate text-11 text-right"
+                                    >
+                                      Remise ({duree.remise}%)
+                                    </TableCell>
+                                    <TableCell
+                                      component="th"
+                                      scope="row"
+                                      className="truncate text-11 text-right"
+                                    >
+                                      {parseFloat(remise).toLocaleString(
+                                        "fr", // leave undefined to use the browser's locale,
+                                        // or use a string like 'en-US' to override it.
+                                        { minimumFractionDigits: 2 }
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                ) : null}
+                                <TableRow className="">
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="text-11 text-right"
+                                  >
+                                    Remise
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate text-11 text-right"
+                                  >
+                                    <TextFieldFormsy
+                                      type="number"
+                                      step="any"
+                                      name="discount"
+                                      id="discount"
+                                      onChange={(ev) => {
+                                        handleChangeDiscount(ev.target.value);
+                                      }}
+                                      value={discount}
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                                {prixhtNet > 0 && prixhtNet !== prixht ? (
+                                  <TableRow className="bg-gray-200">
+                                    <TableCell
+                                      component="th"
+                                      scope="row"
+                                      className="truncate text-11 text-right"
+                                    >
+                                      Montant NET HT
+                                    </TableCell>
+                                    <TableCell
+                                      component="th"
+                                      scope="row"
+                                      className="truncate text-11 text-right"
+                                    >
+                                      {parseFloat(prixhtNet).toLocaleString(
+                                        "fr", // leave undefined to use the browser's locale,
+                                        // or use a string like 'en-US' to override it.
+                                        { minimumFractionDigits: 2 }
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                ) : null}
+                                <TableRow className="">
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate text-11 text-right"
+                                  >
+                                    TVA (20%)
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate text-11 text-right"
+                                  >
+                                    {parseFloat(tva).toLocaleString(
+                                      "fr", // leave undefined to use the browser's locale,
+                                      // or use a string like 'en-US' to override it.
+                                      { minimumFractionDigits: 2 }
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+
+                                <TableRow className="bg-gray-200">
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate font-bold text-11 text-right"
+                                  >
+                                    Montant TTC
+                                  </TableCell>
+                                  <TableCell
+                                    component="th"
+                                    scope="row"
+                                    className="truncate font-bold text-13 text-right"
+                                  >
+                                    {parseFloat(prixTTC).toLocaleString(
+                                      "fr", // leave undefined to use the browser's locale,
+                                      // or use a string like 'en-US' to override it.
+                                      { minimumFractionDigits: 2 }
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                              </TableBody>
+                            </Table>
+                          )
+                        ) : (
+                          <ContentLoader
+                            height={160}
+                            width={400}
+                            speed={2}
+                            primaryColor="#f3f3f3"
+                            secondaryColor="#ecebeb"
+                          >
+                            <circle cx="10" cy="20" r="8" />
+                            <rect
+                              x="25"
+                              y="15"
+                              rx="5"
+                              ry="5"
+                              width="220"
+                              height="10"
+                            />
+                            <circle cx="10" cy="50" r="8" />
+                            <rect
+                              x="25"
+                              y="45"
+                              rx="5"
+                              ry="5"
+                              width="220"
+                              height="10"
+                            />
+                            <circle cx="10" cy="80" r="8" />
+                            <rect
+                              x="25"
+                              y="75"
+                              rx="5"
+                              ry="5"
+                              width="220"
+                              height="10"
+                            />
+                          </ContentLoader>
+                        )}
+                      </Grid>
+                    </Grid>
+                    <Grid container spacing={3} className="">
+                      <Grid item xs={12} sm={6}>
+                        <Typography className="mb-16" variant="h6">
+                          2- Mode de paiement{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography className="mb-16" variant="h6">
+                          3- Durée de votre abonnement
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Divider />
+                    <Grid container spacing={3} className="mt-6 mb-16">
+                      <Grid item xs={12} sm={6}>
+                        {abonnement.paiements ? (
+                          abonnement.paiements.map((item, index) => (
+                            <FormControlLabel
+                              onChange={() => setMode(item["@id"])}
+                              key={index}
+                              value={item["@id"]}
+                              checked={mode === item["@id"]}
+                              control={<Radio />}
+                              label={item.name}
+                            />
+                          ))
+                        ) : (
+                          <ContentLoader
+                            height={70}
+                            width={400}
+                            speed={2}
+                            primaryColor="#f3f3f3"
+                            secondaryColor="#ecebeb"
+                          >
+                            <circle cx="15" cy="17" r="6" />
+                            <rect
+                              x="25"
+                              y="11"
+                              rx="5"
+                              ry="5"
+                              width="100"
+                              height="12"
+                            />
+                            <circle cx="145" cy="17" r="6" />
+                            <rect
+                              x="155"
+                              y="11"
+                              rx="5"
+                              ry="5"
+                              width="100"
+                              height="12"
+                            />
+                          </ContentLoader>
+                        )}
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        {abonnement.durees && duree ? (
+                          abonnement.durees.map((item, index) => (
+                            <div className="inline" key={index}>
+                              <FormControlLabel
+                                onChange={() => handleChangeDuree(item)}
+                                value={item["@id"]}
+                                checked={duree.id === item.id}
+                                control={<Radio />}
+                                label={item.name + " mois"}
+                              />
+
+                              {item.remise ? (
+                                <span className="text-12 text-red">
+                                  (Soit {item.remise}% de remise )
+                                </span>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <ContentLoader
+                            height={70}
+                            width={400}
+                            speed={2}
+                            primaryColor="#f3f3f3"
+                            secondaryColor="#ecebeb"
+                          >
+                            <circle cx="15" cy="17" r="6" />
+                            <rect
+                              x="25"
+                              y="11"
+                              rx="5"
+                              ry="5"
+                              width="100"
+                              height="12"
+                            />
+                            <circle cx="145" cy="17" r="6" />
+                            <rect
+                              x="155"
+                              y="11"
+                              rx="5"
+                              ry="5"
+                              width="100"
+                              height="12"
+                            />
+                          </ContentLoader>
+                        )}
+                      </Grid>
+                    </Grid>
+                    <Divider />
+                    <Grid container spacing={3} className="mt-6 mb-16">
+                      <Grid item xs={12} sm={12}>
+                        <TextFieldFormsy
+                          className="w-full"
+                          type="text"
+                          name="commentaire"
+                          value={form.commentaire}
+                          onChange={handleChange}
+                          label="Commentaire"
+                          autoComplete="commentaire"
+                          validations={{
+                            minLength: 6,
+                          }}
+                          validationErrors={{
+                            minLength:
+                              "La longueur minimale de caractère est 6",
+                          }}
+                          variant="outlined"
+                          multiline
+                          rows="4"
+                        />
+                      </Grid>
+                    </Grid>
+                  </>
+                )}
+                {tabValue === 1 && (
+                  <>
+                    <Grid container spacing={3} className="">
+                      <Grid item xs={12}>
+                        <Typography className="mb-16" variant="h6">
+                          Secteurs & Activités
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Divider />
+                    <Grid container spacing={3} className="mt-16 mb-16">
+                      <Grid item xs={12} sm={6}>
+                        <SelectReactFormsy
+                          id="secteurs"
+                          name="secteurs"
+                          value={secteur1}
+                          placeholder="Sélectionner.. "
+                          textFieldProps={{
+                            label: "Secteurs",
+                            InputLabelProps: {
+                              shrink: true,
+                            },
+                            variant: "outlined",
+                          }}
+                          className="mb-16"
+                          options={abonnement.secteurs}
+                          isLoading={abonnement.loadingSecteurs}
+                          onChange={(value) =>
+                            handleChipChange(value, "secteurs")
+                          }
+                          required
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <SelectReactFormsy
+                          id="activites"
+                          name="activites"
+                          value=""
+                          placeholder="Sélectionner.. "
+                          textFieldProps={{
+                            label: "Activités",
+                            InputLabelProps: {
+                              shrink: true,
+                            },
+                            variant: "outlined",
+                          }}
+                          className="mb-16"
+                          options={abonnement.sousSecteurs}
+                          isLoading={abonnement.loadingSS}
+                          onChange={(value) =>
+                            handleChipChange(value, "activites")
+                          }
+                          required
+                        />
+                        <Typography variant="caption">
+                          {offre &&
+                            (offre.nbActivite > sousSecteurs.length
+                              ? `Vous pouvez encore ajouter ${offre.nbActivite - sousSecteurs.length
+                              } activités`
+                              : `Vous avez atteint la limite de ${offre.nbActivite} activités`)}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container spacing={3} className="">
+                      <Grid item xs={12} sm={6}>
+                        <Typography className="mb-16" variant="h6">
+                          Activité(s) choisie(s)
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Divider />
+                    <Grid container spacing={3} className="mt-4">
+                      <Grid item xs={12} sm={12}>
+                        <div className={clsx(classes.chips)}>
+                          {sousSecteurs &&
+                            sousSecteurs.length > 0 &&
+                            _.sortBy(sousSecteurs, [
+                              function (o) {
+                                return o.label;
+                              },
+                            ]).map((item, index) => (
+                              <Chip
+                                key={index}
+                                label={item.label}
+                                color="secondary"
+                                onDelete={() => handleDelete(item.value)}
+                                className="mt-8 mr-8"
+                              />
+                            ))}
+                        </div>
+                      </Grid>
+                    </Grid>
+                  </>
+                )}
+
+                {tabValue === 2 &&
+                  (!abonnement.loadingFournisseurs
+                    ? fournisseur && (
+                      <Formsy className="flex flex-col">
+                        <Grid container spacing={3} className="mb-5">
+                          <Grid item xs={12} sm={4}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                className=""
+                                type="text"
+                                name="fullname"
+                                value={
+                                  fournisseur.civilite +
+                                  " " +
+                                  fournisseur.firstName +
+                                  " " +
+                                  fournisseur.lastName
+                                }
+                                label="Nom complet"
+                                InputProps={{
+                                  readOnly: true,
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                className=""
+                                name="email"
+                                value={fournisseur.email}
+                                label="Email"
+                                fullWidth
+                                InputProps={{
+                                  readOnly: true,
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <Icon
+                                        className="text-20"
+                                        color="action"
+                                      >
+                                        email
+                                      </Icon>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
                             <TextFieldFormsy
-                              className="disabled mb-16 "
+                              className=""
                               type="text"
-                              name="fournisseur"
-                              id="fournisseur"
-                              value={form.fournisseur.label}
-                              label="Fournisseur"
-                              disabled
+                              name="phonep"
+                              id="phonep"
+                              value={fournisseur.phone}
+                              label="Téléphone"
+                              InputProps={{
+                                readOnly: true,
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <Icon
+                                      className="text-20"
+                                      color="action"
+                                    >
+                                      local_phone
+                                    </Icon>
+                                  </InputAdornment>
+                                ),
+                              }}
+                              fullWidth
+                            />
+                          </Grid>
+                        </Grid>
+                        <Divider />
+                        <Grid container spacing={3} className="mb-5">
+                          <Grid item xs={12} sm={8}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                className="mt-20"
+                                label="Raison sociale"
+                                id="societe"
+                                name="societe"
+                                value={fournisseur.societe}
+                                fullWidth
+                                InputProps={{
+                                  readOnly: true,
+                                }}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                className="mt-20"
+                                name="fix"
+                                value={fournisseur.fix}
+                                label="Fixe"
+                                InputProps={{
+                                  readOnly: true,
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <Icon
+                                        className="text-20"
+                                        color="action"
+                                      >
+                                        local_phone
+                                      </Icon>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={8}>
+                            <TextFieldFormsy
+                              id="secteur"
+                              className=""
+                              name="secteur"
+                              label="Produits"
+                              value={
+                                fournisseur.categories
+                                  ? _.join(
+                                    _.map(fournisseur.categories, "name"),
+                                    ", "
+                                  )
+                                  : ""
+                              }
+                              fullWidth
+                              multiline
+                              rows="3"
+                              InputProps={{
+                                readOnly: true,
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                id="website"
+                                className=""
+                                type="text"
+                                name="website"
+                                value={fournisseur.website}
+                                label="Site Web"
+                                InputProps={{
+                                  readOnly: true,
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <Icon
+                                        className="text-20"
+                                        color="action"
+                                      >
+                                        language
+                                      </Icon>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={8}>
+                            <div className="flex">
+                              {fournisseur.ice ? (
+                                <TextFieldFormsy
+                                  className=""
+                                  type="text"
+                                  name="ice"
+                                  id="ice"
+                                  value={fournisseur.ice}
+                                  label="ICE"
+                                  fullWidth
+                                  InputProps={{
+                                    readOnly: true,
+                                  }}
+                                />
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </Grid>
+                        </Grid>
+                        <Divider />
+
+                        <Grid container spacing={3} className="mb-5">
+                          <Grid item xs={12} sm={8}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                className="mt-20"
+                                type="text"
+                                name="adresse1"
+                                id="adresse1"
+                                value={fournisseur.adresse1}
+                                label="Adresse 1"
+                                InputProps={{
+                                  readOnly: true,
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <Icon
+                                        className="text-20"
+                                        color="action"
+                                      >
+                                        location_on
+                                      </Icon>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <TextFieldFormsy
+                              className="mt-20"
+                              type="text"
+                              name="pays"
+                              id="pays"
+                              value={
+                                fournisseur.pays
+                                  ? fournisseur.pays.name
+                                  : ""
+                              }
+                              label="Pays"
                               InputProps={{
                                 readOnly: true,
                               }}
                               fullWidth
                             />
-                          ) : abonnement.fournisseurs ? (
-                            <SelectReactFormsy
-                              id="fournisseur"
-                              name="fournisseur"
-                              readOnly="true"
-                              value={form.fournisseur}
-                              placeholder="Sélectionner une société"
-                              textFieldProps={{
-                                label: "Sociétés",
-                                InputLabelProps: {
-                                  shrink: true,
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                className=""
+                                type="text"
+                                name="adresse2"
+                                value={fournisseur.adresse2}
+                                label="Adresse 2"
+                                InputProps={{
                                   readOnly: true,
-                                },
-                                variant: "outlined",
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <Icon
+                                        className="text-20"
+                                        color="action"
+                                      >
+                                        location_on
+                                      </Icon>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <div className="flex">
+                              <TextFieldFormsy
+                                className=""
+                                name="codepostal"
+                                value={String(fournisseur.codepostal)}
+                                label="Code Postal"
+                                fullWidth
+                                InputProps={{
+                                  readOnly: true,
+                                }}
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <TextFieldFormsy
+                              className=""
+                              type="text"
+                              name="ville"
+                              id="ville"
+                              value={
+                                fournisseur.ville
+                                  ? fournisseur.ville.name
+                                  : ""
+                              }
+                              label="Ville"
+                              InputProps={{
                                 readOnly: true,
                               }}
-                              className="mb-16 z-9999"
-                              options={abonnement.fournisseurs}
-                              onChange={(value) =>
-                                handleFounrisseurChange(value, "fournisseur")
-                              }
-                              required
+                              fullWidth
                             />
-                          ) : (
-                            <ContentLoader
-                              height={70}
-                              width={400}
-                              speed={2}
-                              primaryColor="#f3f3f3"
-                              secondaryColor="#ecebeb"
-                            >
-                              <rect
-                                x="1"
-                                y="13"
-                                rx="5"
-                                ry="5"
-                                width="220"
-                                height="24"
-                              />
-                            </ContentLoader>
-                          )}
-                          <Divider className="mt-8 mb-8" />
-                          {!abonnement.loadingFournisseurs ? (
-                            abonnement.offres &&
-                            offre &&
-                            abonnement.offres.map((item, index) => (
-                              <Grid container key={index} spacing={3}>
-                                <Grid item xs={6} sm={6}>
-                                  <strong className="p-1">{item.name}</strong>{" "}
-                                  <br />
-                                  <span className="p-1">
-                                    {item.description}
-                                  </span>
-                                </Grid>
-                                <Grid item xs={6} sm={6}>
-                                  <FormGroup row>
-                                    <FormControlLabel
-                                      control={
-                                        <Switch
-                                          checked={offre.id === item.id}
-                                          onChange={() => {
-                                            handleChangeOffre(item);
-                                          }}
-                                          value={item["@id"]}
-                                        />
-                                      }
-                                      label={
-                                        fournisseur
-                                          ? fournisseur.currency &&
-                                            fournisseur.currency.name !==
-                                              LOCAL_CURRENCY
-                                            ? parseFloat(
-                                                item.prixEur
-                                              ).toLocaleString(
-                                                "fr", // leave undefined to use the browser's locale,
-                                                // or use a string like 'en-US' to override it.
-                                                { minimumFractionDigits: 2 }
-                                              ) + " € HT / mois"
-                                            : parseFloat(
-                                                item.prixMad
-                                              ).toLocaleString(
-                                                "fr", // leave undefined to use the browser's locale,
-                                                // or use a string like 'en-US' to override it.
-                                                { minimumFractionDigits: 2 }
-                                              ) +
-                                              LOCAL_CURRENCY +
-                                              " HT / mois"
-                                          : parseFloat(
-                                              item.prixMad
-                                            ).toLocaleString(
-                                              "fr", // leave undefined to use the browser's locale,
-                                              // or use a string like 'en-US' to override it.
-                                              { minimumFractionDigits: 2 }
-                                            ) +
-                                            LOCAL_CURRENCY +
-                                            " HT / mois"
-                                      }
-                                    />
-                                  </FormGroup>
-                                </Grid>
-                              </Grid>
-                            ))
-                          ) : (
-                            <ContentLoader
-                              height={160}
-                              width={400}
-                              speed={2}
-                              primaryColor="#f3f3f3"
-                              secondaryColor="#ecebeb"
-                            >
-                              <circle cx="10" cy="20" r="8" />
-                              <rect
-                                x="25"
-                                y="15"
-                                rx="5"
-                                ry="5"
-                                width="220"
-                                height="10"
-                              />
-                              <circle cx="10" cy="50" r="8" />
-                              <rect
-                                x="25"
-                                y="45"
-                                rx="5"
-                                ry="5"
-                                width="220"
-                                height="10"
-                              />
-                              <circle cx="10" cy="80" r="8" />
-                              <rect
-                                x="25"
-                                y="75"
-                                rx="5"
-                                ry="5"
-                                width="220"
-                                height="10"
-                              />
-                            </ContentLoader>
-                          )}
+                          </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          {!abonnement.loadingFournisseurs ? (
-                            abonnement.offres &&
-                            offre &&
-                            duree && (
-                              <Table className="w-full -striped">
-                                <TableHead className="bg-gray-200">
-                                  <TableRow>
-                                    <TableCell className="font-bold  text-black">
-                                      Offre
-                                    </TableCell>
-                                    <TableCell className="font-bold text-black text-right">
-                                      Total HT
-                                    </TableCell>
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  <TableRow>
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate text-11"
-                                    >
-                                      <strong>{offre ? offre.name : ""}</strong>
-                                      <br />
-                                      {fournisseur
-                                        ? fournisseur.currency &&
-                                          fournisseur.currency.name !==
-                                            LOCAL_CURRENCY
-                                          ? parseFloat(
-                                              offre.prixEur
-                                            ).toLocaleString(
-                                              "fr", // leave undefined to use the browser's locale,
-                                              // or use a string like 'en-US' to override it.
-                                              { minimumFractionDigits: 2 }
-                                            )
-                                          : parseFloat(
-                                              offre.prixMad
-                                            ).toLocaleString(
-                                              "fr", // leave undefined to use the browser's locale,
-                                              // or use a string like 'en-US' to override it.
-                                              { minimumFractionDigits: 2 }
-                                            )
-                                        : parseFloat(
-                                            offre.prixMad
-                                          ).toLocaleString(
-                                            "fr", // leave undefined to use the browser's locale,
-                                            // or use a string like 'en-US' to override it.
-                                            { minimumFractionDigits: 2 }
-                                          ) + " "}
-                                      * {duree.name + " mois"}
-                                    </TableCell>
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate text-11 text-right"
-                                    >
-                                      {parseFloat(prixht).toLocaleString(
-                                        "fr", // leave undefined to use the browser's locale,
-                                        // or use a string like 'en-US' to override it.
-                                        { minimumFractionDigits: 2 }
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
-                                  <TableRow className="bg-gray-200">
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate text-11 text-right"
-                                    >
-                                      Total HT
-                                    </TableCell>
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate text-11 text-right"
-                                    >
-                                      {parseFloat(prixht).toLocaleString(
-                                        "fr", // leave undefined to use the browser's locale,
-                                        // or use a string like 'en-US' to override it.
-                                        { minimumFractionDigits: 2 }
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
-                                  {duree.remise ? (
-                                    <TableRow className="">
-                                      <TableCell
-                                        component="th"
-                                        scope="row"
-                                        className="truncate text-11 text-right"
-                                      >
-                                        Remise ({duree.remise}%)
-                                      </TableCell>
-                                      <TableCell
-                                        component="th"
-                                        scope="row"
-                                        className="truncate text-11 text-right"
-                                      >
-                                        {parseFloat(remise).toLocaleString(
-                                          "fr", // leave undefined to use the browser's locale,
-                                          // or use a string like 'en-US' to override it.
-                                          { minimumFractionDigits: 2 }
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ) : null}
-                                  <TableRow className="">
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="text-11 text-right"
-                                    >
-                                      Remise
-                                    </TableCell>
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate text-11 text-right"
-                                    >
-                                      <TextFieldFormsy
-                                        type="number"
-                                        step="any"
-                                        name="discount"
-                                        id="discount"
-                                        onChange={(ev) => {
-                                          handleChangeDiscount(ev.target.value);
-                                        }}
-                                        value={discount}
-                                      />
-                                    </TableCell>
-                                  </TableRow>
-                                  {prixhtNet > 0 && prixhtNet !== prixht ? (
-                                    <TableRow className="bg-gray-200">
-                                      <TableCell
-                                        component="th"
-                                        scope="row"
-                                        className="truncate text-11 text-right"
-                                      >
-                                        Montant NET HT
-                                      </TableCell>
-                                      <TableCell
-                                        component="th"
-                                        scope="row"
-                                        className="truncate text-11 text-right"
-                                      >
-                                        {parseFloat(prixhtNet).toLocaleString(
-                                          "fr", // leave undefined to use the browser's locale,
-                                          // or use a string like 'en-US' to override it.
-                                          { minimumFractionDigits: 2 }
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ) : null}
-                                  <TableRow className="">
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate text-11 text-right"
-                                    >
-                                      TVA (20%)
-                                    </TableCell>
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate text-11 text-right"
-                                    >
-                                      {parseFloat(tva).toLocaleString(
-                                        "fr", // leave undefined to use the browser's locale,
-                                        // or use a string like 'en-US' to override it.
-                                        { minimumFractionDigits: 2 }
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
+                        <Divider />
 
-                                  <TableRow className="bg-gray-200">
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate font-bold text-11 text-right"
-                                    >
-                                      Montant TTC
-                                    </TableCell>
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      className="truncate font-bold text-13 text-right"
-                                    >
-                                      {parseFloat(prixTTC).toLocaleString(
-                                        "fr", // leave undefined to use the browser's locale,
-                                        // or use a string like 'en-US' to override it.
-                                        { minimumFractionDigits: 2 }
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
-                                </TableBody>
-                              </Table>
-                            )
-                          ) : (
-                            <ContentLoader
-                              height={160}
-                              width={400}
-                              speed={2}
-                              primaryColor="#f3f3f3"
-                              secondaryColor="#ecebeb"
-                            >
-                              <circle cx="10" cy="20" r="8" />
-                              <rect
-                                x="25"
-                                y="15"
-                                rx="5"
-                                ry="5"
-                                width="220"
-                                height="10"
-                              />
-                              <circle cx="10" cy="50" r="8" />
-                              <rect
-                                x="25"
-                                y="45"
-                                rx="5"
-                                ry="5"
-                                width="220"
-                                height="10"
-                              />
-                              <circle cx="10" cy="80" r="8" />
-                              <rect
-                                x="25"
-                                y="75"
-                                rx="5"
-                                ry="5"
-                                width="220"
-                                height="10"
-                              />
-                            </ContentLoader>
-                          )}
+                        <Grid container spacing={3}>
+                          <Grid item xs={12} sm={12}>
+                            <TextFieldFormsy
+                              className="mb-5 mt-20  w-full"
+                              type="text"
+                              name="description"
+                              value={fournisseur.description}
+                              label="Présentation"
+                              multiline
+                              rows="8"
+                              InputProps={{
+                                readOnly: true,
+                              }}
+                            />
+                          </Grid>
                         </Grid>
-                      </Grid>
-                      <Grid container spacing={3} className="">
-                        <Grid item xs={12} sm={6}>
-                          <Typography className="mb-16" variant="h6">
-                            2- Mode de paiement{" "}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography className="mb-16" variant="h6">
-                            3- Durée de votre abonnement
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                      <Divider />
-                      <Grid container spacing={3} className="mt-6 mb-16">
-                        <Grid item xs={12} sm={6}>
-                          {abonnement.paiements ? (
-                            abonnement.paiements.map((item, index) => (
-                              <FormControlLabel
-                                onChange={() => setMode(item["@id"])}
-                                key={index}
-                                value={item["@id"]}
-                                checked={mode === item["@id"]}
-                                control={<Radio />}
-                                label={item.name}
-                              />
-                            ))
-                          ) : (
-                            <ContentLoader
-                              height={70}
-                              width={400}
-                              speed={2}
-                              primaryColor="#f3f3f3"
-                              secondaryColor="#ecebeb"
-                            >
-                              <circle cx="15" cy="17" r="6" />
-                              <rect
-                                x="25"
-                                y="11"
-                                rx="5"
-                                ry="5"
-                                width="100"
-                                height="12"
-                              />
-                              <circle cx="145" cy="17" r="6" />
-                              <rect
-                                x="155"
-                                y="11"
-                                rx="5"
-                                ry="5"
-                                width="100"
-                                height="12"
-                              />
-                            </ContentLoader>
-                          )}
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          {abonnement.durees && duree ? (
-                            abonnement.durees.map((item, index) => (
-                              <div className="inline" key={index}>
-                                <FormControlLabel
-                                  onChange={() => handleChangeDuree(item)}
-                                  value={item["@id"]}
-                                  checked={duree.id === item.id}
-                                  control={<Radio />}
-                                  label={item.name + " mois"}
-                                />
-
-                                {item.remise ? (
-                                  <span className="text-12 text-red">
-                                    (Soit {item.remise}% de remise )
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </div>
-                            ))
-                          ) : (
-                            <ContentLoader
-                              height={70}
-                              width={400}
-                              speed={2}
-                              primaryColor="#f3f3f3"
-                              secondaryColor="#ecebeb"
-                            >
-                              <circle cx="15" cy="17" r="6" />
-                              <rect
-                                x="25"
-                                y="11"
-                                rx="5"
-                                ry="5"
-                                width="100"
-                                height="12"
-                              />
-                              <circle cx="145" cy="17" r="6" />
-                              <rect
-                                x="155"
-                                y="11"
-                                rx="5"
-                                ry="5"
-                                width="100"
-                                height="12"
-                              />
-                            </ContentLoader>
-                          )}
-                        </Grid>
-                      </Grid>
-                      <Divider />
-                      <Grid container spacing={3} className="mt-6 mb-16">
-                        <Grid item xs={12} sm={12}>
-                          <TextFieldFormsy
-                            className="w-full"
-                            type="text"
-                            name="commentaire"
-                            value={form.commentaire}
-                            onChange={handleChange}
-                            label="Commentaire"
-                            autoComplete="commentaire"
-                            validations={{
-                              minLength: 6,
-                            }}
-                            validationErrors={{
-                              minLength:
-                                "La longueur minimale de caractère est 6",
-                            }}
-                            variant="outlined"
-                            multiline
-                            rows="4"
-                          />
-                        </Grid>
-                      </Grid>
-                    </>
-                  )}
-                  {tabValue === 1 && (
-                    <>
-                      <Grid container spacing={3} className="">
-                        <Grid item xs={12}>
-                          <Typography className="mb-16" variant="h6">
-                            Secteurs & Activités
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                      <Divider />
-                      <Grid container spacing={3} className="mt-16 mb-16">
-                        <Grid item xs={12} sm={6}>
-                          <SelectReactFormsy
-                            id="secteurs"
-                            name="secteurs"
-                            value={secteur1}
-                            placeholder="Sélectionner.. "
-                            textFieldProps={{
-                              label: "Secteurs",
-                              InputLabelProps: {
-                                shrink: true,
-                              },
-                              variant: "outlined",
-                            }}
-                            className="mb-16"
-                            options={abonnement.secteurs}
-                            isLoading={abonnement.loadingSecteurs}
-                            onChange={(value) =>
-                              handleChipChange(value, "secteurs")
-                            }
-                            required
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <SelectReactFormsy
-                            id="activites"
-                            name="activites"
-                            value=""
-                            placeholder="Sélectionner.. "
-                            textFieldProps={{
-                              label: "Activités",
-                              InputLabelProps: {
-                                shrink: true,
-                              },
-                              variant: "outlined",
-                            }}
-                            className="mb-16"
-                            options={abonnement.sousSecteurs}
-                            isLoading={abonnement.loadingSS}
-                            onChange={(value) =>
-                              handleChipChange(value, "activites")
-                            }
-                            required
-                          />
-                          <Typography variant="caption">
-                            {offre &&
-                              (offre.nbActivite > sousSecteurs.length
-                                ? `Vous pouvez encore ajouter ${
-                                    offre.nbActivite - sousSecteurs.length
-                                  } activités`
-                                : `Vous avez atteint la limite de ${offre.nbActivite} activités`)}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={3} className="">
-                        <Grid item xs={12} sm={6}>
-                          <Typography className="mb-16" variant="h6">
-                            Activité(s) choisie(s)
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                      <Divider />
-                      <Grid container spacing={3} className="mt-4">
-                        <Grid item xs={12} sm={12}>
-                          <div className={clsx(classes.chips)}>
-                            {sousSecteurs &&
-                              sousSecteurs.length > 0 &&
-                              _.sortBy(sousSecteurs, [
-                                function (o) {
-                                  return o.label;
-                                },
-                              ]).map((item, index) => (
-                                <Chip
-                                  key={index}
-                                  label={item.label}
-                                  color="secondary"
-                                  onDelete={() => handleDelete(item.value)}
-                                  className="mt-8 mr-8"
-                                />
-                              ))}
-                          </div>
-                        </Grid>
-                      </Grid>
-                    </>
-                  )}
-
-                  {tabValue === 2 &&
-                    (!abonnement.loadingFournisseurs
-                      ? fournisseur && (
-                          <Formsy className="flex flex-col">
-                            <Grid container spacing={3} className="mb-5">
-                              <Grid item xs={12} sm={4}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    className=""
-                                    type="text"
-                                    name="fullname"
-                                    value={
-                                      fournisseur.civilite +
-                                      " " +
-                                      fournisseur.firstName +
-                                      " " +
-                                      fournisseur.lastName
-                                    }
-                                    label="Nom complet"
-                                    InputProps={{
-                                      readOnly: true,
-                                    }}
-                                    fullWidth
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    className=""
-                                    name="email"
-                                    value={fournisseur.email}
-                                    label="Email"
-                                    fullWidth
-                                    InputProps={{
-                                      readOnly: true,
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <Icon
-                                            className="text-20"
-                                            color="action"
-                                          >
-                                            email
-                                          </Icon>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <TextFieldFormsy
-                                  className=""
-                                  type="text"
-                                  name="phonep"
-                                  id="phonep"
-                                  value={fournisseur.phone}
-                                  label="Téléphone"
-                                  InputProps={{
-                                    readOnly: true,
-                                    endAdornment: (
-                                      <InputAdornment position="end">
-                                        <Icon
-                                          className="text-20"
-                                          color="action"
-                                        >
-                                          local_phone
-                                        </Icon>
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                  fullWidth
-                                />
-                              </Grid>
-                            </Grid>
-                            <Divider />
-                            <Grid container spacing={3} className="mb-5">
-                              <Grid item xs={12} sm={8}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    className="mt-20"
-                                    label="Raison sociale"
-                                    id="societe"
-                                    name="societe"
-                                    value={fournisseur.societe}
-                                    fullWidth
-                                    InputProps={{
-                                      readOnly: true,
-                                    }}
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    className="mt-20"
-                                    name="fix"
-                                    value={fournisseur.fix}
-                                    label="Fixe"
-                                    InputProps={{
-                                      readOnly: true,
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <Icon
-                                            className="text-20"
-                                            color="action"
-                                          >
-                                            local_phone
-                                          </Icon>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    fullWidth
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={8}>
-                                <TextFieldFormsy
-                                  id="secteur"
-                                  className=""
-                                  name="secteur"
-                                  label="Produits"
-                                  value={
-                                    fournisseur.categories
-                                      ? _.join(
-                                          _.map(fournisseur.categories, "name"),
-                                          ", "
-                                        )
-                                      : ""
-                                  }
-                                  fullWidth
-                                  multiline
-                                  rows="3"
-                                  InputProps={{
-                                    readOnly: true,
-                                  }}
-                                />
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    id="website"
-                                    className=""
-                                    type="text"
-                                    name="website"
-                                    value={fournisseur.website}
-                                    label="Site Web"
-                                    InputProps={{
-                                      readOnly: true,
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <Icon
-                                            className="text-20"
-                                            color="action"
-                                          >
-                                            language
-                                          </Icon>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    fullWidth
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={8}>
-                                <div className="flex">
-                                  {fournisseur.ice ? (
-                                    <TextFieldFormsy
-                                      className=""
-                                      type="text"
-                                      name="ice"
-                                      id="ice"
-                                      value={fournisseur.ice}
-                                      label="ICE"
-                                      fullWidth
-                                      InputProps={{
-                                        readOnly: true,
-                                      }}
-                                    />
-                                  ) : (
-                                    ""
-                                  )}
-                                </div>
-                              </Grid>
-                            </Grid>
-                            <Divider />
-
-                            <Grid container spacing={3} className="mb-5">
-                              <Grid item xs={12} sm={8}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    className="mt-20"
-                                    type="text"
-                                    name="adresse1"
-                                    id="adresse1"
-                                    value={fournisseur.adresse1}
-                                    label="Adresse 1"
-                                    InputProps={{
-                                      readOnly: true,
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <Icon
-                                            className="text-20"
-                                            color="action"
-                                          >
-                                            location_on
-                                          </Icon>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    fullWidth
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <TextFieldFormsy
-                                  className="mt-20"
-                                  type="text"
-                                  name="pays"
-                                  id="pays"
-                                  value={
-                                    fournisseur.pays
-                                      ? fournisseur.pays.name
-                                      : ""
-                                  }
-                                  label="Pays"
-                                  InputProps={{
-                                    readOnly: true,
-                                  }}
-                                  fullWidth
-                                />
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    className=""
-                                    type="text"
-                                    name="adresse2"
-                                    value={fournisseur.adresse2}
-                                    label="Adresse 2"
-                                    InputProps={{
-                                      readOnly: true,
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <Icon
-                                            className="text-20"
-                                            color="action"
-                                          >
-                                            location_on
-                                          </Icon>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    fullWidth
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <div className="flex">
-                                  <TextFieldFormsy
-                                    className=""
-                                    name="codepostal"
-                                    value={String(fournisseur.codepostal)}
-                                    label="Code Postal"
-                                    fullWidth
-                                    InputProps={{
-                                      readOnly: true,
-                                    }}
-                                  />
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={4}>
-                                <TextFieldFormsy
-                                  className=""
-                                  type="text"
-                                  name="ville"
-                                  id="ville"
-                                  value={
-                                    fournisseur.ville
-                                      ? fournisseur.ville.name
-                                      : ""
-                                  }
-                                  label="Ville"
-                                  InputProps={{
-                                    readOnly: true,
-                                  }}
-                                  fullWidth
-                                />
-                              </Grid>
-                            </Grid>
-                            <Divider />
-
-                            <Grid container spacing={3}>
-                              <Grid item xs={12} sm={12}>
-                                <TextFieldFormsy
-                                  className="mb-5 mt-20  w-full"
-                                  type="text"
-                                  name="description"
-                                  value={fournisseur.description}
-                                  label="Présentation"
-                                  multiline
-                                  rows="8"
-                                  InputProps={{
-                                    readOnly: true,
-                                  }}
-                                />
-                              </Grid>
-                            </Grid>
-                          </Formsy>
-                        )
-                      : "")}
-                </div>
-              </Formsy>
-            )
+                      </Formsy>
+                    )
+                    : "")}
+              </div>
+            </Formsy>
+          )
           : ""
       }
       innerScroll

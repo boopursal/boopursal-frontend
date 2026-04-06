@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  IconButton,
-  Typography,
-  CircularProgress,
-  Collapse,
-} from "@material-ui/core";
+import { Card, IconButton, Typography, CircularProgress, Collapse, makeStyles, Box, Icon } from "@material-ui/core";
 import * as Actions from "../store/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    borderRadius: 20,
+    background: "#ffffff",
+    border: "1px solid #f0f0f0",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+    overflow: 'hidden',
+  },
+  header: {
+    padding: theme.spacing(3),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontSize: "1.1rem",
+    fontWeight: 700,
+    color: "#1f2937",
+  },
   expand: {
     transform: "rotate(0deg)",
-    marginLeft: "auto",
     transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest,
     }),
@@ -23,65 +33,86 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
+  tableWrapper: {
+    padding: theme.spacing(0, 2, 2, 2),
+    overflowX: 'auto',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    "& th": {
+      textAlign: 'left',
+      padding: theme.spacing(1.5, 1),
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      color: "#9ca3af",
+      textTransform: "uppercase",
+      letterSpacing: "0.05em",
+      borderBottom: "1px solid #f3f4f6",
+    },
+    "& td": {
+      padding: theme.spacing(2, 1),
+      fontSize: "0.875rem",
+      color: "#374151",
+      borderBottom: "1px solid #f9fafb",
+    }
+  },
+  socName: {
+    fontWeight: 600,
+    color: "#111827",
+  },
+  stats: {
+    textAlign: 'right',
+    fontWeight: 700,
+    color: "#2563eb",
+  }
 }));
 
 function Widget6(props) {
-  const dispatch = useDispatch();
   const classes = useStyles();
+  const dispatch = useDispatch();
   const widget6 = useSelector(({ dashboardAdmin }) => dashboardAdmin.widget6);
   const [expanded, setExpanded] = useState(true);
 
   useEffect(() => {
     dispatch(Actions.getWidget6());
-    return () => {
-      dispatch(Actions.cleanUpWidget6());
-    };
+    return () => dispatch(Actions.cleanUpWidget6());
   }, [dispatch]);
 
-  function handleExpandClick() {
-    setExpanded(!expanded);
-  }
-
   return (
-    <Card className="w-full rounded-8 shadow-none border-1">
-      <div className="p-16 pr-4 flex flex-row items-center justify-between">
-        <Typography variant="h6">Top 10 Fournisseur</Typography>
-        <div>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="Show more"
-          >
-            <ExpandMoreIcon />
-          </IconButton>
-        </div>
+    <div className={classes.root}>
+      <div className={classes.header}>
+        <Typography className={classes.title}>Top 10 Exportateurs</Typography>
+        <IconButton
+          className={clsx(classes.expand, expanded && classes.expandOpen)}
+          onClick={() => setExpanded(!expanded)}
+          size="small"
+        >
+          <ExpandMoreIcon />
+        </IconButton>
       </div>
+
       {widget6.loading && (
-        <div className="flex p-16 justify-center ">
-          <CircularProgress />
-        </div>
+        <Box p={4} display="flex" justifyContent="center"><CircularProgress size={24} /></Box>
       )}
 
       {widget6.data && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <div className="h-200 sm:h-320 sm:pb-16 overflow-scroll">
-            <table className="simple">
+          <div className={classes.tableWrapper}>
+            <table className={classes.table}>
               <thead>
                 <tr>
-                  <th></th>
-                  <th className="text-right">consulté</th>
-                  <th className="text-right">Tél. vu</th>
+                  <th>Fournisseur</th>
+                  <th style={{ textAlign: 'right' }}>Vues</th>
+                  <th style={{ textAlign: 'right' }}>Tél</th>
                 </tr>
               </thead>
               <tbody>
                 {widget6.data.map((row, index) => (
                   <tr key={index}>
-                    <td>{row.societe}</td>
-                    <td className="text-right">{row.visite}</td>
-                    <td className="text-right">{row.phone_vu}</td>
+                    <td className={classes.socName}>{row.societe}</td>
+                    <td className={classes.stats}>{row.visite}</td>
+                    <td className={classes.stats} style={{ color: '#6b7280' }}>{row.phone_vu}</td>
                   </tr>
                 ))}
               </tbody>
@@ -89,7 +120,7 @@ function Widget6(props) {
           </div>
         </Collapse>
       )}
-    </Card>
+    </div>
   );
 }
 

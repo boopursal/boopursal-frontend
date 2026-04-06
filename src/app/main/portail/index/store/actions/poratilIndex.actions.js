@@ -18,7 +18,7 @@ export const SET_PORTAIL_SEARCH_TEXT = "[PORTAIL APP] SET PORTAIL SEARCH TEXT";
 export const CLEAN_UP_DEVIS = "[PORTAIL APP] CLEAN_UP_DEVIS";
 export const CLEAN_UP_PRODUCT = "[PORTAIL APP] CLEAN_UP_PRODUCT";
 export const CLEAN_UP_NEW = "[PORTAIL APP] CLEAN_UP_NEW";
-export const CLEAN_UP_CATEGORIES = "[PORTAIL APP] CLEAN_UP_NEW";
+export const CLEAN_UP_CATEGORIES = "[PORTAIL APP] CLEAN_UP_CATEGORIES";
 
 export function cleanUpCategories() {
   return (dispatch) =>

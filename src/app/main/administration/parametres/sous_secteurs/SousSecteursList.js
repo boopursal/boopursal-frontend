@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ReactTable from "react-table";
 import * as Actions from './store/actions';
 import _ from '@lodash';
-import Tooltip from '@material-ui/core/Tooltip'
-import { withStyles } from '@material-ui/core/styles';
 
 function SousSecteursList(props) {
     const dispatch = useDispatch();
@@ -17,16 +15,6 @@ function SousSecteursList(props) {
     const searchText = useSelector(({ sous_secteursApp }) => sous_secteursApp.sous_secteurs.searchText);
 
     const [filteredData, setFilteredData] = useState(null);
-    const HtmlTooltip = withStyles(theme => ({
-        tooltip: {
-            maxWidth: 220,
-            fontSize: theme.typography.pxToRem(12),
-            border: '1px solid #dadde9',
-            '& b': {
-                fontWeight: theme.typography.fontWeightMedium,
-            },
-        },
-    }))(Tooltip);
 
     useEffect(() => {
         dispatch(Actions.getSecteurs());

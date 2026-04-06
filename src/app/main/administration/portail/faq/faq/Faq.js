@@ -171,6 +171,8 @@ function Faq(props) {
 
                 form && (
                     <Tabs
+                        value={tabValue}
+                        onChange={(e, value) => setTabValue(value)}
                         indicatorColor="secondary"
                         textColor="secondary"
                         variant="scrollable"

@@ -9,7 +9,8 @@ import {
     Icon,
     Select,
     IconButton,
-    TextField
+    TextField,
+    Paper
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { FuseAnimate } from '@fuse';
@@ -69,6 +70,17 @@ function NewsApp(props) {
     const dispatch = useDispatch();
     const classes = useStyles();
     const news = useSelector(({ newsApp }) => newsApp.news);
+    const query = new URLSearchParams(props.location.search);
+    const q = query.get('q');
+
+    useEffect(() => {
+        if (q && news.parametres.titre !== q) {
+            dispatch(Actions.setParametresData({
+                ...news.parametres,
+                titre: q
+            }));
+        }
+    }, [dispatch, q, news.parametres]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -83,28 +95,36 @@ function NewsApp(props) {
     };
 
     const handlePreviousClick = () => {
-        news.parametres.page = Math.max(news.parametres.page - 1, 1);
-        dispatch(Actions.setParametresData(news.parametres));
+        dispatch(Actions.setParametresData({
+            ...news.parametres,
+            page: Math.max(news.parametres.page - 1, 1)
+        }));
         scrollToTopIfExists();
     };
 
     const handleNextClick = () => {
-        news.parametres.page = Math.min(news.parametres.page + 1, news.pageCount);
-        dispatch(Actions.setParametresData(news.parametres));
+        dispatch(Actions.setParametresData({
+            ...news.parametres,
+            page: Math.min(news.parametres.page + 1, news.pageCount)
+        }));
         scrollToTopIfExists();
     };
 
     const handleChangeItems = (ev) => {
-        news.parametres.page = 1;
-        news.parametres.itemsPerPage = ev.target.value;
-        dispatch(Actions.setParametresData(news.parametres));
+        dispatch(Actions.setParametresData({
+            ...news.parametres,
+            page: 1,
+            itemsPerPage: ev.target.value
+        }));
         scrollToTopIfExists();
     };
 
     const handleTitreChange = (ev) => {
-        news.parametres.page = 1;
-        news.parametres.titre = ev.target.value;
-        dispatch(Actions.setParametresData(news.parametres));
+        dispatch(Actions.setParametresData({
+            ...news.parametres,
+            page: 1,
+            titre: ev.target.value
+        }));
         scrollToTopIfExists();
     };
 
@@ -179,7 +199,21 @@ function NewsApp(props) {
                     ))
                 )}
 
-                {news.data && (
+                {news.data && news.data.length === 0 && !news.loading && (
+                    <Grid item xs={12}>
+                        <Paper className="p-32 w-full my-16 text-center flex flex-col items-center justify-center min-h-md">
+                            <Icon className="text-64 mb-16" color="action">article_off</Icon>
+                            <Typography variant="h5" className="mb-16 font-bold text-blue-900" >
+                                Aucune actualité trouvée
+                            </Typography>
+                            <Typography variant="body1" className="mb-32 text-gray-600 max-w-sm mx-auto">
+                                Désolé, nous n'avons trouvé aucune actualité correspondant à votre recherche "<strong>{q}</strong>".
+                            </Typography>
+                        </Paper>
+                    </Grid>
+                )}
+
+                {news.data && news.data.length > 0 && (
                     <Grid container spacing={2} className="justify-between mt-16">
                         <Grid item xs={12} md={6}>
                             Montrer:&ensp;

@@ -106,7 +106,7 @@ export function saveAbonnement(data, sousSecteurs, offre, mode, duree, remise, p
         mode: mode,
         duree: duree['@id'],
         fournisseur: data.fournisseur.value,
-        commentaire : data.commentaire,
+        commentaire: data.commentaire,
         statut: paiement,
         remise: remise ? parseFloat(remise) : 0
     }
@@ -141,7 +141,7 @@ export function updateAbonnement(data, sousSecteurs, offre, mode, duree, remise,
         }),
         mode: mode,
         duree: duree['@id'],
-        commentaire : data.commentaire,
+        commentaire: data.commentaire,
         statut: paiement,
         remise: remise ? parseFloat(remise) : 0
     }
@@ -167,7 +167,7 @@ export function updateAbonnement(data, sousSecteurs, offre, mode, duree, remise,
 
 }
 
-export function saveRenouvellement(data, sousSecteurs, offre, mode, duree, remise, paiement,type) {
+export function saveRenouvellement(data, sousSecteurs, offre, mode, duree, remise, paiement, type) {
 
 
     var postData = {
@@ -180,9 +180,9 @@ export function saveRenouvellement(data, sousSecteurs, offre, mode, duree, remis
         duree: duree['@id'],
         fournisseur: data.fournisseur.value,
         statut: paiement,
-        commentaire : data.commentaire,
+        commentaire: data.commentaire,
         remise: remise ? parseFloat(remise) : 0,
-        type: type == '1' ? true : false
+        type: type === '1' ? true : false
     }
     const request = agent.post('/api/abonnements', postData);
 

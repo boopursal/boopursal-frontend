@@ -19,7 +19,7 @@ export function cleanUp() {
 export function getAbonnements(parametres) {
     var search = '';
     if (parametres.search.length > 0) {
-        parametres.search.map(function (item, i) {
+        parametres.search.forEach(function (item, i) {
             if (item.value) {
                 if (item.id === 'created' || item.id === 'expired') {
                     search += '&' + item.id + '[after]=' + item.value

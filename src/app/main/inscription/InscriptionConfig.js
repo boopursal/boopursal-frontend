@@ -4,17 +4,18 @@ import React from 'react';
 export const InscriptionConfig = {
     settings: {
         layout: {
-            style: 'layout3',
+            style: 'layout1',
             config: {
-                mode: 'container',
+                mode: 'fullwidth',
+                scroll: 'content',
                 navbar: {
                     display: false
                 },
                 toolbar: {
-                    display: true
+                    display: false
                 },
                 footer: {
-                    display: true,
+                    display: false,
                     style: 'static'
                 },
                 leftSidePanel: {

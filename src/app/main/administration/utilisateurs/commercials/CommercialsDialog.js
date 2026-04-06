@@ -65,7 +65,7 @@ function CommercialsDialog(props) {
      * Dialog type: 'edit'
      */
     if (commercialsDialog.type === "edit" && commercialsDialog.data) {
-      let villes = commercialsDialog.data.villes.map((item) => ({
+      let villes = (commercialsDialog.data.villes || []).map((item) => ({
         value: item["@id"],
         label: item.name,
       }));
@@ -106,11 +106,11 @@ function CommercialsDialog(props) {
 
   useEffect(() => {
     if (avatar) {
-      setForm(_.set({ ...form }, "avatar", avatar));
+      setForm((f) => _.set({ ...f }, "avatar", avatar));
     } else {
-      setForm(_.set({ ...form }, "avatar", null));
+      setForm((f) => _.set({ ...f }, "avatar", null));
     }
-  }, [avatar]);
+  }, [avatar, setForm]);
 
   function closeComposeDialog() {
     // commercialsDialog.type === 'edit' ? dispatch(Actions.closeEditcommercialsDialog()) : '';

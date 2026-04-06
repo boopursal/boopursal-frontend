@@ -31,21 +31,31 @@ export const parcourirSecteursConfig = {
 
     routes: [
         {
-            path     : '/annuaire-entreprises/:secteur/:id-:slug',
-            exact    : true,
+            path: '/annuaire-entreprises/:secteur/:id(\\d+)-:slug',
+            exact: true,
             component: React.lazy(() => import('./activite/Activite'))
         },
         {
-            path     : '/annuaire-entreprises/:id-:slug',
-            exact    : true,
+            path: '/annuaire-entreprises/:secteur/:slug',
+            exact: true,
+            component: React.lazy(() => import('./activite/Activite'))
+        },
+        {
+            path: '/annuaire-entreprises/:id(\\d+)-:slug',
+            exact: true,
             component: React.lazy(() => import('./secteur/Secteur'))
         },
         {
-            path     : '/annuaire-entreprises',
-            exact    : true,
+            path: '/annuaire-entreprises/:slug',
+            exact: true,
+            component: React.lazy(() => import('./secteur/Secteur'))
+        },
+        {
+            path: '/annuaire-entreprises',
+            exact: true,
             component: React.lazy(() => import('./secteurs/Secteurs'))
         },
-       
+
     ]
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Avatar, Typography } from "@material-ui/core";
+import { Avatar, Typography, Box } from "@material-ui/core";
 import clsx from "clsx";
 import { useSelector } from "react-redux";
 import { URL_SITE } from "@fuse/Constants";
@@ -7,70 +7,109 @@ import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    "&.user": {
-      "& .username, & .email": {
-        transition: theme.transitions.create("opacity", {
-          duration: theme.transitions.duration.shortest,
-          easing: theme.transitions.easing.easeInOut,
-        }),
-      },
-    },
+    padding: theme.spacing(4, 2),
+    background: 'transparent',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
+    position: 'relative'
+  },
+  avatarContainer: {
+    position: 'relative',
+    padding: 3,
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #11cdef 0, #1171ef 100%)',
+    boxShadow: '0 8px 16px -4px rgba(17, 205, 239, 0.4)',
+    marginBottom: 16,
+    transition: 'all 0.3s ease',
+    '&:hover': {
+        transform: 'scale(1.05)',
+        boxShadow: '0 12px 20px -4px rgba(17, 205, 239, 0.5)',
+    }
   },
   avatar: {
-    width: 72,
-    height: 72,
-    position: "absolute",
-    top: 92,
-    padding: 8,
-    background: theme.palette.background.default,
-    boxSizing: "content-box",
-    left: "50%",
-    transform: "translateX(-50%)",
-    transition: theme.transitions.create("all", {
-      duration: theme.transitions.duration.shortest,
-      easing: theme.transitions.easing.easeInOut,
-    }),
+    width: 80,
+    height: 80,
+    borderRadius: '50%',
+    border: '4px solid #ffffff',
+    backgroundColor: '#f6f9fc',
+    fontSize: '2rem',
+    fontWeight: 800,
+    color: '#32325d',
     "& > img": {
       borderRadius: "50%",
     },
   },
+  displayName: {
+    fontFamily: 'Open Sans, sans-serif',
+    fontSize: '1.2rem',
+    fontWeight: 700,
+    color: '#32325d',
+    letterSpacing: '-0.025em',
+    marginBottom: 2,
+    lineHeight: 1.2
+  },
+  email: {
+    fontFamily: 'Open Sans, sans-serif',
+    fontSize: '0.85rem',
+    fontWeight: 400,
+    color: '#8898aa',
+    marginBottom: 20
+  },
+  badge: {
+    padding: '6px 14px',
+    background: '#f6f9fc',
+    border: '1px solid #e9ecef',
+    borderRadius: 100,
+    color: '#5e72e4',
+    fontSize: '0.7rem',
+    fontWeight: 800,
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    display: 'inline-flex',
+    alignItems: 'center'
+  }
 }));
 
 function UserNavbarHeader(props) {
   const user = useSelector(({ auth }) => auth.user);
-
   const classes = useStyles();
 
+  if (!user || !user.data) return null;
+
   return (
-    <AppBar
-      position="static"
-      color="primary"
-      elevation={0}
-      classes={{ root: classes.root }}
-      className="user relative flex flex-col items-center justify-center pt-24 pb-64 mb-32 z-0"
-    >
-      <Typography
-        className="username text-16 whitespace-no-wrap"
-        color="inherit"
-      >
-        {user.data.displayName}
+    <div className={classes.root}>
+      <div className={classes.avatarContainer}>
+        <Avatar
+          className={classes.avatar}
+          alt="User"
+          src={
+            user.data.photoURL && user.data.photoURL !== ""
+              ? URL_SITE + user.data.photoURL
+              : "assets/images/avatars/profile.jpg"
+          }
+        >
+          {user.data.displayName ? user.data.displayName[0] : 'B'}
+        </Avatar>
+      </div>
+      
+      <Typography className={classes.displayName}>
+        {user.data.displayName || 'Compte Admin'}
       </Typography>
-      <Typography
-        className="email text-13 mt-8 opacity-50 whitespace-no-wrap"
-        color="inherit"
-      >
-        {user.data.email}
+      
+      <Typography className={classes.email}>
+        {user.data.email || 'admin@boopursal.com'}
       </Typography>
-      <Avatar
-        className={clsx(classes.avatar, "avatar")}
-        alt="user photo"
-        src={
-          user.data.photoURL && user.data.photoURL !== ""
-            ? URL_SITE + user.data.photoURL
-            : "assets/images/avatars/profile.jpg"
-        }
-      />
-    </AppBar>
+
+      <div className={classes.badge}>
+        {user.role && user.role.toString().toUpperCase().includes('ADMIN')
+          ? 'Administrateur'
+          : user.role && user.role.toString().toUpperCase().includes('ACHETEUR')
+            ? 'Acheteur Pro'
+            : 'Fournisseur'}
+      </div>
+    </div>
   );
 }
 

@@ -8,6 +8,12 @@ export const Step3AppConfig =
             layout: {
                 config: {
 
+                    navbar: {
+                        display: false
+                    },
+                    toolbar: {
+                        display: false
+                    },
                     footer: {
                         display: false
                     },

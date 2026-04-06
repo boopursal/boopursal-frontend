@@ -1,220 +1,143 @@
-import React, { useEffect, useState } from "react";
-import { Icon, IconButton, Tooltip } from "@material-ui/core";
-import { FuseAnimate } from "@fuse";
-import { withRouter } from "react-router-dom";
-import * as Actions from "../store/actions";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import { FuseUtils, URL_SITE } from "@fuse";
-import ReactTable from "react-table";
-import _ from "@lodash";
+import React, { useEffect, useState } from 'react';
+import { Icon, IconButton, Tooltip, Avatar, Typography, Chip } from '@material-ui/core';
+import { FuseAnimate, URL_SITE, FuseUtils } from '@fuse';
+import { withRouter } from 'react-router-dom';
+import * as Actions from '../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
+import moment from 'moment';
+import _ from '@lodash';
+import clsx from 'clsx';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  newsImage: {
+    width: 64,
+    height: 44,
+    borderRadius: 8,
+    border: '1px solid #f1f5f9',
+    objectFit: 'cover'
+  },
+  newsTitle: {
+    fontWeight: 900,
+    color: '#1e293b',
+    fontSize: '0.95rem',
+    letterSpacing: '-0.01em'
+  },
+  statusBadge: {
+    fontWeight: 900,
+    fontSize: '0.65rem',
+    textTransform: 'uppercase',
+    height: 22,
+    borderRadius: 6,
+    '&.active': { background: '#f0fdf4', color: '#166534', border: '1px solid #bcf0da' },
+    '&.inactive': { background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0' }
+  }
+}));
 
 function ActualitesTable(props) {
+  const classes = useStyles();
   const dispatch = useDispatch();
-  const actualites = useSelector(
-    ({ actualiteApp }) => actualiteApp.actualites.data
-  );
-  const loading = useSelector(
-    ({ actualiteApp }) => actualiteApp.actualites.loading
-  );
-  const pageCount = useSelector(
-    ({ actualiteApp }) => actualiteApp.actualites.pageCount
-  );
-  const parametres = useSelector(
-    ({ actualiteApp }) => actualiteApp.actualites.parametres
-  );
-
-  const searchText = useSelector(
-    ({ actualiteApp }) => actualiteApp.actualites.searchText
-  );
+  const actualites = useSelector(({ actualiteApp }) => actualiteApp.actualites.data);
+  const loading = useSelector(({ actualiteApp }) => actualiteApp.actualites.loading);
+  const pageCount = useSelector(({ actualiteApp }) => actualiteApp.actualites.pageCount);
+  const parametres = useSelector(({ actualiteApp }) => actualiteApp.actualites.parametres);
+  const searchText = useSelector(({ actualiteApp }) => actualiteApp.actualites.searchText);
 
   const [filteredData, setFilteredData] = useState(null);
 
   useEffect(() => {
-    function getFilteredArray(entities, searchText) {
-      const arr = Object.keys(entities).map((id) => entities[id]);
-      if (searchText.length === 0) {
-        return arr;
-      }
-      return FuseUtils.filterArrayByString(arr, searchText);
-    }
-
     if (actualites) {
-      setFilteredData(getFilteredArray(actualites, searchText));
+      const arr = Object.keys(actualites).map((id) => actualites[id]);
+      setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
     }
   }, [actualites, searchText]);
 
-  if (!filteredData) {
-    return null;
-  }
+  if (!filteredData) return null;
 
   return (
-    <FuseAnimate animation="transition.slideUpIn" delay={300}>
-      <ReactTable
-        className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-        getTrProps={(state, rowInfo, column) => {
-          return {
-            className: "h-64 cursor-pointer",
-            onClick: (e, handleOriginal) => {
-              if (rowInfo) {
-                props.history.push(
-                  "/admin/actualites/" + rowInfo.original.slug
-                );
-              }
-            },
-          };
-        }}
-        getTheadProps={(state, rowInfo, column) => {
-          return {
-            className: "h-64 font-bold",
-          };
-        }}
-        data={filteredData}
-        columns={[
-          {
-            Header: "",
-            accessor: "image",
-            Cell: (row) =>
-              row.original.image ? (
-                <img
-                  className="w-full block rounded"
-                  src={URL_SITE + row.original.image.url}
-                  alt={row.original.titre}
-                />
-              ) : (
-                <img
-                  className="w-full block rounded"
-                  src="assets/images/ecommerce/product-image-placeholder.png"
-                  alt={row.original.titre}
-                />
-              ),
-            className: "justify-center",
-            width: 64,
-            sortable: false,
-            filterable: false,
-          },
-          {
-            Header: "Titre",
-            accessor: "titre",
-            filterable: false,
-            Cell: (row) => (
-              <div className="flex items-center">
-                {_.capitalize(
-                  _.truncate(row.original.titre, {
-                    length: 20,
-                  })
-                )}
-              </div>
-            ),
-          },
-          {
-            Header: "Description",
-            accessor: "description",
-            filterable: false,
-            Cell: (row) => (
-              <div className="flex items-center">
-                {_.capitalize(
-                  _.truncate(row.original.description, {
-                    length: 50,
-                  })
-                )}
-              </div>
-            ),
-          },
-          {
-            Header: "Date de création",
-            accessor: "created",
-            filterable: false,
-            Cell: (row) =>
-              moment(row.original.created).format("DD/MM/YYYY HH:mm"),
-          },
-
-          {
-            Header: "Publiée",
-            accessor: "isActive",
-            Cell: (row) =>
-              row.original.isActive ? (
-                <Tooltip title="Publiée">
-                  <IconButton
-                    className="text-green text-20"
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      dispatch(
-                        Actions.PublishActualite(
-                          row.original,
-                          false,
-                          parametres
-                        )
-                      );
-                    }}
-                  >
-                    <Icon>check_circle</Icon>
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <Tooltip title="Privée">
-                  <IconButton
-                    className="text-red text-20"
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      dispatch(
-                        Actions.PublishActualite(row.original, true, parametres)
-                      );
-                    }}
-                  >
-                    <Icon>remove_circle</Icon>
-                  </IconButton>
-                </Tooltip>
-              ),
-          },
-          {
-            Header: "",
-            Cell: (row) => (
-              <div className="flex items-center">
-                <Tooltip title="Supprimer">
-                  <IconButton
-                    className="text-red text-20"
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      dispatch(
-                        Actions.removeActualite(row.original, parametres)
-                      );
-                    }}
-                  >
-                    <Icon>delete</Icon>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Editer">
-                  <IconButton className="text-teal text-20">
-                    <Icon>edit</Icon>
-                  </IconButton>
-                </Tooltip>
-              </div>
-            ),
-          },
-        ]}
-        manual
-        defaultSortDesc={true}
-        pages={pageCount}
-        page={parametres.page - 1}
-        defaultPageSize={10}
-        loading={loading}
-        showPageSizeOptions={false}
-        onPageChange={(pageIndex) => {
-          parametres.page = pageIndex + 1;
-          dispatch(Actions.setParametresData(parametres));
-        }}
-        onSortedChange={(newSorted, column, shiftKey) => {
-          parametres.page = 1;
-          parametres.filter.id = newSorted[0].id;
-          parametres.filter.direction = newSorted[0].desc ? "desc" : "asc";
-          dispatch(Actions.setParametresData(parametres));
-        }}
-        noDataText="No Actualite found"
-        loadingText="Chargement..."
-        ofText="sur"
-      />
-    </FuseAnimate>
+    <BoopursalTable
+      title="Gestion du Portail Actualités"
+      icon="newspaper"
+      data={filteredData}
+      loading={loading}
+      pageCount={pageCount}
+      page={parametres.page - 1}
+      searchText={searchText}
+      onSearchChange={(ev) => dispatch(Actions.setActualitesSearchText(ev))}
+      onPageChange={(pageIndex) => {
+        parametres.page = pageIndex + 1;
+        dispatch(Actions.setParametresData(parametres))
+      }}
+      onSortedChange={(newSorted) => {
+        parametres.page = 1;
+        parametres.filter.id = newSorted[0].id;
+        parametres.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
+        dispatch(Actions.setParametresData(parametres))
+      }}
+      onRowClick={(row) => props.history.push('/portail/actualites/' + row.id)}
+      columns={[
+        {
+          Header: "Illustration",
+          accessor: "image",
+          Cell: (row) => (
+            <img
+              className={classes.newsImage}
+              alt="News"
+              src={row.original.image ? URL_SITE + row.original.image.url : "assets/images/defaults/news-placeholder.jpg"}
+            />
+          ),
+          width: 100,
+          sortable: false,
+        },
+        {
+          Header: "Titre de l'Actualité",
+          accessor: "titre",
+          Cell: (row) => (
+            <div className="flex flex-col">
+              <Typography className={classes.newsTitle}>{_.truncate(row.original.titre, { length: 50 })}</Typography>
+              <Typography variant="caption" className="text-slate-400 font-600">
+                Publié le {moment(row.original.created).format("DD/MM/YYYY")}
+              </Typography>
+            </div>
+          ),
+          minWidth: 300
+        },
+        {
+          Header: "Visibilité",
+          accessor: "isActive",
+          Cell: (row) => (
+            <Chip
+              className={clsx(classes.statusBadge, row.original.isActive ? 'active' : 'inactive')}
+              label={row.original.isActive ? "Publié" : "Brouillon"}
+            />
+          ),
+          width: 120
+        },
+        {
+          Header: "Actions",
+          sortable: false,
+          Cell: (row) => (
+            <div className="flex items-center gap-8">
+              <Tooltip title="Éditer">
+                <IconButton size="small" className="text-slate-400 hover:text-blue-600">
+                  <Icon className="text-18">edit</Icon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Supprimer">
+                <IconButton size="small" className="text-slate-400 hover:text-red-600" onClick={(ev) => {
+                  ev.stopPropagation();
+                  dispatch(Actions.removeActualite(row.original, parametres));
+                }}>
+                  <Icon className="text-18">delete</Icon>
+                </IconButton>
+              </Tooltip>
+            </div>
+          ),
+          width: 100
+        }
+      ]}
+    />
   );
 }
 

@@ -180,11 +180,9 @@ export function addBlackListe(newBlackListe, id_acheteur) {
         
         const request = agent.post('/api/black_listes', newBlackListe);
         //const request = agent.post('/api/Mediateur', newMediateur);
-        const mediateurRequest = agent.post('/api/mediateurs', newBlackListe);
-
         return request.then((response) =>
             Promise.all([
-                mediateurRequest,
+                agent.post('/api/mediateurs', newBlackListe),
                 dispatch({
                     type: SAVE_DATA
                 }),

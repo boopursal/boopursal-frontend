@@ -1,346 +1,251 @@
 import React from "react";
 import {
   Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Tabs,
-  Tab,
-  Divider,
   Typography,
+  Button,
+  Icon,
+  Paper,
+  Divider,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { FuseAnimate, LOCAL_CURRENCY } from "@fuse";
 import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
-    //backgroundColor: theme.palette.background.paper,
-    //border: "2px solid #f48d35",
-    borderRadius: 20,
-    marginTop: "-109px",
+    padding: '48px 40px',
+    backgroundColor: '#ffffff',
     [theme.breakpoints.down("sm")]: {
-      marginTop: 0, // 👈 Annulé sur mobile
+      padding: '24px 16px',
+    }
+  },
+  card: {
+    borderRadius: 8,
+    backgroundColor: "#ffffff",
+    border: "1px solid #e2e8f0",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    position: "relative",
+    padding: '0 0 32px',
+    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.03)',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+      borderColor: '#fbd38d'
+    }
+  },
+  highlightedCard: {
+    backgroundColor: '#fffffb',
+    borderColor: '#f6ad55',
+    borderWidth: 2,
+    zIndex: 10
+  },
+  ribbon: {
+    position: 'absolute',
+    top: -12,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    backgroundColor: '#cc0000',
+    color: 'white',
+    padding: '4px 20px',
+    fontSize: '0.75rem',
+    fontWeight: 800,
+    zIndex: 20,
+    borderRadius: '4px 4px 0 0',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      bottom: -6,
+      left: 0,
+      borderLeft: '10px solid #990000',
+      borderBottom: '6px solid transparent'
     },
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      bottom: -6,
+      right: 0,
+      borderRight: '10px solid #990000',
+      borderBottom: '6px solid transparent'
+    }
   },
-  header1: {
-    height: 300,
-    background:
-      "linear-gradient(to right, " +
-      theme.palette.secondary.dark +
-      " 0%, " +
-      theme.palette.secondary.main +
-      " 100%)",
-    color: "white",
+  cardHeader: {
+    padding: '48px 24px 24px',
+    textAlign: 'center'
   },
-  tabPanel: {
-    padding: theme.spacing(2),
+  planName: {
+    fontSize: '1.5rem',
+    fontWeight: 950,
+    color: '#1e293b',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    marginBottom: 12
   },
-  header: {
-    padding: theme.spacing(2),
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: "2.0rem",
-    letterSpacing: "0.5px",
+  divider: {
+    width: 60,
+    height: 2,
+    backgroundColor: '#f6ad55',
+    margin: '0 auto 16px',
+  },
+  subtitle: {
+    fontSize: '0.8rem',
+    color: '#64748b',
+    marginBottom: 20,
+    lineHeight: 1.4,
+    minHeight: 45
+  },
+  priceBox: {
+    marginTop: 8,
+    textAlign: 'center'
+  },
+  priceLabel: {
+    fontSize: '0.7rem',
+    color: '#94a3b8',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    letterSpacing: '0.05em'
+  },
+  priceValue: {
+    fontSize: '2.5rem',
+    fontWeight: 900,
+    color: '#cc0000',
+    lineHeight: 1
+  },
+  ctaBtnBox: {
+    padding: '0 24px 24px'
+  },
+  ctaBtn: {
+    borderRadius: 4,
+    padding: '12px',
+    border: '1px solid #fbd38d',
+    color: '#c05621',
+    fontSize: '0.9rem',
+    fontWeight: 800,
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: '#fffaf0',
+      borderColor: '#f6ad55'
+    }
+  },
+  featuresList: {
+    padding: '0 32px 16px',
+    flexGrow: 1
   },
   featureItem: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-  },
-  featureLabel: {
-    fontWeight: "500",
-    color: theme.palette.text.secondary,
-  },
-  featureValue: {
-    fontWeight: "bold",
-    color: theme.palette.text.primary,
-  },
-  freeHeader: {
-    background:
-                        "linear-gradient(to top left, #feb2b2 10%, #feb2b2 30%, #e53e3e 60%, #e53e3e 60%)",
-                      borderRadius: "20px 20px 0 0",
-                      border: "1px solid #f56565",
-  },
-  classicHeader: {
-    background:
-                        "linear-gradient(to top left, #9ae6b4 10%, #9ae6b4 30%, #38a169 60%, #38a169 60%)",
-                      borderRadius: "20px 20px 0 0",
-                      border: "1px solid #38a169",
-  },
-  businessHeader: {
-    background:
-                        "linear-gradient(to top left, #90cdf4 10%, #90cdf4 30%, #3182ce 60%, #3182ce 60%)",
-                      borderRadius: "20px 20px 0 0",
-                      border: "1px solid #3182ce",
-  },
-  goldHeader: {
-    background:
-    "linear-gradient(to top left, #faf089 10%, #faf089 30%, #d69e2e 60%, #d69e2e 60%)",
-  borderRadius: "20px 20px 0 0",
-  border: "1px solid #d69e2e",
-  },
-  
-    pageWrapper: {
-      paddingLeft: theme.spacing(40), // 32px
-      paddingRight: theme.spacing(40),
-     
-    },
- 
-    
-  }));
-  
-
-const plans = [
-    {
-      name: "FREE",
-      price: "€00.00",
-      headerClass: "freeHeader",
-      features: [
-        { label: "Publication des demandes de devis ( RFQ )", value: "illimité" },
-        { label: "Réception des devis", value: "illimité" },
-        { label: "Voir les profils des Fournisseurs", value: "✔" },
-        { label: "Voir les catalogues des Fournisseurs", value: "✔" },
-        { label: "Voir le nombre de Fournisseurs Intéressés *", value: "✔" },
-        { label: "Compte anonyme **", value: "✔" },
-        { label: "Voir le nombre de diffusions de la ( RFQ )", value: "✗" },
-        { label: "Sous-compte Acheteur ***", value: "✗" },
-        { label: "Blackliste", value: "✗" },
-        { label: "Critère sélection fournisseur", value: "✗" },
-        { label: "Critère sélection produit", value: "✗" },
-          ],
-    },
-    {
-      name: "ACHETEUR PRO",
-      price: "€38.00",
-      headerClass: "classicHeader",
-      features: [
-        { label: "Publication des demandes de devis ( RFQ )", value: "illimité" },
-        { label: "Réception des devis", value: "illimité" },
-        { label: "Voir les profils des Fournisseurs", value: "✔" },
-        { label: "Voir les catalogues des Fournisseurs", value: "✔" },
-        { label: "Voir le nombre de Fournisseurs Intéressés *", value: "✔" },
-        { label: "Compte anonyme **", value: "✔" },
-        { label: "Voir le nombre de diffusions de la ( RFQ )", value: "✔" },
-        { label: "Sous-compte Acheteur ***", value: "✔" },
-        { label: "Blackliste", value: "✔" },
-        { label: "Critère sélection fournisseur", value: "✗" },
-        { label: "Critère sélection produit", value: "✗" },
-      ],
-    },
-     {
-      name: "ACHETEUR PRO PLUS",
-      price: "€50.00",
-      headerClass: "goldHeader",
-      features: [
-        { label: "Publication des demandes de devis ( RFQ )", value: "illimité" },
-        { label: "Réception des devis", value: "illimité" },
-        { label: "Voir les profils des Fournisseurs", value: "✔" },
-        { label: "Voir les catalogues des Fournisseurs", value: "✔" },
-        { label: "Voir le nombre de Fournisseurs Intéressés *", value: "✔" },
-        { label: "Compte anonyme **", value: "✔" },
-        { label: "Voir le nombre de diffusions de la ( RFQ )", value: "✔" },
-        { label: "Sous-compte Acheteur ***", value: "✔" },
-        { label: "Blackliste", value: "✔" },
-        { label: "Critère sélection fournisseur", value: "✔" },
-        { label: "Critère sélection produit", value: "✔" },
-      ],
-    },
-  ];
-  
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: 8,
+    marginBottom: 12,
+    fontSize: '0.9rem',
+    color: '#334155'
+  }
+}));
 
 const PricingAcheteur = (props) => {
-    const classes = useStyles();
-    const { currency } = props;
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    const [selectedTab, setSelectedTab] = React.useState(0);
-  
-    const handleTabChange = (event, newValue) => {
-      setSelectedTab(newValue);
-    };
-  
-    const renderPlanDetails = (plan) => (
- 
-        
-      <div className={classes.root}>
-       
+  const classes = useStyles();
 
-       <div className={`${classes.header} ${classes[plan.headerClass]}`}>
-    <div className="text-black uppercase font-extrabold pt-16 text-[24px]">
-      {plan.name}
-    </div>
-    
+  const plans = [
+    {
+      name: "Standard",
+      price: 0,
+      subtitle: "Solution gratuite pour vos achats ponctuels",
+      features: [
+        { lab: "Publication de RFQ", val: "Illimité" },
+        { lab: "Réception de devis qualifiés", val: "Illimité" },
+        { lab: "Fiches & Catalogues Fournisseurs", val: "✔" },
+        { lab: "Compte 100% anonyme", val: "✔" },
+        { lab: "Sous-comptes équipe", val: "✗" },
+      ],
+      cta: "Démarrez maintenant"
+    },
+    {
+      name: "Acheteur Pro",
+      price: 38,
+      subtitle: "Idéal pour les services achats stratégiques",
+      popular: true,
+      features: [
+        { lab: "Appels d'offres illimités", val: "✔" },
+        { lab: "Sous-comptes collaboratifs", val: "Inclus" },
+        { lab: "Gestion de Blackliste fournisseurs", val: "✔" },
+        { lab: "Suivi des diffusions RFQ", val: "✔" },
+        { lab: "Support prioritaire dédié", val: "✔" },
+      ],
+      cta: "S'abonner maintenant"
+    },
+    {
+      name: "Pro Plus",
+      price: 50,
+      subtitle: "Accompagnement VIP complet pour experts",
+      features: [
+        { lab: "Toutes les fonctions PRO", val: "✔" },
+        { lab: "Critères sélection Fournisseurs", val: "Premium" },
+        { lab: "Analyse comparative avancée", val: "✔" },
+        { lab: "Volume achats illimité", val: "✔" },
+        { lab: "Support VIP 24/7", val: "Dédié" },
+      ],
+      cta: "Passer au Pro Plus"
+    },
+  ];
 
-    
-  
-
-    
-    <div className="flex justify-center mt-12 text-black">
-      <span className="uppercase text-[10px] sm:text-[12px] md:text-[14px] lg:text-[15px]">
-      {currency === 0 ? LOCAL_CURRENCY : currency === 1 ? "€" : "$"}
-      </span>
-      <span className="uppercase font-extrabold text-[32px] ml-1">
-        {currency === 0
-          ? Math.round(parseFloat(plan.price.replace("€", "")) * 10)
-          : plan.price.replace("€", "").split(".")[0]}
-        <span className="text-[10px]">
-          ,{currency === 0 ? "00" : plan.price.split(".")[1] || "00"} / mois
-          {currency === 0 && " HT"}
-        </span>
-      </span>
-    </div>
-  
-  
-  </div>
-  <Grid container spacing={0} style={{ border: '1px solid #ccc' }}>
-  {plan.features.map((item, index) => (
-    <React.Fragment key={index}>
-      <Grid
-        item
-        xs={6}
-        style={{
-          borderBottom: '1px solid #ccc',
-          borderRight: '1px solid #ccc',
-          padding: '8px',
-          fontWeight: 'bold',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {item.label}
-      </Grid>
-      <Grid
-        item
-        xs={6}
-        style={{
-          borderBottom: '1px solid #ccc',
-          padding: '8px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          color:
-            item.value === '✔'
-              ? 'green'
-              : item.value === '✗'
-              ? 'red'
-              : 'inherit',
-        }}
-      >
-        {item.value === '✔' ? '✅' : item.value === '✗' ? '❌' : item.value}
-      </Grid>
-    </React.Fragment>
-  ))}
-</Grid>
-
-      </div>
-    );
-  
-    if (isMobile) {
-        
-      return (
-        <>
-        <div className={clsx(classes.header1, "flex")}>
-        <div className="p-24 w-full max-w-2xl mx-auto">
-          <div className="text-center my-40 mx-24">
-            <FuseAnimate
-              animation="transition.slideUpIn"
-              duration={400}
-              delay={100}
-            >
-              <Typography
-                variant="h1"
-                color="inherit"
-                className="font-bold uppercase text-24 sm:text-32 md:text-44 "
-              >
-                Tarif Acheteur
-              </Typography>
-            </FuseAnimate>
-          </div>
-        </div>
-      </div>
-          <Tabs
-            value={selectedTab}
-            onChange={handleTabChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            {plans.map((plan, index) => (
-              <Tab label={plan.name} key={index} />
-            ))}
-          </Tabs>
-          <Divider />
-          <div className={classes.tabPanel}>{renderPlanDetails(plans[selectedTab])}</div>
-          <div className="flex flex-col mt-8">
-            <Typography variant="caption">
-            * Les Fournisseurs qui ont acheté un jeton pour vous contacter.
-            </Typography>
-            <Typography variant="caption">
-            ** Le compte anonyme vous libère de la gestion de vos achats et les fournisseurs ne peuvent pas connaître votre identité.
-             Une commission sera défi nie par commun accord pour chaque RFQ.
-            </Typography>
-            <Typography variant="caption">
-            *** Le Sous Compte acheteur vous permet d'ajouter vos collègues ou collaborateurs pour plus d'effi cacité.
-            </Typography>
-          </div>
-        </>
-      );
-    }
-  
-    return (
-        
-      <div>
-         <div className={clsx(classes.header1, "flex")}>
-        <div className="p-24 w-full max-w-2xl mx-auto">
-          <div className="text-center my-40 mx-24">
-            <FuseAnimate
-              animation="transition.slideUpIn"
-              duration={400}
-              delay={100}
-            >
-              <Typography
-                variant="h1"
-                color="inherit"
-                className="font-bold uppercase text-24 sm:text-32 md:text-44 "
-              >
-                Tarif Acheteur
-              </Typography>
-            </FuseAnimate>
-          </div>
-        </div>
-      </div>
-       <div className={classes.pageWrapper}>
-    <Grid container spacing={2}>
-      {plans.map((plan, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index}>
-          {renderPlanDetails(plan)}
-        </Grid>
-      ))}
-    </Grid>
-    <div className="flex flex-col mt-8">
-            <Typography variant="caption">
-              * Les Fournisseurs qui ont acheté votre Profil pour vous
-              contacter.
-            </Typography>
-            <Typography variant="caption">
-              ** Le compte anonyme vous libère de gérer vos achats et les
-              fournisseurs ne sauront pas votre identité. Un pourcentage payant
-              sera défini en commun accord pour chaque RFQ.
-            </Typography>
-            <Typography variant="caption">
-              *** Sous Compte acheteur vous permet d'ajouter vos collègues ou
-              collaborateurs pour plus d'efficacité.
-            </Typography>
-          </div>
-  </div>
-  </div>
-    );
-    
+  const getPrice = (p) => {
+    if (p === 0) return "0";
+    return props.currency === 0 ? Math.round(p * 10) : p;
   };
-  
+
+  const curr = props.currency === 0 ? "dh" : props.currency === 1 ? "EUR" : "USD";
+
+  return (
+    <div className={classes.root}>
+      <Grid container spacing={4} className="max-w-7xl mx-auto h-full">
+        {plans.map((p, i) => (
+          <Grid item xs={12} md={4} key={i}>
+            <Paper className={clsx(classes.card, p.popular && classes.highlightedCard)} elevation={0}>
+              {p.popular && <div className={classes.ribbon}>Recommandé</div>}
+
+              <div className={classes.cardHeader}>
+                <Typography className={classes.planName}>{p.name}</Typography>
+                <div className={classes.divider} />
+                <Typography className={classes.subtitle}>{p.subtitle}</Typography>
+
+                <div className={classes.priceBox}>
+                  <span className={classes.priceLabel}>à partir de</span>
+                  <div className="flex items-baseline justify-center">
+                    <span className={classes.priceValue}>{getPrice(p.price)}</span>
+                    <span className="text-red-700 font-900 ml-4 text-16">{curr}/mois</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={classes.ctaBtnBox}>
+                <Button variant="outlined" fullWidth className={classes.ctaBtn}>
+                  {p.cta}
+                </Button>
+              </div>
+
+              <div className={classes.featuresList}>
+                {p.features.map((f, fi) => (
+                  <div key={fi} className={classes.featureItem}>
+                    <Icon className="text-16" style={{ color: f.val === '✗' ? '#cbd5e1' : '#f6ad55' }}>
+                      {f.val === '✗' ? 'remove' : 'check'}
+                    </Icon>
+                    <Typography className="text-14">
+                      {f.val !== '✔' && f.val !== '✗' && <b>{f.val} </b>}
+                      {f.lab}
+                    </Typography>
+                  </div>
+                ))}
+              </div>
+
+              <Typography className="text-center pb-24 text-12 text-amber-800 font-bold cursor-pointer hover:underline">
+                Voir toutes les spécificités acheteurs
+              </Typography>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+    </div>
+  );
+};
 
 export default PricingAcheteur;

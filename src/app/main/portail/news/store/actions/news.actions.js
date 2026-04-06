@@ -15,8 +15,8 @@ export function cleanUp() {
 
 export function getActualites(parametres) {
     let order = _.split(parametres.filter.id, '-');
-    var titre = parametres.titre?`=${parametres.titre}`:'';
-    const request = agent.get(`/api/actualites?page=${parametres.page}&itemsPerPage=${parametres.itemsPerPage}&isActive=true&titre${titre}&order[${order[0]}]=${order[1]}`);
+    var q = parametres.titre ? `&q=${parametres.titre}` : '';
+    const request = agent.get(`/api/actualites?page=${parametres.page}&itemsPerPage=${parametres.itemsPerPage}&isActive=true${q}&order[${order[0]}]=${order[1]}`);
 
     return (dispatch) => {
         dispatch({

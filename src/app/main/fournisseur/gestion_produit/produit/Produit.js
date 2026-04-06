@@ -305,7 +305,7 @@ function Produit(props) {
       }
       setForm({ ...produit.data });
     }
-  }, [form, produit.data, setForm]);
+  }, [form, produit.data, setForm, dispatch]);
 
   // Effect abonnement
   useEffect(() => {
@@ -337,7 +337,7 @@ function Produit(props) {
       setShowErrorVideo(true);
     }
     produit.videoExist = 0;
-  }, [form, setForm, produit.videoExist]);
+  }, [form, setForm, produit.videoExist, videoId]);
 
   // Effect upload fiche technique
   useEffect(() => {
@@ -361,7 +361,7 @@ function Produit(props) {
     return () => {
       dispatch(Actions.cleanImage());
     };
-  }, [form, setForm, produit.image, dispatch]);
+  }, [form, setForm, produit.image, dispatch, countFreeImages, images]);
 
   // Effect delete image & fiche technique
   useEffect(() => {
@@ -387,7 +387,7 @@ function Produit(props) {
     return () => {
       dispatch(Actions.cleanDeleteImage());
     };
-  }, [produit.image_deleted]);
+  }, [produit.image_deleted, dispatch, form, setForm, images, countFreeImages]);
 
   // Effect handle errors
   useEffect(() => {
@@ -420,7 +420,7 @@ function Produit(props) {
       dispatch(Actions.cleanDeleteImage());
       props.history.push("/produits");
     }
-  }, [produit.success, dispatch]);
+  }, [produit.success, dispatch, props.history]);
 
   function handleChangeTab(event, tabValue) {
     setTabValue(tabValue);
@@ -759,29 +759,29 @@ function Produit(props) {
                       Détails du produit / service
                       {
                         !abonnee &&
-                          (!loadingFree ? (
-                            <Box display="flex" alignItems="center">
-                              <Box minWidth={35}>
-                                <Icon>image</Icon>
-                              </Box>
-                              <Box width="100%" mr={1}>
-                                <BorderLinearProgress
-                                  variant="determinate"
-                                  value={(countFreeImages / 5) * 100}
-                                />
-                              </Box>
-                              <Box minWidth={35}>
-                                <Typography
-                                  variant="body2"
-                                  color="textSecondary"
-                                >
-                                  {`${countFreeImages}/5`}
-                                </Typography>
-                              </Box>
+                        (!loadingFree ? (
+                          <Box display="flex" alignItems="center">
+                            <Box minWidth={35}>
+                              <Icon>image</Icon>
                             </Box>
-                          ) : (
-                            "Chargement..."
-                          ))
+                            <Box width="100%" mr={1}>
+                              <BorderLinearProgress
+                                variant="determinate"
+                                value={(countFreeImages / 5) * 100}
+                              />
+                            </Box>
+                            <Box minWidth={35}>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                              >
+                                {`${countFreeImages}/5`}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        ) : (
+                          "Chargement..."
+                        ))
 
                         //<Chip className={countFreeImages === 5 ? classes.chip1 : classes.chip2} label={'PACK OFFERT : il vous reste ' + (5 - countFreeImages) + ' image(s) à utiliser'} />
                       }
@@ -1112,7 +1112,7 @@ function Produit(props) {
                       "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
                       (form.images.length === 5 ||
                         (!abonnee && countFreeImages === 5)) &&
-                        "hidden"
+                      "hidden"
                     )}
                   >
                     {produit.imageReqInProgress ? (
@@ -1133,15 +1133,15 @@ function Produit(props) {
                         classes.produitImageItem,
                         "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5",
                         media.id ===
-                          (form.featuredImageId
-                            ? form.featuredImageId.id
-                            : null) && "featured"
+                        (form.featuredImageId
+                          ? form.featuredImageId.id
+                          : null) && "featured"
                       )}
                       key={media.id}
                       onClick={() => {
                         setIsOpen(true);
                       }}
-                      //                                            onClick={() => window.open(URL_SITE + media.url, "_blank")}
+                    //                                            onClick={() => window.open(URL_SITE + media.url, "_blank")}
                     >
                       <Tooltip title="Image en vedette">
                         <IconButton

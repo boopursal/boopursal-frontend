@@ -14,19 +14,28 @@ import FuseNavVerticalLink from './FuseNavVerticalLink';
 const useStyles = makeStyles(theme => ({
     root: {
         padding : 0,
-        '&.open': {
-            backgroundColor: 'rgba(0,0,0,.08)'
-        }
     },
     item: {
-        height      : 40,
-        width       : 'calc(100% - 16px)',
-        borderRadius: '0 20px 20px 0',
-        paddingRight: 12,
-        color       : theme.palette.text.primary,
-        '&.square'  : {
-            width       : '100%',
-            borderRadius: '0'
+        height: 48,
+        width: 'calc(100% - 32px)',
+        borderRadius: 8,
+        padding: '12px 16px',
+        margin: '4px 16px',
+        transition: 'all 0.3s ease',
+        color: '#475569 !important',
+        fontFamily: 'Outfit, sans-serif',
+        '&.active': {
+            color: '#1C2434 !important',
+            backgroundColor: '#F1F5F9',
+        },
+        '& .list-item-icon': {
+            marginRight: 16,
+            color: '#64748B',
+            fontSize: 20
+        },
+        '& .list-item-text': {
+            fontWeight: 500,
+            fontSize: '0.925rem'
         }
     }
 }));
@@ -69,8 +78,6 @@ function FuseNavVerticalCollapse(props)
     const classes = useStyles(props);
     const [open, setOpen] = useState(() => needsToBeOpened(props.location, props.item));
     const {item, nestedLevel, active} = props;
-    let paddingValue = 40 + (nestedLevel * 16);
-    const listItemPadding = nestedLevel > 0 ? 'pl-' + (paddingValue > 80 ? 80 : paddingValue) : 'pl-24';
 
     useEffect(() => {
         if ( needsToBeOpened(props.location, props.item) )
@@ -94,17 +101,18 @@ function FuseNavVerticalCollapse(props)
 
             <ListItem
                 button
-                className={clsx(classes.item, listItemPadding, 'list-item', active)}
+                className={clsx(classes.item, 'list-item', active)}
                 onClick={handleClick}
             >
                 {item.icon && (
-                    <Icon color="action" className="text-16 flex-shrink-0 mr-16">{item.icon}</Icon>
+                    <Icon className="list-item-icon flex-shrink-0">{item.icon}</Icon>
                 )}
-                <ListItemText className="list-item-text" primary={item.title} classes={{primary: 'text-14'}}/>
-                {item.badge && (
-                    <FuseNavBadge className="mr-4" badge={item.badge}/>
-                )}
-                <IconButton disableRipple className="w-16 h-16 p-0">
+                <ListItemText 
+                    className="list-item-text" 
+                    primary={item.title} 
+                    classes={{primary: 'text-14 font-600'}}
+                />
+                <IconButton disableRipple className="w-16 h-16 p-0 text-slate-400">
                     <Icon className="text-16 arrow-icon" color="inherit">
                         {open ? 'expand_less' : 'expand_more'}
                     </Icon>
@@ -142,17 +150,6 @@ function FuseNavVerticalCollapse(props)
         </ul>
     );
 }
-
-FuseNavVerticalCollapse.propTypes = {
-    item: PropTypes.shape(
-        {
-            id      : PropTypes.string.isRequired,
-            title   : PropTypes.string,
-            icon    : PropTypes.string,
-            children: PropTypes.array
-        })
-};
-FuseNavVerticalCollapse.defaultProps = {};
 
 const NavVerticalCollapse = withRouter(React.memo(FuseNavVerticalCollapse));
 

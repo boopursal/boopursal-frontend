@@ -49,7 +49,7 @@ const demandeReducer = function (state = initialState, action) {
             {
                 return {
                     ...state,
-                    fournisseurs: action.payload['hydra:member'],
+                    fournisseurs: action.payload ? (action.payload['hydra:member'] || []) : [],
                     loadingFrs: false,
                 }
             }

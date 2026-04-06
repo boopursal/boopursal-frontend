@@ -1,137 +1,61 @@
 import "react-table/react-table.css";
 import React, { Component } from 'react';
-import { FormControl, Icon, IconButton, Input } from '@material-ui/core';
+import { FormControl, Icon, IconButton, Input, InputAdornment, Box } from '@material-ui/core';
 import { ReactTableDefaults } from 'react-table'
 
 class FilterComponent extends Component {
 
     state = {
-        filterType: 'contains',
         filterValue: '',
-        //  filterMenuEl: null
-    };
-    changeFilterType = (filterType) => {
-        const newState = {
-            ...this.state,
-            filterType
-        };
-        // Update local state
-        this.setState(newState);
-        // Fire the callback to alert React-Table of the new filter
-        this.props.onChange(newState);
-        this.handleFilterMenuClose();
     };
 
     changeFilterValue = (event) => {
-        const newState = {
-            ...this.state,
-            filterValue: event.target.value
-        };
-        // Update local state
-        this.setState(newState);
-        // Fire the callback to alert React-Table of the new filter
-        //this.props.onChange(newState);
-        this.props.onChange(event.target.value);
+        const value = event.target.value;
+        this.setState({ filterValue: value });
+        this.props.onChange(value);
     };
-    /*
-        handleFilterMenuClick = event => {
-            this.setState({ filterMenuEl: event.currentTarget });
-        };
-    
-        handleFilterMenuClose = () => {
-            this.setState({ filterMenuEl: null });
-        };*/
 
     render() {
-        //const { filterMenuEl } = this.state;
         return (
-            <div className="filter flex flex-col">
-                <FormControl className="">
-                    <Input
+            <div className="filter flex flex-col items-center">
+                <FormControl className="w-full px-12">
+                    <input
                         type="text"
                         onChange={this.changeFilterValue}
                         value={this.state.filterValue}
-                        className="w-full"
-                        inputProps={{ placeholder: 'Rechercher' }}
-                    /*  endAdornment={
-                          <InputAdornment position="end">
-                              <IconButton
-                                  aria-owns={filterMenuEl ? 'filter-menu' : null}
-                                  aria-haspopup="true"
-                                  onClick={this.handleFilterMenuClick}
-                              >
-                                  <Icon color="action" className="text-20">filter_list</Icon>
-                              </IconButton>
-                              <Menu
-                                  id="filter-menu"
-                                  anchorEl={filterMenuEl}
-                                  open={Boolean(filterMenuEl)}
-                                  onClose={this.handleFilterMenuClose}
-                              >
-                                  {filterTypes.map(filter => (
-                                      <MenuItem key={filter.value} onClick={() => this.changeFilterType(filter.value)}>{filter.title}</MenuItem>
-                                  ))}
-                              </Menu>
-                          </InputAdornment>
-                      }*/
+                        className="w-full px-12 py-8 bg-[#f6f9fc] border border-[#e9ecef] rounded-4 text-12 font-600 text-slate-700 placeholder-slate-400 focus:bg-white focus:border-blue-400 outline-none transition-all"
+                        placeholder="Rechercher..."
                     />
-                    {/**
-                    <FormHelperText>{_.find(filterTypes, { value: this.state.filterType }).title}</FormHelperText>
-                     * 
-                     */}
                 </FormControl>
             </div>
         );
     }
 }
 
-const defaultFilterMethod = (filter, row) => {
-    const id = filter.pivotId || filter.id;
-    // Pivoted rows won't contain the column.
-    //  If that's the case, we set the to true (allowing us to only filter on the current column)
-    const rowValue = row[id].toLowerCase();
-    if (!rowValue) {
-        return true;
-    }
-
-    //const filterValue = filter.value.filterValue.toLowerCase() || '';
-    const filterValue = filter.value.toLowerCase() || '';
-    const filterType = filter.value.filterType;
-
-    switch (filterType) {
-        case 'contains':
-            return rowValue.indexOf(filterValue) > -1;
-        case 'starts-with':
-            return rowValue.startsWith(filterValue);
-        case 'ends-with':
-            return rowValue.endsWith(filterValue);
-        case 'matches':
-            return rowValue === filterValue;
-        case 'greater-than':
-            return rowValue > filterValue;
-        case 'less-than':
-            return rowValue < filterValue;
-        default:
-            return rowValue.indexOf(filterValue) > -1;
-    }
-};
-
 /**
- * React Table Defaults
+ * React Table Defaults - Argon Edition
  */
 Object.assign(ReactTableDefaults, {
     PreviousComponent: (props) => (
-        <IconButton {...props}>
-            <Icon>chevron_left</Icon>
-        </IconButton>
+        <button {...props} className="w-36 h-36 border border-gray-200 rounded-full flex items-center justify-center bg-white hover:bg-gray-50 transition-colors mx-4 text-gray-400 disabled:opacity-30">
+            <Icon className="text-18">chevron_left</Icon>
+        </button>
     ),
     NextComponent: (props) => (
-        <IconButton {...props}>
-            <Icon>chevron_right</Icon>
-        </IconButton>
+        <button {...props} className="w-36 h-36 border border-gray-200 rounded-full flex items-center justify-center bg-white hover:bg-gray-50 transition-colors mx-4 text-gray-400 disabled:opacity-30">
+            <Icon className="text-18">chevron_right</Icon>
+        </button>
     ),
     FilterComponent: (props) => (
         <FilterComponent {...props} />
     ),
-    defaultFilterMethod
+    NoDataComponent: (props) => (
+        <div className="flex flex-col items-center justify-center p-64 text-center">
+            <div className="w-64 h-64 rounded-full bg-blue-50 flex items-center justify-center mb-16">
+                <Icon className="text-32 text-blue-300">search_off</Icon>
+            </div>
+            <div className="font-700 text-16 text-slate-700">Aucun résultat</div>
+            <div className="text-12 text-slate-400">Essayez d'ajuster vos critères de recherche.</div>
+        </div>
+    )
 });

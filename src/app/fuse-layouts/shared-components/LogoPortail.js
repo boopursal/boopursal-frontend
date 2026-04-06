@@ -1,39 +1,31 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        '& .logo-icon': {
-            width: 24,
-            height: 24,
-            transition: theme.transitions.create(['width', 'height'], {
-                duration: theme.transitions.duration.shortest,
-                easing: theme.transitions.easing.easeInOut
-            })
+        transition: "all 0.3s ease",
+        "&:hover": {
+            transform: "scale(1.02)",
         },
-        '& .react-badge, & .logo-text': {
-            transition: theme.transitions.create('opacity', {
-                duration: theme.transitions.duration.shortest,
-                easing: theme.transitions.easing.easeInOut
-            })
+        "& img": {
+            height: 70, // Consistent with Layout3 settings
+            width: "auto",
+            display: "block",
+            transition: "all 0.3s ease",
         }
     },
-    reactBadge: {
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        color: '#61DAFB'
-    }
 }));
 
 function LogoPortail() {
     const classes = useStyles();
 
     return (
-        <div className={clsx(classes.root, "flex items-center w-200")}>
+        <div className={clsx(classes.root, "flex items-center")}>
 
             <Link to="/">
-                <img className="" src="assets/images/logos/logo-1.png" alt="Les Achats Industriels LOGO" />
+                <img className="" src="assets/images/logos/logo_final_boopursal.png" alt="Boopursal LOGO" />
             </Link>
 
         </div>

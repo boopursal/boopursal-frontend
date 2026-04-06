@@ -42,7 +42,7 @@ function ClientInscrit(props) {
     setTotalAcheteurs(totalAcheteur);
   }
   return (
-    <Card className="w-full rounded-8 shadow-none border-1">
+    <Card className="w-full rounded-16 shadow-2 hover:shadow-4 transition-shadow duration-300 border-0 bg-white">
       <div className="p-16 pr-4 flex flex-row items-center justify-between">
         <Typography className="h3" color="textSecondary">
           Clients inscrits

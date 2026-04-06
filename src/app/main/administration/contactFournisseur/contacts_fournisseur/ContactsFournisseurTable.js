@@ -19,33 +19,33 @@ const useStyles = makeStyles(theme => ({
     },
     chip: {
         marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ef5350',
+        padding: '0 8px',
+        background: '#FB4848',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: 600,
         fontSize: '11px',
-        height: 20
-
-
+        height: 22,
+        borderRadius: 4
     },
     chip2: {
         marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#4caf50',
+        padding: '0 8px',
+        background: '#10B981',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: 600,
         fontSize: '11px',
-        height: 20
+        height: 22,
+        borderRadius: 4
     },
     chipOrange: {
         marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ff9800',
+        padding: '0 8px',
+        background: '#FFB810',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: 600,
         fontSize: '11px',
-        height: 20
-
+        height: 22,
+        borderRadius: 4
     },
 }));
 function ContactsFournisseurTable(props) {

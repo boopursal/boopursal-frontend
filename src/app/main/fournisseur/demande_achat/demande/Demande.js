@@ -139,9 +139,6 @@ function Demande(props) {
     }, [dispatch, props.match.params, user.id]);
 
     function handleAddProduit(id_produit) {
-        let nvproduits = _.map(demande.produits, function (value, key) {
-            return value['@id'];
-        })
         dispatch(Actions.addProduit(id_produit, demande.produits, user.id));
     }
 
@@ -168,7 +165,7 @@ function Demande(props) {
                                     <Typography className="normal-case flex items-center sm:mb-12" component={Link} role="button" to="/demandes_prix" color="inherit">
                                         <Icon className="mr-4 text-20">arrow_back</Icon>
                                         Retour
-                                </Typography>
+                                    </Typography>
                                 </FuseAnimate>
 
                                 <div className="flex items-center max-w-full">
@@ -255,7 +252,7 @@ function Demande(props) {
                                                                                         <DialogActions>
                                                                                             <Button onClick={() => dispatch(Actions.closeDialog())} variant="outlined" color="primary">
                                                                                                 Pas maintenant
-                                                                                        </Button>
+                                                                                            </Button>
                                                                                             <Button onClick={(ev) => {
                                                                                                 user.jetons > 0
                                                                                                     ?
@@ -276,7 +273,7 @@ function Demande(props) {
                                                                         }}
                                                                     >
                                                                         Voir le profil de l'acheteur
-                                                            </Button>
+                                                                    </Button>
 
                                                                 )
                                                                 :

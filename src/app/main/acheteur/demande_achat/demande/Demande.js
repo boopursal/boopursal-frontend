@@ -14,13 +14,9 @@ import {
   Checkbox,
   IconButton,
   Tooltip,
-  RadioGroup,
   SnackbarContent,
   ListItemText,
-  Select,
   FormControlLabel,
-  FormControl,
-  InputLabel,
   FormGroup,
   Radio,
   Dialog,
@@ -68,30 +64,6 @@ const ColorButton = withStyles((theme) => ({
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: theme.palette.secondary.main,
-      color: "white",
-    },
-  },
-}))(Button);
-
-
-
-const RedButton = withStyles((theme) => ({
-  root: {
-    color: red[500],
-    borderColor: red[500],
-    "&:hover": {
-      backgroundColor: red[700],
-      color: "white",
-    },
-  },
-}))(Button);
-
-const GreenButton = withStyles((theme) => ({
-  root: {
-    color: green[500],
-    borderColor: green[500],
-    "&:hover": {
-      backgroundColor: green[700],
       color: "white",
     },
   },
@@ -210,7 +182,7 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   );
 }
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+  const { classes, inputRef = () => { }, ref, ...other } = inputProps;
   return (
     <TextField
       fullWidth
@@ -250,7 +222,7 @@ function Demande(props) {
   const [interval, setInterval] = useState(null);
 
   const formRef = useRef(null);
-  
+
   const { form, handleChange, setForm } = useForm(null);
 
   const classes = useStyles(props);
@@ -321,7 +293,7 @@ function Demande(props) {
       );
       demande.attachement_deleted = null;
     }
-  }, [demande.attachement_deleted]);
+  }, [form, setForm, demande.attachement_deleted]);
 
   useEffect(() => {
     if (demande.new) {
@@ -400,19 +372,19 @@ function Demande(props) {
   }, [form, demande.data, demandeId]);
   useEffect(() => {
     if (demande.data) {
-        console.log("🔄 Données brutes de la demande :", demande.data);
-        setForm({ 
-          ...demande.data, 
-          localisation: demande.data.localisation 
-            ? (typeof demande.data.localisation === 'string' 
-                ? demande.data.localisation.split(",") // Si c'est une chaîne, la convertir en tableau
-                : [demande.data.localisation]) // Sinon, conserver la valeur dans un tableau
-            : [] // Si localisation est null ou undefined, mettre un tableau vide
-        });
+      console.log("🔄 Données brutes de la demande :", demande.data);
+      setForm({
+        ...demande.data,
+        localisation: demande.data.localisation
+          ? (typeof demande.data.localisation === 'string'
+            ? demande.data.localisation.split(",") // Si c'est une chaîne, la convertir en tableau
+            : [demande.data.localisation]) // Sinon, conserver la valeur dans un tableau
+          : [] // Si localisation est null ou undefined, mettre un tableau vide
+      });
     }
-}, [demande.data]);
+  }, [demande.data, setForm]);
 
-  
+
   function handleCheckBoxChange(e, name) {
     setForm(_.set({ ...form }, name, e.target.checked));
   }
@@ -432,18 +404,18 @@ function Demande(props) {
   function handleDateChange(value, name) {
     const selectedDate = moment(value);
     const minDate = moment().add(10, 'days');
-  
+
     if (selectedDate.isBefore(minDate, 'day')) {
       alert("La date d'expiration doit être au minimum 10 jours après aujourd'hui.");
-      
+
       // Marque le champ comme invalide
       setDateError(true);
-  
+
       // Vide la valeur
       setForm(_.set({ ...form }, name, null));
       return;
     }
-  
+
     // Date valide
     setDateError(false);
     setForm(_.set({ ...form }, name, selectedDate.format("YYYY-MM-DDTHH:mm")));
@@ -523,15 +495,15 @@ function Demande(props) {
     dispatch(Actions.cleanUp());
   }
 
- /*  const handleButtonClick = (buttonType) => {
-    if (buttonType === 'save') {
-      alert('Sauvegarder avant diffuser');
-    } else if (buttonType === 'send') {
-      alert('Envoyer');
-    }
-    // Appelez la fonction handleSubmit ici
-    handleSubmit(false);
-  }; */
+  /*  const handleButtonClick = (buttonType) => {
+     if (buttonType === 'save') {
+       alert('Sauvegarder avant diffuser');
+     } else if (buttonType === 'send') {
+       alert('Envoyer');
+     }
+     // Appelez la fonction handleSubmit ici
+     handleSubmit(false);
+   }; */
 
   const handleSave = () => {
     handleSubmit(false);
@@ -543,12 +515,6 @@ function Demande(props) {
     setOpenSendDialog(false);
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-    }
-  };
-
   const handleSubmit = (vider = false) => {
     const params = props.match.params;
     const { demandeId } = params;
@@ -558,10 +524,10 @@ function Demande(props) {
       localisation: Array.isArray(form.localisation) ? form.localisation : formData.localisation || []
 
     };
-  
+
     console.log("📋 Formulaire avant soumission :", updatedForm);
     console.log("🌍 Pays sélectionnés avant soumission :", updatedForm.countries);
-  
+
     // Soumission de la demande
     if (demandeId === "new") {
       dispatch(Actions.saveDemande(updatedForm, props.history, categories, suggestions, vider));
@@ -569,62 +535,43 @@ function Demande(props) {
       dispatch(Actions.putDemande(updatedForm, form.id, props.history, categories, suggestions, updateStatut, updateExpiration, vider));
     }
   };
-  
-  
 
 
+  // 📌 Fonction pour calculer le temps restant
+  const calculateRemainingTime = (dateExpiration) => {
+    if (!dateExpiration) return { timeLeft: 'Date invalide', className: 'error-class' };
 
+    const endDate = moment(dateExpiration);
+    const remainingTime = endDate.diff(moment(), 'seconds'); // Calcul dynamique du temps restant en secondes
 
-// Define the calculateRemainingTime function above your component
-const [countdownData, setCountdownData] = useState([]); // Liste des données des demandes
-const [isTimerActive, setIsTimerActive] = useState(true); // Pour vérifier l'activation du timer
-const [intervalId, setIntervalId] = useState(null); // Stocker l'ID de l'intervalle
+    console.log("Temps restant pour:", dateExpiration, "=>", remainingTime);
 
-// 📌 Fonction pour calculer le temps restant
-const calculateRemainingTime = (dateExpiration) => {
-  if (!dateExpiration) return { timeLeft: 'Date invalide', className: 'error-class' };
+    if (remainingTime <= 0) {
+      return { timeLeft: 'Expiré', className: 'expired-class' };
+    }
 
-  const endDate = moment(dateExpiration);
-  const remainingTime = endDate.diff(moment(), 'seconds'); // Calcul dynamique du temps restant en secondes
+    const days = Math.floor(remainingTime / (3600 * 24));
+    const hours = Math.floor((remainingTime % (3600 * 24)) / 3600);
+    const minutes = Math.floor((remainingTime % 3600) / 60);
+    const seconds = remainingTime % 60;
 
-  console.log("Temps restant pour:", dateExpiration, "=>", remainingTime);
-
-  if (remainingTime <= 0) {
-    return { timeLeft: 'Expiré', className: 'expired-class' };
-  }
-
-  const days = Math.floor(remainingTime / (3600 * 24));
-  const hours = Math.floor((remainingTime % (3600 * 24)) / 3600);
-  const minutes = Math.floor((remainingTime % 3600) / 60);
-  const seconds = remainingTime % 60;
-
-  return {
-    timeLeft: `${days}j ${hours}h ${minutes}m ${seconds}s`,
-    className: 'countdown-class',
+    return {
+      timeLeft: `${days}j ${hours}h ${minutes}m ${seconds}s`,
+      className: 'countdown-class',
+    };
   };
-};
 
-// ⚡ Initialisation des données
-useEffect(() => {
-  console.log("Données de demande initialisées:", demande);
+  // ⚡ Initialisation des données
+  useEffect(() => {
+    console.log("Données de demande initialisées:", demande);
 
-  if (demande && demande.data) {
-    const newData = Array.isArray(demande.data) ? demande.data : [demande.data];
-    setCountdownData(newData.map((item) => ({
-      ...item,
-      ...calculateRemainingTime(item.dateExpiration),
-    })));
-  } else {
-    console.log("Aucune donnée de demande disponible");
-  }
-}, [demande]); // ⚡ L'effet se déclenche uniquement lorsque `demande` change
+  }, [demande]); // ⚡ L'effet se déclenche uniquement lorsque `demande` change
 
 
-const [selectedCountries, setSelectedCountries] = useState([]);
+  const [selectedCountries, setSelectedCountries] = useState([]);
   const [selectedZone, setSelectedZone] = useState(null);
   const [selectAllCountries, setSelectAllCountries] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedRadio, setSelectedRadio] = useState("1");
   const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({ statut: 0, localisation: null, countries: [], zone: null });
 
@@ -636,7 +583,7 @@ const [selectedCountries, setSelectedCountries] = useState([]);
     { name: "Union Africaine", code: "UA", continent: "Afrique" },
     { name: "Océanie", code: "OCE", continent: "Océanie" },
   ];
-  
+
   const countries = [
     {
       continent: "Afrique",
@@ -799,7 +746,7 @@ const [selectedCountries, setSelectedCountries] = useState([]);
         { name: "Thaïlande", code: "TH" },
         { name: "Timor-Oriental", code: "TL" },
         { name: "Turkménistan", code: "TM" },
-        { name: "Émirats Arabes Unis", code: "AE" },
+
         { name: "Vietnam", code: "VN" },
         { name: "Yémen", code: "YE" },
       ],
@@ -825,16 +772,16 @@ const [selectedCountries, setSelectedCountries] = useState([]);
       ],
     },
   ];
-  
+
 
   // Ouvrir/Fermer la popup
-  const handleOpenDialog = () => setOpenDialog(true);
+  // Ouvrir/Fermer la popup
   const handleCloseDialog = () => {
     setOpenDialog(false);
-  
+
     let localisationData = "";
     let updatedCountries = selectedCountries.map(c => c.code); // Extraire les codes pays
-  
+
     if (formData.localisation === 3) { // Internationale
       if (selectAllCountries) {
         localisationData = "Tout le monde";
@@ -845,24 +792,24 @@ const [selectedCountries, setSelectedCountries] = useState([]);
     } else if (formData.localisation === 4) { // Zone
       localisationData = selectedZone;
     }
-  
+
     setFormData((prevData) => {
       const updatedForm = {
         ...prevData,
         localisation: localisationData,
         countries: updatedCountries, // Mettre à jour les pays sélectionnés
       };
-      
+
       console.log("📌 Localisation mise à jour :", updatedForm.localisation);
       console.log("🌍 Pays mis à jour dans formData :", updatedForm.countries);
-  
+
       return updatedForm;
     });
   };
-  
-  
 
-  
+
+
+
 
   // Gestion du changement de radio
   const handleLocalisationChange = (event) => {
@@ -881,7 +828,7 @@ const [selectedCountries, setSelectedCountries] = useState([]);
   const handleLocaleChange = (event) => {
     // Récupérer la valeur de l'événement (pour "Locale", ce sera 2)
     const value = parseInt(event.target.value, 10);
-  
+
     // Mettre à jour l'état en fonction de la valeur
     setFormData((prevForm) => {
       const updatedForm = {
@@ -890,10 +837,10 @@ const [selectedCountries, setSelectedCountries] = useState([]);
         countries: [], // Si c'est "Locale", vider les pays
         zone: null, // "Locale" n'a pas de zone spécifique
       };
-      
+
       // Si localisation est "Locale", pas besoin de dialogue pour pays/zone
       setOpenDialog(false);
-      
+
       return updatedForm;
     });
   };
@@ -931,31 +878,23 @@ const [selectedCountries, setSelectedCountries] = useState([]);
     setSelectedZone(zone);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
   // Filtrer les pays en fonction de la recherche
-  const filteredCountries = countries.flatMap((continent) =>
-    continent.countries.filter((country) =>
-      country.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCountries = countries
+    .flatMap((continent) =>
+      continent.countries.filter((country) =>
+        country.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     )
-  );
+    .filter(
+      (country, index, self) =>
+        index === self.findIndex((c) => c.code === country.code)
+    );
 
   // Valider la sélection et fermer la popup
   const handleValidateSelection = () => {
     handleCloseDialog();
   };
 
-  // Fonction pour enlever les accents d'un texte
-  const removeAccents = (str) => {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  };
-
-// Then the component code
-const Demande = () => {
-  // Your component logic here...
-};
 
   return (
     <>
@@ -975,48 +914,48 @@ const Demande = () => {
         header={
           !demande.loading
             ? form && (
-                <div className="flex flex-1 w-full items-center justify-between">
-                  <div className="flex flex-col items-start max-w-full">
-                    <FuseAnimate
-                      animation="transition.slideRightIn"
-                      delay={300}
+              <div className="flex flex-1 w-full items-center justify-between">
+                <div className="flex flex-col items-start max-w-full">
+                  <FuseAnimate
+                    animation="transition.slideRightIn"
+                    delay={300}
+                  >
+                    <Typography
+                      className="normal-case flex items-center sm:mb-12"
+                      component={Link}
+                      role="button"
+                      to="/demandes"
+                      color="inherit"
                     >
-                      <Typography
-                        className="normal-case flex items-center sm:mb-12"
-                        component={Link}
-                        role="button"
-                        to="/demandes"
-                        color="inherit"
-                      >
-                        <Icon className="mr-4 text-20">arrow_back</Icon>
-                        Retour
-                      </Typography>
-                      
-                    </FuseAnimate>
+                      <Icon className="mr-4 text-20">arrow_back</Icon>
+                      Retour
+                    </Typography>
 
-                    <div className="flex items-center max-w-full">
-                      <div className="flex flex-col min-w-0">
-                        <FuseAnimate
-                          animation="transition.slideLeftIn"
-                          delay={300}
-                        >
-                          <Typography className="text-16 sm:text-20 truncate">
-                            {form.titre ? form.titre : "Nouvelle Demande"}
-                          </Typography>
-                        </FuseAnimate>
-                        <FuseAnimate
-                          animation="transition.slideLeftIn"
-                          delay={300}
-                        >
-                          <Typography variant="caption">
-                            Détails de la demande
-                          </Typography>
-                        </FuseAnimate>
-                      </div>
+                  </FuseAnimate>
+
+                  <div className="flex items-center max-w-full">
+                    <div className="flex flex-col min-w-0">
+                      <FuseAnimate
+                        animation="transition.slideLeftIn"
+                        delay={300}
+                      >
+                        <Typography className="text-16 sm:text-20 truncate">
+                          {form.titre ? form.titre : "Nouvelle Demande"}
+                        </Typography>
+                      </FuseAnimate>
+                      <FuseAnimate
+                        animation="transition.slideLeftIn"
+                        delay={300}
+                      >
+                        <Typography variant="caption">
+                          Détails de la demande
+                        </Typography>
+                      </FuseAnimate>
                     </div>
                   </div>
-                  <div>
-                   {/*  {moment(demande.data.dateExpiration) >= moment() &&
+                </div>
+                <div>
+                  {/*  {moment(demande.data.dateExpiration) >= moment() &&
                       demande.data.statut && (
                         <GreenButton
                           className="mr-4"
@@ -1153,24 +1092,51 @@ const Demande = () => {
                           )}
                         </RedButton>
                       )} */}
-                     
+
+                  <Button
+                    className="whitespace-no-wrap"
+                    variant="contained"
+                    color="secondary"
+                    disabled={
+                      !isFormValid ||
+                      demande.loading ||
+                      (!categories.length && !suggestions.length) ||
+                      demande.data.statut === 3
+                    }
+                    onClick={() => handleSubmit(false)}
+                  >
+                    <span className="hidden sm:flex">Sauvegarder</span>
+
+                    <span className="flex sm:hidden">
+                      <Icon>save</Icon>
+                    </span>
+                    {demande.loading && (
+                      <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                      />
+                    )}
+                  </Button>
+
+                  {demandeId === "new" && (
                     <Button
-                      className="whitespace-no-wrap"
-                      variant="contained"
+                      className="ml-8"
                       color="secondary"
+                      variant="contained"
                       disabled={
                         !isFormValid ||
                         demande.loading ||
-                        (!categories.length && !suggestions.length) ||
-                        demande.data.statut === 3
+                        (!categories.length && !suggestions.length)
                       }
-                      onClick={() => handleSubmit(false)}
+                      onClick={() => handleSubmit(true)}
                     >
-                      <span className="hidden sm:flex">Sauvegarder</span>
-                      
-                      <span className="flex sm:hidden">
-                        <Icon>save</Icon>
+                      <span className="hidden sm:flex">
+                        Sauvegarder et ajouter nouvelle demande
                       </span>
+                      <span className="flex sm:hidden">
+                        <Icon>repeat</Icon>
+                      </span>
+
                       {demande.loading && (
                         <CircularProgress
                           size={24}
@@ -1178,37 +1144,10 @@ const Demande = () => {
                         />
                       )}
                     </Button>
-                    
-                    {demandeId === "new" && (
-                      <Button
-                        className="ml-8"
-                        color="secondary"
-                        variant="contained"
-                        disabled={
-                          !isFormValid ||
-                          demande.loading ||
-                          (!categories.length && !suggestions.length)
-                        }
-                        onClick={() => handleSubmit(true)}
-                      >
-                        <span className="hidden sm:flex">
-                          Sauvegarder et ajouter nouvelle demande
-                        </span>
-                        <span className="flex sm:hidden">
-                          <Icon>repeat</Icon>
-                        </span>
-
-                        {demande.loading && (
-                          <CircularProgress
-                            size={24}
-                            className={classes.buttonProgress}
-                          />
-                        )}
-                      </Button>
-                    )}
-                  </div>
+                  )}
                 </div>
-              )
+              </div>
+            )
             : ""
         }
         contentToolbar={
@@ -1230,25 +1169,27 @@ const Demande = () => {
               <Tab
                 className="h-64 normal-case"
                 label={
-                  form && form.attachements.length > 0
+                  form && form.attachements && form.attachements.length > 0
                     ? "Pièce(s) jointe(s) (" + form.attachements.length + ")"
                     : "Pièce(s) jointe(s)"
                 }
               />
-             
+
               {demande &&
-              demande.fournisseurs.length > 0 &&
-              !demande.data.isAnonyme ? (
+                demande.fournisseurs &&
+                demande.fournisseurs.length > 0 &&
+                demande.data &&
+                !demande.data.isAnonyme ? (
                 <Tab
                   className={clsx(
                     "h-64 normal-case text-orange",
                     demande.data.statut === 3 ? "text-green" : "text-orange"
                   )}
                   label={
-                    demande.data && demande.data && demande.data.statut === 3
+                    demande.data && demande.data.statut === 3
                       ? "Adjugée"
-                      : demande.fournisseurs.length +
-                        " fournisseur(s) participant(s)"
+                      : (demande.fournisseurs ? demande.fournisseurs.length : 0) +
+                      " fournisseur(s) participant(s)"
                   }
                 />
               ) : (
@@ -1260,40 +1201,40 @@ const Demande = () => {
         content={
           !demande.loading
             ? form && (
-                <div className="p-10  sm:p-24 max-w-2xl">
-                  {tabValue === 0 && (
-                    <Formsy
-                      onValidSubmit={handleSubmit}
-                      onValid={enableButton}
-                      onInvalid={disableButton}
-                      ref={formRef}
-                      className="flex flex-col "
-                    >
-                      {form.statut && form.statut === 2 ? (
-                        <SnackbarContent
-                          className={clsx(classes.margin, classes.error)}
-                          aria-describedby="client-snackbar"
-                          message={
-                            <span
-                              id="client-snackbar"
-                              className={classes.message}
-                            >
-                              <ErrorIcon
-                                className={clsx(
-                                  classes.icon,
-                                  classes.iconVariant
-                                )}
-                              />
-                              Motif du rejet:{" "}
-                              {form.motifRejet ? form.motifRejet.name : ""}
-                            </span>
-                          }
-                        />
-                      ) : (
-                        ""
-                      )}
-                      <Grid container spacing={3} className="mb-8">
-                        {/* <Grid item xs={12} sm={8}>
+              <div className="p-10  sm:p-24 max-w-2xl">
+                {tabValue === 0 && (
+                  <Formsy
+                    onValidSubmit={handleSubmit}
+                    onValid={enableButton}
+                    onInvalid={disableButton}
+                    ref={formRef}
+                    className="flex flex-col "
+                  >
+                    {form.statut && form.statut === 2 ? (
+                      <SnackbarContent
+                        className={clsx(classes.margin, classes.error)}
+                        aria-describedby="client-snackbar"
+                        message={
+                          <span
+                            id="client-snackbar"
+                            className={classes.message}
+                          >
+                            <ErrorIcon
+                              className={clsx(
+                                classes.icon,
+                                classes.iconVariant
+                              )}
+                            />
+                            Motif du rejet:{" "}
+                            {form.motifRejet ? form.motifRejet.name : ""}
+                          </span>
+                        }
+                      />
+                    ) : (
+                      ""
+                    )}
+                    <Grid container spacing={3} className="mb-8">
+                      {/* <Grid item xs={12} sm={8}>
                           <Typography variant="caption">
                             - Soumettez votre demande c'est gratuit et sans
                             engagement.
@@ -1320,379 +1261,380 @@ const Demande = () => {
                             obligatoires.
                           </Typography>
                         </Grid> */}
-                        {form.statut === 1 && (
-                          <Grid item xs={12}>
-                            <Typography
-  variant="caption"
-  className="uppercase font-bold mb-16 flex items-center justify-center"
-  style={{
-    color: '#FFFFFF', // Blanc pour le texte
-    fontSize: '14px',
-    fontWeight: 'bold',
-    backgroundColor: '#4CAF50', // Vert vif pour attirer l'attention
-    padding: '8px 12px', // Plus de padding pour plus d'espace
-    borderRadius: '20px', // Coins arrondis pour un effet moderne
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', // Légère ombre pour donner du relief
-    display: 'inline-flex', // Empêche de prendre toute la largeur
-    alignItems: 'center',
-    justifyContent: 'center', // Centrage horizontal
-    textAlign: 'center', // Centrage du texte
-    maxWidth: '200px', // Définit une largeur maximale
-    width: 'auto', // Laisse l'élément s'ajuster à son contenu
-  }}
->
-  <Icon style={{ marginRight: '8px' }}>timer</Icon>&ensp;{calculateRemainingTime(form.dateExpiration).timeLeft}
-</Typography>
-                            <Typography
-                              variant="caption"
-                              className="font-bold flex items-center"
-                              color="secondary"
-                            >
-                              <Icon className="mr-2">info</Icon>Toutes
-                              modifications sur les champs ( Désignation,
-                              Description, Produits, Pièce(s) jointe(s) ), la
-                              demande sera remis à l'état initial "En attente"
-                              pour la validation de l'administrateur.
-                            </Typography>
-                            
-
-
-
-
-                          </Grid>
-                        )}
-                      </Grid>
-                      <Grid container spacing={3}>
-                        <Grid item xs={12} sm={7}>
-                          <TextFieldFormsy
-                            className="mb-24"
-                            label="Designation"
-                            autoFocus
-                            id="titre"
-                            name="titre"
-                            value={form.titre}
-                            onChange={handleChange}
-                            variant="outlined"
-                            validations={{
-                              minLength: 4,
-                              maxLength: 255,
+                      {form.statut === 1 && (
+                        <Grid item xs={12}>
+                          <Typography
+                            variant="caption"
+                            className="uppercase font-bold mb-16 flex items-center justify-center"
+                            style={{
+                              color: '#FFFFFF', // Blanc pour le texte
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                              backgroundColor: '#4CAF50', // Vert vif pour attirer l'attention
+                              padding: '8px 12px', // Plus de padding pour plus d'espace
+                              borderRadius: '20px', // Coins arrondis pour un effet moderne
+                              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', // Légère ombre pour donner du relief
+                              display: 'inline-flex', // Empêche de prendre toute la largeur
+                              alignItems: 'center',
+                              justifyContent: 'center', // Centrage horizontal
+                              textAlign: 'center', // Centrage du texte
+                              maxWidth: '200px', // Définit une largeur maximale
+                              width: 'auto', // Laisse l'élément s'ajuster à son contenu
                             }}
-                            validationErrors={{
-                              minLength: "Min character length is 4",
-                              maxLength: "Max character length is 255",
-                            }}
-                            required
-                            fullWidth
-                          />
-                          
+                          >
+                            <Icon style={{ marginRight: '8px' }}>timer</Icon>&ensp;{calculateRemainingTime(form.dateExpiration).timeLeft}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            className="font-bold flex items-center"
+                            color="secondary"
+                          >
+                            <Icon className="mr-2">info</Icon>Toutes
+                            modifications sur les champs ( Désignation,
+                            Description, Produits, Pièce(s) jointe(s) ), la
+                            demande sera remis à l'état initial "En attente"
+                            pour la validation de l'administrateur.
+                          </Typography>
+
+
+
+
+
                         </Grid>
-                        
-                        <Grid item xs={12} sm={4}>
-                          <TextFieldFormsy
-                            className="mb-24"
-                            label="Référence"
-                            id="reference"
-                            name="reference"
-                            value={
-                              form.reference ? form.reference : "En attente"
-                            }
-                            variant="outlined"
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  RFQ-
-                                </InputAdornment>
-                              ),
-                            }}
-                            disabled
-                            fullWidth
-                          />
-                        </Grid>
-                      </Grid>
-                      
-
-                      <Grid container spacing={3}>
-                      <Grid item xs={12} sm={6}>
-                      <DatePickerFormsy
-  key={form.dateExpiration || "empty-date"}
-  label="Date d'expiration"
-  id="dateExpiration"
-  name="dateExpiration"
-  value={form.dateExpiration}
-  onChange={(value) => handleDateChange(value, "dateExpiration")}
-  variant="outlined"
-  required
-  fullWidth
-  minDate={new Date(new Date().setDate(new Date().getDate() + 10))}
-  error={dateError} // ← rouge si true
-  helperText={dateError ? "Veuillez choisir une date au moins 10 jours après aujourd'hui." : ""}
-/>
-  
-  {updateExpiration && interval && (
-    <Typography
-      variant="caption"
-      className="uppercase font-bold mb-16 flex items-center"
-      color="secondary"
-    >
-      <Icon>info</Icon>&ensp;{interval}
-    </Typography>
-  )}
-
-  {form.dateExpiration && (
-    <Typography
-      variant="caption"
-      className="uppercase font-bold mb-16 flex items-center"
-      color="secondary"
-    >
-       
-    </Typography>
-  )}
-</Grid>
-
-
-                        <Grid item xs={12} sm={6}>
-                          <TextFieldFormsy
-                            className="mb-24"
-                            label="Budget"
-                            id="budget"
-                            type="number"
-                            name="budget"
-                            value={_.toString(form.budget)}
-                            onChange={handleChange}
-                            variant="outlined"
-                            validations={{
-                              isNumeric: true,
-                            }}
-                            validationErrors={{
-                              isNumeric: "Numeric value required",
-                            }}
-                            step="any"
-                            fullWidth
-                          />
-                        </Grid>
-                      </Grid>
-
-                      <div ref={popperNode}>
-                        <Autosuggest
-                          {...autosuggestProps}
-                          getSuggestionValue={(suggestion) =>
-                            searchCategories.searchText
-                          }
-                          onSuggestionSelected={(
-                            event,
-                            { suggestion, method }
-                          ) => {
-                            if (method === "enter") {
-                              event.preventDefault();
-                            }
-                            !_.find(categories, ["name", suggestion.name]) &&
-                              setCategories([suggestion, ...categories]);
-                            //setForm(_.set({ ...form }, 'categories', suggestion['@id']))
-                            //hideSearch();
-                            popperNode.current.focus();
+                      )}
+                    </Grid>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={7}>
+                        <TextFieldFormsy
+                          className="mb-24"
+                          label="Designation"
+                          autoFocus
+                          id="titre"
+                          name="titre"
+                          value={form.titre}
+                          onChange={handleChange}
+                          variant="outlined"
+                          validations={{
+                            minLength: 4,
+                            maxLength: 255,
+                          }}
+                          validationErrors={{
+                            minLength: "Min character length is 4",
+                            maxLength: "Max character length is 255",
                           }}
                           required
-                          inputProps={{
-                            classes,
-                            label: "Produits Services à Recherchez ",
-                            placeholder: "Produit (ex: Projecteur)",
-                            value: searchCategories.searchText,
-                            variant: "outlined",
-                            name: "categories",
-                            onChange: handleChangeSearch,
-                            onFocus: showSearch,
-                            InputLabelProps: {
-                              shrink: true,
-                            },
-                          }}
-                          theme={{
-                            container: classes.container,
-                            suggestionsContainerOpen:
-                              classes.suggestionsContainerOpen,
-                            suggestionsList: classes.suggestionsList,
-                            suggestion: classes.suggestion,
-                          }}
-                          renderSuggestionsContainer={(options) => (
-                            <Popper
-                              anchorEl={popperNode.current}
-                              open={
-                                Boolean(options.children) ||
-                                searchCategories.noSuggestions ||
-                                searchCategories.loading
-                              }
-                              popperOptions={{ positionFixed: true }}
-                              className="z-9999 mb-8"
-                            >
-                              <div ref={suggestionsNode}>
-                                <Paper
-                                  elevation={1}
-                                  square
-                                  {...options.containerProps}
-                                  style={{
-                                    width: popperNode.current
-                                      ? popperNode.current.clientWidth
-                                      : null,
-                                  }}
-                                >
-                                  {options.children}
-                                  {searchCategories.noSuggestions && (
-                                    <MenuItem
-                                      component="div"
-                                      className="z-999"
-                                      onClick={handleAddSuggestion}
-                                      dense={true}
-                                    >
-                                      <ListItemText
-                                        className="pl-0 "
-                                        primary={searchCategories.searchText}
-                                      />
-                                    </MenuItem>
-                                  )}
-                                  {searchCategories.loading && (
-                                    <div className="px-16 py-12 text-center">
-                                      <CircularProgress color="secondary" />{" "}
-                                      <br /> Chargement ...
-                                    </div>
-                                  )}
-                                </Paper>
-                              </div>
-                            </Popper>
-                          )}
+                          fullWidth
                         />
-                      </div>
-                      <Typography
-                        variant="caption"
-                        className="font-bold flex items-center"
-                        color="secondary"
-                      >
-                        IMPORTANT : Pour que votre demande soit diffusée aux
-                        fournisseurs désignés, veuillez sélectionner le bon
-                        produit.
-                      </Typography>
-                      <div className={clsx(classes.chips)}>
-                        {categories &&
-                          categories.length > 0 &&
-                          categories.map((item, index) => (
-                            <Chip
-                              key={index}
-                              label={item.name}
-                              onDelete={() => handleDelete(item.id)}
-                              className="mt-8 mr-8"
-                            />
-                          ))}
-                        {suggestions &&
-                          suggestions.length > 0 &&
-                          suggestions.map((item, index) => (
-                            <Chip
-                              key={index}
-                              label={item}
-                              onDelete={() => handleDeleteSuggestion(item)}
-                              className="mt-8 mr-8"
-                            />
-                          ))}
-                      </div>
-                      <Grid container spacing={3}>
-                      <Grid item xs={12} sm={12}>
-                                  <TextFieldFormsy
-                                    className="mb-16 mt-16  w-full"
-                                    type="text"
-                                    name="description"
-                                    value={form.description}
-                                    onChange={handleChange}
-                                    //onKeyDown={handleKeyDown}
-                                    label="Description"
-                                    autoFocus
-                                    validations={{
-                                      minLength: 10,
-                                    }}
-                                    validationErrors={{
-                                      minLength: "La longueur minimale de caractère est 10",
-                                    }}
-                                    required
-                                    variant="outlined"
-                                    multiline
-                                    rows="4"
-                                  />
-                    </Grid>
-                    </Grid>
-                     
-                      <Grid container spacing={3} className="flex items-center">
-                        
+
+                      </Grid>
+
                       <Grid item xs={12} sm={4}>
-                      <RadioGroupFormsy
-  className="inline"
-  name="statut"
-  label="Diffuser à l'échelle"
-  onChange={handleRadioChange}
->
-  {/* Option Locale */}
-  <FormControlLabel
-    value="2"
-    disabled={form.statut === 1}
-    checked={form.localisation === 2} // Si la localisation est égale à 2, cochez l'option Locale
-    onChange={handleLocaleChange}
-    control={<Radio />}
-    label="Locale"
-  />
-
-   {/* Option Internationale */}
-   <FormControlLabel
-    value="3"
-    disabled={form.statut === 1}
-    checked={form.localisation === 3}  // Si la localisation est un tableau et inclut 3, cochez l'option Internationale
-    onChange={handleLocalisationChange}
-    control={<Radio />}
-    label={
-      <span>
-        Internationale
-        {Array.isArray(form.localisation) &&
-  form.localisation.some(code => typeof code === "string") && (
-    <>
-      {" ("}
-      {form.localisation
-        .filter(code => typeof code === "string")
-        .map((countryCode, index) => (
-          <span
-            key={countryCode || index}
-            style={{ display: "flex", alignItems: "center", gap: "8px" }}
-          >
-            <img
-              src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
-              alt={countryCode}
-              style={{ width: "20px", height: "15px", borderRadius: "2px" }}
-            />
-            {countryCode}
-          </span>
-        ))}
-      {")"}
-    </>
-)}
-      </span>
-    }
-  />
-
-  {/* Option Zone */}
-  <FormControlLabel
-    value="4"
-    disabled={form.statut === 1}
-    checked={form.localisation === 4} // Si la localisation est égale à 4, cochez l'option Zone
-    onChange={handleLocalisationChange}
-    control={<Radio />}
-    label={
-      <span>
-        Zone
-        {form.localisation === 4 && form.zone && (
-          <span> - {form.zone}</span> // Affiche le texte de la zone (ex: "Union Européenne")
-        )}
-      </span>
-    }
-  />
-</RadioGroupFormsy>
+                        <TextFieldFormsy
+                          className="mb-24"
+                          label="Référence"
+                          id="reference"
+                          name="reference"
+                          value={
+                            form.reference ? form.reference : "En attente"
+                          }
+                          variant="outlined"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                RFQ-
+                              </InputAdornment>
+                            ),
+                          }}
+                          disabled
+                          fullWidth
+                        />
+                      </Grid>
+                    </Grid>
 
 
-  {/* Sélection de l'échelle */}
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={6}>
+                        <DatePickerFormsy
+                          key={form.dateExpiration || "empty-date"}
+                          label="Date d'expiration"
+                          id="dateExpiration"
+                          name="dateExpiration"
+                          value={form.dateExpiration}
+                          onChange={(value) => handleDateChange(value, "dateExpiration")}
+                          variant="outlined"
+                          required
+                          fullWidth
+                          minDate={new Date(new Date().setDate(new Date().getDate() + 10))}
+                          error={dateError} // ← rouge si true
+                          helperText={dateError ? "Veuillez choisir une date au moins 10 jours après aujourd'hui." : ""}
+                        />
 
-  {/* <RadioGroup name="statut" value={selectedRadio} onChange={handleLocalisationChange}>
+                        {updateExpiration && interval && (
+                          <Typography
+                            variant="caption"
+                            className="uppercase font-bold mb-16 flex items-center"
+                            color="secondary"
+                          >
+                            <Icon>info</Icon>&ensp;{interval}
+                          </Typography>
+                        )}
+
+                        {form.dateExpiration && (
+                          <Typography
+                            variant="caption"
+                            className="uppercase font-bold mb-16 flex items-center"
+                            color="secondary"
+                          >
+
+                          </Typography>
+                        )}
+                      </Grid>
+
+
+                      <Grid item xs={12} sm={6}>
+                        <TextFieldFormsy
+                          className="mb-24"
+                          label="Budget"
+                          id="budget"
+                          type="number"
+                          name="budget"
+                          value={_.toString(form.budget)}
+                          onChange={handleChange}
+                          variant="outlined"
+                          validations={{
+                            isNumeric: true,
+                          }}
+                          validationErrors={{
+                            isNumeric: "Numeric value required",
+                          }}
+                          step="any"
+                          fullWidth
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <div ref={popperNode}>
+                      <Autosuggest
+                        {...autosuggestProps}
+                        getSuggestionValue={(suggestion) =>
+                          searchCategories.searchText
+                        }
+                        onSuggestionSelected={(
+                          event,
+                          { suggestion, method }
+                        ) => {
+                          if (method === "enter") {
+                            event.preventDefault();
+                          }
+                          !_.find(categories, ["name", suggestion.name]) &&
+                            setCategories([suggestion, ...categories]);
+                          //setForm(_.set({ ...form }, 'categories', suggestion['@id']))
+                          //hideSearch();
+                          popperNode.current.focus();
+                        }}
+                        required
+                        inputProps={{
+                          classes,
+                          label: "Produits Services à Recherchez ",
+                          placeholder: "Produit (ex: Projecteur)",
+                          value: searchCategories.searchText,
+                          variant: "outlined",
+                          name: "categories",
+                          onChange: handleChangeSearch,
+                          onFocus: showSearch,
+                          InputLabelProps: {
+                            shrink: true,
+                          },
+                        }}
+                        theme={{
+                          container: classes.container,
+                          suggestionsContainerOpen:
+                            classes.suggestionsContainerOpen,
+                          suggestionsList: classes.suggestionsList,
+                          suggestion: classes.suggestion,
+                        }}
+                        renderSuggestionsContainer={(options) => (
+                          <Popper
+                            anchorEl={popperNode.current}
+                            open={
+                              Boolean(options.children) ||
+                              searchCategories.noSuggestions ||
+                              searchCategories.loading
+                            }
+                            popperOptions={{ positionFixed: true }}
+                            className="z-9999 mb-8"
+                          >
+                            <div ref={suggestionsNode}>
+                              <Paper
+                                elevation={1}
+                                square
+                                {...options.containerProps}
+                                style={{
+                                  width: popperNode.current
+                                    ? popperNode.current.clientWidth
+                                    : null,
+                                }}
+                              >
+                                {options.children}
+                                {searchCategories.noSuggestions && (
+                                  <MenuItem
+                                    component="div"
+                                    className="z-999"
+                                    onClick={handleAddSuggestion}
+                                    dense={true}
+                                  >
+                                    <ListItemText
+                                      className="pl-0 "
+                                      primary={searchCategories.searchText}
+                                    />
+                                  </MenuItem>
+                                )}
+                                {searchCategories.loading && (
+                                  <div className="px-16 py-12 text-center">
+                                    <CircularProgress color="secondary" />{" "}
+                                    <br /> Chargement ...
+                                  </div>
+                                )}
+                              </Paper>
+                            </div>
+                          </Popper>
+                        )}
+                      />
+                    </div>
+                    <Typography
+                      variant="caption"
+                      className="font-bold flex items-center"
+                      color="secondary"
+                    >
+                      IMPORTANT : Pour que votre demande soit diffusée aux
+                      fournisseurs désignés, veuillez sélectionner le bon
+                      produit.
+                    </Typography>
+                    <div className={clsx(classes.chips)}>
+                      {categories &&
+                        categories.length > 0 &&
+                        categories.map((item, index) => (
+                          <Chip
+                            key={index}
+                            label={item.name}
+                            onDelete={() => handleDelete(item.id)}
+                            className="mt-8 mr-8"
+                          />
+                        ))}
+                      {suggestions &&
+                        suggestions.length > 0 &&
+                        suggestions.map((item, index) => (
+                          <Chip
+                            key={index}
+                            label={item}
+                            onDelete={() => handleDeleteSuggestion(item)}
+                            className="mt-8 mr-8"
+                          />
+                        ))}
+                    </div>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={12}>
+                        <TextFieldFormsy
+                          className="mb-16 mt-16  w-full"
+                          type="text"
+                          name="description"
+                          value={form.description}
+                          onChange={handleChange}
+                          //onKeyDown={handleKeyDown}
+                          label="Description"
+                          autoFocus
+                          validations={{
+                            minLength: 10,
+                          }}
+                          validationErrors={{
+                            minLength: "La longueur minimale de caractère est 10",
+                          }}
+                          required
+                          variant="outlined"
+                          multiline
+                          rows="4"
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container spacing={3} className="flex items-center">
+
+                      <Grid item xs={12} sm={4}>
+                        <RadioGroupFormsy
+                          className="inline"
+                          name="statutLocalisation"
+                          label="Diffuser à l'échelle"
+                          onChange={handleRadioChange}
+                          value={String(form.localisation || "0")}
+                        >
+                          {/* Option Locale */}
+                          <FormControlLabel
+                            value="2"
+                            disabled={form.statut === 1}
+                            checked={form.localisation === 2} // Si la localisation est égale à 2, cochez l'option Locale
+                            onChange={handleLocaleChange}
+                            control={<Radio />}
+                            label="Locale"
+                          />
+
+                          {/* Option Internationale */}
+                          <FormControlLabel
+                            value="3"
+                            disabled={form.statut === 1}
+                            checked={form.localisation === 3}  // Si la localisation est un tableau et inclut 3, cochez l'option Internationale
+                            onChange={handleLocalisationChange}
+                            control={<Radio />}
+                            label={
+                              <span>
+                                Internationale
+                                {Array.isArray(form.localisation) &&
+                                  form.localisation.some(code => typeof code === "string") && (
+                                    <>
+                                      {" ("}
+                                      {form.localisation
+                                        .filter(code => typeof code === "string" && code.length === 2 && !/^\d+$/.test(code))
+                                        .map((countryCode, index) => (
+                                          <span
+                                            key={countryCode || index}
+                                            style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                                          >
+                                            <img
+                                              src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
+                                              alt={countryCode}
+                                              style={{ width: "20px", height: "15px", borderRadius: "2px" }}
+                                            />
+                                            {countryCode}
+                                          </span>
+                                        ))}
+                                      {")"}
+                                    </>
+                                  )}
+                              </span>
+                            }
+                          />
+
+                          {/* Option Zone */}
+                          <FormControlLabel
+                            value="4"
+                            disabled={form.statut === 1}
+                            checked={form.localisation === 4} // Si la localisation est égale à 4, cochez l'option Zone
+                            onChange={handleLocalisationChange}
+                            control={<Radio />}
+                            label={
+                              <span>
+                                Zone
+                                {form.localisation === 4 && form.zone && (
+                                  <span> - {form.zone}</span> // Affiche le texte de la zone (ex: "Union Européenne")
+                                )}
+                              </span>
+                            }
+                          />
+                        </RadioGroupFormsy>
+
+
+                        {/* Sélection de l'échelle */}
+
+                        {/* <RadioGroup name="statut" value={selectedRadio} onChange={handleLocalisationChange}>
    
     <FormControlLabel 
       value="3" 
@@ -1708,619 +1650,619 @@ const Demande = () => {
   
   </RadioGroup> */}
 
-  {/* Popup pour sélectionner les pays */}
-  <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {formData.localisation === 3 ? "Sélectionner des pays" : "Sélectionner une zone"}
-        </DialogTitle>
+                        {/* Popup pour sélectionner les pays */}
+                        <Dialog open={openDialog} onClose={handleCloseDialog}>
+                          <DialogTitle>
+                            {formData.localisation === 3 ? "Sélectionner des pays" : "Sélectionner une zone"}
+                          </DialogTitle>
 
-        <DialogContent>
-          {formData.localisation === 3 ? (
-            <>
-              <TextField
-                fullWidth
-                label="Rechercher un pays..."
-                variant="outlined"
-                onChange={(e) => setSearchTerm(e.target.value)} // Mise à jour du terme de recherche
-              />
-
-              <FormControlLabel
-                control={<Checkbox checked={selectAllCountries} onChange={handleSelectAllCountries} />}
-                label="Tout le monde"
-              />
-
-              {!selectAllCountries && (
-                <FormGroup>
-                  {filteredCountries.map((country) => (
-                    <FormControlLabel
-                      key={country.code}
-                      control={
-                        <Checkbox
-                          checked={selectedCountries.some((c) => c.code === country.code)}
-                          onChange={() => handleCountryCheck(country)}
-                        />
-                      }
-                      label={
-                        <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <img
-                            src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
-                            alt={country.name}
-                            style={{ width: 24, height: 16, objectFit: "cover", borderRadius: 2 }}
-                          />
-                          {country.name}
-                        </span>
-                      }
-                    />
-                  ))}
-                </FormGroup>
-              )}
-            </>
-          ) : (
-            <FormGroup>
-              {zones.map((zone) => (
-                <FormControlLabel
-                  key={zone.code}
-                  control={
-                    <Radio
-                      checked={selectedZone === zone.code}
-                      onChange={() => handleZoneSelect(zone.code)}
-                    />
-                  }
-                  label={zone.name}
-                />
-              ))}
-            </FormGroup>
-          )}
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleValidateSelection}>Valider</Button>
-          <Button onClick={handleCloseDialog}>Fermer</Button>
-        </DialogActions>
-      </Dialog>
-
-</Grid>
-
-                        <Grid item xs={12} sm={4} className="flex items-center">
-                          <CheckboxFormsy
-                            name="isPublic"
-                            disabled={form.statut === 1}
-                            onChange={(e) =>
-                              handleCheckBoxChange(e, "isPublic")
-                            }
-                            value={form.isPublic}
-                            label="Mettre en ligne après validation"
-                          />
-                          <Tooltip
-                            placement="top"
-                            title="Si vous mettez la demande en ligne après validation, elle sera visibile par les founrisseurs et les visiteurs du site web."
-                            aria-label="anonyme"
-                          >
-                            <Icon className="ml-4 text-20">help_outline</Icon>
-                          </Tooltip>
-                        </Grid>
-
-                        <Grid item xs={12} sm={4} className="flex items-center">
-                          <CheckboxFormsy
-                            onChange={(e) =>
-                              handleCheckBoxChange(e, "isAnonyme")
-                            }
-                            name="isAnonyme"
-                            disabled={form.statut === 1}
-                            value={form.isAnonyme}
-                            label="Mettre la demande anonyme"
-                          />
-                          <Tooltip
-                            placement="top"
-                            title="Si vous mettez la demande anonyme, les achats industriels prend en charge la reception des devis d'auprès les fournisseurs et elle vous choisi la meiileure offre."
-                            aria-label="anonyme"
-                          >
-                            <Icon className="ml-4 text-20">help_outline</Icon>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={3} className="mb-8">
-                        <Grid item xs={12} sm={8}>
-                          <Typography variant="caption">
-                            - Soumettez votre demande c'est gratuit et sans
-                            engagement.
-                            <br />
-                            - Détaillez la demande, vous recevrez de meilleures
-                            offres.
-                            <br />
-                            - Attention seules les demandes sérieuses (pas de
-                            projets étudiants) seront validées.
-                            <br />
-                          </Typography>
-                        </Grid>
-                        <Grid
-                          item
-                          xs={12}
-                          sm={4}
-                          className="justify-end text-right"
-                        >
-                          <Typography
-                            variant="caption"
-                            className="font-extrabold"
-                          >
-                            <span className="text-red font-600">*</span> Champs
-                            obligatoires.
-                          </Typography>
-                        </Grid> 
-                        </Grid>
-                      <Grid container spacing={3} className="mt-4">
-                        <Grid item xs={12} sm={10}>
-                        <Button
-        className="whitespace-no-wrap"
-        variant="contained"
-        color="secondary"
-        disabled={
-          !isFormValid ||
-          demande.loading ||
-          (!categories.length && !suggestions.length) ||
-          demande.data.statut === 3
-        }
-        onClick={() => setOpenSaveDialog(true)}
-      >
-        <span className="hidden sm:flex">Sauvegarder avant diffuser</span>
-        <span className="flex sm:hidden">
-          <Icon>save</Icon>
-        </span>
-        {demande.loading && (
-          <CircularProgress
-            size={24}
-            className={classes.buttonProgress}
-          />
-        )}
-      </Button>
-      <Button
-        style={{ backgroundColor: 'orangered', marginLeft: '20px' }}
-        className="whitespace-no-wrap"
-        variant="contained"
-        color="secondary"
-        disabled={
-          !isFormValid ||
-          demande.loading ||
-          (!categories.length && !suggestions.length) ||
-          demande.data.statut === 3
-        }
-        onClick={() => setOpenSendDialog(true)}
-      >
-        <span className="hidden sm:flex">Envoyer</span>
-        <span className="flex sm:hidden">
-          <Icon>send</Icon>
-        </span>
-        {demande.loading && (
-          <CircularProgress
-            size={24}
-            className={classes.buttonProgress}
-          />
-        )}
-      </Button>
-
-      {/* Dialog for Save */}
-      <Dialog
-        open={openSaveDialog}
-        onClose={() => setOpenSaveDialog(false)}
-        aria-labelledby="save-dialog-title"
-        aria-describedby="save-dialog-description"
-      >
-        <DialogTitle id="save-dialog-title">Sauvegarder</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="save-dialog-description">
-            Voulez-vous vraiment sauvegarder cet enregistrement avant de diffuser ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenSaveDialog(false)} color="primary">
-            Non
-          </Button>
-          <Button onClick={handleSave} color="primary" autoFocus>
-            Oui
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog for Send */}
-      <Dialog
-        open={openSendDialog}
-        onClose={() => setOpenSendDialog(false)}
-        aria-labelledby="send-dialog-title"
-        aria-describedby="send-dialog-description"
-      >
-        <DialogTitle id="send-dialog-title">Envoyer</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="send-dialog-description">
-            Voulez-vous vraiment envoyer cet enregistrement ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenSendDialog(false)} color="primary">
-            Non
-          </Button>
-          <Button onClick={handleSend} color="primary" autoFocus>
-            Oui
-          </Button>
-        </DialogActions>
-      </Dialog>
-                          {demandeId === "new" && (
-                            <Button
-                              className="ml-8"
-                              variant="contained"
-                              color="secondary"
-                              disabled={
-                                !isFormValid ||
-                                demande.loading ||
-                                (!categories.length && !suggestions.length)
-                              }
-                              onClick={() => handleSubmit(true)}
-                            >
-                              <span className="hidden sm:flex">
-                                Sauvegarder et ajouter nouvelle demande
-                              </span>
-                              <span className="flex sm:hidden">
-                                <Icon>save</Icon> et <Icon>repeat</Icon>
-                              </span>
-
-                              {demande.loading && (
-                                <CircularProgress
-                                  size={24}
-                                  className={classes.buttonProgress}
+                          <DialogContent>
+                            {formData.localisation === 3 ? (
+                              <>
+                                <TextField
+                                  fullWidth
+                                  label="Rechercher un pays..."
+                                  variant="outlined"
+                                  onChange={(e) => setSearchTerm(e.target.value)} // Mise à jour du terme de recherche
                                 />
-                              )}
-                            </Button>
-                          )}
-                        </Grid>
+
+                                <FormControlLabel
+                                  control={<Checkbox checked={selectAllCountries} onChange={handleSelectAllCountries} />}
+                                  label="Tout le monde"
+                                />
+
+                                {!selectAllCountries && (
+                                  <FormGroup>
+                                    {filteredCountries.map((country) => (
+                                      <FormControlLabel
+                                        key={country.code}
+                                        control={
+                                          <Checkbox
+                                            checked={selectedCountries.some((c) => c.code === country.code)}
+                                            onChange={() => handleCountryCheck(country)}
+                                          />
+                                        }
+                                        label={
+                                          <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                            <img
+                                              src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
+                                              alt={country.name}
+                                              style={{ width: 24, height: 16, objectFit: "cover", borderRadius: 2 }}
+                                            />
+                                            {country.name}
+                                          </span>
+                                        }
+                                      />
+                                    ))}
+                                  </FormGroup>
+                                )}
+                              </>
+                            ) : (
+                              <FormGroup>
+                                {zones.map((zone) => (
+                                  <FormControlLabel
+                                    key={zone.code}
+                                    control={
+                                      <Radio
+                                        checked={selectedZone === zone.code}
+                                        onChange={() => handleZoneSelect(zone.code)}
+                                      />
+                                    }
+                                    label={zone.name}
+                                  />
+                                ))}
+                              </FormGroup>
+                            )}
+                          </DialogContent>
+
+                          <DialogActions>
+                            <Button onClick={handleValidateSelection}>Valider</Button>
+                            <Button onClick={handleCloseDialog}>Fermer</Button>
+                          </DialogActions>
+                        </Dialog>
+
                       </Grid>
-                    </Formsy>
-                  )}
-                  {tabValue === 1 && (
-                    <div>
-                      <input
-                        accept="text/plain,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf,image/jpeg,image/gif,image/png,application/pdf,"
-                        className="hidden"
-                        id="button-file"
-                        type="file"
-                        disabled={demande.attachementReqInProgress}
-                        onChange={handleUploadChange}
-                      />
-                      <div className="flex justify-center sm:justify-start flex-wrap">
-                        <label
-                          htmlFor="button-file"
-                          className={clsx(
-                            classes.demandeImageUpload,
-                            "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
-                            form.attachements.length === 5 && "hidden"
-                          )}
+
+                      <Grid item xs={12} sm={4} className="flex items-center">
+                        <CheckboxFormsy
+                          name="isPublic"
+                          disabled={form.statut === 1}
+                          onChange={(e) =>
+                            handleCheckBoxChange(e, "isPublic")
+                          }
+                          value={form.isPublic}
+                          label="Mettre en ligne après validation"
+                        />
+                        <Tooltip
+                          placement="top"
+                          title="Si vous mettez la demande en ligne après validation, elle sera visibile par les founrisseurs et les visiteurs du site web."
+                          aria-label="anonyme"
                         >
-                          {demande.attachementReqInProgress ? (
+                          <Icon className="ml-4 text-20">help_outline</Icon>
+                        </Tooltip>
+                      </Grid>
+
+                      <Grid item xs={12} sm={4} className="flex items-center">
+                        <CheckboxFormsy
+                          onChange={(e) =>
+                            handleCheckBoxChange(e, "isAnonyme")
+                          }
+                          name="isAnonyme"
+                          disabled={form.statut === 1}
+                          value={form.isAnonyme}
+                          label="Mettre la demande anonyme"
+                        />
+                        <Tooltip
+                          placement="top"
+                          title="Si vous mettez la demande anonyme, les achats industriels prend en charge la reception des devis d'auprès les fournisseurs et elle vous choisi la meiileure offre."
+                          aria-label="anonyme"
+                        >
+                          <Icon className="ml-4 text-20">help_outline</Icon>
+                        </Tooltip>
+                      </Grid>
+                    </Grid>
+                    <Grid container spacing={3} className="mb-8">
+                      <Grid item xs={12} sm={8}>
+                        <Typography variant="caption">
+                          - Soumettez votre demande c'est gratuit et sans
+                          engagement.
+                          <br />
+                          - Détaillez la demande, vous recevrez de meilleures
+                          offres.
+                          <br />
+                          - Attention seules les demandes sérieuses (pas de
+                          projets étudiants) seront validées.
+                          <br />
+                        </Typography>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={4}
+                        className="justify-end text-right"
+                      >
+                        <Typography
+                          variant="caption"
+                          className="font-extrabold"
+                        >
+                          <span className="text-red font-600">*</span> Champs
+                          obligatoires.
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container spacing={3} className="mt-4">
+                      <Grid item xs={12} sm={10}>
+                        <Button
+                          className="whitespace-no-wrap"
+                          variant="contained"
+                          color="secondary"
+                          disabled={
+                            !isFormValid ||
+                            demande.loading ||
+                            (!categories.length && !suggestions.length) ||
+                            demande.data.statut === 3
+                          }
+                          onClick={() => setOpenSaveDialog(true)}
+                        >
+                          <span className="hidden sm:flex">Sauvegarder avant diffuser</span>
+                          <span className="flex sm:hidden">
+                            <Icon>save</Icon>
+                          </span>
+                          {demande.loading && (
                             <CircularProgress
                               size={24}
                               className={classes.buttonProgress}
                             />
+                          )}
+                        </Button>
+                        <Button
+                          style={{ backgroundColor: 'orangered', marginLeft: '20px' }}
+                          className="whitespace-no-wrap"
+                          variant="contained"
+                          color="secondary"
+                          disabled={
+                            !isFormValid ||
+                            demande.loading ||
+                            (!categories.length && !suggestions.length) ||
+                            demande.data.statut === 3
+                          }
+                          onClick={() => setOpenSendDialog(true)}
+                        >
+                          <span className="hidden sm:flex">Envoyer</span>
+                          <span className="flex sm:hidden">
+                            <Icon>send</Icon>
+                          </span>
+                          {demande.loading && (
+                            <CircularProgress
+                              size={24}
+                              className={classes.buttonProgress}
+                            />
+                          )}
+                        </Button>
+
+                        {/* Dialog for Save */}
+                        <Dialog
+                          open={openSaveDialog}
+                          onClose={() => setOpenSaveDialog(false)}
+                          aria-labelledby="save-dialog-title"
+                          aria-describedby="save-dialog-description"
+                        >
+                          <DialogTitle id="save-dialog-title">Sauvegarder</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText id="save-dialog-description">
+                              Voulez-vous vraiment sauvegarder cet enregistrement avant de diffuser ?
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={() => setOpenSaveDialog(false)} color="primary">
+                              Non
+                            </Button>
+                            <Button onClick={handleSave} color="primary" autoFocus>
+                              Oui
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+
+                        {/* Dialog for Send */}
+                        <Dialog
+                          open={openSendDialog}
+                          onClose={() => setOpenSendDialog(false)}
+                          aria-labelledby="send-dialog-title"
+                          aria-describedby="send-dialog-description"
+                        >
+                          <DialogTitle id="send-dialog-title">Envoyer</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText id="send-dialog-description">
+                              Voulez-vous vraiment envoyer cet enregistrement ?
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={() => setOpenSendDialog(false)} color="primary">
+                              Non
+                            </Button>
+                            <Button onClick={handleSend} color="primary" autoFocus>
+                              Oui
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                        {demandeId === "new" && (
+                          <Button
+                            className="ml-8"
+                            variant="contained"
+                            color="secondary"
+                            disabled={
+                              !isFormValid ||
+                              demande.loading ||
+                              (!categories.length && !suggestions.length)
+                            }
+                            onClick={() => handleSubmit(true)}
+                          >
+                            <span className="hidden sm:flex">
+                              Sauvegarder et ajouter nouvelle demande
+                            </span>
+                            <span className="flex sm:hidden">
+                              <Icon>save</Icon> et <Icon>repeat</Icon>
+                            </span>
+
+                            {demande.loading && (
+                              <CircularProgress
+                                size={24}
+                                className={classes.buttonProgress}
+                              />
+                            )}
+                          </Button>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </Formsy>
+                )}
+                {tabValue === 1 && (
+                  <div>
+                    <input
+                      accept="text/plain,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf,image/jpeg,image/gif,image/png,application/pdf,"
+                      className="hidden"
+                      id="button-file"
+                      type="file"
+                      disabled={demande.attachementReqInProgress}
+                      onChange={handleUploadChange}
+                    />
+                    <div className="flex justify-center sm:justify-start flex-wrap">
+                      <label
+                        htmlFor="button-file"
+                        className={clsx(
+                          classes.demandeImageUpload,
+                          "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
+                          form.attachements.length === 5 && "hidden"
+                        )}
+                      >
+                        {demande.attachementReqInProgress ? (
+                          <CircularProgress
+                            size={24}
+                            className={classes.buttonProgress}
+                          />
+                        ) : (
+                          <Icon fontSize="large" color="action">
+                            arrow_upward
+                          </Icon>
+                        )}
+                      </label>
+
+                      {form.attachements.map((media) => (
+                        <div
+                          className={clsx(
+                            classes.demandeImageItem,
+                            "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5"
+                          )}
+                          key={media.id}
+                          onClick={() =>
+                            window.open(URL_SITE + media.url, "_blank")
+                          }
+                        >
+                          <Tooltip title="Supprimer">
+                            <IconButton
+                              className={classes.demandeImageFeaturedStar}
+                              onClick={(ev) => {
+                                ev.stopPropagation();
+                                dispatch(Actions.deleteMedia(media));
+                              }}
+                            >
+                              <Icon>delete</Icon>
+                            </IconButton>
+                          </Tooltip>
+                          {_.split(media.type, "/", 1)[0] === "image" ? (
+                            <img
+                              className="max-w-none w-auto h-full"
+                              src={URL_SITE + media.url}
+                              alt="demande"
+                            />
                           ) : (
-                            <Icon fontSize="large" color="action">
-                              arrow_upward
+                            <Icon color="secondary" style={{ fontSize: 80 }}>
+                              insert_drive_file
                             </Icon>
                           )}
-                        </label>
-
-                        {form.attachements.map((media) => (
-                          <div
-                            className={clsx(
-                              classes.demandeImageItem,
-                              "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5"
-                            )}
-                            key={media.id}
-                            onClick={() =>
-                              window.open(URL_SITE + media.url, "_blank")
-                            }
-                          >
-                            <Tooltip title="Supprimer">
-                              <IconButton
-                                className={classes.demandeImageFeaturedStar}
-                                onClick={(ev) => {
-                                  ev.stopPropagation();
-                                  dispatch(Actions.deleteMedia(media));
-                                }}
-                              >
-                                <Icon>delete</Icon>
-                              </IconButton>
-                            </Tooltip>
-                            {_.split(media.type, "/", 1)[0] === "image" ? (
-                              <img
-                                className="max-w-none w-auto h-full"
-                                src={URL_SITE + media.url}
-                                alt="demande"
-                              />
-                            ) : (
-                              <Icon color="secondary" style={{ fontSize: 80 }}>
-                                insert_drive_file
-                              </Icon>
-                            )}
-                          </div>
-                        ))}
-                        <Grid container spacing={3}>
-                          <Grid item xs={12} sm={6}>
-                            <Typography variant="caption">
-                              - Taille maximale par fichier : 2 Mo <br />
-                              - 5 fichiers à télécharger <br />- Extensions de
-                              fichier autorisées: .jpg, .jpeg, .png, .xls, .xlsx
-                              , .bmp , .doc , .docx , .pdf , .txt
-                            </Typography>
-                          </Grid>
+                        </div>
+                      ))}
+                      <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="caption">
+                            - Taille maximale par fichier : 2 Mo <br />
+                            - 5 fichiers à télécharger <br />- Extensions de
+                            fichier autorisées: .jpg, .jpeg, .png, .xls, .xlsx
+                            , .bmp , .doc , .docx , .pdf , .txt
+                          </Typography>
                         </Grid>
-                      </div>
+                      </Grid>
                     </div>
-                  )}
-                    {/* {tabValue === 2 && (
+                  </div>
+                )}
+                {/* {tabValue === 2 && (
   <Typography variant="h6" className="p-16">
     Temps restant : {calculateRemainingTime()}
   </Typography>
 )} */}
-                  {tabValue === 3 && (
-                    <div className="w-full flex flex-col">
-                      {demande.data &&
+                {tabValue === 3 && (
+                  <div className="w-full flex flex-col">
+                    {demande.data &&
                       demande.data.statut === 3 &&
                       !demande.data.isAnonyme ? (
-                        <div className="flex flex-1 items-center justify-center h-full">
-                          <Typography
-                            variant="h6"
-                            className="flex items-center"
-                          >
-                            <Icon className="mr-2 text-40" color="secondary">
-                              gavel
-                            </Icon>{" "}
-                            Cette demande a été adjugée par :{" "}
-                            <strong className="uppercase ml-2">
-                              {" "}
-                              {demande.data.fournisseurGagne
-                                ? demande.data.fournisseurGagne.societe
-                                : "Fournisseur hors site"}
-                            </strong>
-                          </Typography>
+                      <div className="flex flex-1 items-center justify-center h-full">
+                        <Typography
+                          variant="h6"
+                          className="flex items-center"
+                        >
+                          <Icon className="mr-2 text-40" color="secondary">
+                            gavel
+                          </Icon>{" "}
+                          Cette demande a été adjugée par :{" "}
+                          <strong className="uppercase ml-2">
+                            {" "}
+                            {demande.data.fournisseurGagne
+                              ? demande.data.fournisseurGagne.societe
+                              : "Fournisseur hors site"}
+                          </strong>
+                        </Typography>
+                      </div>
+                    ) : (
+                      <div>
+                        <Typography
+                          variant="h6"
+                          className={clsx("mb-8 ml-2", classes.titre)}
+                        >
+                          Détail de la demande
+                        </Typography>
+                        <div className="table-responsive mb-16">
+                          <table className="simple">
+                            <thead>
+                              <tr>
+                                <th className="font-bold">Référence</th>
+                                <th className="font-bold">Désignation</th>
+                                <th className="font-bold">Description</th>
+                                <th className="font-bold">Produits</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <div className="flex items-center">
+                                    <Typography className="truncate">
+                                      {"RFQ-" + demande.data.reference}
+                                    </Typography>
+
+                                  </div>
+                                </td>
+                                <td>
+                                  <Typography className="truncate">
+                                    {demande.data.titre}
+                                  </Typography>
+                                </td>
+                                <td>
+                                  <Typography className="truncate">
+                                    {demande.data.description}
+                                  </Typography>
+                                </td>
+                                <td>
+                                  <span className="truncate">
+                                    {_.join(
+                                      _.map(demande.data.categories, "name"),
+                                      ", "
+                                    )}
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
-                      ) : (
-                        <div>
+
+                        <div className="flex flex-1 items-center justify-between mb-10">
                           <Typography
                             variant="h6"
                             className={clsx("mb-8 ml-2", classes.titre)}
                           >
-                            Détail de la demande
+                            Fournisseurs participants ({" "}
+                            {demande.fournisseurs.length} )
                           </Typography>
-                          <div className="table-responsive mb-16">
-                            <table className="simple">
-                              <thead>
-                                <tr>
-                                  <th className="font-bold">Référence</th>
-                                  <th className="font-bold">Désignation</th>
-                                  <th className="font-bold">Description</th>
-                                  <th className="font-bold">Produits</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <div className="flex items-center">
-                                      <Typography className="truncate">
-                                        {"RFQ-" + demande.data.reference}
-                                      </Typography>
-                                      
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <Typography className="truncate">
-                                      {demande.data.titre}
-                                    </Typography>
-                                  </td>
-                                  <td>
-                                    <Typography className="truncate">
-                                      {demande.data.description}
-                                    </Typography>
-                                  </td>
-                                  <td>
-                                    <span className="truncate">
-                                      {_.join(
-                                        _.map(demande.data.categories, "name"),
-                                        ", "
-                                      )}
-                                    </span>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-
-                          <div className="flex flex-1 items-center justify-between mb-10">
-                            <Typography
-                              variant="h6"
-                              className={clsx("mb-8 ml-2", classes.titre)}
-                            >
-                              Fournisseurs participants ({" "}
-                              {demande.fournisseurs.length} )
-                            </Typography>
-                            <ColorButton
-                              color="secondary"
-                              size="small"
-                              variant="outlined"
-                              disabled={demande.requestSaveFrs}
-                              onClick={(ev) => {
-                                ev.stopPropagation();
-                                dispatch(
-                                  Actions.openDialog({
-                                    children: (
-                                      <React.Fragment>
-                                        <DialogTitle id="alert-dialog-title">
-                                          Attribution
-                                        </DialogTitle>
-                                        <DialogContent>
-                                          <DialogContentText id="alert-dialog-description">
-                                            Voulez vous vraiment attribuer cette
-                                            demande à un fournisseur hors site ?
-                                          </DialogContentText>
-                                        </DialogContent>
-                                        <DialogActions>
-                                          <Button
-                                            variant="outlined"
-                                            onClick={() =>
-                                              dispatch(Actions.closeDialog())
-                                            }
-                                            color="primary"
-                                          >
-                                            Non
-                                          </Button>
-                                          <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            onClick={(ev) => {
-                                              dispatch(
-                                                Actions.saveFournisseurGange(
-                                                  null,
-                                                  form.id
-                                                )
-                                              );
-                                              dispatch(Actions.closeDialog());
-                                            }}
-                                            autoFocus
-                                          >
-                                            Oui
-                                          </Button>
-                                        </DialogActions>
-                                      </React.Fragment>
-                                    ),
-                                  })
-                                );
-                              }}
-                            >
-                              attribuée à un fournisseur hors site
-                              {demande.requestSaveFrs && (
-                                <CircularProgress
-                                  size={24}
-                                  className={classes.buttonProgress}
-                                />
-                              )}
-                            </ColorButton>
-                          </div>
-                          <ReactTable
-                            className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                            data={demande.fournisseurs}
-                            columns={[
-                              {
-                                Header: "Nombre de fournisseur",
-                                accessor: "id",
-                                Cell: (row) => (
-                                  <div style={{ textAlign: "center" }}>
-                                    {row.index + 1}
-                                  </div>
-                                ),
-                              },
-                              {
-                                Header: "Fournisseur",
-                                className: "font-bold",
-                                id: "fournisseur",
-                                accessor: (f) =>
-                                  f.fournisseur.societe +
-                                  " " +
-                                  f.fournisseur.firstName +
-                                  " " +
-                                  f.fournisseur.lastName +
-                                  " " +
-                                  f.fournisseur.phone,
-                              },
-                              {
-                                Header: "",
-                                Cell: (row) => (
-                                  <div className="flex items-center">
-                                    <ColorButton
-                                      color="secondary"
-                                      size="small"
-                                      variant="outlined"
-                                      disabled={demande.requestSaveFrs}
-                                      onClick={(ev) => {
-                                        ev.stopPropagation();
-                                        dispatch(
-                                          Actions.openDialog({
-                                            children: (
-                                              <React.Fragment>
-                                                <DialogTitle id="alert-dialog-title">
-                                                  Attribution
-                                                </DialogTitle>
-                                                <DialogContent>
-                                                  <DialogContentText id="alert-dialog-description">
-                                                    Voulez vous vraiment
-                                                    attribuer cette demande à{" "}
-                                                    <strong>
-                                                      {
-                                                        row.original.fournisseur
-                                                          .societe
-                                                      }
-                                                    </strong>{" "}
-                                                    ?
-                                                  </DialogContentText>
-                                                </DialogContent>
-                                                <DialogActions>
-                                                  <Button
-                                                    variant="outlined"
-                                                    onClick={() =>
-                                                      dispatch(
-                                                        Actions.closeDialog()
-                                                      )
-                                                    }
-                                                    color="primary"
-                                                  >
-                                                    Non
-                                                  </Button>
-                                                  <Button
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    onClick={(ev) => {
-                                                      dispatch(
-                                                        Actions.saveFournisseurGange(
-                                                          row.original
-                                                            .fournisseur.id,
-                                                          form.id
-                                                        )
-                                                      );
-                                                      dispatch(
-                                                        Actions.closeDialog()
-                                                      );
-                                                    }}
-                                                    autoFocus
-                                                  >
-                                                    Oui
-                                                  </Button>
-                                                </DialogActions>
-                                              </React.Fragment>
-                                            ),
-                                          })
-                                        );
-                                      }}
-                                    >
-                                      Adjugée
-                                      {demande.requestSaveFrs && (
-                                        <CircularProgress
-                                          size={24}
-                                          className={classes.buttonProgress}
-                                        />
-                                      )}
-                                    </ColorButton>
-                                  </div>
-                                ),
-                              },
-                            ]}
-                            defaultPageSize={
-                              demande.fournisseurs.length < 10
-                                ? demande.fournisseurs.length
-                                : 10
-                            }
-                            ofText="sur"
-                          />
+                          <ColorButton
+                            color="secondary"
+                            size="small"
+                            variant="outlined"
+                            disabled={demande.requestSaveFrs}
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              dispatch(
+                                Actions.openDialog({
+                                  children: (
+                                    <React.Fragment>
+                                      <DialogTitle id="alert-dialog-title">
+                                        Attribution
+                                      </DialogTitle>
+                                      <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                          Voulez vous vraiment attribuer cette
+                                          demande à un fournisseur hors site ?
+                                        </DialogContentText>
+                                      </DialogContent>
+                                      <DialogActions>
+                                        <Button
+                                          variant="outlined"
+                                          onClick={() =>
+                                            dispatch(Actions.closeDialog())
+                                          }
+                                          color="primary"
+                                        >
+                                          Non
+                                        </Button>
+                                        <Button
+                                          variant="contained"
+                                          color="secondary"
+                                          onClick={(ev) => {
+                                            dispatch(
+                                              Actions.saveFournisseurGange(
+                                                null,
+                                                form.id
+                                              )
+                                            );
+                                            dispatch(Actions.closeDialog());
+                                          }}
+                                          autoFocus
+                                        >
+                                          Oui
+                                        </Button>
+                                      </DialogActions>
+                                    </React.Fragment>
+                                  ),
+                                })
+                              );
+                            }}
+                          >
+                            attribuée à un fournisseur hors site
+                            {demande.requestSaveFrs && (
+                              <CircularProgress
+                                size={24}
+                                className={classes.buttonProgress}
+                              />
+                            )}
+                          </ColorButton>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )
+                        <ReactTable
+                          className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
+                          data={demande.fournisseurs}
+                          columns={[
+                            {
+                              Header: "Nombre de fournisseur",
+                              accessor: "id",
+                              Cell: (row) => (
+                                <div style={{ textAlign: "center" }}>
+                                  {row.index + 1}
+                                </div>
+                              ),
+                            },
+                            {
+                              Header: "Fournisseur",
+                              className: "font-bold",
+                              id: "fournisseur",
+                              accessor: (f) =>
+                                f.fournisseur.societe +
+                                " " +
+                                f.fournisseur.firstName +
+                                " " +
+                                f.fournisseur.lastName +
+                                " " +
+                                f.fournisseur.phone,
+                            },
+                            {
+                              Header: "",
+                              Cell: (row) => (
+                                <div className="flex items-center">
+                                  <ColorButton
+                                    color="secondary"
+                                    size="small"
+                                    variant="outlined"
+                                    disabled={demande.requestSaveFrs}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      dispatch(
+                                        Actions.openDialog({
+                                          children: (
+                                            <React.Fragment>
+                                              <DialogTitle id="alert-dialog-title">
+                                                Attribution
+                                              </DialogTitle>
+                                              <DialogContent>
+                                                <DialogContentText id="alert-dialog-description">
+                                                  Voulez vous vraiment
+                                                  attribuer cette demande à{" "}
+                                                  <strong>
+                                                    {
+                                                      row.original.fournisseur
+                                                        .societe
+                                                    }
+                                                  </strong>{" "}
+                                                  ?
+                                                </DialogContentText>
+                                              </DialogContent>
+                                              <DialogActions>
+                                                <Button
+                                                  variant="outlined"
+                                                  onClick={() =>
+                                                    dispatch(
+                                                      Actions.closeDialog()
+                                                    )
+                                                  }
+                                                  color="primary"
+                                                >
+                                                  Non
+                                                </Button>
+                                                <Button
+                                                  variant="contained"
+                                                  color="secondary"
+                                                  onClick={(ev) => {
+                                                    dispatch(
+                                                      Actions.saveFournisseurGange(
+                                                        row.original
+                                                          .fournisseur.id,
+                                                        form.id
+                                                      )
+                                                    );
+                                                    dispatch(
+                                                      Actions.closeDialog()
+                                                    );
+                                                  }}
+                                                  autoFocus
+                                                >
+                                                  Oui
+                                                </Button>
+                                              </DialogActions>
+                                            </React.Fragment>
+                                          ),
+                                        })
+                                      );
+                                    }}
+                                  >
+                                    Adjugée
+                                    {demande.requestSaveFrs && (
+                                      <CircularProgress
+                                        size={24}
+                                        className={classes.buttonProgress}
+                                      />
+                                    )}
+                                  </ColorButton>
+                                </div>
+                              ),
+                            },
+                          ]}
+                          defaultPageSize={
+                            demande.fournisseurs.length < 10
+                              ? demande.fournisseurs.length
+                              : 10
+                          }
+                          ofText="sur"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
             : ""
         }
         innerScroll

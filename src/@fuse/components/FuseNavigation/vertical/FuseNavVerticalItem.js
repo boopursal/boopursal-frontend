@@ -1,58 +1,62 @@
 import React from 'react';
-import {Icon, ListItem, ListItemText} from '@material-ui/core';
-import {makeStyles} from '@material-ui/styles';
-import {NavLinkAdapter, FuseUtils} from '@fuse';
-import {withRouter} from 'react-router-dom';
+import { Icon, ListItem, ListItemText } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+import { NavLinkAdapter, FuseUtils } from '@fuse';
+import { withRouter } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from 'app/store/actions';
 import FuseNavBadge from './../FuseNavBadge';
 
 const useStyles = makeStyles(theme => ({
     item: {
-        height                     : 40,
-        width                      : 'calc(100% - 16px)',
-        borderRadius               : '0 20px 20px 0',
-        paddingRight               : 12,
-        '&.active'                 : {
-            backgroundColor            : theme.palette.secondary.main,
-            color                      : theme.palette.secondary.contrastText + '!important',
-            pointerEvents              : 'none',
-            transition                 : 'border-radius .15s cubic-bezier(0.4,0.0,0.2,1)',
+        height: 48,
+        width: 'calc(100% - 32px)', // More balanced width
+        borderRadius: 8,
+        padding: '12px 16px',
+        margin: '4px 16px', // Compact grouping
+        fontFamily: 'Outfit, sans-serif',
+        transition: 'all 0.3s ease',
+        color: '#475569 !important', // TailAdmin Slate-600
+        backgroundColor: 'transparent',
+        '&:hover': {
+            backgroundColor: '#F1F5F9', // TailAdmin Slate-100
+            color: '#1C2434 !important',
+        },
+        '&.active': {
+            backgroundColor: '#F1F5F9 !important', 
+            color: '#1C2434 !important',
             '& .list-item-text-primary': {
-                color: 'inherit'
+                color: '#1C2434 !important',
+                fontWeight: 600
             },
-            '& .list-item-icon'        : {
-                color: 'inherit'
+            '& .list-item-icon': {
+                color: '#3C50E0 !important', // Primary Blue for active icon
             }
         },
-        '&.square, &.active.square': {
-            width       : '100%',
-            borderRadius: '0'
+        '& .list-item-icon': {
+            transition: 'all 0.3s',
+            fontSize: 20,
+            marginRight: 16,
+            color: '#64748B' // Default icon color
         },
-        '& .list-item-icon'        : {},
-        '& .list-item-text'        : {},
-        color                      : theme.palette.text.primary,
-        cursor                     : 'pointer',
-        textDecoration             : 'none!important'
+        '& .list-item-text-primary': {
+            fontSize: '0.925rem',
+            fontWeight: 500,
+            letterSpacing: '0.01em',
+            color: 'inherit'
+        }
     }
 }));
 
-function FuseNavVerticalItem(props)
-{
+function FuseNavVerticalItem(props) {
     const dispatch = useDispatch();
-    const userRole = useSelector(({auth}) => auth.user.role);
+    const userRole = useSelector(({ auth }) => auth.user.role);
 
     const classes = useStyles(props);
-    const {item, nestedLevel, active} = props;
-    let paddingValue = 40 + (nestedLevel * 16);
-    const listItemPadding = nestedLevel > 0 ? 'pl-' + (paddingValue > 80 ? 80 : paddingValue) : 'pl-24';
-
-    if ( !FuseUtils.hasPermission(item.auth, userRole) )
-    {
-        return null;
-    }
+    const { item, nestedLevel, active } = props;
+    const listItemPadding = nestedLevel > 0 ? 'pl-48' : 'pl-16'; // Adjusted for better alignment
 
     return (
         <ListItem
@@ -60,32 +64,20 @@ function FuseNavVerticalItem(props)
             component={NavLinkAdapter}
             to={item.url}
             activeClassName="active"
-            className={clsx(classes.item, listItemPadding, 'list-item', active)}
+            className={clsx(classes.item, listItemPadding, 'list-item', active, `nav-item-${item.id}`)}
             onClick={ev => dispatch(Actions.navbarCloseMobile())}
             exact={item.exact}
         >
             {item.icon && (
-                <Icon className="list-item-icon text-16 flex-shrink-0 mr-16" color="action">{item.icon}</Icon>
+                <Icon className="list-item-icon flex-shrink-0">{item.icon}</Icon>
             )}
-            <ListItemText className="list-item-text" primary={item.title} classes={{primary: 'text-14 list-item-text-primary'}}/>
+            <ListItemText className="list-item-text" primary={item.title} classes={{ primary: 'list-item-text-primary' }} />
             {item.badge && (
-                <FuseNavBadge badge={item.badge}/>
+                <FuseNavBadge badge={item.badge} />
             )}
         </ListItem>
     );
 }
-
-FuseNavVerticalItem.propTypes = {
-    item: PropTypes.shape(
-        {
-            id   : PropTypes.string.isRequired,
-            title: PropTypes.string,
-            icon : PropTypes.string,
-            url  : PropTypes.string
-        })
-};
-
-FuseNavVerticalItem.defaultProps = {};
 
 const NavVerticalItem = withRouter(React.memo(FuseNavVerticalItem));
 

@@ -11,7 +11,6 @@ import clsx from 'clsx';
 import ContentLoader from 'react-content-loader'
 import { Helmet } from "react-helmet";
 import { FuseUtils } from '@fuse';
-import { Link } from 'react-router-dom';
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
@@ -67,9 +66,18 @@ function Secteurs(props) {
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
-        if (!secteurs.data)
+        if (!secteurs.data) {
             dispatch(Actions.getPSecteurs());
+        }
     }, [dispatch, secteurs.data]);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(props.location.search);
+        const q = queryParams.get('q');
+        if (q && secteurs.searchText !== q) {
+            dispatch(Actions.setSearchText({ target: { value: q } }));
+        }
+    }, [dispatch, props.location.search, secteurs.searchText]);
 
 
     useEffect(() => {
@@ -163,24 +171,19 @@ function Secteurs(props) {
                                     :
                                     (
 
-                                        
+
                                         filteredData && filteredData.map((item, index) => (
                                             <Grid item sm={4} xs={12} key={index}>
-                                              <Link
-                                                to={`/annuaire-entreprises/${item.id}-${item.slug}`}
-                                                style={{ textDecoration: 'none' }}
-                                              >
                                                 <CardSecteur {...props} secteur={item} />
-                                              </Link>
                                             </Grid>
-                                          ))
+                                        ))
                                     )
                             }
 
                         </Grid>
                     </Paper>
                 </Grid>
-               {/*  <Grid item xs={12} sm={4} className="sticky top-0">
+                {/*  <Grid item xs={12} sm={4} className="sticky top-0">
                      <Paper className="w-full h-200 p-32 mt-16 text-center">
                         Ads
                     </Paper> 

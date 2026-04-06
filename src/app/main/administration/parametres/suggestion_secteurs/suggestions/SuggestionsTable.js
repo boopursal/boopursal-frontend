@@ -64,7 +64,7 @@ function SuggestionsTable(props) {
                         filterable: true,
                         accessor: "user",
                         className: "font-bold",
-                        Cell: row => (row.original.user ? row.original.user.societe : 'N/A')
+                        Cell: row => (row.original.user && row.original.user.societe ? row.original.user.societe : 'N/A')
                     },
                     {
                         Header: "Secteur",

@@ -11,7 +11,7 @@ import routes from './fuse-configs/routesConfig';
 import ScrollToTop from './ScrollToTop';
 import { create } from 'jss';
 import { StylesProvider, jssPreset, createGenerateClassName } from '@material-ui/styles';
-import CookieConsent, { Cookies } from "react-cookie-consent";
+import CookieConsent from "react-cookie-consent";
 //import routesConfig from './fuse-configs/routesConfig'; // Assurez-vous que le chemin est correct
 import NavigationLoader from 'app/fuse-components/NavigationLoader';
 
@@ -37,7 +37,7 @@ const App = () => {
                             <ScrollToTop />
                             <FuseAuthorization>
                                 <FuseTheme>
-                                <NavigationLoader />
+                                    <NavigationLoader />
                                     <FuseLayout />
                                     <CookieConsent
                                         location="top"

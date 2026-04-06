@@ -182,6 +182,7 @@ function NewDetail(props) {
                         <div className="mr-8 font-bold">Partager sur :</div>
                         <div>
                           <InlineShareButtons
+                            key={actualite.data.id}
                             config={{
                               alignment: "center", // alignment of buttons (left, center, right)
                               color: "social", // set the color of buttons (social, white)

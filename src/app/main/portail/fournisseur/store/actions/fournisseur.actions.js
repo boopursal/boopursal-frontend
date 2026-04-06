@@ -108,7 +108,7 @@ export function getFournisseurProduitsApercu(id) {
 }
 export function getFournisseurProduits(id, parametres) {
     let order = _.split(parametres.filter.id, '-');
-    const request = agent.get(`/api/produits?page=${parametres.page}&fournisseur=${id}&isValid=true&fournisseur.parent=${id}&itemsPerPage=${parametres.itemsPerPage}&order[${order[0]}]=${order[1]}`);
+    const request = agent.get(`/api/fournisseurs/${id}/produits?page=${parametres.page}&isValid=true&itemsPerPage=${parametres.itemsPerPage}&order[${order[0]}]=${order[1]}`);
 
     return (dispatch) => {
         dispatch({

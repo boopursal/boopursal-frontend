@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'row',
         width: '100%',
-        height: '100%',
+        height: '100vh',
         overflow: 'hidden',
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
@@ -55,6 +55,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
         flex: '1 1 auto',
+        minHeight: 0,
     },
     contentWrapper: {
         display: 'flex',
@@ -62,14 +63,15 @@ const useStyles = makeStyles(theme => ({
         position: 'relative',
         zIndex: 3,
         overflow: 'hidden',
-        flex: '1 1 auto'
+        flex: '1 1 auto',
+        minHeight: 0,
     },
     content: {
         position: 'relative',
-        display: 'flex',
+        display: 'block',
         overflow: 'auto',
-        flex: '1 1 auto',
-        flexDirection: 'column',
+        flex: '1 1 0',
+        minHeight: 0,
         width: '100%',
         '-webkit-overflow-scrolling': 'touch',
         zIndex: 2
@@ -85,7 +87,10 @@ function Layout1(props) {
 
     // console.warn('FuseLayout:: rendered');
 
-    switch (config.scroll) {
+    // Using config.scroll to allow pages (like Login/Register) to decide their scroll mode
+    const scrollType = config.scroll; 
+
+    switch (scrollType) {
         case 'body':
             {
                 return (
@@ -173,7 +178,7 @@ function Layout1(props) {
         default:
             {
                 return (
-                    <div id="fuse-layout" className={clsx(classes.root, config.mode, 'scroll-' + config.scroll)}>
+                    <div id="fuse-layout" className={clsx(classes.root, config.mode, 'scroll-content')}>
                         {config.leftSidePanel.display && (
                             <LeftSideLayout1 />
                         )}
@@ -191,17 +196,14 @@ function Layout1(props) {
                                 )}
 
                                 <div className={classes.contentWrapper}>
-                                    {config.toolbar.display && config.toolbar.position === 'below' && config.toolbar.style === 'fixed' && (
+                                    
+                                    {/* ALWAYS FORCE TOOLBAR OUTSIDE SCROLLBARS FOR TAILADMIN LAYOUT - Check display flag */}
+                                    {config.toolbar.display && (
                                         <ToolbarLayout1 />
                                     )}
 
-                                    <FuseScrollbars className={classes.content} scrollToTopOnChildChange>
-                                        {config.toolbar.display && config.toolbar.position === 'below' && config.toolbar.style !== 'fixed' && (
-                                            <ToolbarLayout1 />
-                                        )}
-
+                                    <div className={classes.content}>
                                         <FuseDialog />
-
                                         <FuseSuspense>
                                             {renderRoutes(routes)}
                                         </FuseSuspense>
@@ -211,7 +213,7 @@ function Layout1(props) {
                                         {config.footer.display && config.footer.position === 'below' && config.footer.style !== 'fixed' && (
                                             <FooterLayout1 />
                                         )}
-                                    </FuseScrollbars>
+                                    </div>
 
                                     {config.footer.display && config.footer.position === 'below' && config.footer.style === 'fixed' && (
                                         <FooterLayout1 />

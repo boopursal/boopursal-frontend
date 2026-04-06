@@ -1,222 +1,258 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { FuseAnimateGroup } from '@fuse';
-import _ from '@lodash';
+import { Icon, Typography, Button, Paper, Grid } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { FuseAnimate, FuseAnimateGroup } from '@fuse';
 import clsx from 'clsx';
-import { Chip, Icon, IconButton, Select } from '@material-ui/core';
-import ContentLoader from "react-content-loader"
+import _ from '@lodash';
 import * as Actions from '../store/actions';
 
-function generate(element) {
-    return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(value =>
-        React.cloneElement(element, {
-            key: value,
-        }),
-    );
-}
-
-const styles = theme => ({
-    root: {
-        flexGrow: 1,
+const useStyles = makeStyles(theme => ({
+    gridContainer: {
+        paddingBottom: '40px'
     },
-    paper: {
-        padding: theme.spacing(2),
-        marginTop: 10,
-        maxWidth: '100%',
+    card: {
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: 20,
+        overflow: 'hidden',
+        border: '1px solid #f1f5f9',
+        backgroundColor: 'white',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        height: '100%',
+        textDecoration: 'none !important',
+        '&:hover': {
+            transform: 'translateY(-8px)',
+            boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.02)',
+            borderColor: theme.palette.primary.main,
+            '& $cardHeader': {
+                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+            }
+        }
     },
-    image: {
-        width: 145,
-        borderWidth: 6,
-        borderStyle: 'solid',
-        borderColor: theme.palette.secondary.main,
+    cardHeader: {
+        height: 140,
+        background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        transition: 'all 0.3s ease',
+        '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '40px',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.1), transparent)',
+        }
     },
-    img: {
-        margin: 'auto',
-        display: 'block',
-        maxWidth: '100%',
-        maxHeight: '100%',
+    headerIcon: {
+        fontSize: 48,
+        color: 'rgba(255,255,255,0.2)',
     },
-});
+    cardContent: {
+        padding: 20,
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1
+    },
+    category: {
+        fontSize: 10,
+        fontWeight: 800,
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        color: theme.palette.primary.main,
+        marginBottom: 8
+    },
+    title: {
+        fontSize: '1rem',
+        fontWeight: 700,
+        color: '#1e293b',
+        lineHeight: 1.4,
+        marginBottom: 12,
+        height: '2.8em',
+        overflow: 'hidden',
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical'
+    },
+    metaRow: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+        color: '#64748b',
+        fontSize: '0.75rem',
+        marginBottom: 6
+    },
+    budgetBadge: {
+        marginTop: 'auto',
+        paddingTop: 16,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    price: {
+        fontSize: '1rem',
+        fontWeight: 800,
+        color: '#059669', // Emerald-600
+    },
+    priceLabel: {
+        fontSize: '0.7rem',
+        color: '#94a3b8',
+        fontWeight: 600,
+        textTransform: 'uppercase'
+    },
+    paginationContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '12px 16px',
+        marginTop: '32px',
+        backgroundColor: 'white',
+        borderRadius: 40,
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+        gap: 8,
+        border: '1px solid #e2e8f0',
+        width: 'fit-content',
+        margin: '32px auto 0'
+    },
+    pageBtn: {
+        minWidth: 40,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        fontWeight: 700,
+        fontSize: '0.875rem',
+        color: '#64748b',
+        '&.active': {
+            backgroundColor: theme.palette.primary.main,
+            color: 'white',
+            boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+            '&:hover': {
+                backgroundColor: theme.palette.primary.dark,
+            }
+        }
+    }
+}));
 
 function DemandeListItem(props) {
-
+    const classes = useStyles();
     const dispatch = useDispatch();
-    const pageCount = useSelector(({ demandesAchat }) => demandesAchat.demandes.pageCount);
     const demandes = useSelector(({ demandesAchat }) => demandesAchat.demandes.data);
-    const loading = useSelector(({ demandesAchat }) => demandesAchat.demandes.loading);
+    const totalItems = useSelector(({ demandesAchat }) => demandesAchat.demandes.totalItems);
     const parametres = useSelector(({ demandesAchat }) => demandesAchat.demandes.parametres);
-    const { classes } = props;
+    const loading = useSelector(({ demandesAchat }) => demandesAchat.demandes.loading);
 
-    function handlePreviousClick() {
-        parametres.page = Math.max(parametres.page - 1, 1);
-        dispatch(Actions.setParametresData(parametres))
-        document.querySelector('.st').scrollTop = 0;
-    }
+    const totalPages = Math.ceil(totalItems / parametres.itemsPerPage);
 
-    function handleNextClick() {
-        parametres.page = Math.min(parametres.page + 1, pageCount);
-        dispatch(Actions.setParametresData(parametres))
-        document.querySelector('.st').scrollTop = 0;
-    }
+    const handlePageChange = (newPage) => {
+        dispatch(Actions.setParametresData({ ...parametres, page: newPage }));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-    function handleChangeItems(ev) {
-        parametres.page = 1;
-        parametres.itemsPerPage = ev.target.value;
-        document.querySelector('.st').scrollTop = 0;
-        dispatch(Actions.setParametresData(parametres))
+    if (!demandes || demandes.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-80 bg-white rounded-24 border-2 border-dashed border-slate-200">
+                <Icon className="text-64 text-slate-200 mb-16">search_off</Icon>
+                <Typography className="text-20 font-bold text-slate-400">Aucune demande trouvée</Typography>
+                <Typography className="text-slate-400 mt-8">Essayez de modifier vos filtres de recherche</Typography>
+            </div>
+        );
     }
 
     return (
-        <div className={classes.root}>
-            {
-                loading ?
-                    generate(
-                        <ContentLoader
-                            speed={2}
-                            width={400}
-                            height={100}
-                            viewBox="0 0 400 100"
+        <div className="relative">
+            <div className={classes.gridContainer}>
+                <Grid container spacing={3}>
+                    {demandes.map((item) => (
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3} key={item.id}>
+                            <FuseAnimate animation="transition.slideUpIn" duration={400}>
+                                <Paper
+                                    component={Link}
+                                    to={`/demandes-achat/${item.id}-${item.slug}`}
+                                    className={classes.card}
+                                    elevation={0}
+                                >
+                            <div className={classes.cardHeader}>
+                                <Icon className={classes.headerIcon}>description</Icon>
+                                <div className="absolute top-12 right-12">
+                                    <div className="bg-white/20 backdrop-blur-md px-8 py-4 rounded-8 text-white text-10 font-bold uppercase">
+                                        Réf: {item.reference || 'N/A'}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className={classes.cardContent}>
+                                <Typography className={classes.category}>
+                                    {item.secteur ? item.secteur.name : 'Général'}
+                                </Typography>
+                                <Typography className={classes.title}>
+                                    {item.titre || item.name || 'Sans titre'}
+                                </Typography>
+                                
+                                <div className={classes.metaRow}>
+                                    <Icon className="text-14">location_on</Icon>
+                                    <span>{item.ville ? (typeof item.ville === 'object' ? item.ville.name : item.ville) + ', ' : ''}{item.pays ? (typeof item.pays === 'object' ? item.pays.name : item.pays) : 'N/A'}</span>
+                                </div>
+                                
+                                <div className={classes.metaRow}>
+                                    <Icon className="text-14">calendar_today</Icon>
+                                    <span>{(item.created || item.createdAt || item.dateCreation || item.date) ? new Date(item.created || item.createdAt || item.dateCreation || item.date).toLocaleDateString() : 'N/A'}</span>
+                                </div>
+
+                                <div className={classes.budgetBadge}>
+                                    <div className="flex flex-col">
+                                        <span className={classes.priceLabel}>Budget</span>
+                                        <span className={classes.price}>
+                                            {item.budget ? `${item.budget.toLocaleString()} DH` : 'Sur devis'}
+                                        </span>
+                                    </div>
+                                    <Button size="small" color="primary" variant="contained" className="min-w-32 h-32 rounded-12 shadow-none">
+                                        <Icon className="text-18">chevron_right</Icon>
+                                    </Button>
+                                </div>
+                            </div>
+                        </Paper>
+                            </FuseAnimate>
+                        </Grid>
+                    ))}
+                </Grid>
+            </div>
+
+            {totalPages > 1 && (
+                <div className={classes.paginationContainer}>
+                    <Button
+                        onClick={() => handlePageChange(Math.max(1, parametres.page - 1))}
+                        disabled={parametres.page === 1}
+                        className={classes.pageBtn}
+                    >
+                        <Icon>chevron_left</Icon>
+                    </Button>
+
+                    {_.range(1, totalPages + 1).map((p) => (
+                        <Button
+                            key={p}
+                            onClick={() => handlePageChange(p)}
+                            className={clsx(classes.pageBtn, p === parametres.page && "active")}
                         >
-                            <rect x="4" y="10" rx="0" ry="0" width="133" height="10" />
-                            <rect x="4" y="31" rx="0" ry="0" width="216" height="21" />
-                            <rect x="4" y="79" rx="2" ry="2" width="43" height="12" />
-                            <rect x="10" y="89" rx="2" ry="2" width="43" height="0" />
-                            <rect x="72" y="80" rx="2" ry="2" width="43" height="11" />
-                            <rect x="120" y="80" rx="2" ry="2" width="43" height="11" />
-                            <rect x="4" y="61" rx="0" ry="0" width="44" height="9" />
-                            <rect x="350" y="11" rx="0" ry="0" width="46" height="8" />
-                        </ContentLoader>,
-                    )
-                    :
-                    (
-                        <FuseAnimateGroup enter={{
-                            animation: "transition.slideUpBigIn"
-                        }}
-                        >
-                            {
-                                demandes && demandes.map((demande, index) => (
+                            {p}
+                        </Button>
+                    ))}
 
-                                    <Paper className={classes.paper} key={index}>
-                                        <Grid container spacing={2}>
-                                            <Grid item>
-
-                                            </Grid>
-                                            <Grid item xs={12} sm container>
-                                                <Grid item xs container direction="column" spacing={2}>
-                                                    <Grid item xs>
-                                                        <Typography
-                                                            component="a"
-                                                            href={demande && `/demandes-achat/${demande.id}-${demande.slug}`}
-                                                            variant="h6">
-
-                                                            {demande.titre}
-                                                        </Typography>
-                                                        <Typography variant="body2" gutterBottom>
-                                                            {_.capitalize(_.truncate(demande.description, {
-                                                                'length': 70
-                                                            }))}
-                                                        </Typography>
-
-                                                        <Chip
-                                                            icon={<Icon className="text-16 mr-0">location_on</Icon>}
-                                                            label={demande.ville + ', ' + demande.pays}
-                                                            classes={{
-                                                                root: clsx("h-24"),
-                                                                label: "pl-4 pr-6 py-4 text-11",
-                                                                deleteIcon: "w-16 ml-0",
-                                                            }}
-                                                            className="mr-4"
-                                                            variant="outlined"
-                                                        />
-
-                                                    </Grid>
-                                                    <Grid item>
-                                                        Activtés :
-                                                        {
-                                                            demande.categories && demande.categories.map((item, index) => (
-                                                                index < 4 &&
-                                                                <Chip
-                                                                    label={item.name}
-                                                                    classes={{
-                                                                        root: "h-24",
-                                                                        label: "pl-4 pr-6 py-4 text-11",
-                                                                        deleteIcon: "w-16 ml-0",
-                                                                    }}
-                                                                    key={index}
-                                                                    variant="outlined"
-                                                                    className="ml-4 h-24"
-                                                                />
-                                                            ))
-
-                                                        }
-                                                    </Grid>
-                                                </Grid>
-                                                <Grid item>
-                                                    <Typography variant="subtitle1" color='secondary' className="font-600">
-
-                                                        {
-                                                            demande.budget ?
-                                                                parseFloat(demande.budget).toLocaleString(
-                                                                    undefined, // leave undefined to use the browser's locale,
-                                                                    // or use a string like 'en-US' to override it.
-                                                                    { minimumFractionDigits: 2 }
-                                                                ) + (demande.currency ? ' ' + demande.currency.name : '')
-                                                                : 'Prix sur demande'
-                                                        }
-                                                    </Typography>
-
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Paper>
-                                ))
-                            }
-                            {
-                                demandes && (
-                                    <Grid container spacing={2} className="justify-between mt-16">
-                                        <Grid item xs={12} md={6}>
-                                            Montrer:&ensp;
-                                            <Select
-                                                className="text-13"
-                                                native
-                                                value={parametres.itemsPerPage}
-                                                onChange={handleChangeItems}
-                                                inputProps={{
-                                                    name: 'ItemsPerPage'
-                                                }}
-                                            >
-
-                                                <option value='10'>10</option>
-                                                <option value='50'>50 </option>
-                                                <option value='100'>100</option>
-                                            </Select>
-                                        </Grid>
-
-                                        <Grid item xs={12} md={6} className="text-right">
-                                            <IconButton aria-label="Previous" className={classes.margin} disabled={parametres.page === 1} onClick={handlePreviousClick}>
-                                                <Icon>arrow_back</Icon>
-                                            </IconButton>
-                                            {parametres.page} / {pageCount}<IconButton aria-label="Next" disabled={parametres.page === pageCount} className={classes.margin} onClick={handleNextClick}>
-                                                <Icon>arrow_forward</Icon>
-                                            </IconButton>
-                                        </Grid>
-                                    </Grid>
-                                )
-                            }
-                        </FuseAnimateGroup>
-                    )
-            }
+                    <Button
+                        onClick={() => handlePageChange(Math.min(totalPages, parametres.page + 1))}
+                        disabled={parametres.page === totalPages}
+                        className={classes.pageBtn}
+                    >
+                        <Icon>chevron_right</Icon>
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }
 
-DemandeListItem.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(DemandeListItem);
+export default DemandeListItem;

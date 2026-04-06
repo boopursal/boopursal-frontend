@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Icon, Typography, LinearProgress, Grid, Tabs, Tab, FormControlLabel, CircularProgress, Dialog, DialogTitle, DialogContent, TextField, DialogActions, Divider, Radio, Table, TableHead, TableRow, TableCell, TableBody, Chip } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/styles';
-import { FuseAnimate, FusePageCarded, SelectReactFormsy,LOCAL_CURRENCY,LOCAL_TVA } from '@fuse';
+import { FuseAnimate, FusePageCarded, SelectReactFormsy, LOCAL_CURRENCY, LOCAL_TVA } from '@fuse';
 import { Link } from 'react-router-dom';
 import Link2 from '@material-ui/core/Link';
 import _ from '@lodash';
@@ -140,8 +140,8 @@ function Commande(props) {
     const classes = useStyles(props);
 
     useEffect(() => {
-        if(!user.id)
-        return;
+        if (!user.id)
+            return;
 
         dispatch(Actions.getFournisseurSousSecteurs(user.id));
     }, [dispatch, user.id]);
@@ -158,7 +158,7 @@ function Commande(props) {
             dispatch(Actions.cleanUp())
             props.history.push('/abonnement');
         }
-    }, [commande.success, dispatch]);
+    }, [commande.success, dispatch, props.history]);
 
     // Effect redirection and clean state
     useEffect(() => {
@@ -322,7 +322,7 @@ function Commande(props) {
             }
 
         }
-    }, [duree, commande.durees, setDuree]);
+    }, [duree, commande.durees, setDuree, offre, user.data.currency]);
 
     function handleClickOpen() {
         setOpen(true);
@@ -505,7 +505,7 @@ function Commande(props) {
                                     <Typography className="normal-case flex items-center sm:mb-12" component={Link} role="button" to="/abonnement" color="inherit">
                                         <Icon className="mr-4 text-20">arrow_back</Icon>
                                         Retour
-                                </Typography>
+                                    </Typography>
                                 </FuseAnimate>
 
                                 <div className="flex items-center max-w-full">
@@ -629,7 +629,7 @@ function Commande(props) {
                                                                                             'fr', // leave undefined to use the browser's locale,
                                                                                             // or use a string like 'en-US' to override it.
                                                                                             { minimumFractionDigits: 2 }
-                                                                                        ) + LOCAL_CURRENCY+' HT / mois' :
+                                                                                        ) + LOCAL_CURRENCY + ' HT / mois' :
                                                                                         parseFloat(item.prixEur).toLocaleString(
                                                                                             'fr', // leave undefined to use the browser's locale,
                                                                                             // or use a string like 'en-US' to override it.
@@ -674,12 +674,12 @@ function Commande(props) {
                                                                             className="font-bold  text-black"
                                                                         >
                                                                             Offre
-                                                            </TableCell>
+                                                                        </TableCell>
                                                                         <TableCell
                                                                             className="font-bold text-black text-right"
                                                                         >
                                                                             Total HT
-                                                            </TableCell>
+                                                                        </TableCell>
 
                                                                     </TableRow>
                                                                 </TableHead>
@@ -722,7 +722,7 @@ function Commande(props) {
                                                                             className="truncate text-11 text-right"
                                                                         >
                                                                             Total HT
-                                                            </TableCell>
+                                                                        </TableCell>
                                                                         <TableCell
                                                                             component="th"
                                                                             scope="row"
@@ -746,7 +746,7 @@ function Commande(props) {
                                                                                     className="truncate text-11 text-right"
                                                                                 >
                                                                                     Remise ({duree.remise}%)
-                                                            </TableCell>
+                                                                                </TableCell>
                                                                                 <TableCell
                                                                                     component="th"
                                                                                     scope="row"
@@ -774,7 +774,7 @@ function Commande(props) {
                                                                                     className="truncate text-11 text-right"
                                                                                 >
                                                                                     Montant NET HT
-                                                                    </TableCell>
+                                                                                </TableCell>
                                                                                 <TableCell
                                                                                     component="th"
                                                                                     scope="row"
@@ -801,7 +801,7 @@ function Commande(props) {
                                                                             className="truncate text-11 text-right"
                                                                         >
                                                                             TVA (20%)
-                                                            </TableCell>
+                                                                        </TableCell>
                                                                         <TableCell
                                                                             component="th"
                                                                             scope="row"
@@ -824,7 +824,7 @@ function Commande(props) {
                                                                             className="truncate font-bold text-11 text-right"
                                                                         >
                                                                             Montant TTC
-                                                            </TableCell>
+                                                                        </TableCell>
                                                                         <TableCell
                                                                             component="th"
                                                                             scope="row"
@@ -1042,7 +1042,7 @@ function Commande(props) {
                                                                         onClick={handleClickOpen}
                                                                     >
                                                                         Suggerer d'autres secteurs et activités
-                                                                </Link2>
+                                                                    </Link2>
                                                                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                                                                         <DialogTitle id="form-dialog-title">Vos suggestions</DialogTitle>
                                                                         <DialogContent>

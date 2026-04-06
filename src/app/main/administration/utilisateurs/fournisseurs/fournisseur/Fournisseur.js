@@ -158,7 +158,8 @@ function Fournisseur(props) {
             setCategories([fournisseur.produit, ...categories]);
             setProduit('')
         }
-    }, [form, fournisseur.produit, setForm]);
+    }, [fournisseur.produit, categories]);
+
 
     //Fin Nouveau produit
 
@@ -245,7 +246,7 @@ function Fournisseur(props) {
 
             }
             setForm({ ...fournisseur.data });
-            setCategories(fournisseur.data.categories.map(item => item));
+            setCategories((fournisseur.data.categories || []).map(item => item));
             fournisseur.data.ville &&
                 setVille({
                     value: fournisseur.data.ville['@id'],
@@ -274,7 +275,7 @@ function Fournisseur(props) {
             }
         }
 
-    }, [form, fournisseur.villeAdded, fournisseur.data, setForm]);
+    }, [dispatch, form, fournisseur.villeAdded, fournisseur.data, setForm]);
 
     useEffect(() => {
 
@@ -413,7 +414,7 @@ function Fournisseur(props) {
     };
 
     function handleDelete(id) {
-        setCategories(_.reject(categories, function (o) { return o.id == id; }))
+        setCategories(_.reject(categories, function (o) { return o.id === id; }))
     }
 
 
@@ -839,7 +840,7 @@ function Fournisseur(props) {
                                             value="legacy"
                                         >
                                             Sauvegarder
-                                        {fournisseur.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                            {fournisseur.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                                         </Button>
 
@@ -946,7 +947,7 @@ function Fournisseur(props) {
                                                         :
                                                         <Typography variant="caption" className="my-16">
                                                             Aucun produit sélectionné
-                                                </Typography>
+                                                        </Typography>
 
 
                                                 }
@@ -986,7 +987,7 @@ function Fournisseur(props) {
                                                             aria-label="Clear"
                                                         >
                                                             Vider les suggestions
-                                                    {fournisseur.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                                            {fournisseur.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                                                         </Button>
                                                     </Typography>
@@ -1050,12 +1051,12 @@ function Fournisseur(props) {
                                                             <DialogActions>
                                                                 <Button onClick={handleCloseSecteur} variant="outlined" color="primary">
                                                                     Annuler
-                                                            </Button>
+                                                                </Button>
                                                                 <Button onClick={handleAddNouveauSecteur} variant="contained" color="secondary"
                                                                     disabled={fournisseur.loadingAddSecteurs || nouveauSecteur.length < 2}
                                                                 >
                                                                     Sauvegarder
-                                                                {fournisseur.loadingAddSecteurs && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                                                    {fournisseur.loadingAddSecteurs && <CircularProgress size={24} className={classes.buttonProgress} />}
                                                                 </Button>
                                                             </DialogActions>
                                                         </Dialog>
@@ -1121,12 +1122,12 @@ function Fournisseur(props) {
                                                             <DialogActions>
                                                                 <Button onClick={handleCloseActivite} variant="outlined" color="primary">
                                                                     Annuler
-                                                            </Button>
+                                                                </Button>
                                                                 <Button onClick={handleAddNouveauActivite} variant="contained" color="secondary"
                                                                     disabled={nouvelleActivite.length < 2}
                                                                 >
                                                                     Sauvegarder
-                                                    </Button>
+                                                                </Button>
                                                             </DialogActions>
                                                         </Dialog>
 
@@ -1289,7 +1290,7 @@ function Fournisseur(props) {
                                         value="legacy"
                                     >
                                         Sauvegarder
-                               {fournisseur.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                        {fournisseur.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                                     </Button>
 

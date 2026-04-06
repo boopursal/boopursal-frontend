@@ -9,16 +9,19 @@ import * as Actions from './store/actions';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        padding        : '0 7px',
-        fontSize       : 11,
+        padding        : '2px 8px',
+        fontSize       : 10,
         fontWeight     : 600,
-        height         : 20,
-        minWidth       : 20,
-        borderRadius   : 20,
+        height         : 18,
+        minWidth       : 18,
+        borderRadius   : 4,
         display        : 'flex',
         alignItems     : 'center',
-        backgroundColor: theme.palette.secondary.main,
-        color          : theme.palette.secondary.contrastText
+        justifyContent : 'center',
+        backgroundColor: '#E1F9F0', // TailAdmin Light Green
+        color          : '#10B981', // TailAdmin Emerald
+        marginLeft     : 8,
+        fontFamily     : 'Outfit, sans-serif'
     }
 }));
 

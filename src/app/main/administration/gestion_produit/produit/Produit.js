@@ -173,7 +173,7 @@ function Produit(props) {
       setShowErrorVideo(true);
     }
     produit.videoExist = 0;
-  }, [form, setForm, produit.videoExist]);
+  }, [form, setForm, produit.videoExist, videoId]);
 
   // Effect Get Secteurs
   useEffect(() => {
@@ -211,7 +211,7 @@ function Produit(props) {
       dispatch(Actions.cleanDeleteImage());
       props.history.push("/products");
     }
-  }, [produit.success, dispatch]);
+  }, [produit.success, dispatch, props.history, produit.data]);
 
   // Effect upload images
   useEffect(() => {
@@ -222,7 +222,7 @@ function Produit(props) {
     return () => {
       dispatch(Actions.cleanImage());
     };
-  }, [form, setForm, produit.image, dispatch]);
+  }, [form, setForm, produit.image, dispatch, images]);
   // Effect delete image & fiche technique
   useEffect(() => {
     if (produit.image_deleted) {
@@ -247,7 +247,7 @@ function Produit(props) {
     return () => {
       dispatch(Actions.cleanDeleteImage());
     };
-  }, [produit.image_deleted, dispatch]);
+  }, [produit.image_deleted, dispatch, form, setForm, images]);
 
   useEffect(() => {
     function updateProduitState() {
@@ -270,7 +270,7 @@ function Produit(props) {
         dispatch(Actions.cleanUpAddedSecteur());
       };
     }
-  }, [form, produit.secteurAdded, produit.data, setForm]);
+  }, [form, produit.secteurAdded, produit.data, setForm, dispatch]);
 
   // ACTIVITE ADDED SUCCESS
   useEffect(() => {
@@ -284,7 +284,7 @@ function Produit(props) {
         dispatch(Actions.cleanUpAddedSousSecteur());
       };
     }
-  }, [form, produit.sousSecteurAdded, produit.data, setForm]);
+  }, [form, produit.sousSecteurAdded, produit.data, setForm, dispatch]);
 
   // CATEGORIE ADDED SUCCESS
   useEffect(() => {
@@ -298,7 +298,7 @@ function Produit(props) {
         dispatch(Actions.cleanUpAddedCategorie());
       };
     }
-  }, [form, produit.CategorieAdded, produit.data, setForm]);
+  }, [form, produit.CategorieAdded, produit.data, setForm, dispatch]);
 
   useEffect(() => {
     if (
@@ -412,75 +412,75 @@ function Produit(props) {
       header={
         !produit.loading
           ? form && (
-              <div className="flex flex-1 w-full items-center justify-between">
-                <div className="flex flex-col items-start max-w-full">
-                  <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                    <Typography
-                      className="normal-case flex items-center sm:mb-12"
-                      component={Link}
-                      role="button"
-                      to="/products"
-                      color="inherit"
-                    >
-                      <Icon className="mr-4 text-20">arrow_back</Icon>
-                      Retour
-                    </Typography>
-                  </FuseAnimate>
-
-                  <div className="flex items-center max-w-full">
-                    <FuseAnimate animation="transition.expandIn" delay={300}>
-                      {form.images.length > 0 && form.featuredImageId ? (
-                        <img
-                          className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
-                          src={URL_SITE + form.featuredImageId.url}
-                          alt={form.reference}
-                        />
-                      ) : (
-                        <img
-                          className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
-                          src="assets/images/ecommerce/product-image-placeholder.png"
-                          alt={form.reference}
-                        />
-                      )}
-                    </FuseAnimate>
-                    <div className="flex flex-col min-w-0">
-                      <FuseAnimate
-                        animation="transition.slideLeftIn"
-                        delay={300}
-                      >
-                        <Typography className="text-16 sm:text-20 truncate">
-                          {form.reference ? form.reference : "Nouveau produit"}
-                        </Typography>
-                      </FuseAnimate>
-                      <FuseAnimate
-                        animation="transition.slideLeftIn"
-                        delay={300}
-                      >
-                        <Typography variant="caption">
-                          Détails du produit
-                        </Typography>
-                      </FuseAnimate>
-                    </div>
-                  </div>
-                </div>
+            <div className="flex flex-1 w-full items-center justify-between">
+              <div className="flex flex-col items-start max-w-full">
                 <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                  <Button
-                    className="whitespace-no-wrap"
-                    variant="contained"
-                    disabled={!isFormValid || produit.loading}
-                    onClick={() => handleSubmit(form)}
+                  <Typography
+                    className="normal-case flex items-center sm:mb-12"
+                    component={Link}
+                    role="button"
+                    to="/products"
+                    color="inherit"
                   >
-                    Sauvegarder
-                    {produit.loading && (
-                      <CircularProgress
-                        size={24}
-                        className={classes.buttonProgress}
+                    <Icon className="mr-4 text-20">arrow_back</Icon>
+                    Retour
+                  </Typography>
+                </FuseAnimate>
+
+                <div className="flex items-center max-w-full">
+                  <FuseAnimate animation="transition.expandIn" delay={300}>
+                    {form.images.length > 0 && form.featuredImageId ? (
+                      <img
+                        className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
+                        src={URL_SITE + form.featuredImageId.url}
+                        alt={form.reference}
+                      />
+                    ) : (
+                      <img
+                        className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
+                        src="assets/images/ecommerce/product-image-placeholder.png"
+                        alt={form.reference}
                       />
                     )}
-                  </Button>
-                </FuseAnimate>
+                  </FuseAnimate>
+                  <div className="flex flex-col min-w-0">
+                    <FuseAnimate
+                      animation="transition.slideLeftIn"
+                      delay={300}
+                    >
+                      <Typography className="text-16 sm:text-20 truncate">
+                        {form.reference ? form.reference : "Nouveau produit"}
+                      </Typography>
+                    </FuseAnimate>
+                    <FuseAnimate
+                      animation="transition.slideLeftIn"
+                      delay={300}
+                    >
+                      <Typography variant="caption">
+                        Détails du produit
+                      </Typography>
+                    </FuseAnimate>
+                  </div>
+                </div>
               </div>
-            )
+              <FuseAnimate animation="transition.slideRightIn" delay={300}>
+                <Button
+                  className="whitespace-no-wrap"
+                  variant="contained"
+                  disabled={!isFormValid || produit.loading}
+                  onClick={() => handleSubmit(form)}
+                >
+                  Sauvegarder
+                  {produit.loading && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
+                </Button>
+              </FuseAnimate>
+            </div>
+          )
           : ""
       }
       contentToolbar={
@@ -525,39 +525,39 @@ function Produit(props) {
       content={
         !produit.loading
           ? form && (
-              <div className="p-10  sm:p-24 max-w-2xl">
-                {tabValue === 0 && (
-                  <Formsy
-                    onValidSubmit={handleSubmit}
-                    onValid={enableButton}
-                    onInvalid={disableButton}
-                    ref={formRef}
-                    className="flex flex-col "
-                  >
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} sm={4}>
-                        <SelectReactFormsy
-                          id="secteur"
-                          name="secteur"
-                          className="MuiFormControl-fullWidth MuiTextField-root "
-                          value={secteur}
-                          onChange={(value) =>
-                            handleChipChange(value, "secteur")
-                          }
-                          placeholder="Sélectionner un secteur"
-                          textFieldProps={{
-                            label: "Secteurs",
-                            InputLabelProps: {
-                              shrink: true,
-                            },
-                            variant: "outlined",
-                          }}
-                          options={produit.secteurs}
-                          fullWidth
-                          required
-                        />
-                        {(secteur && (secteur.label === "Autre" ||
-                          secteur.label === "autre")) && (
+            <div className="p-10  sm:p-24 max-w-2xl">
+              {tabValue === 0 && (
+                <Formsy
+                  onValidSubmit={handleSubmit}
+                  onValid={enableButton}
+                  onInvalid={disableButton}
+                  ref={formRef}
+                  className="flex flex-col "
+                >
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={4}>
+                      <SelectReactFormsy
+                        id="secteur"
+                        name="secteur"
+                        className="MuiFormControl-fullWidth MuiTextField-root "
+                        value={secteur}
+                        onChange={(value) =>
+                          handleChipChange(value, "secteur")
+                        }
+                        placeholder="Sélectionner un secteur"
+                        textFieldProps={{
+                          label: "Secteurs",
+                          InputLabelProps: {
+                            shrink: true,
+                          },
+                          variant: "outlined",
+                        }}
+                        options={produit.secteurs}
+                        fullWidth
+                        required
+                      />
+                      {(secteur && (secteur.label === "Autre" ||
+                        secteur.label === "autre")) && (
                           <TextFieldFormsy
                             className="mt-16 w-full"
                             type="text"
@@ -601,601 +601,601 @@ function Produit(props) {
                             required
                           />
                         )}
-                      </Grid>
-
-                      <Grid item xs={12} sm={4}>
-                        <SelectReactFormsy
-                          id="sousSecteurs"
-                          name="sousSecteurs"
-                          className="MuiFormControl-fullWidth MuiTextField-root"
-                          value={sousSecteur}
-                          onChange={(value) =>
-                            handleChipChange(value, "sousSecteurs")
-                          }
-                          placeholder="Sélectionner une activité"
-                          textFieldProps={{
-                            label: "Activités",
-                            InputLabelProps: {
-                              shrink: true,
-                            },
-                            variant: "outlined",
-                          }}
-                          options={produit.sousSecteurs}
-                          fullWidth
-                          required
-                        />
-                        {sousSecteur &&
-                          (sousSecteur.label === "Autre" ||
-                            sousSecteur.label === "autre") && (
-                            <TextFieldFormsy
-                              className="mt-16 w-full"
-                              type="text"
-                              name="autreActivite"
-                              value={form.autreActivite}
-                              onChange={handleChange}
-                              label="Autre Activité"
-                              validations={{
-                                minLength: 2,
-                                maxLength: 50,
-                              }}
-                              validationErrors={{
-                                minLength:
-                                  "La longueur minimale de caractère est 2",
-                                maxLength:
-                                  "La longueur maximale de caractère est 50",
-                              }}
-                              variant="outlined"
-                              InputProps={{
-                                endAdornment: produit.loadingAddSousSecteur ? (
-                                  <CircularProgress color="secondary" />
-                                ) : (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      color="secondary"
-                                      disabled={
-                                        !form.autreActivite ||
-                                        secteur.label === "Autre" ||
-                                        secteur.label === "autre"
-                                      }
-                                      onClick={(ev) =>
-                                        dispatch(
-                                          Actions.addSousSecteur(
-                                            form.autreActivite,
-                                            secteur.value,
-                                            form.id
-                                          )
-                                        )
-                                      }
-                                    >
-                                      <Icon>add_circle</Icon>
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              }}
-                              required
-                            />
-                          )}
-                      </Grid>
-
-                      <Grid item xs={12} sm={4}>
-                        <SelectReactFormsy
-                          id="categorie"
-                          name="categorie"
-                          className="MuiFormControl-fullWidth MuiTextField-root"
-                          value={categorie}
-                          onChange={(value) =>
-                            handleChipChange(value, "categorie")
-                          }
-                          placeholder="Sélectionner un produit"
-                          textFieldProps={{
-                            label: "Produits",
-                            InputLabelProps: {
-                              shrink: true,
-                            },
-                            variant: "outlined",
-                          }}
-                          options={produit.categories}
-                          fullWidth
-                        />
-                        {categorie &&
-                          (categorie.label === "Autre" ||
-                            categorie.label === "autre") && (
-                            <TextFieldFormsy
-                              className="mt-16 w-full"
-                              type="text"
-                              name="autreProduit"
-                              value={form.autreProduit}
-                              onChange={handleChange}
-                              label="Autre Produit"
-                              validations={{
-                                minLength: 2,
-                                maxLength: 50,
-                              }}
-                              validationErrors={{
-                                minLength:
-                                  "La longueur minimale de caractère est 2",
-                                maxLength:
-                                  "La longueur maximale de caractère est 50",
-                              }}
-                              variant="outlined"
-                              required
-                              InputProps={{
-                                endAdornment: produit.loadingAddCategorie ? (
-                                  <CircularProgress color="secondary" />
-                                ) : (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      color="secondary"
-                                      disabled={
-                                        !form.autreProduit ||
-                                        sousSecteur.label === "Autre" ||
-                                        sousSecteur.label === "autre"
-                                      }
-                                      onClick={(ev) =>
-                                        dispatch(
-                                          Actions.addCategorie(
-                                            form.autreProduit,
-                                            sousSecteur.value,
-                                            form.id
-                                          )
-                                        )
-                                      }
-                                    >
-                                      <Icon>add_circle</Icon>
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          )}
-                      </Grid>
                     </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} sm={12}>
-                        <TextFieldFormsy
-                          label="Titre"
-                          id="titre"
-                          name="titre"
-                          value={form.titre}
-                          onChange={handleChange}
-                          variant="outlined"
-                          validations={{
-                            minLength: 6,
-                          }}
-                          validationErrors={{
-                            minLength:
-                              "La longueur minimale des caractères est de 6",
-                          }}
-                          className="mt-16"
-                          required
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <TextFieldFormsy
-                          className="mb-24"
-                          label="Référence"
-                          id="reference"
-                          name="reference"
-                          value={form.reference}
-                          onChange={handleChange}
-                          variant="outlined"
-                          validations={{
-                            minLength: 4,
-                          }}
-                          validationErrors={{
-                            minLength: "Min character length is 4",
-                          }}
-                          required
-                          fullWidth
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6}>
-                        <TextFieldFormsy
-                          className="mb-24"
-                          label="Prix Unitaire du produit"
-                          type="number"
-                          step="any"
-                          id="pu"
-                          name="pu"
-                          value={String(form.pu)}
-                          onChange={handleChange}
-                          variant="outlined"
-                          fullWidth
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <TextFieldFormsy
-                      className="mb-16  w-full"
-                      type="text"
-                      name="description"
-                      value={form.description}
-                      onChange={handleChange}
-                      label="Description"
-                      autoComplete="description"
-                      validations={{
-                        minLength: 10,
-                      }}
-                      validationErrors={{
-                        minLength: "La longueur minimale de caractère est 10",
-                      }}
-                      required
-                      variant="outlined"
-                      multiline
-                      rows="4"
-                    />
-
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} sm={6}>
-                        <CheckboxFormsy
-                          className="mb-10"
-                          name="isValid"
-                          onChange={(e) => handleCheckBoxChange(e, "isValid")}
-                          label="Valider"
-                          value={form.isValid}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Formsy>
-                )}
-                {tabValue === 1 && (
-                  <div>
-                    <input
-                      accept="text/plain,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf,image/jpeg,image/gif,image/png,application/pdf,"
-                      className="hidden"
-                      id="button-file"
-                      type="file"
-                      disabled={produit.imageReqInProgress}
-                      onChange={handleUploadChange}
-                    />
-                    <div className="flex justify-center sm:justify-start flex-wrap">
-                      <label
-                        htmlFor="button-file"
-                        className={clsx(
-                          classes.produitImageUpload,
-                          "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
-                          form.images.length === 5 && "hidden"
-                        )}
-                      >
-                        {produit.imageReqInProgress ? (
-                          <CircularProgress
-                            size={24}
-                            className={classes.buttonProgress}
-                          />
-                        ) : (
-                          <Icon fontSize="large" color="action">
-                            arrow_upward
-                          </Icon>
-                        )}
-                      </label>
-
-                      {form.images.map((media) => (
-                        <div
-                          className={clsx(
-                            classes.produitImageItem,
-                            "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5",
-                            media.id ===
-                              (form.featuredImageId
-                                ? form.featuredImageId.id
-                                : null) && "featured"
-                          )}
-                          key={media.id}
-                          onClick={() => {
-                            setIsOpen(true);
-                          }}
-                          //onClick={() => window.open(URL_SITE + media.url, "_blank")}
-                        >
-                          <Tooltip title="Image en vedette">
-                            <IconButton
-                              className={classes.produitImageFeaturedStar}
-                              onClick={(ev) => {
-                                ev.stopPropagation();
-                                setFeaturedImage(media);
-                              }}
-                            >
-                              <Icon>star</Icon>
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Supprimer">
-                          <IconButton
-          className="text-red text-20"
-          onClick={(ev) => {
-            ev.stopPropagation();
-            dispatch(
-              Actions.openDialog({
-                children: (
-                  <>
-                    <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        Voulez-vous vraiment supprimer ce média ?
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        variant="contained"
-                        onClick={() => dispatch(Actions.closeDialog())}
-                        color="primary"
-                      >
-                        Non
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          dispatch(Actions.deleteMedia(media));
-                          dispatch(Actions.closeDialog());
+                    <Grid item xs={12} sm={4}>
+                      <SelectReactFormsy
+                        id="sousSecteurs"
+                        name="sousSecteurs"
+                        className="MuiFormControl-fullWidth MuiTextField-root"
+                        value={sousSecteur}
+                        onChange={(value) =>
+                          handleChipChange(value, "sousSecteurs")
+                        }
+                        placeholder="Sélectionner une activité"
+                        textFieldProps={{
+                          label: "Activités",
+                          InputLabelProps: {
+                            shrink: true,
+                          },
+                          variant: "outlined",
                         }}
-                        color="primary"
-                        autoFocus
-                      >
-                        Oui
-                      </Button>
-                    </DialogActions>
-                  </>
-                ),
-              })
-            );
-          }}
-        >
-          <Icon>delete</Icon>
-        </IconButton>
-                          </Tooltip>
-                          <img
-                            className="max-w-none w-auto h-full"
-                            src={URL_SITE + media.url}
-                            alt="produit"
+                        options={produit.sousSecteurs}
+                        fullWidth
+                        required
+                      />
+                      {sousSecteur &&
+                        (sousSecteur.label === "Autre" ||
+                          sousSecteur.label === "autre") && (
+                          <TextFieldFormsy
+                            className="mt-16 w-full"
+                            type="text"
+                            name="autreActivite"
+                            value={form.autreActivite}
+                            onChange={handleChange}
+                            label="Autre Activité"
+                            validations={{
+                              minLength: 2,
+                              maxLength: 50,
+                            }}
+                            validationErrors={{
+                              minLength:
+                                "La longueur minimale de caractère est 2",
+                              maxLength:
+                                "La longueur maximale de caractère est 50",
+                            }}
+                            variant="outlined"
+                            InputProps={{
+                              endAdornment: produit.loadingAddSousSecteur ? (
+                                <CircularProgress color="secondary" />
+                              ) : (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    color="secondary"
+                                    disabled={
+                                      !form.autreActivite ||
+                                      secteur.label === "Autre" ||
+                                      secteur.label === "autre"
+                                    }
+                                    onClick={(ev) =>
+                                      dispatch(
+                                        Actions.addSousSecteur(
+                                          form.autreActivite,
+                                          secteur.value,
+                                          form.id
+                                        )
+                                      )
+                                    }
+                                  >
+                                    <Icon>add_circle</Icon>
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                            required
                           />
-                          {isOpen && (
-                            <Lightbox
-                              mainSrc={images[photoIndex]}
-                              nextSrc={images[(photoIndex + 1) % images.length]}
-                              prevSrc={
-                                images[
-                                  (photoIndex + images.length - 1) %
-                                    images.length
-                                ]
-                              }
-                              onCloseRequest={() => setIsOpen(false)}
-                              onMovePrevRequest={() =>
-                                setPhotoIndex(
-                                  (photoIndex + images.length - 1) %
-                                    images.length
-                                )
-                              }
-                              onMoveNextRequest={() =>
-                                setPhotoIndex((photoIndex + 1) % images.length)
-                              }
-                            />
-                          )}
-                        </div>
-                      ))}
-                      <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="caption">
-                            - Taille maximale par fichier : 2 Mb <br />- 5
-                            fichiers à télécharger
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </div>
-                  </div>
-                )}
-                {tabValue === 2 && (
-                  <div>
-                    <input
-                      accept="text/plain,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf,image/jpeg,image/gif,image/png,application/pdf,"
-                      className="hidden"
-                      id="button-file"
-                      type="file"
-                      disabled={produit.ficheReqInProgress}
-                      onChange={handleUploadFicheChange}
-                    />
-                    <div className="flex justify-center sm:justify-start flex-wrap">
-                      <label
-                        htmlFor="button-file"
-                        className={clsx(
-                          classes.produitImageUpload,
-                          "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
-                          form.ficheTechnique && "hidden"
                         )}
-                      >
-                        {produit.ficheReqInProgress ? (
-                          <CircularProgress
-                            size={24}
-                            className={classes.buttonProgress}
-                          />
-                        ) : (
-                          <Icon fontSize="large" color="action">
-                            arrow_upward
-                          </Icon>
-                        )}
-                      </label>
+                    </Grid>
 
-                      {form.ficheTechnique ? (
-                        <div
-                          className={clsx(
-                            classes.produitImageItem,
-                            "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5"
-                          )}
-                          key={form.ficheTechnique.id}
-                          onClick={() =>
-                            window.open(
-                              URL_SITE + form.ficheTechnique.url,
-                              "_blank"
-                            )
-                          }
-                        >
-                          <Tooltip title="Supprimer">
-                            <IconButton
-                              className={classes.produitImageFeaturedStar}
-                              onClick={(ev) => {
-                                ev.stopPropagation();
-                                dispatch(
-                                  Actions.deleteMedia(form.ficheTechnique)
-                                );
-                              }}
-                            >
-                              <Icon>delete</Icon>
-                            </IconButton>
-                          </Tooltip>
-                          {_.split(form.ficheTechnique, "/", 1)[0] ===
-                          "image" ? (
-                            <img
-                              className="max-w-none w-auto h-full"
-                              src={URL_SITE + form.ficheTechnique.url}
-                              alt="fiche"
-                            />
-                          ) : (
-                            <Icon color="secondary" style={{ fontSize: 80 }}>
-                              insert_drive_file
-                            </Icon>
-                          )}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="caption">
-                            - Taille maximale de fichier : 3 Mo
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </div>
-                  </div>
-                )}
-                {tabValue === 3 && (
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        label="ID vidéo Youtube"
-                        id="video"
-                        name="video"
-                        variant="outlined"
-                        onChange={(e) => {
-                          setVideoId(e.target.value);
+                    <Grid item xs={12} sm={4}>
+                      <SelectReactFormsy
+                        id="categorie"
+                        name="categorie"
+                        className="MuiFormControl-fullWidth MuiTextField-root"
+                        value={categorie}
+                        onChange={(value) =>
+                          handleChipChange(value, "categorie")
+                        }
+                        placeholder="Sélectionner un produit"
+                        textFieldProps={{
+                          label: "Produits",
+                          InputLabelProps: {
+                            shrink: true,
+                          },
+                          variant: "outlined",
                         }}
+                        options={produit.categories}
                         fullWidth
                       />
-                      <Button
-                        className="whitespace-no-wrap mt-10 mb-10"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                        color="secondary"
-                        disabled={produit.loadingRechercheVideo || !videoId}
-                        onClick={() => {
-                          dispatch(Actions.getVideoYoutubeById(videoId));
-                        }}
-                      >
-                        Rechercher
-                        {produit.loadingRechercheVideo && (
-                          <CircularProgress
-                            size={24}
-                            className={classes.buttonProgress}
+                      {categorie &&
+                        (categorie.label === "Autre" ||
+                          categorie.label === "autre") && (
+                          <TextFieldFormsy
+                            className="mt-16 w-full"
+                            type="text"
+                            name="autreProduit"
+                            value={form.autreProduit}
+                            onChange={handleChange}
+                            label="Autre Produit"
+                            validations={{
+                              minLength: 2,
+                              maxLength: 50,
+                            }}
+                            validationErrors={{
+                              minLength:
+                                "La longueur minimale de caractère est 2",
+                              maxLength:
+                                "La longueur maximale de caractère est 50",
+                            }}
+                            variant="outlined"
+                            required
+                            InputProps={{
+                              endAdornment: produit.loadingAddCategorie ? (
+                                <CircularProgress color="secondary" />
+                              ) : (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    color="secondary"
+                                    disabled={
+                                      !form.autreProduit ||
+                                      sousSecteur.label === "Autre" ||
+                                      sousSecteur.label === "autre"
+                                    }
+                                    onClick={(ev) =>
+                                      dispatch(
+                                        Actions.addCategorie(
+                                          form.autreProduit,
+                                          sousSecteur.value,
+                                          form.id
+                                        )
+                                      )
+                                    }
+                                  >
+                                    <Icon>add_circle</Icon>
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
                           />
                         )}
-                      </Button>
-
-                      <Typography variant="h6" className="mb-10">
-                        <Icon color="secondary">info</Icon> COMMENT OBTENIR L'ID
-                        DE LA VIDÉO YOUTUBE?{" "}
-                      </Typography>
-                      <Typography className="mb-10">
-                        Il n'est pas difficile d'obtenir l'ID vidéo Youtube dans
-                        le navigateur ou via l'application. Suivez ces étapes:
-                      </Typography>
-                      <Typography variant="h6" className="mb-10">
-                        TROUVEZ L'ID DE LA VIDÉO YOUTUBE VIA LE NAVIGATEUR
-                      </Typography>
-                      <Typography className="mb-10">
-                        <ol>
-                          <li>Accédez à votre vidéo Youtube préférée</li>
-                          <li>
-                            Vérifiez l'URL dans le navigateur Web, par exemple.
-                            https://www.youtube.com/watch?v=JGwWNGJdvx8
-                          </li>
-                          <li>
-                            L'ID vidéo est la partie entre "? V =" et "&", dans
-                            ce cas "JGwWNGJdvx8"
-                          </li>
-                          <li>
-                            Parfois, l'URL de la vidéo YouTube ressemble à
-                            "https://youtube.be/JGwWNGJdvx"
-                          </li>
-                          <li>
-                            Dans ce cas, l'url de la vidéo fait partie de la
-                            dernière barre oblique "/" et "&"
-                          </li>
-                        </ol>
-                      </Typography>
-
-                      <Typography className="mb-10" variant="h6">
-                        TROUVER UN ID VIDEO YOUTUBE DANS L'APPLICATION YOUTUBE
-                      </Typography>
-                      <Typography className="mb-10">
-                        <ol>
-                          <li>Ouvrez l'application Youtube</li>
-                          <li>
-                            Ouvrez la vidéo dont vous souhaitez l'ID vidéo
-                          </li>
-                          <li>
-                            Cliquez sur le bouton Partager et choisissez le lien
-                          </li>
-                          <li>
-                            Le lien est copié dans votre presse-papiers et vous
-                            pouvez le coller n'importe où
-                          </li>
-                          <li>
-                            Le lien ressemble à https://youtube.be/JGwWNGJdvx8
-                          </li>
-                          <li>
-                            La vidéo est la partie entre la dernière barre
-                            oblique "/" et "&", dans ce cas "JGwWNGJdvx8".
-                          </li>
-                        </ol>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      {!produit.loadingRechercheVideo ? (
-                        form.videos ? (
-                          <>
-                            <YouTube videoId={form.videos} opts={opts} />
-                            <Link2
-                              component="button"
-                              variant="body2"
-                              className="text-red"
-                              onClick={() =>
-                                setForm(_.set({ ...form }, "videos", null))
-                              }
-                            >
-                              X Supprimer cette vidéo
-                            </Link2>
-                          </>
-                        ) : showErrorVideo ? (
-                          "ID vidéo n'existe pas dans la base de données YouTube"
-                        ) : (
-                          ""
-                        )
-                      ) : (
-                        <ContentLoader height={250} width={320} speed={2}>
-                          <rect
-                            x="0"
-                            y="0"
-                            rx="3"
-                            ry="3"
-                            width="320"
-                            height="250"
-                          />
-                        </ContentLoader>
-                      )}
                     </Grid>
                   </Grid>
-                )}
-              </div>
-            )
+
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={12}>
+                      <TextFieldFormsy
+                        label="Titre"
+                        id="titre"
+                        name="titre"
+                        value={form.titre}
+                        onChange={handleChange}
+                        variant="outlined"
+                        validations={{
+                          minLength: 6,
+                        }}
+                        validationErrors={{
+                          minLength:
+                            "La longueur minimale des caractères est de 6",
+                        }}
+                        className="mt-16"
+                        required
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextFieldFormsy
+                        className="mb-24"
+                        label="Référence"
+                        id="reference"
+                        name="reference"
+                        value={form.reference}
+                        onChange={handleChange}
+                        variant="outlined"
+                        validations={{
+                          minLength: 4,
+                        }}
+                        validationErrors={{
+                          minLength: "Min character length is 4",
+                        }}
+                        required
+                        fullWidth
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <TextFieldFormsy
+                        className="mb-24"
+                        label="Prix Unitaire du produit"
+                        type="number"
+                        step="any"
+                        id="pu"
+                        name="pu"
+                        value={String(form.pu)}
+                        onChange={handleChange}
+                        variant="outlined"
+                        fullWidth
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <TextFieldFormsy
+                    className="mb-16  w-full"
+                    type="text"
+                    name="description"
+                    value={form.description}
+                    onChange={handleChange}
+                    label="Description"
+                    autoComplete="description"
+                    validations={{
+                      minLength: 10,
+                    }}
+                    validationErrors={{
+                      minLength: "La longueur minimale de caractère est 10",
+                    }}
+                    required
+                    variant="outlined"
+                    multiline
+                    rows="4"
+                  />
+
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                      <CheckboxFormsy
+                        className="mb-10"
+                        name="isValid"
+                        onChange={(e) => handleCheckBoxChange(e, "isValid")}
+                        label="Valider"
+                        value={form.isValid}
+                      />
+                    </Grid>
+                  </Grid>
+                </Formsy>
+              )}
+              {tabValue === 1 && (
+                <div>
+                  <input
+                    accept="text/plain,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf,image/jpeg,image/gif,image/png,application/pdf,"
+                    className="hidden"
+                    id="button-file"
+                    type="file"
+                    disabled={produit.imageReqInProgress}
+                    onChange={handleUploadChange}
+                  />
+                  <div className="flex justify-center sm:justify-start flex-wrap">
+                    <label
+                      htmlFor="button-file"
+                      className={clsx(
+                        classes.produitImageUpload,
+                        "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
+                        form.images.length === 5 && "hidden"
+                      )}
+                    >
+                      {produit.imageReqInProgress ? (
+                        <CircularProgress
+                          size={24}
+                          className={classes.buttonProgress}
+                        />
+                      ) : (
+                        <Icon fontSize="large" color="action">
+                          arrow_upward
+                        </Icon>
+                      )}
+                    </label>
+
+                    {form.images.map((media) => (
+                      <div
+                        className={clsx(
+                          classes.produitImageItem,
+                          "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5",
+                          media.id ===
+                          (form.featuredImageId
+                            ? form.featuredImageId.id
+                            : null) && "featured"
+                        )}
+                        key={media.id}
+                        onClick={() => {
+                          setIsOpen(true);
+                        }}
+                      //onClick={() => window.open(URL_SITE + media.url, "_blank")}
+                      >
+                        <Tooltip title="Image en vedette">
+                          <IconButton
+                            className={classes.produitImageFeaturedStar}
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              setFeaturedImage(media);
+                            }}
+                          >
+                            <Icon>star</Icon>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Supprimer">
+                          <IconButton
+                            className="text-red text-20"
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              dispatch(
+                                Actions.openDialog({
+                                  children: (
+                                    <>
+                                      <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
+                                      <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                          Voulez-vous vraiment supprimer ce média ?
+                                        </DialogContentText>
+                                      </DialogContent>
+                                      <DialogActions>
+                                        <Button
+                                          variant="contained"
+                                          onClick={() => dispatch(Actions.closeDialog())}
+                                          color="primary"
+                                        >
+                                          Non
+                                        </Button>
+                                        <Button
+                                          onClick={() => {
+                                            dispatch(Actions.deleteMedia(media));
+                                            dispatch(Actions.closeDialog());
+                                          }}
+                                          color="primary"
+                                          autoFocus
+                                        >
+                                          Oui
+                                        </Button>
+                                      </DialogActions>
+                                    </>
+                                  ),
+                                })
+                              );
+                            }}
+                          >
+                            <Icon>delete</Icon>
+                          </IconButton>
+                        </Tooltip>
+                        <img
+                          className="max-w-none w-auto h-full"
+                          src={URL_SITE + media.url}
+                          alt="produit"
+                        />
+                        {isOpen && (
+                          <Lightbox
+                            mainSrc={images[photoIndex]}
+                            nextSrc={images[(photoIndex + 1) % images.length]}
+                            prevSrc={
+                              images[
+                              (photoIndex + images.length - 1) %
+                              images.length
+                              ]
+                            }
+                            onCloseRequest={() => setIsOpen(false)}
+                            onMovePrevRequest={() =>
+                              setPhotoIndex(
+                                (photoIndex + images.length - 1) %
+                                images.length
+                              )
+                            }
+                            onMoveNextRequest={() =>
+                              setPhotoIndex((photoIndex + 1) % images.length)
+                            }
+                          />
+                        )}
+                      </div>
+                    ))}
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="caption">
+                          - Taille maximale par fichier : 2 Mb <br />- 5
+                          fichiers à télécharger
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </div>
+                </div>
+              )}
+              {tabValue === 2 && (
+                <div>
+                  <input
+                    accept="text/plain,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf,image/jpeg,image/gif,image/png,application/pdf,"
+                    className="hidden"
+                    id="button-file"
+                    type="file"
+                    disabled={produit.ficheReqInProgress}
+                    onChange={handleUploadFicheChange}
+                  />
+                  <div className="flex justify-center sm:justify-start flex-wrap">
+                    <label
+                      htmlFor="button-file"
+                      className={clsx(
+                        classes.produitImageUpload,
+                        "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
+                        form.ficheTechnique && "hidden"
+                      )}
+                    >
+                      {produit.ficheReqInProgress ? (
+                        <CircularProgress
+                          size={24}
+                          className={classes.buttonProgress}
+                        />
+                      ) : (
+                        <Icon fontSize="large" color="action">
+                          arrow_upward
+                        </Icon>
+                      )}
+                    </label>
+
+                    {form.ficheTechnique ? (
+                      <div
+                        className={clsx(
+                          classes.produitImageItem,
+                          "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5"
+                        )}
+                        key={form.ficheTechnique.id}
+                        onClick={() =>
+                          window.open(
+                            URL_SITE + form.ficheTechnique.url,
+                            "_blank"
+                          )
+                        }
+                      >
+                        <Tooltip title="Supprimer">
+                          <IconButton
+                            className={classes.produitImageFeaturedStar}
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              dispatch(
+                                Actions.deleteMedia(form.ficheTechnique)
+                              );
+                            }}
+                          >
+                            <Icon>delete</Icon>
+                          </IconButton>
+                        </Tooltip>
+                        {_.split(form.ficheTechnique, "/", 1)[0] ===
+                          "image" ? (
+                          <img
+                            className="max-w-none w-auto h-full"
+                            src={URL_SITE + form.ficheTechnique.url}
+                            alt="fiche"
+                          />
+                        ) : (
+                          <Icon color="secondary" style={{ fontSize: 80 }}>
+                            insert_drive_file
+                          </Icon>
+                        )}
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="caption">
+                          - Taille maximale de fichier : 3 Mo
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </div>
+                </div>
+              )}
+              {tabValue === 3 && (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="ID vidéo Youtube"
+                      id="video"
+                      name="video"
+                      variant="outlined"
+                      onChange={(e) => {
+                        setVideoId(e.target.value);
+                      }}
+                      fullWidth
+                    />
+                    <Button
+                      className="whitespace-no-wrap mt-10 mb-10"
+                      variant="contained"
+                      fullWidth
+                      size="large"
+                      color="secondary"
+                      disabled={produit.loadingRechercheVideo || !videoId}
+                      onClick={() => {
+                        dispatch(Actions.getVideoYoutubeById(videoId));
+                      }}
+                    >
+                      Rechercher
+                      {produit.loadingRechercheVideo && (
+                        <CircularProgress
+                          size={24}
+                          className={classes.buttonProgress}
+                        />
+                      )}
+                    </Button>
+
+                    <Typography variant="h6" className="mb-10">
+                      <Icon color="secondary">info</Icon> COMMENT OBTENIR L'ID
+                      DE LA VIDÉO YOUTUBE?{" "}
+                    </Typography>
+                    <Typography className="mb-10">
+                      Il n'est pas difficile d'obtenir l'ID vidéo Youtube dans
+                      le navigateur ou via l'application. Suivez ces étapes:
+                    </Typography>
+                    <Typography variant="h6" className="mb-10">
+                      TROUVEZ L'ID DE LA VIDÉO YOUTUBE VIA LE NAVIGATEUR
+                    </Typography>
+                    <Typography className="mb-10">
+                      <ol>
+                        <li>Accédez à votre vidéo Youtube préférée</li>
+                        <li>
+                          Vérifiez l'URL dans le navigateur Web, par exemple.
+                          https://www.youtube.com/watch?v=JGwWNGJdvx8
+                        </li>
+                        <li>
+                          L'ID vidéo est la partie entre "? V =" et "&", dans
+                          ce cas "JGwWNGJdvx8"
+                        </li>
+                        <li>
+                          Parfois, l'URL de la vidéo YouTube ressemble à
+                          "https://youtube.be/JGwWNGJdvx"
+                        </li>
+                        <li>
+                          Dans ce cas, l'url de la vidéo fait partie de la
+                          dernière barre oblique "/" et "&"
+                        </li>
+                      </ol>
+                    </Typography>
+
+                    <Typography className="mb-10" variant="h6">
+                      TROUVER UN ID VIDEO YOUTUBE DANS L'APPLICATION YOUTUBE
+                    </Typography>
+                    <Typography className="mb-10">
+                      <ol>
+                        <li>Ouvrez l'application Youtube</li>
+                        <li>
+                          Ouvrez la vidéo dont vous souhaitez l'ID vidéo
+                        </li>
+                        <li>
+                          Cliquez sur le bouton Partager et choisissez le lien
+                        </li>
+                        <li>
+                          Le lien est copié dans votre presse-papiers et vous
+                          pouvez le coller n'importe où
+                        </li>
+                        <li>
+                          Le lien ressemble à https://youtube.be/JGwWNGJdvx8
+                        </li>
+                        <li>
+                          La vidéo est la partie entre la dernière barre
+                          oblique "/" et "&", dans ce cas "JGwWNGJdvx8".
+                        </li>
+                      </ol>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    {!produit.loadingRechercheVideo ? (
+                      form.videos ? (
+                        <>
+                          <YouTube videoId={form.videos} opts={opts} />
+                          <Link2
+                            component="button"
+                            variant="body2"
+                            className="text-red"
+                            onClick={() =>
+                              setForm(_.set({ ...form }, "videos", null))
+                            }
+                          >
+                            X Supprimer cette vidéo
+                          </Link2>
+                        </>
+                      ) : showErrorVideo ? (
+                        "ID vidéo n'existe pas dans la base de données YouTube"
+                      ) : (
+                        ""
+                      )
+                    ) : (
+                      <ContentLoader height={250} width={320} speed={2}>
+                        <rect
+                          x="0"
+                          y="0"
+                          rx="3"
+                          ry="3"
+                          width="320"
+                          height="250"
+                        />
+                      </ContentLoader>
+                    )}
+                  </Grid>
+                </Grid>
+              )}
+            </div>
+          )
           : ""
       }
       innerScroll

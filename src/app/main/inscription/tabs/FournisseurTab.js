@@ -106,7 +106,7 @@ function FournisseurTab(props) {
     return () => {
       dispatch(authActions.cleanUpErrors());
     };
-  }, [register.error]);
+  }, [dispatch, register.error]);
 
   function disableButton() {
     setIsFormValid(false);

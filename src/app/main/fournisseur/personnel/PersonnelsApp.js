@@ -8,8 +8,8 @@ import PersonnelsDialog from './PersonnelsDialog';
 import * as Actions from './store/actions';
 import reducer from './store/reducers';
 import { Helmet } from "react-helmet";
-import { Dialog, DialogTitle, CircularProgress, DialogContent, DialogContentText, DialogActions, Button, Typography } from '@material-ui/core';
-import _ from '@lodash';
+import { Dialog, CircularProgress, DialogContent, DialogActions, Button, Typography } from '@material-ui/core';
+
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -23,7 +23,7 @@ function PersonnelsApp(props) {
     const [abonnee, setAbonnee] = useState(false);
     const [enable, setEnable] = useState(true);
     const [expired, setExpired] = useState(false);
-    const [days, setDays] = useState(0);
+
 
     // Effect abonnement
     useEffect(() => {
@@ -35,7 +35,7 @@ function PersonnelsApp(props) {
             return;
         }
         let days = moment(abonnement.expired).diff(moment(), 'days');
-        setDays(days);
+
 
         if (days <= 0) {
             // abonnement expiré
@@ -58,7 +58,7 @@ function PersonnelsApp(props) {
         return (
             <div className="flex flex-1 items-center justify-center h-full">
                 <CircularProgress color="secondary" /> &ensp;
-               Chargement ...
+                Chargement ...
             </div>
         );
     }
@@ -82,7 +82,7 @@ function PersonnelsApp(props) {
                     <DialogContent className="text-center">
                         <Typography variant="h6" className="my-16 text-red">
                             Votre abonnement est désactivé
-                                    </Typography>
+                        </Typography>
 
                         <Typography color="textSecondary" className="mb-16">
                             Pour le réactiviter nous vous prions de nous contacter sur l'adresse mail suivante <strong>administrateur@lesachatsindustriels.com</strong>
@@ -114,7 +114,7 @@ function PersonnelsApp(props) {
 
                         <Typography color="textSecondary" className="mb-16">
                             Pour le renouveler, vous pouvez ajouter une commande en cliquant sur le bouton suivant
-                                    </Typography>
+                        </Typography>
 
                         <Button component={Link} to={`/billing/renew`} className="whitespace-no-wrap" color="secondary" variant="contained">
                             <span className="">Renouveler l'abonnement</span>
@@ -123,7 +123,7 @@ function PersonnelsApp(props) {
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Fermer
-                    </Button>
+                        </Button>
 
                     </DialogActions>
                 </Dialog>
@@ -143,12 +143,12 @@ function PersonnelsApp(props) {
                     <DialogContent className="text-center">
                         <Typography variant="h6" className="my-16">
                             Mise à niveau
-                         </Typography>
+                        </Typography>
 
                         <Typography color="textSecondary" className="mb-16">
                             Ce service n'est pas accessible par votre Pack d'abonnement <strong className="uppercase">{abonnement.offre && abonnement.offre.name}</strong>,
                             nous vous invitons à mettre à niveau votre Pack d'abonnement pour bénéficier de cette fonctionnalité.
-                         </Typography>
+                        </Typography>
 
                         <Button component={Link} to={`/billing/pack`} className="whitespace-no-wrap" color="secondary" variant="contained">
                             <span className="">mise à niveau</span>
@@ -157,7 +157,7 @@ function PersonnelsApp(props) {
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Fermer
-                    </Button>
+                        </Button>
 
                     </DialogActions>
                 </Dialog>
@@ -175,13 +175,13 @@ function PersonnelsApp(props) {
                 <DialogContent>
                     <Typography variant="h4" className="my-16">
                         Reservé à nos abonnés
-                        </Typography>
+                    </Typography>
 
                     <Typography color="textSecondary" className="mb-16">
-                    Ce service n'est pas accessible par votre Pack d'abonnement,
-                            nous vous invitons à mettre à niveau votre Pack d'abonnement pour bénéficier de cette fonctionnalité.
-                        
-                                 </Typography>
+                        Ce service n'est pas accessible par votre Pack d'abonnement,
+                        nous vous invitons à mettre à niveau votre Pack d'abonnement pour bénéficier de cette fonctionnalité.
+
+                    </Typography>
 
                     <Button component={Link} to={`/billing/pack`} className="whitespace-no-wrap" color="secondary" variant="contained">
                         <span className="">Commander abonnement</span>

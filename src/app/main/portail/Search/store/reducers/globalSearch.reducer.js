@@ -30,7 +30,7 @@ const globalSearchReducer = function (state = initialState, action) {
                 fournisseurs: [],
                 actualites: []
             };
-        
+
         case Actions.REQUEST_DATA:
             return {
                 ...state,
@@ -44,21 +44,38 @@ const globalSearchReducer = function (state = initialState, action) {
             };
 
         case Actions.GET_DATA:
-            const suggestions = action.payload;
-            const noSuggestions = suggestions.length === 0;
+            const rawData = action.payload;
+            // Le backend retourne un tableau de sections [{title, suggestions}]
+            const findSection = (title) => {
+                const section = rawData.find(s => s.title === title);
+                return section ? section.suggestions || [] : [];
+            };
+
+            const fournisseursSuggestions = findSection('Fournisseurs');
+            const produitsSuggestions = findSection('Produits / Services');
+            const activitesSuggestions = findSection('Activités');
+            const actualitesSuggestions = findSection('Actualités');
+
+            // Reconstruct suggestions for autosuggest (sections format)
+            const allSuggestions = rawData;
+            const noSuggestions = fournisseursSuggestions.length === 0 &&
+                produitsSuggestions.length === 0 &&
+                activitesSuggestions.length === 0 &&
+                actualitesSuggestions.length === 0;
+
             return {
                 ...state,
-                suggestions,
+                suggestions: allSuggestions,
                 noSuggestions,
                 loading: false,
                 loadingProduits: false,
                 loadingActivites: false,
                 loadingFournisseurs: false,
                 loadingActualites: false,
-                produits: suggestions.filter(item => item.type === 'produit'),
-                activites: suggestions.filter(item => item.type === 'activite'),
-                fournisseurs: suggestions.filter(item => item.type === 'fournisseur'),
-                actualites: suggestions.filter(item => item.type === 'actualite')
+                fournisseurs: fournisseursSuggestions,
+                produits: produitsSuggestions,
+                activites: activitesSuggestions,
+                actualites: actualitesSuggestions,
             };
 
         case Actions.GS_OPEN:

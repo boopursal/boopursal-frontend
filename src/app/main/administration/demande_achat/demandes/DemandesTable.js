@@ -1,400 +1,147 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, IconButton, Chip, Tooltip, TextField, InputAdornment, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
-import { FuseAnimate } from '@fuse';
+import { Icon, IconButton, Chip, Tooltip, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import * as Actions from '../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
 import moment from 'moment';
 import FuseUtils from '@fuse/FuseUtils';
-import ReactTable from "react-table";
-import { makeStyles } from '@material-ui/core/styles';
 import _ from '@lodash';
-import { Link } from 'react-router-dom';
+import clsx from 'clsx';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        '& > * + *': {
-            marginTop: theme.spacing(2),
-        },
+    statusBadge: {
+        fontWeight: 900,
+        fontSize: '0.65rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        height: 24,
+        borderRadius: 8,
+        padding: '0 4px',
+        '&.success': { background: '#f0fdf4', color: '#166534', border: '1px solid #bcf0da' },
+        '&.error': { background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' },
+        '&.warning': { background: '#fffbeb', color: '#92400e', border: '1px solid #fef3c7' },
+        '&.neutral': { background: '#f8fafc', color: '#475569', border: '1px solid #e2e8f0' }
     },
-    chip: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ef5350',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-
-
-    },
-    chip2: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#4caf50',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-    },
-    chipOrange: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ff9800',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-
-    },
+    daysBadge: {
+        marginLeft: 8,
+        fontSize: '0.65rem',
+        fontWeight: 800,
+        backgroundColor: '#1e293b',
+        color: '#fff',
+        padding: '2px 8px',
+        borderRadius: 4
+    }
 }));
-function DemandesTable(props) {
 
+function DemandesTable(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const demandes = useSelector(({ demandesAdminApp }) => demandesAdminApp.demandes.data);
     const loading = useSelector(({ demandesAdminApp }) => demandesAdminApp.demandes.loading);
     const pageCount = useSelector(({ demandesAdminApp }) => demandesAdminApp.demandes.pageCount);
     const parametres = useSelector(({ demandesAdminApp }) => demandesAdminApp.demandes.parametres);
-
     const searchText = useSelector(({ demandesAdminApp }) => demandesAdminApp.demandes.searchText);
 
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (demandes) {
-            setFilteredData(getFilteredArray(demandes, searchText));
+            const arr = Object.keys(demandes).map((id) => demandes[id]);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [demandes, searchText]);
 
+    if (!filteredData) return null;
 
-
-    if (!filteredData) {
-        return null;
-    }
-
-
-    //dispatch from function filter
-    const run = (parametres) => (
-        dispatch(Actions.setParametresData(parametres))
-    )
-
-    //call run function
-    const fn =
-        _.debounce(run, 1000);
+    const getStatusChip = (original) => {
+        if (original.statut === 3) return <Chip className={clsx(classes.statusBadge, 'success')} label="Adjugée" />;
+        const isExpired = moment(original.dateExpiration) < moment();
+        if (isExpired) return <Chip className={clsx(classes.statusBadge, 'error')} label="Expirée" />;
+        switch (original.statut) {
+            case 0: return <Chip className={clsx(classes.statusBadge, 'warning')} label="En attente" />;
+            case 1: return <Chip className={clsx(classes.statusBadge, 'success')} label="En cours" />;
+            default: return <Chip className={clsx(classes.statusBadge, 'error')} label="Refusée" />;
+        }
+    };
 
     return (
-        <div className="w-full flex flex-col">
-
-
-            <FuseAnimate animation="transition.slideUpIn" delay={300}>
-
-                <ReactTable
-                    className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                    getTrProps={(state, rowInfo, column) => {
-                        return {
-                            className: "h-64 cursor-pointer",
-                            onClick: (e, handleOriginal) => {
-                                if (rowInfo) {
-                                    props.history.push('/demandes_admin/' + rowInfo.original.id);
-                                }
-                            }
-                        }
-                    }}
-                    getTheadProps={(state, rowInfo, column) => {
-                        return {
-                            className: "h-64",
-
-                        }
-                    }}
-                    data={filteredData}
-                    columns={[
-
-                        {
-                            Header: "Référence",
-                            className: "font-bold",
-                            filterable: true,
-                            accessor: "reference",
-                            Cell: row => row.original.reference ? 'RFQ-' + row.original.reference : 'En attente',
-                            Filter: ({ filter, onChange }) =>
-                                <TextField
-                                    onChange={event => onChange(event.target.value)}
-                                    style={{ width: "100%" }}
-                                    value={filter ? filter.value : ""}
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start">RFQ-</InputAdornment>,
-                                    }}
-                                />
-                            ,
-                        },
-                        {
-                            Header: "Acheteur",
-                            accessor: "acheteur.societe",
-                            className: "font-bold",
-                            filterable: true,
-                            Cell: row => (
-                                <Tooltip title={row.original.acheteur.societe}>
-                                    <Link target="_blank" to={'/users/acheteur/show/' + row.original.acheteur.id} onClick={(ev) => ev.stopPropagation()}>
-                                        {_.capitalize(_.truncate(row.original.acheteur.societe, {
-                                            'length': 15,
-                                            'separator': ' '
-                                        }))}
-                                    </Link>
-                                </Tooltip>
-                            )
-                        },
-                        {
-                            Header: "Titre",
-                            accessor: "titre",
-                            filterable: true,
-                            Cell: row => (
-                                <div className="flex items-center">
-                                    {_.capitalize(_.truncate(row.original.titre, {
-                                        'length': 15,
-                                        'separator': ' '
-                                    }))}
-                                </div>
-                            )
-                        },
-                        {
-                            Header: "Date de création",
-                            accessor: "created",
-                            filterable: true,
-                            Cell: row => moment(row.original.created).format('DD/MM/YYYY'),
-                            Filter: ({ filter, onChange }) =>
-                                <TextField
-                                    onChange={event => onChange(event.target.value)}
-                                    style={{ width: "100%" }}
-                                    value={filter ? filter.value : ""}
-                                    type="date"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />,
-                        },
-                        {
-                            Header: "Échéance",
-                            minWidth: 125,
-                            filterable: true,
-                            accessor: "dateExpiration",
-                            Cell: row => (
-                                <div className="flex items-center">
-                                    {
-                                        moment(row.original.dateExpiration).format('DD/MM/YYYY')
-
-                                    }
-
-                                    {
-                                        moment(row.original.dateExpiration) >= moment()
-                                            ?
-
-                                            <Chip className={classes.chip2} label={moment(row.original.dateExpiration).diff(moment(), 'days') === 0 ? moment(row.original.dateExpiration).diff(moment(), 'hours') + ' h' : moment(row.original.dateExpiration).diff(moment(), 'days') + ' j'} />
-                                            :
-                                            <Chip className={classes.chip} label={moment(row.original.dateExpiration).diff(moment(), 'days') === 0 ? moment(row.original.dateExpiration).diff(moment(), 'hours') + ' h' : moment(row.original.dateExpiration).diff(moment(), 'days') + ' j'} />
-
-                                    }
-
-                                </div>
-                            ),
-                            Filter: ({ filter, onChange }) =>
-                                <TextField
-                                    onChange={event => onChange(event.target.value)}
-                                    style={{ width: "100%" }}
-                                    value={filter ? filter.value : ""}
-                                    type="date"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />,
-
-                        },
-                        {
-                            Header: "Statut",
-                            accessor: "statut",
-                            filterable: true,
-                            sortable: false,
-                            Cell: row => (
-                                <div className="flex items-center">
-
-                                    {
-                                        row.original.statut === 3 ?
-                                            <Chip className={classes.chip2} label="Adjugée" />
-                                            :
-                                            moment(row.original.dateExpiration) >= moment()
-                                                ?
-                                                row.original.statut === 0
-                                                    ?
-                                                    <Chip className={classes.chipOrange} label="En attente" />
-                                                    :
-                                                    (row.original.statut === 1 ? <Chip className={classes.chip2} label="En cours" />
-                                                        :
-                                                        <Chip className={classes.chip} label="Refusée" />
-                                                    )
-                                                :
-                                                <Chip className={classes.chip} label="Expirée" />
-
-                                    }
-
-                                </div>
-                            )
-                            ,
-                            Filter: ({ filter, onChange }) =>
-                                <select
-                                    onChange={event => onChange(event.target.value)}
-                                    style={{ width: "100%" }}
-                                    value={filter ? filter.value : ""}
-                                >
-                                    <option value="">Tous</option>
-                                    <option value="0">En attente</option>
-                                    <option value="1">En cours</option>
-                                    <option value="2">Refusée</option>
-                                    <option value="3">Adjugée</option>
-                                    <option value="4">Expirée</option>
-                                </select>
-
-                        },
-                        {
-                            Header: "Publiée",
-                            accessor: "isPublic",
-                            filterable: true,
-                            Cell: row => (
-                                row.original.isPublic ?
-                                    (
-                                        <Tooltip title="Publiée">
-                                            <IconButton className="text-green text-20" onClick={(ev) => {
-                                                ev.stopPropagation();
-                                                dispatch(Actions.PublishDemande(row.original, false, parametres))
-
-                                            }}>
-                                                <Icon>check_circle</Icon>
-                                            </IconButton>
-                                        </Tooltip>
-                                    ) :
-                                    (
-                                        <Tooltip title="Privée">
-                                            <IconButton className="text-red text-20" onClick={(ev) => {
-                                                ev.stopPropagation();
-                                                dispatch(Actions.PublishDemande(row.original, true, parametres))
-
-                                            }} >
-                                                <Icon>remove_circle</Icon>
-                                            </IconButton>
-                                        </Tooltip>
-                                    )
-                            ),
-                            Filter: ({ filter, onChange }) =>
-                                <select
-                                    onChange={event => onChange(event.target.value)}
-                                    style={{ width: "100%" }}
-                                    value={filter ? filter.value : ""}
-                                >
-                                    <option value="">Tous</option>
-                                    <option value="true">Publiée</option>
-                                    <option value="false">Privée</option>
-                                </select>
-                        },
-                        {
-                            Header: "",
-                            Cell: row => (
-                                <div className="flex items-center">
-                                    {
-                                        row.original.statut !== 1 && row.original.statut !== 3 ?
-                                            <Tooltip title="Supprimer" >
-                                                <IconButton className="text-red text-20"
-                                                    onClick={(ev) => {
-                                                        ev.stopPropagation();
-                                                        dispatch(Actions.openDialog({
-                                                            children: (
-                                                                <React.Fragment>
-                                                                    <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                                                                    <DialogContent>
-                                                                        <DialogContentText id="alert-dialog-description">
-                                                                            Voulez vous vraiment supprimer cette demande ?
-                                                                        </DialogContentText>
-                                                                    </DialogContent>
-                                                                    <DialogActions>
-                                                                        <Button variant="contained" onClick={() => dispatch(Actions.closeDialog())} color="primary">
-                                                                            Non
-                                                                        </Button>
-                                                                        <Button onClick={(ev) => {
-                                                                            dispatch(Actions.removeDemande(row.original, parametres));
-                                                                            dispatch(Actions.closeDialog())
-                                                                        }} color="primary" autoFocus>
-                                                                            Oui
-                                                                        </Button>
-
-                                                                    </DialogActions>
-                                                                </React.Fragment>
-                                                            )
-                                                        }))
-                                                    }}
-
-                                                >
-                                                    <Icon>delete</Icon>
-                                                </IconButton>
-                                            </Tooltip>
-                                            : <Tooltip title="Interdit!" >
-                                                <IconButton className="text-20 cursor-not-allowed disable"
-                                                    onClick={(ev) => {
-                                                        ev.stopPropagation();
-                                                    }}
-                                                >
-                                                    <Icon>delete</Icon>
-                                                </IconButton>
-                                            </Tooltip>
-                                    }
-                                    <Tooltip title="Détails" >
-                                        <IconButton className="text-teal text-20">
-                                            <Icon>remove_red_eye</Icon>
-                                        </IconButton>
-                                    </Tooltip>
-
-                                </div>
-                            )
-                        }
-                    ]}
-                    manual
-                    pages={pageCount}
-                    page={parametres.page - 1}
-
-                    defaultPageSize={10}
-                    loading={loading}
-                    showPageSizeOptions={false}
-                    onPageChange={(pageIndex) => {
-                        parametres.page = pageIndex + 1;
-                        dispatch(Actions.setParametresData(parametres))
-                    }}
-
-                    onSortedChange={(newSorted, column, shiftKey) => {
-                        parametres.page = 1;
-                        parametres.filter.id = newSorted[0].id;
-                        parametres.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
-                        dispatch(Actions.setParametresData(parametres))
-                    }}
-                    onFilteredChange={filtered => {
-                        parametres.page = 1;
-                        parametres.search = filtered;
-                        fn(parametres);
-                    }}
-                    noDataText="Aucune demande trouvée"
-                    loadingText='Chargement...'
-                    ofText='sur'
-                />
-            </FuseAnimate>
-
-
-
-
-        </div>
+        <BoopursalTable
+            title="Surveillance des RFQ & Demandes"
+            icon="list_alt"
+            data={filteredData}
+            loading={loading}
+            pageCount={pageCount}
+            page={parametres.page - 1}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setDemandesSearchText(ev))}
+            onRowClick={(row) => props.history.push('/demandes_admin/' + row.id)}
+            onPageChange={(pageIndex) => {
+                parametres.page = pageIndex + 1;
+                dispatch(Actions.setParametresData(parametres))
+            }}
+            onSortedChange={(newSorted) => {
+                parametres.page = 1;
+                parametres.filter.id = newSorted[0].id;
+                parametres.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
+                dispatch(Actions.setParametresData(parametres))
+            }}
+            columns={[
+                {
+                    Header: "Réf.",
+                    accessor: "reference",
+                    Cell: row => <Typography className="font-900 text-13 text-blue-700">{row.original.reference ? 'RFQ-' + row.original.reference : 'ATTENTE'}</Typography>,
+                    width: 120
+                },
+                {
+                    Header: "Acheteur & Société",
+                    accessor: "acheteur.societe",
+                    Cell: row => (
+                        <div className="flex flex-col">
+                            <Typography className="font-800 text-14 text-slate-800">{_.truncate(row.original.acheteur.societe, { length: 25 })}</Typography>
+                            <Typography variant="caption" className="text-slate-400 font-600">{row.original.acheteur.email}</Typography>
+                        </div>
+                    ),
+                    minWidth: 200
+                },
+                {
+                    Header: "Objet de la demande",
+                    accessor: "titre",
+                    Cell: row => <Typography className="font-600 text-14 text-slate-700">{_.truncate(row.original.titre, { length: 35 })}</Typography>,
+                    minWidth: 250
+                },
+                {
+                    Header: "Échéance",
+                    accessor: "dateExpiration",
+                    Cell: row => (
+                        <div className="flex items-center">
+                            <Typography className="text-13 font-800">{moment(row.original.dateExpiration).format('DD/MM/YY')}</Typography>
+                            <span className={classes.daysBadge}>
+                                {Math.abs(moment(row.original.dateExpiration).diff(moment(), 'days'))}j
+                            </span>
+                        </div>
+                    ),
+                    width: 140
+                },
+                {
+                    Header: "Statut",
+                    accessor: "statut",
+                    Cell: row => getStatusChip(row.original),
+                    width: 130
+                },
+                {
+                    Header: "Détails",
+                    sortable: false,
+                    Cell: row => (
+                        <IconButton size="small" className="text-slate-300 hover:text-blue-500">
+                            <Icon className="text-18 font-900">arrow_forward_ios</Icon>
+                        </IconButton>
+                    ),
+                    width: 80
+                }
+            ]}
+        />
     );
 }
 

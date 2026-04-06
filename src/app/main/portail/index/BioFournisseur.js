@@ -1,114 +1,122 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Hidden from '@material-ui/core/Hidden';
+import { Typography, Card, CardContent, Icon, Button, Box, Grid } from '@material-ui/core';
 import { NavLinkAdapter } from '@fuse';
-import { ListItem, ListItemAvatar, Avatar, List, ListItemText, Icon } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        display: 'flex',
-        flexDirection: 'row',
-        height: '100%',
-        width: '100%',
-      },
-    cardDetails: {
-        flex: 1,
+        borderRadius: 24,
+        background: "transparent",
+        color: "#ffffff",
+        padding: "0",
+        height: "100%",
+        position: "relative",
+        overflow: "hidden",
+        boxShadow: "none",
     },
-    cardMedia: {
-        width: 260,
+    iconBox: {
+        width: 70,
+        height: 70,
+        borderRadius: "16px",
+        background: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(10px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: "32px",
+        border: "1px solid rgba(255, 255, 255, 0.2)",
     },
-    mainAvatar: {
-        margin: 10,
-        color: '#fff',
-        backgroundColor: theme.palette.secondary.main,
+    benefitItem: {
+        display: "flex",
+        alignItems: "center",
+        gap: "16px",
+        marginBottom: "16px",
     },
-    lightAvatar: {
-        margin: 10,
-        color: '#fff',
-        backgroundColor: theme.palette.primary.light,
+    checkIcon: {
+        color: "#ffffff",
+        fontSize: 22,
     },
-    darkAvatar: {
-        margin: 10,
-        color: '#fff',
-        backgroundColor: theme.palette.primary.dark,
-    },
+    button: {
+        marginTop: "48px",
+        padding: "16px 32px",
+        borderRadius: 14,
+        background: "#ffffff",
+        color: "#1e3a8a",
+        fontWeight: 900,
+        textTransform: "none",
+        fontSize: "1.1rem",
+        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
+        transition: "all 0.3s ease",
+        "&:hover": {
+            background: "#f8fafc",
+            transform: "scale(1.02)",
+            boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
+        }
+    }
 }));
 
-export default function BioFournisseur(props) {
+export default function BioFournisseur() {
     const classes = useStyles();
 
     return (
-        <CardActionArea component={NavLinkAdapter}
-            to={'/register/1'} >
-            <Card className={classes.card}>
-                <div className={classes.cardDetails}>
-                    <CardContent>
-                        <Typography component="h2" variant="h5" className="uppercase">
-                            Vendre
-                        </Typography>
-                        <Typography variant="subtitle1" color="textSecondary" className="text-justify">
-                            Créer un compte fournisseur <strong className="uppercase">gratuitement</strong> vous permet de toucher un grand nombre de vos futurs clients en un temps record.
-                        </Typography>
-                        <List >
-                            <ListItem classes={{
-                                root: 'pl-0'
-                            }}>
-                                <ListItemAvatar>
-                                    <Avatar className={classes.mainAvatar}>
-                                        <Icon >local_mall</Icon>
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    className="text-justify"
-                                    primary="Que vous soyez novices sur internets ou expert en e-commerce, Boopursal vous accompagne pour augmenter le nombre de vos clients"
-                                />
-                            </ListItem>
-                            <ListItem classes={{
-                                root: 'pl-0'
-                            }}>
-                                <ListItemAvatar>
-                                    <Avatar className={classes.lightAvatar}>
-                                        <Icon >people_outline</Icon>
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    className="text-justify"
-                                    primary="Élargissez votre réseau de clients avec de nouveaux acheteurs au niveau local, national et international"
-                                />
-                            </ListItem>
-                            <ListItem classes={{
-                                root: 'pl-0'
-                            }}>
-                                <ListItemAvatar>
-                                    <Avatar className={classes.darkAvatar}>
-                                        <Icon >remove_red_eye</Icon>
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    className="text-justify"
-                                    primary="Profitez de la large audience de Boopursal. Plus de 200.000 acheteurs potentiels nous consultent quotidiennement"
-                                />
-                            </ListItem>
-                        </List>
-                        <Typography variant="subtitle1" color="primary">
-                            Créez un compte Fournisseur
-                        </Typography>
-                    </CardContent>
-                </div>
-                <Hidden xsDown>
-                    <CardMedia className={classes.cardMedia} image='assets/images/banners/BioFournisseur.jpg' title='Inscrivez-vous' />
-                </Hidden>
-            </Card>
-        </CardActionArea>
+        <Card className={classes.card} style={{ 
+            background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+            color: "#ffffff",
+            padding: "40px",
+            minHeight: "500px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            borderRadius: "32px",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.15)"
+        }}>
+            <CardContent style={{ textAlign: "center", padding: 0 }}>
+                <Box display="flex" justifyContent="center" style={{ marginBottom: "32px" }}>
+                    <div style={{ 
+                        width: 80, height: 80, borderRadius: "50%",
+                        background: "rgba(59, 130, 246, 0.2)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        border: "1px solid rgba(59, 130, 246, 0.3)"
+                    }}>
+                        <Icon style={{ color: "#60a5fa", fontSize: 36 }}>storefront</Icon>
+                    </div>
+                </Box>
+
+                <Typography variant="h3" style={{ fontWeight: 900, marginBottom: "20px", color: "#ffffff", fontSize: "2.5rem", letterSpacing: "-0.04em" }}>
+                    Vous êtes <br/>Fournisseur ?
+                </Typography>
+
+                <Typography style={{ color: "#94a3b8", marginBottom: "48px", fontSize: "1.1rem", lineHeight: 1.6 }}>
+                    Propulsez vos ventes B2B et touchez des acheteurs qualifiés dans toute l'Europe.
+                </Typography>
+
+                <Grid container spacing={2} style={{ marginBottom: "48px" }}>
+                    <Grid item xs={12}>
+                        <Typography style={{ color: "#ffffff", fontWeight: 700, fontSize: "1rem" }}>✓ Visibilité Maximale</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography style={{ color: "#ffffff", fontWeight: 700, fontSize: "1rem" }}>✓ Gestion de Devis</Typography>
+                    </Grid>
+                </Grid>
+
+                <Button
+                    component={NavLinkAdapter}
+                    to="/register/1"
+                    style={{ 
+                        background: "#ffffff", 
+                        color: "#0f172a",
+                        padding: '20px 40px',
+                        borderRadius: "16px",
+                        fontWeight: 900,
+                        textTransform: "none",
+                        fontSize: "1.1rem",
+                        boxShadow: "0 10px 30px rgba(255, 255, 255, 0.1)",
+                        width: "100%"
+                    }}
+                >
+                    S'inscrire comme Fournisseur
+                </Button>
+            </CardContent>
+        </Card>
     );
 }
-
-BioFournisseur.propTypes = {
-    post: PropTypes.object,
-};

@@ -9,8 +9,6 @@ import {
   Typography,
   Toolbar,
   AppBar,
-  DialogTitle,
-  DialogContentText,
   InputAdornment,
   Avatar,
   CircularProgress,
@@ -28,17 +26,17 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 const defaultFormState = {
-/*   societe: "",
-  firstName: "",
-  lastName: "",
-  adresse1: "",
-  adresse2: "",
-  codepostal: "",
-  phone: "",
-  email: "",
-  pays: null,
-  password: "",
-  confirmpassword: "" */
+  /*   societe: "",
+    firstName: "",
+    lastName: "",
+    adresse1: "",
+    adresse2: "",
+    codepostal: "",
+    phone: "",
+    email: "",
+    pays: null,
+    password: "",
+    confirmpassword: "" */
   //isActif: 1
 };
 
@@ -91,7 +89,7 @@ function TeamsDialog(props) {
     } else {
       setForm(_.set({ ...form }, "avatar", null));
     }
-  }, [avatar]);
+  }, [avatar, form, setForm]);
 
   function closeComposeDialog() {
     teamsDialog.type === "edit"
@@ -99,22 +97,22 @@ function TeamsDialog(props) {
       : dispatch(Actions.closeNewTeamsDialog());
   }
 
-  
-   // Handler for toggling isactif
-   const handleToggleIsActif = (event) => {
+
+  // Handler for toggling isactif
+  const handleToggleIsActif = (event) => {
     console.log('Toggling isactif to:', event.target.checked); // Debug statement
     setForm({ ...form, isactif: event.target.checked });
-  }; 
+  };
 
 
   function handleSubmit(event) {
     if (form.societe === "" ||
-        form.firstName === "" ||
-        form.lastName === "" ||
-        form.phone === "" ||
-        form.email === "" ||
-        (teamsDialog.type === "new" && (form.password === "" || form.confirmpassword === ""))
-       ) {
+      form.firstName === "" ||
+      form.lastName === "" ||
+      form.phone === "" ||
+      form.email === "" ||
+      (teamsDialog.type === "new" && (form.password === "" || form.confirmpassword === ""))
+    ) {
       // Display error messages if fields are empty
       return;
     }
@@ -381,7 +379,7 @@ function TeamsDialog(props) {
               </div>
             )
           )}
-            <div className="flex items-center">
+          <div className="flex items-center">
             <FormControlLabel
               control={<Switch checked={form.isactif} onChange={handleToggleIsActif} />}
               label="Actif"

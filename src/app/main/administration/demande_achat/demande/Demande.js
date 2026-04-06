@@ -163,7 +163,7 @@ function Demande(props) {
 
     const classes = useStyles(props);
     const [tabValue, setTabValue] = useState(0);
-    const [sousSecteurs, setSousSecteurs] = useState(null);
+    const [sousSecteurs] = useState(null);
     const [motif, setMotif] = useState(null);
     const params = props.match.params;
     const { demandeId } = params;
@@ -197,7 +197,7 @@ function Demande(props) {
             demande.attachement = null;
         }
 
-    }, [demande.attachement]);
+    }, [demande.attachement, form, setForm]);
 
 
     useEffect(() => {
@@ -218,7 +218,7 @@ function Demande(props) {
             setForm(_.set({ ...form }, 'attachements', _.pullAllBy(form.attachements, [{ 'id': demande.attachement_deleted }], 'id')));
             demande.attachement_deleted = null;
         }
-    }, [demande.attachement_deleted]);
+    }, [demande.attachement_deleted, form, setForm]);
 
 
     useEffect(() => {
@@ -248,7 +248,7 @@ function Demande(props) {
             setCategories([...categories, demande.produit]);
             setSuggestions(_.reject(suggestions, function (i) { return i === demande.produit.name }))
         }
-    }, [demande.produit]);
+    }, [demande.produit, categories, suggestions]);
 
     function handleChangeTab(event, tabValue) {
         setTabValue(tabValue);
@@ -373,7 +373,7 @@ function Demande(props) {
                                         <Typography className="normal-case flex items-center sm:mb-12" component={Link} role="button" to="/demandes_admin" color="inherit">
                                             <Icon className="mr-4 text-20">arrow_back</Icon>
                                             Retour
-                                </Typography>
+                                        </Typography>
                                     </FuseAnimate>
 
                                     <div className="flex items-center max-w-full">
@@ -405,7 +405,7 @@ function Demande(props) {
                                         onClick={() => handleSubmit()}
                                     >
                                         Sauvegarder
-                                    {demande.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                        {demande.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
                                     </Button>
                                 </FuseAnimate>
 
@@ -432,21 +432,21 @@ function Demande(props) {
                             <Tab className="h-64 normal-case" label="Infos générales" />
                             <Tab className="h-64 normal-case"
                                 label={
-                                    form && form.attachements.length > 0
+                                    form && form.attachements && form.attachements.length > 0
                                         ? "Pièce(s) jointe(s) (" + form.attachements.length + ")"
                                         : "Pièce(s) jointe(s)"}
                             />
                             <Tab className="h-64 normal-case" label="Infos Acheteur" />
 
-                            {form && form.diffusionsdemandes.length > 0 ?
+                            {form && form.diffusionsdemandes && form.diffusionsdemandes.length > 0 ?
                                 <Tab className="h-64 normal-case" label={"Diffuser (" + form.diffusionsdemandes.length + " fois)"} />
                                 : ''}
-                            {demande && demande.fournisseurs.length > 0 && !demande.data.isAnonyme ?
+                            {demande && demande.fournisseurs && demande.fournisseurs.length > 0 && demande.data && !demande.data.isAnonyme ?
                                 <Tab className={clsx("h-64 normal-case text-orange", demande.data.statut === 3 ? "text-green" : "text-orange")} label=
                                     {
-                                        demande.data && demande.data && demande.data.statut === 3 ?
+                                        demande.data && demande.data.statut === 3 ?
                                             'Adjugée' :
-                                            demande.fournisseurs.length + " fournisseur(s) participant(s)"
+                                            (demande.fournisseurs ? demande.fournisseurs.length : 0) + " fournisseur(s) participant(s)"
                                     } />
                                 : ''}
 
@@ -601,12 +601,12 @@ function Demande(props) {
                                                                     {searchCategories.noSuggestions && (
                                                                         <Typography className="px-16 py-12">
                                                                             Aucun résultat..
-                                                                </Typography>
+                                                                        </Typography>
                                                                     )}
                                                                     {searchCategories.loading && (
                                                                         <div className="px-16 py-12 text-center">
                                                                             <CircularProgress color="secondary" /> <br /> Chargement ...
-                                                                </div>
+                                                                        </div>
                                                                     )}
                                                                 </Paper>
                                                             </div>
@@ -630,7 +630,7 @@ function Demande(props) {
                                                                             <DialogContent>
                                                                                 <DialogContentText id="alert-dialog-description">
                                                                                     Voulez vous vraiment supprimer ce produit ?
-                                                                            </DialogContentText>
+                                                                                </DialogContentText>
                                                                             </DialogContent>
                                                                             <DialogActions>
                                                                                 <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
@@ -671,12 +671,12 @@ function Demande(props) {
                                                                             <DialogContent>
                                                                                 <DialogContentText id="alert-dialog-description">
                                                                                     Voulez vous vraiment supprimer cette suggestion ?
-                                                                            </DialogContentText>
+                                                                                </DialogContentText>
                                                                             </DialogContent>
                                                                             <DialogActions>
                                                                                 <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
                                                                                     Non
-                                                                            </Button>
+                                                                                </Button>
                                                                                 <Button onClick={(ev) => {
                                                                                     handleDeleteSuggestion(item);
                                                                                     dispatch(Actions.closeDialog())
@@ -831,7 +831,7 @@ function Demande(props) {
                                                         value="legacy"
                                                     >
                                                         Sauvegarder
-                                                    {demande.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                                        {demande.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
                                                     </Button>
                                                 </Grid>
 
@@ -871,7 +871,7 @@ function Demande(props) {
                                             </label>
 
 
-                                            {form.attachements.map(media => (
+                                            {form.attachements && form.attachements.map(media => (
                                                 <div
                                                     className={
                                                         clsx(
@@ -882,47 +882,47 @@ function Demande(props) {
                                                     onClick={() => window.open(URL_SITE + media.url, "_blank")}
                                                 >
                                                     <Tooltip title="Supprimer" >
-                                                    <IconButton
-          className="text-red text-20"
-          onClick={(ev) => {
-            ev.stopPropagation();
-            dispatch(
-              Actions.openDialog({
-                children: (
-                  <>
-                    <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        Voulez-vous vraiment supprimer ce média ?
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        variant="contained"
-                        onClick={() => dispatch(Actions.closeDialog())}
-                        color="primary"
-                      >
-                        Non
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          dispatch(Actions.deleteMedia(media));
-                          dispatch(Actions.closeDialog());
-                        }}
-                        color="primary"
-                        autoFocus
-                      >
-                        Oui
-                      </Button>
-                    </DialogActions>
-                  </>
-                ),
-              })
-            );
-          }}
-        >
-          <Icon>delete</Icon>
-        </IconButton>
+                                                        <IconButton
+                                                            className="text-red text-20"
+                                                            onClick={(ev) => {
+                                                                ev.stopPropagation();
+                                                                dispatch(
+                                                                    Actions.openDialog({
+                                                                        children: (
+                                                                            <>
+                                                                                <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
+                                                                                <DialogContent>
+                                                                                    <DialogContentText id="alert-dialog-description">
+                                                                                        Voulez-vous vraiment supprimer ce média ?
+                                                                                    </DialogContentText>
+                                                                                </DialogContent>
+                                                                                <DialogActions>
+                                                                                    <Button
+                                                                                        variant="contained"
+                                                                                        onClick={() => dispatch(Actions.closeDialog())}
+                                                                                        color="primary"
+                                                                                    >
+                                                                                        Non
+                                                                                    </Button>
+                                                                                    <Button
+                                                                                        onClick={() => {
+                                                                                            dispatch(Actions.deleteMedia(media));
+                                                                                            dispatch(Actions.closeDialog());
+                                                                                        }}
+                                                                                        color="primary"
+                                                                                        autoFocus
+                                                                                    >
+                                                                                        Oui
+                                                                                    </Button>
+                                                                                </DialogActions>
+                                                                            </>
+                                                                        ),
+                                                                    })
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Icon>delete</Icon>
+                                                        </IconButton>
                                                     </Tooltip>
 
                                                     {_.split(media.type, '/', 1)[0] === 'image' ?

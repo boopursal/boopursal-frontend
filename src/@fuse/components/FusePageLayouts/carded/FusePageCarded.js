@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     },
     innerScroll              : {
         flex  : '1 1 auto',
-        height: '100%'
+        height: 'auto'
     },
     topBg                    : {
         position      : 'absolute',
@@ -76,8 +76,8 @@ const useStyles = makeStyles(theme => ({
     },
     content                  : {
         flex                        : '1 1 auto',
-        height                      : '100%',
-        overflow                    : 'auto',
+        height                      : 'auto',
+        overflow                    : 'visible',
         '-webkit-overflow-scrolling': 'touch'
     },
     sidebarWrapper           : {
@@ -190,9 +190,9 @@ const FusePageCarded = React.forwardRef(function (props, ref) {
                         )}
 
                         {props.content && (
-                            <FuseScrollbars className={classes.content} enable={props.innerScroll} scrollToTopOnChildChange={props.innerScroll}>
+                            <div className={classes.content}>
                                 {props.content}
-                            </FuseScrollbars>
+                            </div>
                         )}
                     </div>
                 </div>

@@ -20,7 +20,7 @@ function CommandesApp(props) {
         dispatch(Actions.getCommandes(parametres));
         if(!paiements)
         dispatch(Actions.getPaiements());
-    }, [dispatch, parametres]);
+    }, [dispatch, parametres, paiements]);
 
     return (
         <React.Fragment>

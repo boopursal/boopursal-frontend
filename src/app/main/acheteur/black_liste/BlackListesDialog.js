@@ -247,24 +247,15 @@ function BlackListesDialog(props) {
     }
 
 
-    // États pour stocker les valeurs sélectionnées du pays et de la ville
     const [selectedPays, setSelectedPays] = useState('');
     const [selectedProblem, setSelectedProblem] = useState('');
     const [selectedVille, setSelectedVille] = useState('');
-    const [inputLabel, setInputLabel] = useState('');
-
 
     // Gérer le changement de sélection du pays
     const handlePaysChange = (event) => {
         setSelectedPays(event.target.value);
         // Réinitialiser la sélection de la ville lorsque le pays est changé
         setSelectedVille('');
-        // Déterminer le label de la zone de texte en fonction du pays sélectionné
-        if (event.target.value !== 'Maroc') {
-            setInputLabel('SIRET');
-        } else {
-            setInputLabel('ICE');
-        }
         // Réinitialiser les valeurs de ICE et SIRET lorsque le pays est changé
          setForm({ ...form, ice: '', siret: '' });
     };
@@ -317,7 +308,7 @@ useEffect(() => {
          // Réinitialiser les valeurs de ICE et SIRET lorsque la ville est changée
     setForm({ ...form, ice: '', siret: '' });
     };
-    function handleCheckBoxChange(e) {
+    function handleOutChange(e) {
         // Mettre à jour l'état de la case à cocher et exécuter d'autres logiques si nécessaire
         setForm(_.set({ ...form }, 'OUT', e.target.checked));
         // Exemple: masquer la zone de recherche du fournisseur si la case est cochée
@@ -458,7 +449,7 @@ useEffect(() => {
                 name="OUT"  
                 checked={form.OUT}
                 label={form.OUT ? "Fournisseur listé" : "Fournisseur Hors liste"}
-                onChange={handleCheckBoxChange}
+                onChange={handleOutChange}
                 fullWidth
             />
                     </div>

@@ -1,38 +1,77 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, InputAdornment, Icon, IconButton } from "@material-ui/core";
+import { Button, InputAdornment, Icon, IconButton, CircularProgress } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import clsx from "clsx";
 import { TextFieldFormsy } from "@fuse";
 import Formsy from "formsy-react";
 import * as authActions from "app/auth/store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import * as Actions from "app/store/actions";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    alignItems: "center",
+  form: {
+    width: "100%",
   },
-  wrapper: {
-    margin: theme.spacing(1),
-    position: "relative",
+  submitButton: {
+    height: 54,
+    borderRadius: 12,
+    background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)',
+    color: '#ffffff',
+    fontSize: '1rem',
+    fontWeight: 700,
+    textTransform: 'none',
+    boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
+    marginTop: theme.spacing(4),
+    '&:hover': {
+      background: 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%)',
+      boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.3)',
+    },
+    '&:disabled': {
+      background: '#e5e7eb',
+      color: '#9ca3af',
+    }
   },
-
-  buttonProgress: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -12,
-    marginLeft: -12,
+  input: {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 12,
+      background: '#f8fafc',
+      '& fieldset': {
+        borderColor: '#e5e7eb',
+      },
+      '&:hover fieldset': {
+        borderColor: '#cbd5e1',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#2563eb',
+        borderWidth: 2,
+      },
+    },
+    '& .MuiInputLabel-outlined': {
+      color: '#64748b',
+      fontWeight: 500,
+    }
   },
+  forgotLink: {
+    display: 'block',
+    textAlign: 'right',
+    marginTop: theme.spacing(1),
+    color: '#2563eb',
+    fontWeight: 600,
+    fontSize: '0.875rem',
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+    }
+  }
 }));
-function JWTLoginTab(props) {
+
+function JWTLoginTab() {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const login = useSelector(({ auth }) => auth.login);
-  const classes = useStyles();
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef(null);
   const [values, setValues] = useState({
@@ -40,132 +79,106 @@ function JWTLoginTab(props) {
     password: "",
     showPassword: false,
   });
+
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
-  };
-
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
   };
 
   useEffect(() => {
     if (login.error && login.error.message) {
       dispatch(
         Actions.showMessage({
-          //message: login.error.message,//text or html
-          message:
-            login.error.message === "Invalid credentials."
-              ? "Email ou mot de passe incorrect."
-              : login.error.message,
-          autoHideDuration: 6000, //ms
-          anchorOrigin: {
-            vertical: "top", //top bottom
-            horizontal: "right", //left center right
-          },
-          variant: "error", //success error info warning null
+          message: login.error.message === "Invalid credentials."
+            ? "Email ou mot de passe incorrect."
+            : login.error.message,
+          autoHideDuration: 6000,
+          anchorOrigin: { vertical: "top", horizontal: "right" },
+          variant: "error",
         })
       );
     }
-    enableButton();
-  }, [dispatch, login.error]);
-
-  function disableButton() {
-    setIsFormValid(false);
-  }
-
-  function enableButton() {
     setIsFormValid(true);
-  }
+  }, [dispatch, login.error]);
 
   function handleSubmit(model) {
     dispatch(authActions.submitLogin(model));
-    disableButton();
+    setIsFormValid(false);
   }
 
   return (
     <div className="w-full">
       <Formsy
         onValidSubmit={handleSubmit}
-        onValid={enableButton}
-        onInvalid={disableButton}
+        onValid={() => setIsFormValid(true)}
+        onInvalid={() => setIsFormValid(false)}
         ref={formRef}
-        className="flex flex-col justify-center w-full"
+        className={classes.form}
       >
         <TextFieldFormsy
-          className="mb-16"
+          className={clsx(classes.input, "mb-20")}
           type="email"
           name="email"
-          label="Email"
+          label="Adresse Email"
           validations="isEmail"
-          validationErrors={{
-            isEmail: "L'adresse email n'est pas valide",
-          }}
+          validationErrors={{ isEmail: "L'adresse email n'est pas valide" }}
+          variant="outlined"
+          fullWidth
+          required
           InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Icon className="text-20" color="action">
-                  email
-                </Icon>
+            startAdornment: (
+              <InputAdornment position="start">
+                <Icon className="text-20 text-gray-400">mail</Icon>
               </InputAdornment>
             ),
           }}
-          variant="outlined"
-          required
         />
 
         <TextFieldFormsy
-          className="mb-16"
+          className={classes.input}
           type={values.showPassword ? "text" : "password"}
           name="password"
           label="Mot de passe"
           onChange={handleChange("password")}
-          validations={{
-            minLength: 6,
-          }}
-          validationErrors={{
-            minLength: "La longueur minimale des caractères est de 6",
-          }}
+          validations={{ minLength: 6 }}
+          validationErrors={{ minLength: "La longueur minimale est de 6 caractères" }}
+          variant="outlined"
+          fullWidth
+          required
           InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Icon className="text-20 text-gray-400">lock</Icon>
+              </InputAdornment>
+            ),
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
+                  size="small"
+                  onClick={() => setValues(v => ({ ...v, showPassword: !v.showPassword }))}
                 >
-                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                  {values.showPassword ? <Visibility className="text-20" /> : <VisibilityOff className="text-20" />}
                 </IconButton>
               </InputAdornment>
             ),
           }}
-          variant="outlined"
-          required
         />
-        <Link className="font-medium text-blue" to="/forgot-password">
+
+        <Link className={classes.forgotLink} to="/forgot-password">
           Mot de passe oublié ?
         </Link>
+
         <Button
           type="submit"
           variant="contained"
-          name="submit"
-          color="primary"
-          className="w-full mx-auto mt-16 normal-case"
-          aria-label="LOG IN"
+          fullWidth
+          className={classes.submitButton}
           disabled={!isFormValid || login.loading}
-          value="legacy"
         >
-          Connexion
-          {login.loading && (
-            <CircularProgress size={24} className={classes.buttonProgress} />
-          )}
+          {login.loading ? <CircularProgress size={24} color="inherit" /> : "Se connecter maintenant"}
         </Button>
       </Formsy>
     </div>
   );
 }
 
-export default JWTLoginTab;
+export default React.memo(JWTLoginTab);

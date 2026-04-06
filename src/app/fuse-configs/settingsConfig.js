@@ -1,14 +1,29 @@
 const settingsConfig = {
-    layout          : {
-        style : 'layout1', // layout-1 layout-2 layout-3
-        config: {} // checkout layout configs at app/fuse-configs/layout-1/Layout1Config.js
+    layout: {
+        style: 'layout1', // layout-1 layout-2 layout-3
+        config: {
+            defaults: {
+                mode: 'fullwidth',
+                scroll: 'content',
+                toolbar: {
+                    display: true,
+                    style: 'fixed',
+                    position: 'above'
+                },
+                navbar: {
+                    display: true,
+                    folded: false,
+                    position: 'left'
+                }
+            }
+        } 
     },
     customScrollbars: true,
-    theme           : {
-        main   : 'default',
-        navbar : 'mainThemeDark',
-        toolbar: 'mainThemeLight',
-        footer : 'mainThemeDark'
+    theme: {
+        main: 'tailadminLight',
+        navbar: 'tailadmin',
+        toolbar: 'tailadminLight',
+        footer: 'tailadmin'
     }
 };
 

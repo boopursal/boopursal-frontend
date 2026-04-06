@@ -1,40 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button, Box, Container } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { Line } from 'react-chartjs-2';
-import { makeStyles, useTheme, ThemeProvider } from '@material-ui/styles';
 import _ from 'lodash';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions'
-import reducer from '../store/reducers';
-import withReducer from 'app/store/withReducer';
 import { FuseAnimate } from '@fuse';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        background: 'linear-gradient(to right, ' + theme.palette.primary.dark + ' 0%, ' + theme.palette.primary.main + ' 100%)',
+        background: "linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)",
+        borderRadius: 24,
+        padding: theme.spacing(4),
+        marginBottom: theme.spacing(4),
+        color: "#ffffff",
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: "0 10px 25px rgba(37, 99, 235, 0.2)",
+    },
+    header: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: theme.spacing(4),
+        flexWrap: 'wrap',
+        gap: theme.spacing(2),
+    },
+    title: {
+        fontSize: "1.5rem",
+        fontWeight: 800,
+        letterSpacing: "-0.02em",
+    },
+    buttonGroup: {
+        display: 'flex',
+        background: "rgba(255, 255, 255, 0.1)",
+        borderRadius: 12,
+        padding: 4,
+    },
+    btn: {
+        textTransform: 'none',
+        fontWeight: 600,
+        borderRadius: 8,
+        padding: "6px 16px",
+        color: "#ffffff",
+        '&:hover': {
+            background: "rgba(255, 255, 255, 0.1)",
+        },
+        '&.active': {
+            background: "#ffffff",
+            color: "#2563eb",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        }
+    },
+    chartContainer: {
+        height: 240,
+        width: '100%',
     }
 }));
 
 function Widget5(props) {
-
-
-    const mainThemeDark = useSelector(({ fuse }) => fuse.settings.mainThemeDark);
+    const classes = useStyles();
+    const theme = useTheme();
     const dispatch = useDispatch();
     const [currentRange, setCurrentRange] = useState({
         startDate: moment().startOf('isoWeek').format('YYYY-MM-DD'),
         endDate: moment().endOf('isoWeek').format('YYYY-MM-DD')
     });
 
-    const classes = useStyles(props);
-    const theme = useTheme();
-
     const [range, setRange] = useState('0');
     const [widget, setWidget] = useState(null);
     const widgets = useSelector(({ dashboardApp }) => dashboardApp.widgets);
 
-    //startDate:moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD'),
-    //endDate:moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD')
     useEffect(() => {
         dispatch(Actions.getCharts(currentRange));
     }, [dispatch, currentRange]);
@@ -43,155 +80,93 @@ function Widget5(props) {
         setWidget(_.merge({}, widgets.charts))
     }, [widgets.charts]);
 
-    function handleChangeRange(range) {
-        setRange(range);
-        if (range === '1') {
-            setCurrentRange({
-                startDate: moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD'),
-                endDate: moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD')
-            })
-        } else if (range === '2') {
-            setCurrentRange({
-                startDate: moment().subtract(2, 'weeks').startOf('isoWeek').format('YYYY-MM-DD'),
-                endDate: moment().subtract(2, 'weeks').endOf('isoWeek').format('YYYY-MM-DD')
-            })
+    function handleChangeRange(key) {
+        setRange(key);
+        let start, end;
+        if (key === '1') {
+            start = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
+            end = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
+        } else if (key === '2') {
+            start = moment().subtract(2, 'weeks').startOf('isoWeek').format('YYYY-MM-DD');
+            end = moment().subtract(2, 'weeks').endOf('isoWeek').format('YYYY-MM-DD');
         } else {
-            setCurrentRange({
-                startDate: moment().startOf('isoWeek').format('YYYY-MM-DD'),
-                endDate: moment().endOf('isoWeek').format('YYYY-MM-DD')
-            })
+            start = moment().startOf('isoWeek').format('YYYY-MM-DD');
+            end = moment().endOf('isoWeek').format('YYYY-MM-DD');
         }
+        setCurrentRange({ startDate: start, endDate: end });
     }
 
     return (
+        <div className={classes.root}>
+            <div className={classes.header}>
+                <FuseAnimate delay={100}>
+                    <Typography className={classes.title}>
+                        {widget && widget.title ? widget.title : "Activité hebdomadaire"}
+                    </Typography>
+                </FuseAnimate>
 
-        <ThemeProvider theme={mainThemeDark}>
-            <div className={classes.root}>
-                <div className="container relative p-16 sm:p-24 flex flex-row justify-between items-center">
-
-                    <FuseAnimate delay={100}>
-                        <div className="flex-col">
-                            <Typography className="h2" color="textPrimary">{widget && widget.title}</Typography>
-                        </div>
-                    </FuseAnimate>
-
-                    <div className="flex flex-row items-center">
-                        {Object.entries({
-                            '0': 'Cette semaine',
-                            '1': 'La semaine dernière',
-                            '2': 'Il y a 2 semaines'
-                        }).map(([key, n]) => {
-                            return (
-                                <Button
-                                    key={key}
-                                    className="normal-case shadow-none px-16"
-                                    onClick={() => handleChangeRange(key)}
-                                    color={range === key ? "secondary" : "default"}
-                                    variant={range === key ? "contained" : "text"}
-                                >
-                                    {n}
-                                </Button>
-                            )
-                        })}
-                    </div>
-                </div>
-                <div className="container relative h-200 sm:h-256 pb-16">
-                    <Line
-                        data={{
-
-                            labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
-                            datasets: widget && widget.mainChart
-                                ?
-                                widget.mainChart.datasets.map(obj => ({
-                                    ...obj,
-                                    borderColor: theme.palette.secondary.main,
-                                    backgroundColor: theme.palette.secondary.main,
-                                    pointBackgroundColor: theme.palette.secondary.dark,
-                                    pointHoverBackgroundColor: theme.palette.secondary.main,
-                                    pointBorderColor: theme.palette.secondary.contrastText,
-                                    pointHoverBorderColor: theme.palette.secondary.contrastText
-                                }))
-                                :
-                                []
-
-                        }}
-                        options={
-                            {
-                                spanGaps: false,
-                                legend: {
-                                    display: false
-                                },
-                                maintainAspectRatio: false,
-                                tooltips: {
-                                    position: 'nearest',
-                                    mode: 'index',
-                                    intersect: false
-                                },
-                                layout: {
-                                    padding: {
-                                        top: 32,
-                                        left: 32,
-                                        right: 32
-                                    }
-                                },
-                                elements: {
-                                    point: {
-                                        radius: 4,
-                                        borderWidth: 2,
-                                        hoverRadius: 4,
-                                        hoverBorderWidth: 2
-                                    },
-                                    line: {
-                                        tension: 0
-                                    }
-                                },
-                                scales: {
-                                    xAxes: [
-                                        {
-                                            gridLines: {
-                                                display: false,
-                                                drawBorder: false,
-                                                tickMarkLength: 18
-                                            },
-                                            ticks: {
-                                                fontColor: '#ffffff'
-                                            }
-                                        }
-                                    ],
-                                    yAxes: [
-                                        {
-                                            display: false,
-                                            gridLines: {
-                                                tickMarkLength: 16
-                                            },
-                                            ticks: {
-                                                min: 0,
-                                                max: 25,
-                                                stepSize: 0.5
-                                            }
-                                        }
-                                    ]
-                                },
-                                plugins: {
-                                    filler: {
-                                        propagate: false
-                                    },
-                                    xLabelsOnTop: {
-                                        active: true,
-                                        render: 'k'
-
-                                    }
-                                },
-
-                            }
-                        }
-                    />
+                <div className={classes.buttonGroup}>
+                    {Object.entries({
+                        '0': '7 jours',
+                        '1': '15 jours',
+                        '2': '30 jours'
+                    }).map(([key, n]) => (
+                        <Button
+                            key={key}
+                            className={`${classes.btn} ${range === key ? 'active' : ''}`}
+                            onClick={() => handleChangeRange(key)}
+                        >
+                            {n}
+                        </Button>
+                    ))}
                 </div>
             </div>
-        </ThemeProvider>
 
-
+            <div className={classes.chartContainer}>
+                <Line
+                    data={{
+                        labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                        datasets: widget && widget.mainChart
+                            ? widget.mainChart.datasets.map(obj => ({
+                                ...obj,
+                                borderColor: "#ffffff",
+                                backgroundColor: "transparent",
+                                pointBackgroundColor: "#ffffff",
+                                pointBorderColor: "#ffffff",
+                                pointHoverBackgroundColor: "#ffffff",
+                                pointHoverBorderColor: "#ffffff",
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                tension: 0.4,
+                                borderWidth: 3,
+                            }))
+                            : []
+                    }}
+                    options={{
+                        maintainAspectRatio: false,
+                        legend: { display: false },
+                        scales: {
+                            xAxes: [{
+                                gridLines: { display: false },
+                                ticks: { fontColor: "rgba(255, 255, 255, 0.7)", fontSize: 12, padding: 10 }
+                            }],
+                            yAxes: [{
+                                display: false,
+                                ticks: { min: 0, max: 25 }
+                            }]
+                        },
+                        tooltips: {
+                            backgroundColor: '#ffffff',
+                            titleFontColor: '#111827',
+                            bodyFontColor: '#374151',
+                            cornerRadius: 8,
+                            padding: 12,
+                        }
+                    }}
+                />
+            </div>
+        </div>
     );
 }
 
-export default withReducer('dashboardApp', reducer)(Widget5);
+export default React.memo(Widget5);

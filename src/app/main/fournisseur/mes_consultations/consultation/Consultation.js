@@ -132,7 +132,7 @@ function Consultation(props) {
             dispatch(Actions.cleanUp())
         }
 
-    }, [dispatch, props.match.params]);
+    }, [dispatch, props.match.params, props.history]);
 
 
     useEffect(() => {
@@ -203,7 +203,7 @@ function Consultation(props) {
                                     <Typography className="normal-case flex items-center sm:mb-12" component={Link} role="button" to="/consultations" color="inherit">
                                         <Icon className="mr-4 text-20">arrow_back</Icon>
                                         Retour
-                                </Typography>
+                                    </Typography>
                                 </FuseAnimate>
 
                                 <div className="flex items-center max-w-full">
@@ -548,7 +548,7 @@ function Consultation(props) {
                                             value="legacy"
                                         >
                                             Sauvegarder
-                                                {consultation.request && <CircularProgress size={24} className={classes.buttonProgress} />}
+                                            {consultation.request && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                                         </Button>
 

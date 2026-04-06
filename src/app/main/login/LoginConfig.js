@@ -4,7 +4,10 @@ import {authRoles} from 'app/auth';
 export const LoginConfig = {
     settings: {
         layout: {
+            style: 'layout1',
             config: {
+                mode: 'fullwidth',
+                scroll: 'content',
                 navbar        : {
                     display: false
                 },

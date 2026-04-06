@@ -1,95 +1,195 @@
-// front-end/src/app/main/portail/index/Categories.js
 import React from "react";
-import { Avatar, Grid, Typography, Icon } from "@material-ui/core";
+import { Grid, Typography, Icon, Box } from "@material-ui/core";
 import { URL_SITE } from "@fuse";
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
+import clsx from "clsx";
+import { FuseAnimateGroup } from "@fuse";
 
 const useStyles = makeStyles((theme) => ({
+  gridContainer: {
+    maxWidth: "1600px",
+    margin: "0 auto",
+    padding: "0 24px",
+  },
   categoryCard: {
+    position: "relative",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",           // prend toute la largeur du Grid item
-    maxWidth: 165,           // max largeur fixe pour garder un carré
-    aspectRatio: "1 / 1",    // carré (support moderne)
-    margin: theme.spacing(2, 1), // vertical 16px, horizontal 8px environ
-    textAlign: "center",
-    borderRadius: 8,
-    boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2)`,
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    justifyContent: "flex-end",
+    height: "360px",
+    borderRadius: "32px",
+    overflow: "hidden",
+    textDecoration: "none",
+    transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+    background: "var(--portal-surface)",
+    border: "1px solid var(--portal-border)",
     "&:hover": {
-      transform: "translateY(-5px)",
-      boxShadow: `0 8px 20px rgba(0, 0, 0, 0.3)`,
+      transform: "translateY(-12px) scale(1.02)",
+      borderColor: "rgba(255, 90, 90, 0.3)",
+      boxShadow: "0 40px 80px rgba(0, 0, 0, 0.6)",
+      "& $bgImage": {
+        transform: "scale(1.15)",
+        filter: "brightness(0.5) saturate(1.2)",
+      },
+      "& $contentOverlay": {
+        background: "linear-gradient(to top, rgba(255, 90, 90, 0.1) 0%, transparent 100%)",
+      },
+      "& $exploreBtn": {
+        opacity: 1,
+        transform: "translateY(0)",
+      }
     },
   },
-  avatar: {
-    width: 100,
-    height: 100,
-    marginBottom: theme.spacing(1),
+  bgImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+    filter: "brightness(0.6)",
+    zIndex: 1
+  },
+  contentOverlay: {
+    position: "relative",
+    zIndex: 2,
+    padding: "32px",
+    background: "linear-gradient(to top, var(--portal-bg) 0%, transparent 100%)",
+    width: "100%",
+    transition: "all 0.4s ease",
   },
   categoryText: {
-    fontSize: "16px",
-    fontWeight: "600",
-    color: theme.palette.text.primary,
-    lineHeight: 1.4,
+    fontSize: "1.4rem",
+    fontWeight: 900,
+    color: "var(--portal-text)",
+    lineHeight: 1.2,
+    marginBottom: "12px",
   },
+  exploreBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    color: "#ff5a5a",
+    fontSize: "0.85rem",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.15em",
+    opacity: 0,
+    transform: "translateY(10px)",
+    transition: "all 0.4s ease",
+  },
+  allSectorsCard: {
+    background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
+    border: "none",
+    "& $contentOverlay": {
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "transparent",
+    },
+    "& $iconWrapper": {
+      width: "80px",
+      height: "80px",
+      borderRadius: "24px",
+      background: "rgba(255, 255, 255, 0.15)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: "24px",
+      backdropFilter: "blur(20px)",
+      border: "1px solid rgba(255, 255, 255, 0.2)",
+    },
+    "&:hover": {
+      boxShadow: "0 40px 80px rgba(255, 90, 90, 0.3)",
+      "& $iconWrapper": {
+        transform: "rotate(10deg) scale(1.1)",
+        background: "rgba(255, 255, 255, 0.25)",
+      }
+    }
+  },
+  iconWrapper: {
+    transition: "all 0.5s ease",
+  },
+  sectorBadge: {
+    position: "absolute",
+    top: "24px",
+    left: "24px",
+    zIndex: 3,
+    padding: "6px 14px",
+    background: "var(--portal-surface)",
+    backdropFilter: "blur(12px)",
+    border: "1px solid var(--portal-border)",
+    borderRadius: "100px",
+    color: "var(--portal-text)",
+    fontSize: "0.7rem",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.1em",
+  }
 }));
 
 function Categories(props) {
   const { categories } = props;
   const classes = useStyles();
 
-  // Limiter à 7 catégories affichées
-  const displayedCategories = categories.slice(0, 6);
+  if (!Array.isArray(categories) || categories.length === 0) {
+    return null;
+  }
 
-  return categories.length ? (
-    <Grid container justifyContent="center" className="p-5 sm:p-10">
-      {displayedCategories.map((cat, index) => (
-        <Grid
-          item
-          xs={6}    // 2 colonnes sur mobile
-          sm={3}    // 4 colonnes sur tablette
-          md={2}    // 6 colonnes sur desktop
-          key={index}
-          component={Link}
-          to={`/vente-produits/${cat.slug}`}
-          className={classes.categoryCard}
-          aria-label={`Voir la catégorie ${cat.name}`}
-        >
-          <Avatar
-            className={classes.avatar}
-            alt={cat.name}
-            src={URL_SITE + "/images/secteur/" + cat.url}
-          />
-          <Typography variant="subtitle1" className={classes.categoryText}>
-            {cat.name}
-          </Typography>
-        </Grid>
-      ))}
+  const displayedCategories = categories.slice(0, 7);
 
-      {/* Case "Tous les catégories" */}
-      <Grid
-        item
-        xs={6}
-        sm={3}
-        md={2}
-        component={Link}
-        to={`/annuaire-entreprises`}
-        className={classes.categoryCard}
-        aria-label="Voir toutes les catégories"
+  return (
+    <div className={classes.gridContainer}>
+      <FuseAnimateGroup
+        enter={{
+          animation: "transition.slideUpIn",
+          stagger: 80,
+        }}
       >
-        <Avatar className={classes.avatar}>
-          <Icon>arrow_forward_ios</Icon>
-        </Avatar>
-        <Typography variant="subtitle1" className={classes.categoryText}>
-        Tous les secteurs d’activité
-        </Typography>
-      </Grid>
-    </Grid>
-  ) : (
-    ""
+        <Grid container spacing={4}>
+          {displayedCategories.map((cat, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Link to={`/vente-produits/${cat.slug}`} className={classes.categoryCard}>
+                <div className={classes.sectorBadge}>Secteur Actif</div>
+                <img
+                  className={classes.bgImage}
+                  alt={cat.name}
+                  src={URL_SITE + "/images/secteur/" + cat.url}
+                />
+                <div className={classes.contentOverlay}>
+                  <Typography className={classes.categoryText}>
+                    {cat.name}
+                  </Typography>
+                  <div className={classes.exploreBtn}>
+                    Analyser <Icon style={{ fontSize: 18 }}>analytics</Icon>
+                  </div>
+                </div>
+              </Link>
+            </Grid>
+          ))}
+
+          <Grid item xs={12} sm={6} md={4} lg={3}>
+            <Link to={`/annuaire-entreprises`} className={clsx(classes.categoryCard, classes.allSectorsCard)}>
+              <div className={classes.contentOverlay}>
+                <div className={classes.iconWrapper}>
+                  <Icon style={{ fontSize: 40, color: "#fff" }}>rocket_launch</Icon>
+                </div>
+                <Typography className={classes.categoryText} style={{ textAlign: "center" }}>
+                   Intelligence Totale
+                </Typography>
+                <Typography style={{ color: "rgba(255,255,255,0.8)", fontSize: "0.9rem", fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Voir tous les secteurs
+                </Typography>
+              </div>
+            </Link>
+          </Grid>
+        </Grid>
+      </FuseAnimateGroup>
+    </div>
   );
 }
 

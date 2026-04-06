@@ -27,6 +27,18 @@ const themesConfig = {
         },
         status: {
             danger: 'orange'
+        },
+        typography: {
+            fontFamily: ['Muli', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
+            fontWeightMedium: 400,
+            body1: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            },
+            body2: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            }
         }
     },
     sunset: {
@@ -58,6 +70,18 @@ const themesConfig = {
         },
         status: {
             danger: 'orange'
+        },
+        typography: {
+            fontFamily: ['Muli', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
+            fontWeightMedium: 400,
+            body1: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            },
+            body2: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            }
         }
     },
     greeny: {
@@ -91,6 +115,18 @@ const themesConfig = {
         },
         status: {
             danger: 'orange'
+        },
+        typography: {
+            fontFamily: ['Muli', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
+            fontWeightMedium: 400,
+            body1: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            },
+            body2: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            }
         }
     },
     beach: {
@@ -155,6 +191,18 @@ const themesConfig = {
         },
         status: {
             danger: 'orange'
+        },
+        typography: {
+            fontFamily: ['Muli', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
+            fontWeightMedium: 400,
+            body1: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            },
+            body2: {
+                lineHeight: 1.5,
+                fontWeight: 400
+            }
         }
     },
     deepOcean: {
@@ -187,6 +235,107 @@ const themesConfig = {
                 dark: '#c73840',
                 contrastText: '#fff'
             }
+        }
+    },
+    modernLuxury: {
+        palette: {
+            type: 'light',
+            primary: {
+                light: '#475b7a',
+                main: '#1a2038',
+                dark: '#0e1224',
+                contrastText: '#ffffff'
+            },
+            secondary: {
+                light: '#ffc875',
+                main: '#ff9f43',
+                dark: '#c77014',
+                contrastText: '#000000'
+            },
+            background: {
+                paper: '#ffffff',
+                default: '#f4f7f6'
+            },
+            error: red
+        },
+        overrides: {
+            MuiAppBar: {
+                colorDefault: {
+                    backgroundColor: '#1a2038',
+                    color: '#ffffff'
+                }
+            },
+            MuiPaper: {
+                elevation1: {
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                }
+            },
+            MuiButton: {
+                root: {
+                    borderRadius: '8px',
+                    textTransform: 'none',
+                    fontWeight: 600
+                },
+                containedPrimary: {
+                    boxShadow: '0 4px 14px 0 rgba(26, 32, 56, 0.39)'
+                },
+                containedSecondary: {
+                    boxShadow: '0 4px 14px 0 rgba(255, 159, 67, 0.39)'
+                }
+            }
+        },
+        status: {
+            danger: 'orange'
+        }
+    },
+    tailadmin: {
+        palette: {
+            type: 'dark',
+            primary: {
+                light: '#425370',
+                main: '#1c2434',
+                dark: '#0f1624',
+                contrastText: '#ffffff'
+            },
+            secondary: {
+                light: '#5a6e8e',
+                main: '#3c50e0',
+                dark: '#2e3a99',
+                contrastText: '#ffffff'
+            },
+            background: {
+                paper: '#1c2434',
+                default: '#1c2434'
+            },
+            error: red
+        },
+        status: {
+            danger: 'orange'
+        }
+    },
+    tailadminLight: {
+        palette: {
+            type: 'light',
+            primary: {
+                light: '#ffffff',
+                main: '#ffffff',
+                dark: '#f1f5f9',
+                contrastText: '#1c2434'
+            },
+            secondary: {
+                light: '#8fa0fb',
+                main: '#3c50e0',
+                dark: '#283ca6',
+                contrastText: '#ffffff'
+            },
+            background: {
+                paper: '#ffffff',
+                default: '#f1f5f9'
+            },
+            error: red
+        },
+        status: {
+            danger: 'orange'
         }
     }
 };

@@ -1,132 +1,98 @@
 import React, { useEffect, useState } from 'react';
 import { Icon, IconButton, Tooltip, Typography } from '@material-ui/core';
-import { FuseUtils, FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import ReactTable from "react-table";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import * as Actions from '../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
+import FuseUtils from '@fuse/FuseUtils';
+import _ from '@lodash';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+
+const useStyles = makeStyles(theme => ({
+    faqQuestion: {
+        fontWeight: 950,
+        color: '#0f172a',
+        fontSize: '0.9rem'
+    },
+    faqAnswer: {
+        fontSize: '0.8rem',
+        color: '#64748b',
+        fontWeight: 500
+    }
+}));
 
 function FaqsTable(props) {
+    const classes = useStyles();
     const dispatch = useDispatch();
-    const faqs = useSelector(({ faqsApp }) => faqsApp.faqs.entities);
+    const faqs = useSelector(({ faqsApp }) => faqsApp.faqs.data);
     const loading = useSelector(({ faqsApp }) => faqsApp.faqs.loading);
     const searchText = useSelector(({ faqsApp }) => faqsApp.faqs.searchText);
 
     const [filteredData, setFilteredData] = useState(null);
 
-
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (faqs) {
-            setFilteredData(getFilteredArray(faqs, searchText));
+            const arr = Object.keys(faqs).map((id) => faqs[id]);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [faqs, searchText]);
 
-
-
-    if (!filteredData) {
-        return null;
-    }
-    if (loading) {
-        return (
-            <div className="flex flex-1 items-center justify-center h-full">
-                <CircularProgress color="secondary" /> &ensp;
-               Chargement ...
-            </div>
-        );
-    }
-    if (filteredData.length === 0) {
-        return (
-            <div className="flex flex-1 items-center justify-center h-full">
-                <Typography color="textSecondary" variant="h5">
-                    Aucun Faq trouvé
-                </Typography>
-            </div>
-        );
-    }
+    if (!filteredData) return null;
 
     return (
-        <FuseAnimate animation="transition.slideUpIn" delay={300}>
-            <ReactTable
-                className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                getTrProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64 cursor-pointer",
-                        onClick: (e, handleOriginal) => {
-                            if (rowInfo) {
-                                props.history.push('/admin/faqs/' + rowInfo.original.id);
-                            }
-                        }
-                    }
-                }}
-                getTheadProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64 font-bold",
-
-                    }
-                }}
-
-                data={filteredData}
-                columns={[
-
-
-                    {
-                        Header: "Question",
-                        filterable: true,
-                        accessor: "question",
-                    },
-                    {
-                        Header: "Réponse",
-                        filterable: true,
-                        accessor: "reponse",
-                    },
-                    {
-                        Header: "Catégorie",
-                        filterable: true,
-                        id: "categorie",
-                        accessor: f => f.categorie ? f.categorie.name : 'N/A'
-                    },
-
-                    {
-                        Header: "",
-                        Cell: row => (
-                            <div className="flex items-center">
-                                <Tooltip title="Editer" >
-                                    <IconButton className="text-teal text-20">
-                                        <Icon>edit</Icon>
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Supprimer" >
-                                    <IconButton className="text-red text-20"
-                                        onClick={(ev) => {
-                                            ev.stopPropagation();
-                                            dispatch(Actions.removeFaq(row.original));
-                                        }}
-                                    >
-                                        <Icon>delete</Icon>
-                                    </IconButton>
-                                </Tooltip>
-
-                            </div>
-                        )
-                    }
-                ]}
-                defaultPageSize={10}
-                loading={loading}
-                noDataText="Aucun faq trouvé"
-                loadingText='Chargement...'
-                ofText='sur'
-
-            />
-        </FuseAnimate>
+        <BoopursalTable
+            title="Base de Connaissance & FAQ"
+            icon="help_center"
+            data={filteredData}
+            loading={loading}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setFaqsSearchText(ev))}
+            onRowClick={(row) => props.history.push('/portail/faqs/' + row.id)}
+            columns={[
+                {
+                    Header: "Identifiant",
+                    accessor: "id",
+                    Cell: row => <Typography className="font-800 text-slate-300">#{row.original.id}</Typography>,
+                    width: 100
+                },
+                {
+                    Header: "Question posée & Réponse",
+                    accessor: "question",
+                    Cell: (row) => (
+                        <div className="flex flex-col py-8">
+                            <Typography className={classes.faqQuestion}>{row.original.question}</Typography>
+                            <Typography className={clsx(classes.faqAnswer, "mt-4")}>
+                                {_.truncate(row.original.reponse, { length: 120 })}
+                            </Typography>
+                        </div>
+                    ),
+                    minWidth: 400
+                },
+                {
+                    Header: "Actions",
+                    sortable: false,
+                    Cell: (row) => (
+                        <div className="flex items-center gap-8">
+                            <Tooltip title="Modifier">
+                                <IconButton size="small" className="text-slate-400 hover:text-blue-600">
+                                    <Icon className="text-18">edit</Icon>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Supprimer">
+                                <IconButton size="small" className="text-slate-400 hover:text-red-600" onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    dispatch(Actions.removeFaq(row.original));
+                                }}>
+                                    <Icon className="text-18">delete</Icon>
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    ),
+                    width: 120
+                }
+            ]}
+        />
     );
 }
 

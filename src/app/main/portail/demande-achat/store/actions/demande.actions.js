@@ -17,7 +17,7 @@ export function cleanUpDemande() {
 
 
 export function getDemande(id) {
-    const request = agent.get(`/api/demande_achats/${id}/fournisseur`);
+    const request = agent.get(`/api/demande_achats/${id}`);
 
     return (dispatch) => {
         dispatch({
@@ -42,7 +42,7 @@ export function getDemande(id) {
 
 export function getFile(fiche) {
     const request = agent({
-        url: `/attachements/${fiche.id}`,
+        url: `/api/attachements/${fiche.id}`,
         method: 'GET',
         responseType: 'blob', // important
     }

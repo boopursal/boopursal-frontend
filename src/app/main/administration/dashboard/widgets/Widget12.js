@@ -48,7 +48,7 @@ function Widget12(props) {
           <Line
             data={{
               labels: MONTHS,
-              datasets: widget12.data.datasets.map((obj, index) => {
+              datasets: (widget12.data.datasets || []).map((obj, index) => {
                 const palette =
                   theme.palette[index === 0 ? "secondary" : "primary"];
                 return {

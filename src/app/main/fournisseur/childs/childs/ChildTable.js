@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import FuseUtils from '@fuse/FuseUtils';
 import ReactTable from "react-table";
-import _ from '@lodash';
+
 import { makeStyles } from '@material-ui/styles';
 import green from '@material-ui/core/colors/green';
 
@@ -60,7 +60,7 @@ function ChildTable(props) {
         return (
             <div className="flex flex-1 items-center justify-center h-full">
                 <Typography color="textSecondary" variant="h5">
-                Aucune tentative d’inscription trouvée avec votre nom de domaine ou avec votre adresse mail
+                    Aucune tentative d’inscription trouvée avec votre nom de domaine ou avec votre adresse mail
                 </Typography>
             </div>
         );
@@ -161,7 +161,7 @@ function ChildTable(props) {
                                                                     color="primary"
                                                                     autoFocus>
                                                                     Ajouter
-                                                            </Button>
+                                                                </Button>
                                                             </DialogActions>
                                                         </React.Fragment>
                                                     )
@@ -204,7 +204,7 @@ function ChildTable(props) {
                                                             <DialogActions>
                                                                 <Button onClick={() => dispatch(Actions.closeDialog())} variant="outlined" color="primary">
                                                                     Annuler
-                                                            </Button>
+                                                                </Button>
                                                                 <Button
                                                                     onClick={(ev) => {
                                                                         dispatch(Actions.updateType(row.original.id, 2, user.id));
@@ -214,7 +214,7 @@ function ChildTable(props) {
                                                                     color="primary"
                                                                     autoFocus>
                                                                     Ajouter
-                                                        </Button>
+                                                                </Button>
                                                             </DialogActions>
                                                         </React.Fragment>
                                                     )
@@ -249,12 +249,12 @@ function ChildTable(props) {
                                                             <DialogContent>
                                                                 <DialogContentText id="alert-dialog-description">
                                                                     Voulez vous vraiment supprimer cet enregistrement ?
-                                                            </DialogContentText>
+                                                                </DialogContentText>
                                                             </DialogContent>
                                                             <DialogActions>
                                                                 <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
                                                                     Non
-                                                            </Button>
+                                                                </Button>
                                                                 <Button
                                                                     onClick={(ev) => {
                                                                         dispatch(Actions.removeTentative(row.original, user))
@@ -263,7 +263,7 @@ function ChildTable(props) {
                                                                     color="primary"
                                                                     autoFocus>
                                                                     Oui
-                                                            </Button>
+                                                                </Button>
                                                             </DialogActions>
                                                         </React.Fragment>
                                                     )
