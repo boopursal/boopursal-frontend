@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { URL_SITE } from '../@fuse/Constants';
 
 const instance = axios.create({
-    baseURL: 'localhost:3333', // URL de votre backend
+    baseURL: URL_SITE, // URL dynamique du backend
     headers: {
         'Content-Type': 'application/json',
     },

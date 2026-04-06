@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { URL_SITE } from '../../@fuse/Constants';
 
  const CreateAcheteur = () => {
     const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ import React, { useState } from 'react';
         e.preventDefault();
         console.log('Données à envoyer:', formData); // Log les données avant l'envoi
         try {
-            const response = await axios.post('http://localhost:3333/api/acheteurs', formData, {
+            const response = await axios.post(`${URL_SITE}/api/acheteurs`, formData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
