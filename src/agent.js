@@ -1,1 +1,13 @@
-import axios from 'axios'; console.log('!!! AGENT LOADED WITH PORT 3333 !!!'); export default axios.create({ baseURL: 'http://localhost:3333/' });
+import axios from 'axios';
+import { URL_SITE } from './app/@fuse/Constants';
+
+console.log('🚀 SYSTEME : Chargement de l\'Agent API sur : ' + URL_SITE);
+
+const instance = axios.create({
+    baseURL: URL_SITE,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+export default instance;
