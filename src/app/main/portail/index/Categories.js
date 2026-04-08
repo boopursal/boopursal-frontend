@@ -158,7 +158,7 @@ function Categories(props) {
                 <img
                   className={classes.bgImage}
                   alt={cat.name}
-                  src={URL_SITE + "/images/secteur/" + cat.url}
+                  src={cat.url ? URL_SITE + "/images/secteur/" + cat.url : "assets/images/ecommerce/product-placeholder.jpg"}
                 />
                 <div className={classes.contentOverlay}>
                   <Typography className={classes.categoryText}>

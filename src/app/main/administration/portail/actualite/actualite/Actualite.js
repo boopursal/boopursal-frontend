@@ -373,7 +373,7 @@ function Actualite(props) {
                             form.image
                               ? () =>
                                   window.open(
-                                    URL_SITE + form.image.url,
+                                    URL_SITE + "/images/actualite/" + form.image.url,
                                     "_blank"
                                   )
                               : ""
@@ -381,7 +381,7 @@ function Actualite(props) {
                         >
                           <img
                             className="max-w-none w-auto h-full"
-                            src={URL_SITE + form.image.url}
+                            src={URL_SITE + "/images/actualite/" + form.image.url}
                             alt={form.titre}
                           />
                         </div>

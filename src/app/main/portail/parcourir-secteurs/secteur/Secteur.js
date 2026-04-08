@@ -193,7 +193,7 @@ function Secteur(props) {
                 backgroundImage:
                   activites.secteur &&
                   activites.secteur.image &&
-                  "url(" + URL_SITE + activites.secteur.image.url + ")",
+                  "url(" + URL_SITE + "/images/secteur/" + activites.secteur.image.url + ")",
               }}
             >
               <div className={clsx(classes.divTitle)}>
@@ -456,7 +456,7 @@ function Secteur(props) {
                               <Avatar
                                 className="w-48 h-48 border-2 border-white shadow-sm"
                                 alt={fournisseur.societe}
-                                src={fournisseur.avatar ? URL_SITE + fournisseur.avatar.url : null}
+                                src={fournisseur.avatar ? URL_SITE + "/images/avatar/" + fournisseur.avatar.url : null}
                               >
                                 {fournisseur.societe[0]}
                               </Avatar>

@@ -84,7 +84,7 @@ function ActualitesTable(props) {
             <img
               className={classes.newsImage}
               alt="News"
-              src={row.original.image ? URL_SITE + row.original.image.url : "assets/images/defaults/news-placeholder.jpg"}
+              src={row.original.image ? URL_SITE + "/images/actualite/" + row.original.image.url : "assets/images/defaults/news-placeholder.jpg"}
             />
           ),
           width: 100,

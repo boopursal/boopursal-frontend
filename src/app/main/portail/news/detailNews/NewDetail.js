@@ -218,6 +218,16 @@ function NewDetail(props) {
                       </div>
                     </div>
 
+                    {actualite.data.image && (
+                      <div className="mb-24 rounded-16 overflow-hidden shadow-lg">
+                        <img 
+                          src={URL_SITE + "/images/actualite/" + actualite.data.image.url} 
+                          alt={actualite.data.titre}
+                          style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }}
+                        />
+                      </div>
+                    )}
+
                     <CKEditor
                       editor={ClassicEditor}
                       data={actualite.data.description}
