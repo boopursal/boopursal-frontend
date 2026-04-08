@@ -116,7 +116,7 @@ export default function News(props) {
           <div className={classes.tag}>Actualité</div>
           <CardMedia
             className={classes.media}
-            image={news.image ? URL_SITE + news.image.url : "assets/images/ecommerce/product-placeholder.jpg"}
+            image={news.image ? URL_SITE + "/images/actualite/" + news.image.url : "assets/images/ecommerce/product-placeholder.jpg"}
             title={news.titre}
           />
         </div>

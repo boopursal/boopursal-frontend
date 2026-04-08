@@ -82,7 +82,7 @@ function AcheteursTable(props) {
             <Avatar
               className={classes.avatar}
               alt={row.original.firstName}
-              src={row.original.avatar ? URL_SITE + row.original.avatar.url : "assets/images/avatars/profile.jpg"}
+              src={row.original.avatar ? URL_SITE + "/images/avatar/" + row.original.avatar.url : "assets/images/avatars/profile.jpg"}
             />
           ),
           width: 80,

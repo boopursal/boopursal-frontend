@@ -146,7 +146,7 @@ export default function Produit(props) {
   if (!produit) return null;
 
   const imageUrl = produit.featuredImageId
-    ? URL_SITE + produit.featuredImageId.url
+    ? URL_SITE + "/images/produits/" + produit.featuredImageId.url
     : "assets/images/ecommerce/product-placeholder.jpg";
 
   return (
