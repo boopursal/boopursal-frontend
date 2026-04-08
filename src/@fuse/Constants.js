@@ -1,4 +1,4 @@
-export const URL_SITE = process.env.REACT_APP_API_URL || "https://boopursal-backend.vercel.app";
+export const URL_SITE = "https://boopursal-backend.vercel.app";
 export const FRONT_URL = "https://www.boopursal.com";
 export const LOCAL_CURRENCY = "MAD";
 export const LOCAL_TVA = 0.2;

@@ -13,7 +13,7 @@ export function getCountForBadge(url) {
             dispatch(Actions.updateNavigationItem(url,
                 {
                     'badge': {
-                        'count': response.data,
+                        'count': response.data.count,
                     }
                 }
             ))
