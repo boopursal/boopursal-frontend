@@ -41,7 +41,7 @@ export default function News(props) {
       <CardActionArea component="a" href={`/actualite/${news.id}-${news.slug}`}>
         <CardMedia
           className={classes.mediaNews}
-          image={news.image && URL_SITE + news.image.url}
+          image={news.image ? URL_SITE + "/images/actualite/" + news.image.url : "assets/images/ecommerce/product-placeholder.jpg"}
           title={news.titre}
         />
         <CardContent className={classes.cardContent}>

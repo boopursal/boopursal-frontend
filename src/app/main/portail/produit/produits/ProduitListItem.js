@@ -224,7 +224,7 @@ function ProduitListItem(props) {
                 <img
                   className={classes.img}
                   alt={produit.titre}
-                  src={produit.featuredImageId ? URL_SITE + produit.featuredImageId.url : "assets/images/ecommerce/product-placeholder.jpg"}
+                  src={produit.featuredImageId ? URL_SITE + "/images/produits/" + produit.featuredImageId.url : "assets/images/ecommerce/product-placeholder.jpg"}
                   onError={(e) => { e.target.src = "assets/images/ecommerce/product-placeholder.jpg" }}
                 />
                 <div className={classes.imageOverlay}>

@@ -199,7 +199,7 @@ function FournisseurListItem(props) {
               <img
                 className={classes.logoScale}
                 alt={fournisseur.societe}
-                src={fournisseur.avatar ? URL_SITE + fournisseur.avatar.url : "assets/images/ecommerce/product-placeholder.jpg"}
+                src={fournisseur.avatar ? URL_SITE + "/images/avatar/" + fournisseur.avatar.url : "assets/images/ecommerce/product-placeholder.jpg"}
                 onError={(e) => { e.target.src = "assets/images/ecommerce/product-placeholder.jpg" }}
               />
             </Link>

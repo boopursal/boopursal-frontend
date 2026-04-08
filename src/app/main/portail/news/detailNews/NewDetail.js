@@ -118,7 +118,7 @@ function NewDetail(props) {
           {actualite.data.image && (
             <meta
               property="og:image"
-              content={URL_SITE + actualite.data.image.url}
+              content={URL_SITE + "/images/actualite/" + actualite.data.image.url}
             />
           )}
         </Helmet>
@@ -206,7 +206,7 @@ function NewDetail(props) {
                               //url: 'https://www.sharethis.com', // (defaults to current url)
                               image:
                                 actualite.data.image &&
-                                URL_SITE + actualite.data.image.url, // (defaults to og:image or twitter:image)
+                                URL_SITE + "/images/actualite/" + actualite.data.image.url, // (defaults to og:image or twitter:image)
                               //description: 'custom text',       // (defaults to og:description or twitter:description)
                               title: actualite.data.titre, // (defaults to og:title or twitter:title)
                               //message: 'custom email text',     // (only for email sharing)
