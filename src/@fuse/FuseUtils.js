@@ -62,16 +62,11 @@ class FuseUtils {
         },
         {}
       );
+    } else if (error.response && error.response.data.Erreur) {
+      return { Erreur: error.response.data.Erreur };
     } else if (error.response && error.response.data["hydra:description"]) {
       return { Erreur: error.response.data["hydra:description"] };
     } else return { Erreur: "Une erreur est survenue, veuillez recommencer" };
-    /*return error.response.data.violations.reduce(
-            (parsedErrors,violation)=>{
-                parsedErrors[violation['propertyPath']]=violation['message'];
-                return parsedErrors;
-            },
-            {}
-        );*/
   }
 
   static hydraPageCount(collection) {
