@@ -52,7 +52,7 @@ function AcheteurTab(props) {
     const register = useSelector(({ auth }) => auth.register);
 
     const [isFormValid, setIsFormValid] = useState(false);
-    const [recaptcha, setRecaptcha] = useState(null);
+    const [recaptcha, setRecaptcha] = useState('desactive_temporairement'); // TODO: Remettre à null quand le domaine sera validé
     const formRef = useRef(null);
     const [values, setValues] = useState({
         showPassword: false,
@@ -318,12 +318,12 @@ function AcheteurTab(props) {
                         />
                     </Grid>
                 </Grid>
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                     <ReCAPTCHA
                         sitekey="6LcimHwqAAAAAJgTB0sktkfNzYXWJFDndJIXOC_N"
                         onChange={onChange}
                     />
-                </div>
+                </div> */}
                 <p className="mt-16">
                     En appuyant sur le bouton <span className="font-bold">"Enregistrer"</span>, vous acceptez les <Link href='/conditions' target="_blank" rel="noreferrer noopener">Conditions d'utilisation</Link> Politique de protection des données
                 </p>

@@ -61,7 +61,7 @@ function FournisseurTab(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const register = useSelector(({ auth }) => auth.register);
-  const [recaptcha, setRecaptcha] = useState(null);
+  const [recaptcha, setRecaptcha] = useState('desactive_temporairement'); // TODO: Remettre à null quand le domaine sera validé
   const [open, setOpen] = useState(false);
   const [parentErreur, setParentErreur] = useState(null);
 
@@ -398,12 +398,12 @@ Afin de recevoir le maximum d'alertes, veuillez choisir le maximum de produits p
             />
           </Grid>
         </Grid>
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <ReCAPTCHA
             sitekey="6LcimHwqAAAAAJgTB0sktkfNzYXWJFDndJIXOC_N"
             onChange={onChange}
           />
-        </div>
+        </div> */}
         <p className="mt-16">
           En appuyant sur le bouton{" "}
           <span className="font-bold">"Enregistrer"</span>, vous acceptez les{" "}
