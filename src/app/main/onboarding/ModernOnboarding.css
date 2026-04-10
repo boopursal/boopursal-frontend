@@ -1,0 +1,77 @@
+.modern-onboarding-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+.onboarding-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+    position: relative;
+}
+
+.onboarding-header {
+    background: #3b82f6;
+    padding: 2.5rem;
+    color: white;
+    text-align: center;
+}
+
+.onboarding-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.onboarding-subtitle {
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.onboarding-content {
+    padding: 3rem;
+}
+
+@media (max-width: 600px) {
+    .onboarding-content {
+        padding: 1.5rem;
+    }
+}
+
+.stepper-custom {
+    background: transparent !important;
+    padding: 0 0 3rem 0 !important;
+}
+
+.step-label-custom {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 600 !important;
+}
+
+.btn-primary-onboarding {
+    background: linear-gradient(45deg, #3b82f6 30%, #2563eb 90%) !important;
+    color: white !important;
+    padding: 10px 32px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.btn-primary-onboarding:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4) !important;
+}
+
+.btn-primary-onboarding:disabled {
+    background: #cbd5e1 !important;
+}

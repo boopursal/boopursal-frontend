@@ -13,6 +13,7 @@ import { mediateurConfigs } from '../main/mediateur/mediateurConfigs';
 import { fournisseurConfigs } from '../main/fournisseur/fournisseurConfigs';
 import { PortailConfig } from '../main/portail/PortailConfig';
 import { DashboardConfigs } from '../main/dashboard/DashboardConfigs';
+import { OnboardingConfig } from '../main/onboarding/OnboardingConfig';
 
 //import AcheteursPage from '../main/acheteur/AcheteursPage';
 function setAdminAuth(configs) {
@@ -28,10 +29,12 @@ const routeConfigs = [
     ...pagesConfigs,
     ...RegisterPageConfig,
     ...PortailConfig,
+    OnboardingConfig,
     ExampleConfig,
     LoginConfig,
     DashboardConfigs
 ];
+
 
 const routes = [
     ...FuseUtils.generateRoutesFromConfigs(routeConfigs),

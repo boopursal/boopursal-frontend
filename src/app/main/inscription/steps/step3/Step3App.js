@@ -229,10 +229,14 @@ function renderInputComponent(inputProps) {
 }
 
 function Step3App(props) {
+  console.log("[STEP3 DEBUG] Mounting Step3App");
   const suggestionsNode = useRef(null);
   const popperNode = useRef(null);
   const searchCategories = useSelector(
-    ({ step3App }) => step3App.searchCategories
+    ({ step3App }) => {
+      console.log("[STEP3 DEBUG] useSelector step3App:", step3App);
+      return step3App ? step3App.searchCategories : null;
+    }
   );
   const [categories, setCategories] = React.useState([]);
   const [produitsSuggestion, setProduitsSuggestion] = React.useState([]);
@@ -240,12 +244,21 @@ function Step3App(props) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const steps = getSteps();
-  const user = useSelector(({ auth }) => auth.user);
+  const user = useSelector(({ auth }) => {
+    console.log("[STEP3 DEBUG] useSelector auth:", auth);
+    return auth ? auth.user : null;
+  });
 
   //const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef(null);
 
-  const step3 = useSelector(({ step3App }) => step3App.step3);
+  const step3 = useSelector(({ step3App }) => step3App ? step3App.step3 : { loading: false, success: false });
+
+  if (!searchCategories || !user) {
+    console.warn("[STEP3 DEBUG] Missing data, returning null", { searchCategories, user });
+    return null;
+  }
+
 
   //const { form, handleChange, setForm } = useForm(defaultFormState);
 

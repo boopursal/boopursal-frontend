@@ -35,15 +35,19 @@ function Dashboard(props) {
         return <DashboardAppMediateur />;
     }
 
-    if (hasRole('ROLE_FOURNISSEUR_PRE')) {
-        console.log('[DASHBOARD DEBUG] Redirecting to supplier registration steps');
-        return <Redirect to="/register/fournisseur" />;
+    if (hasRole('ROLE_FOURNISSEUR_PRE') || hasRole('ROLE_ACHETEUR_PRE')) {
+        let redirectPath = (user && user.data && user.data.redirect) ? user.data.redirect : (user && user.redirect ? user.redirect : null);
+        
+        // Redirection vers le NOUVEAU onboarding si on est sur l'ancien système
+        if (!redirectPath || redirectPath.includes('/register/')) {
+            redirectPath = hasRole('ROLE_FOURNISSEUR_PRE') ? '/onboarding/fournisseur' : '/onboarding/acheteur';
+        }
+
+        console.log('[DASHBOARD DEBUG] Redirecting to modern onboarding:', redirectPath);
+        return <Redirect to={redirectPath} />;
     }
 
-    if (hasRole('ROLE_ACHETEUR_PRE')) {
-        console.log('[DASHBOARD DEBUG] Redirecting to buyer registration steps');
-        return <Redirect to="/register/acheteur" />;
-    }
+
 
     return (
         <div className="flex flex-1 items-center justify-center p-24">

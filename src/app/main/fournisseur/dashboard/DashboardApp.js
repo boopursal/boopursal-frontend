@@ -193,7 +193,7 @@ function DashboardApp(props) {
 
             <div className={classes.contentBody}>
                 <Container maxWidth="xl">
-                    {widgets.loading === false ? (
+                    {(widgets.loading === false && widgets.data) ? (
                         <FuseAnimate animation="transition.slideUpIn" duration={400} key={activeTab}>
                             <div>
                                 {activeTab === 0 && (
