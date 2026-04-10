@@ -11,6 +11,8 @@ import { Redirect } from 'react-router-dom';
 function Dashboard(props) {
     const user = useSelector(({ auth }) => auth.user);
 
+    console.log('[DASHBOARD DEBUG] User role:', user.role);
+
     if (user.role === 'ROLE_FOURNISSEUR') {
         return <DashboardApp />;
     }
