@@ -32,10 +32,14 @@ function SupplierOnboarding(props) {
     const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
-    const pays = useSelector(({ onboardingApp }) => onboardingApp?.step2?.pays);
-    const villes = useSelector(({ onboardingApp }) => onboardingApp?.step2?.villes);
-    const currencies = useSelector(({ onboardingApp }) => onboardingApp?.step2?.currencies);
-    const loading = useSelector(({ onboardingApp }) => onboardingApp?.step2?.loading);
+    const onboardingApp = useSelector(({ onboardingApp }) => onboardingApp);
+    const pays = onboardingApp?.step2?.pays;
+    const villes = onboardingApp?.step2?.villes;
+    const currencies = onboardingApp?.step2?.currencies;
+    const loading = onboardingApp?.step2?.loading;
+
+    console.log("[ONBOARDING DEBUG] State:", { onboardingApp, pays, villes, currencies });
+
 
 
     const [formState, setFormState] = useState({
