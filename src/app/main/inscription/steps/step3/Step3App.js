@@ -254,13 +254,8 @@ function Step3App(props) {
 
   const step3 = useSelector(({ step3App }) => step3App ? step3App.step3 : { loading: false, success: false });
 
-  if (!searchCategories || !user) {
-    console.warn("[STEP3 DEBUG] Missing data, returning null", { searchCategories, user });
-    return null;
-  }
-
-
   //const { form, handleChange, setForm } = useForm(defaultFormState);
+
 
 
   /*const handleExpandClick = () => {
@@ -367,10 +362,15 @@ function Step3App(props) {
       })
     );
   }
+  if (!searchCategories || !user) {
+    console.warn("[STEP3 DEBUG] Missing data before return, returning null", { searchCategories, user });
+    return null;
+  }
 
   return (
     <div
       className={clsx(
+
         classes.root,
         "flex flex-col flex-auto flex-shrink-0 items-center justify-center p-32"
       )}
