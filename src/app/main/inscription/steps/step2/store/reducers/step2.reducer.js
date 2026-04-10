@@ -49,11 +49,11 @@ const step2Reducer = function (state = initialState, action) {
 
         case Actions.GET_VILLES:
             {
+                const villesData = Array.isArray(action.payload) ? action.payload : [];
                 return {
                     ...state,
-                    villes: [...action.payload, { '@id': '/api/villes/113', name: 'Autre' }],
+                    villes: [...villesData, { '@id': '/api/villes/113', name: 'Autre' }],
                     loadingVille: false
-
                 };
             }
         case Actions.UPDATE_FOURNISSEUR:

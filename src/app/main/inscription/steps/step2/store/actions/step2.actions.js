@@ -50,18 +50,29 @@ export function getCurrency() {
 }
 
 export function getVilles(pays_id) {
-    const request = agent.get(`/api/pays/${pays_id}/villes?pagination=false`);
+    // Si pays_id est une IRI (/api/pays/144), on extrait l'ID numérique
+    let id = pays_id;
+    if (typeof pays_id === 'string' && pays_id.includes('/')) {
+        const parts = pays_id.split('/');
+        id = parts[parts.length - 1];
+    }
 
+    const request = agent.get(`/api/pays/${id}/villes?pagination=false`);
 
     return (dispatch) => {
         dispatch({
             type: REQUEST_VILLES,
         });
         return request.then((response) => {
-
+            const data = response.data['hydra:member'] || [];
             dispatch({
                 type: GET_VILLES,
-                payload: response.data['hydra:member']
+                payload: data
+            })
+        }).catch(err => {
+             dispatch({
+                type: GET_VILLES,
+                payload: []
             })
         });
 
