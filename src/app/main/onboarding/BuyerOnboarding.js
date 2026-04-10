@@ -11,8 +11,9 @@ import { TextFieldFormsy } from '@fuse';
 import SelectReactFormsy from '@fuse/components/formsy/SelectReactFormsy';
 import * as Actions from '../inscription/steps/step2/store/actions';
 import withReducer from 'app/store/withReducer';
-import reducer from '../inscription/steps/step2/store/reducers';
+import step2ModuleReducer from '../inscription/steps/step2/store/reducers';
 import { Helmet } from "react-helmet";
+import { combineReducers } from 'redux';
 import clsx from 'clsx';
 import './ModernOnboarding.css';
 
@@ -28,9 +29,12 @@ function BuyerOnboarding(props) {
     const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
-    const pays = useSelector(({ onboardingApp }) => onboardingApp?.step2?.pays);
-    const villes = useSelector(({ onboardingApp }) => onboardingApp?.step2?.villes);
-    const loading = useSelector(({ onboardingApp }) => onboardingApp?.step2?.loading);
+    
+    // Accès aux données via les réducteurs combinés imbriqués
+    const onboardingApp = useSelector(({ onboardingApp }) => onboardingApp);
+    const pays = onboardingApp?.step2Module?.step2?.pays;
+    const villes = onboardingApp?.step2Module?.step2?.villes;
+    const loading = onboardingApp?.step2Module?.step2?.loading;
 
 
     const steps = ['Coordonnées', 'Secteurs d\'achats', 'Finalisation'];
@@ -166,4 +170,9 @@ function BuyerOnboarding(props) {
     );
 }
 
-export default withReducer('onboardingApp', { step2: reducer })(withRouter(BuyerOnboarding));
+const combinedReducer = combineReducers({
+    step2Module: step2ModuleReducer,
+});
+
+export default withReducer('onboardingApp', combinedReducer)(withRouter(BuyerOnboarding));
+

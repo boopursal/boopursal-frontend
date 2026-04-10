@@ -13,17 +13,17 @@ import { useForm } from '@fuse/hooks';
 import * as Actions from '../inscription/steps/step2/store/actions';
 import * as Step3Actions from '../inscription/steps/step3/store/actions';
 import withReducer from 'app/store/withReducer';
-import reducer from '../inscription/steps/step2/store/reducers';
-import step3Reducer from '../inscription/steps/step3/store/reducers';
-import { combineReducers } from 'redux';
+import step2ModuleReducer from '../inscription/steps/step2/store/reducers';
+import step3ModuleReducer from '../inscription/steps/step3/store/reducers';
 import { Helmet } from "react-helmet";
+import { combineReducers } from 'redux';
 import clsx from 'clsx';
 import './ModernOnboarding.css';
 
 const useStyles = makeStyles(theme => ({
     stepContent: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
+        marginTop: theme.spacing(4),
+        marginBottom: theme.spacing(4),
     },
 }));
 
@@ -32,13 +32,17 @@ function SupplierOnboarding(props) {
     const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
+    
+    // Accès aux données via les réducteurs combinés imbriqués
     const onboardingApp = useSelector(({ onboardingApp }) => onboardingApp);
-    const pays = onboardingApp?.step2?.pays;
-    const villes = onboardingApp?.step2?.villes;
-    const currencies = onboardingApp?.step2?.currencies;
-    const loading = onboardingApp?.step2?.loading;
+    const pays = onboardingApp?.step2Module?.step2?.pays;
+    const villes = onboardingApp?.step2Module?.step2?.villes;
+    const currencies = onboardingApp?.step2Module?.step2?.currencies;
+    const loading = onboardingApp?.step2Module?.step2?.loading;
 
-    console.log("[ONBOARDING DEBUG] State:", { onboardingApp, pays, villes, currencies });
+    console.log("[ONBOARDING DEBUG] Full State:", onboardingApp);
+    console.log("[ONBOARDING DEBUG] Data check:", { pays, villes, currencies });
+
 
 
 
@@ -260,8 +264,9 @@ function SupplierOnboarding(props) {
 }
 
 const combinedReducer = combineReducers({
-    step2: reducer,
-    step3: step3Reducer
+    step2Module: step2ModuleReducer,
+    step3Module: step3ModuleReducer
 });
 
 export default withReducer('onboardingApp', combinedReducer)(withRouter(SupplierOnboarding));
+
