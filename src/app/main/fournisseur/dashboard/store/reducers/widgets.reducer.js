@@ -3,7 +3,7 @@ import * as Actions from '../actions';
 const initialState = {
     data: [],
     dataDDP: [],
-    doughnut: [],
+    doughnut: { labels: [], datasets: [] },
     potentiels: [],
     personnelPotentiels: [],
     topBudget: null,
