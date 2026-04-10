@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
     Stepper, Step, StepLabel, Button, Typography, 
-    Icon, CircularProgress, Grid, InputAdornment 
+    Icon, CircularProgress, Grid, InputAdornment,
+    TextField, Paper, MenuItem, Chip
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,11 +13,14 @@ import SelectReactFormsy from '@fuse/components/formsy/SelectReactFormsy';
 import { useForm } from '@fuse/hooks';
 import * as Actions from '../inscription/steps/step2/store/actions';
 import * as Step3Actions from '../inscription/steps/step3/store/actions';
+import * as searchCategoriesActions from '../inscription/steps/step3/store/actions/searchCategories.actions';
 import withReducer from 'app/store/withReducer';
 import step2ModuleReducer from '../inscription/steps/step2/store/reducers';
 import step3ModuleReducer from '../inscription/steps/step3/store/reducers';
 import { Helmet } from "react-helmet";
 import { combineReducers } from 'redux';
+import Highlighter from "react-highlight-words";
+import _ from "@lodash";
 import clsx from 'clsx';
 import './ModernOnboarding.css';
 
@@ -33,33 +37,22 @@ function SupplierOnboarding(props) {
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
     
-    // Accès aux données via les réducteurs combinés imbriqués
     const onboardingApp = useSelector(({ onboardingApp }) => onboardingApp);
     const pays = onboardingApp?.step2Module?.step2?.pays;
     const villes = onboardingApp?.step2Module?.step2?.villes;
     const currencies = onboardingApp?.step2Module?.step2?.currencies;
     const loading = onboardingApp?.step2Module?.step2?.loading;
+    const [produitsSuggestion, setProduitsSuggestion] = useState([]);
 
-    console.log("[ONBOARDING DEBUG] Full State:", onboardingApp);
-    console.log("[ONBOARDING DEBUG] Data check:", { pays, villes, currencies });
-
-
-
-
-    const [formState, setFormState] = useState({
-        pays: null,
-        ville: null,
-        currency: null,
-        ice: '',
-    });
-
-    const steps = ['Profil Société', 'Catalogue & Produits', 'Finalisation'];
+    const steps = ['Profil Société', 'Catalogue / Produits', 'Finalisation'];
 
     useEffect(() => {
         dispatch(Actions.getPays());
         dispatch(Actions.getCurrency());
     }, [dispatch]);
 
+    const searchCategories = useSelector(({ onboardingApp }) => onboardingApp?.step3Module?.searchCategories);
+    
     const handleCountryChange = (val) => {
         if (val && val.value) {
             dispatch(Actions.getVilles(val.value));
@@ -68,22 +61,44 @@ function SupplierOnboarding(props) {
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        window.scrollTo(0, 0);
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        window.scrollTo(0, 0);
     };
 
     const submitStep1 = (model) => {
-        // Normalisation pour le backend
         const data = {
             ...model,
-            pays: model.pays?.value,
-            ville: model.ville?.value,
-            currency: model.currency?.value,
-            redirect: '/onboarding/fournisseur', // Nouveau point de redirection
+            pays: model.pays?.value || model.pays,
+            ville: model.ville?.value || model.ville,
+            currency: model.currency?.value || model.currency,
+            redirect: '/onboarding/fournisseur',
         };
+        console.log("[ONBOARDING] Submitting Step 1:", data);
         dispatch(Actions.setStep2(data, user.id, null));
+        handleNext();
+    };
+
+    const handleAddProduit = (suggestion) => {
+        if (!_.find(produitsSuggestion, ["id", suggestion.id])) {
+            setProduitsSuggestion([...produitsSuggestion, suggestion]);
+        }
+    };
+
+    const handleDeleteProduit = (id) => {
+        setProduitsSuggestion(produitsSuggestion.filter(p => p.id !== id));
+    };
+
+    const submitStep2 = () => {
+        const categories = produitsSuggestion.map(p => p['@id']);
+        const data = {
+            categories: categories,
+            redirect: '/dashboard'
+        };
+        dispatch(Step3Actions.setStep3(data, user.id, props.history));
         handleNext();
     };
 
@@ -92,14 +107,14 @@ function SupplierOnboarding(props) {
             case 0:
                 return (
                     <Formsy onValidSubmit={submitStep1} className="flex flex-col">
-                        <Typography variant="h6" className="mb-24 font-800 text-blue-900">
+                        <Typography variant="h6" className="mb-24 font-800 text-blue-900 border-b pb-8">
                             Identification de votre structure
                         </Typography>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <TextFieldFormsy
                                     name="societe"
-                                    label="Nom commercial / Raison sociale"
+                                    label="Raison sociale"
                                     variant="outlined"
                                     fullWidth
                                     required
@@ -111,7 +126,7 @@ function SupplierOnboarding(props) {
                             <Grid item xs={12} sm={6}>
                                 <TextFieldFormsy
                                     name="ice"
-                                    label="ICE (Identifiant Commun de l'Entreprise)"
+                                    label="ICE (15 chiffres)"
                                     variant="outlined"
                                     fullWidth
                                     validations={{
@@ -121,8 +136,8 @@ function SupplierOnboarding(props) {
                                     }}
                                     validationErrors={{
                                         isNumeric: 'L\'ICE doit être composé uniquement de chiffres',
-                                        minLength: 'L\'ICE doit faire exactement 15 chiffres',
-                                        maxLength: 'L\'ICE doit faire exactement 15 chiffres'
+                                        minLength: '15 chiffres requis',
+                                        maxLength: '15 chiffres requis'
                                     }}
                                 />
                             </Grid>
@@ -160,7 +175,7 @@ function SupplierOnboarding(props) {
                             <Grid item xs={12} sm={6}>
                                 <TextFieldFormsy
                                     name="adresse1"
-                                    label="Siège social (Ligne 1)"
+                                    label="Siège social"
                                     variant="outlined"
                                     fullWidth
                                     required
@@ -173,14 +188,6 @@ function SupplierOnboarding(props) {
                                     variant="outlined"
                                     fullWidth
                                     required
-                                />
-                            </Grid>
-                             <Grid item xs={12} sm={6}>
-                                <TextFieldFormsy
-                                    name="website"
-                                    label="Site Internet"
-                                    variant="outlined"
-                                    fullWidth
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -198,15 +205,22 @@ function SupplierOnboarding(props) {
                                     required
                                 />
                             </Grid>
-
+                             <Grid item xs={12} sm={6}>
+                                <TextFieldFormsy
+                                    name="website"
+                                    label="Site Internet (Optionnel)"
+                                    variant="outlined"
+                                    fullWidth
+                                />
+                            </Grid>
                             <Grid item xs={12}>
                                 <TextFieldFormsy
                                     name="description"
-                                    label="Présentation courte de votre entreprise"
+                                    label="Présentation de votre activité"
                                     variant="outlined"
                                     fullWidth
                                     multiline
-                                    rows={3}
+                                    rows={4}
                                     required
                                 />
                             </Grid>
@@ -215,7 +229,7 @@ function SupplierOnboarding(props) {
                             <Button
                                 type="submit"
                                 variant="contained"
-                                className="btn-primary-onboarding"
+                                className="btn-primary-onboarding px-40"
                                 endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Icon>arrow_forward</Icon>}
                             >
                                 Continuer vers le catalogue
@@ -223,11 +237,93 @@ function SupplierOnboarding(props) {
                         </div>
                     </Formsy>
                 );
-
             case 1:
-                return <Typography>Étape 2 : Produits (En cours d'intégration...)</Typography>;
+                return (
+                    <div className="flex flex-col">
+                        <Typography variant="h6" className="mb-8 font-800 text-blue-900">
+                            Votre catalogue produits
+                        </Typography>
+                        <Typography className="mb-24 text-gray-600">
+                            Sélectionnez les produits et services que vous proposez pour recevoir des demandes d'achats ciblées.
+                        </Typography>
+
+                        <div className="mb-32">
+                             <TextField
+                                label="Rechercher un produit ou un service..."
+                                variant="outlined"
+                                fullWidth
+                                onChange={(ev) => dispatch(searchCategoriesActions.getResults(ev.target.value))}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start"><Icon color="action">search</Icon></InputAdornment>,
+                                }}
+                            />
+                            {searchCategories?.data?.length > 0 && (
+                                <Paper className="mt-8 shadow-lg max-h-300 overflow-auto z-10 sticky">
+                                    {searchCategories.data.map(item => (
+                                        <MenuItem key={item.id} onClick={() => handleAddProduit(item)}>
+                                            <Highlighter
+                                                highlightClassName="bg-yellow-200"
+                                                searchWords={[searchCategories.searchText]}
+                                                autoEscape={true}
+                                                textToHighlight={item.name}
+                                            />
+                                        </MenuItem>
+                                    ))}
+                                </Paper>
+                            )}
+                        </div>
+
+                        <div className="bg-gray-50 p-24 rounded-16 border border-dashed border-gray-300">
+                            <Typography className="mb-16 font-700 text-gray-700 flex items-center">
+                                <Icon className="mr-8 text-blue-600">inventory_2</Icon>
+                                {produitsSuggestion.length} produit(s) sélectionné(s)
+                            </Typography>
+                            <div className="flex flex-wrap gap-8">
+                                {produitsSuggestion.map(p => (
+                                    <Chip 
+                                        key={p.id} 
+                                        label={p.name} 
+                                        onDelete={() => handleDeleteProduit(p.id)}
+                                        className="bg-white shadow-sm"
+                                        color="primary"
+                                        variant="outlined"
+                                    />
+                                ))}
+                                {produitsSuggestion.length === 0 && (
+                                    <Typography className="text-gray-400 italic py-8">Aucun produit sélectionné pour le moment.</Typography>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between mt-40 pt-24 border-t">
+                            <Button onClick={handleBack} startIcon={<Icon>arrow_back</Icon>}>
+                                Retour
+                            </Button>
+                            <Button
+                                onClick={submitStep2}
+                                variant="contained"
+                                className="btn-primary-onboarding px-40"
+                                disabled={produitsSuggestion.length === 0}
+                                endIcon={<Icon>check_circle</Icon>}
+                            >
+                                Finaliser mon inscription
+                            </Button>
+                        </div>
+                    </div>
+                );
+            case 2:
+                 return (
+                    <div className="flex flex-col items-center py-40 text-center">
+                        <Icon className="text-72 text-green-500 mb-24">task_alt</Icon>
+                        <Typography variant="h4" className="font-800 text-blue-900 mb-16">Félicitations !</Typography>
+                        <Typography className="max-w-400 text-gray-600 mb-32">
+                            Votre profil fournisseur est maintenant complet. Vous allez être redirigé vers votre tableau de bord.
+                        </Typography>
+                        <CircularProgress />
+                    </div>
+                );
             default:
-                return 'Inconnu';
+                return null;
         }
     };
 

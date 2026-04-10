@@ -217,9 +217,10 @@ function SelectReactFormsy(props) {
 
 
     const options = _.map(props.options, options => ({
-        value: options['@id'] ? options['@id'] :options.id,
-        label: options.name ? options.name : options.societe,
+        value: options['@id'] ? options['@id'] : options.id,
+        label: options.name ? options.name : (options.label ? options.label : (options.currency ? options.currency : options.societe)),
     }));
+
 
 
     // An error message is returned only if the component is invalid
