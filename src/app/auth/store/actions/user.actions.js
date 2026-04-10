@@ -114,9 +114,10 @@ export function getAbonnementFournisseur(params) {
             type: REQUEST_FOURNISSEUR_ABONNEMENT,
         });
         return request.then((response) => {
+            const member = response.data['hydra:member'];
             return dispatch({
                 type: GET_FOURNISSEUR_ABONNEMENT,
-                payload: response.data['hydra:member'][0]
+                payload: (member && member.length > 0) ? member[0] : null
             })
         }
 
