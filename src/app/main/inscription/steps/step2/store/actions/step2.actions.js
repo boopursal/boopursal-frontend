@@ -14,7 +14,7 @@ export const SAVE_ERROR = '[STEP APP] SAVE ERROR';
 export const GET_CURRENCY = '[STEP APP]GET_CURRENCY';
 
 export function getPays() {
-    const request = agent.get('/api/pays?pagination=false&props[]=id&props[]=name');
+    const request = agent.get('/api/pays?pagination=false');
 
     return (dispatch) => {
         dispatch({
@@ -50,7 +50,8 @@ export function getCurrency() {
 }
 
 export function getVilles(pays_id) {
-    const request = agent.get(`${pays_id}/villes?pagination=false&props[]=id&props[]=name`);
+    const request = agent.get(`/api/pays/${pays_id}/villes?pagination=false`);
+
 
     return (dispatch) => {
         dispatch({
