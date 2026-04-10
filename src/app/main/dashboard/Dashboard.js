@@ -10,37 +10,45 @@ import { Redirect } from 'react-router-dom';
 
 function Dashboard(props) {
     const user = useSelector(({ auth }) => auth.user);
+    const role = user.role;
 
-    console.log('[DASHBOARD DEBUG] User role:', user.role);
+    console.log('[DASHBOARD DEBUG] Current user role:', role);
 
-    if (user.role === 'ROLE_FOURNISSEUR') {
+    const hasRole = (r) => {
+        if (Array.isArray(role)) return role.includes(r);
+        return role === r;
+    };
+
+    if (hasRole('ROLE_FOURNISSEUR')) {
         return <DashboardApp />;
     }
 
-    if (user.role === 'ROLE_ACHETEUR') {
+    if (hasRole('ROLE_ACHETEUR')) {
         return <DashboardAppAcheteur />;
     }
 
-    if (user.role === 'ROLE_ADMIN') {
+    if (hasRole('ROLE_ADMIN')) {
         return <DashboardAdmin />;
     }
 
-    if (user.role === 'ROLE_Mediateur') {
+    if (hasRole('ROLE_Mediateur')) {
         return <DashboardAppMediateur />;
     }
 
-    if (user.role === 'ROLE_FOURNISSEUR_PRE') {
+    if (hasRole('ROLE_FOURNISSEUR_PRE')) {
+        console.log('[DASHBOARD DEBUG] Redirecting to supplier registration steps');
         return <Redirect to="/register/fournisseur" />;
     }
 
-    if (user.role === 'ROLE_ACHETEUR_PRE') {
+    if (hasRole('ROLE_ACHETEUR_PRE')) {
+        console.log('[DASHBOARD DEBUG] Redirecting to buyer registration steps');
         return <Redirect to="/register/acheteur" />;
     }
 
     return (
         <div className="flex flex-1 items-center justify-center p-24">
             <Typography variant="h5" color="textSecondary">
-                Chargement de votre espace...
+                Chargement de votre espace... ({String(role)})
             </Typography>
         </div>
     );
