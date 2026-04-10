@@ -73,9 +73,14 @@ function BuyerOnboarding(props) {
                             <Grid item xs={12} sm={6}>
                                 <SelectReactFormsy
                                     name="pays"
-                                    label="Votre Pays"
+                                    placeholder="Votre Pays"
+                                    textFieldProps={{
+                                        label: 'Votre Pays',
+                                        InputLabelProps: { shrink: true },
+                                        variant: 'outlined',
+                                        required: true
+                                    }}
                                     options={pays || []}
-                                    variant="outlined"
                                     fullWidth
                                     required
                                     onChange={handleCountryChange}
@@ -84,13 +89,19 @@ function BuyerOnboarding(props) {
                             <Grid item xs={12} sm={6}>
                                 <SelectReactFormsy
                                     name="ville"
-                                    label="Votre Ville"
+                                    placeholder="Votre Ville"
+                                    textFieldProps={{
+                                        label: 'Votre Ville',
+                                        InputLabelProps: { shrink: true },
+                                        variant: 'outlined',
+                                        required: true
+                                    }}
                                     options={villes || []}
-                                    variant="outlined"
                                     fullWidth
                                     required
                                 />
                             </Grid>
+
                             <Grid item xs={12}>
                                 <TextFieldFormsy
                                     name="adresse1"

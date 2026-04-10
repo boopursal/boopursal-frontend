@@ -106,19 +106,29 @@ function SupplierOnboarding(props) {
                                     label="ICE (Identifiant Commun de l'Entreprise)"
                                     variant="outlined"
                                     fullWidth
-                                    validations="isNumeric,len:15"
+                                    validations={{
+                                        isNumeric: true,
+                                        minLength: 15,
+                                        maxLength: 15
+                                    }}
                                     validationErrors={{
                                         isNumeric: 'L\'ICE doit être composé uniquement de chiffres',
-                                        len: 'L\'ICE doit faire exactement 15 chiffres'
+                                        minLength: 'L\'ICE doit faire exactement 15 chiffres',
+                                        maxLength: 'L\'ICE doit faire exactement 15 chiffres'
                                     }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <SelectReactFormsy
                                     name="pays"
-                                    label="Pays d'origine"
+                                    placeholder="Sélectionner un pays"
+                                    textFieldProps={{
+                                        label: 'Pays d\'origine',
+                                        InputLabelProps: { shrink: true },
+                                        variant: 'outlined',
+                                        required: true
+                                    }}
                                     options={pays || []}
-                                    variant="outlined"
                                     fullWidth
                                     required
                                     onChange={handleCountryChange}
@@ -127,9 +137,14 @@ function SupplierOnboarding(props) {
                             <Grid item xs={12} sm={6}>
                                 <SelectReactFormsy
                                     name="ville"
-                                    label="Ville"
+                                    placeholder="Sélectionner une ville"
+                                    textFieldProps={{
+                                        label: 'Ville',
+                                        InputLabelProps: { shrink: true },
+                                        variant: 'outlined',
+                                        required: true
+                                    }}
                                     options={villes || []}
-                                    variant="outlined"
                                     fullWidth
                                     required
                                 />
@@ -163,13 +178,19 @@ function SupplierOnboarding(props) {
                             <Grid item xs={12} sm={6}>
                                 <SelectReactFormsy
                                     name="currency"
-                                    label="Devise de facturation"
+                                    placeholder="Devise de facturation"
+                                    textFieldProps={{
+                                        label: 'Devise de facturation',
+                                        InputLabelProps: { shrink: true },
+                                        variant: 'outlined',
+                                        required: true
+                                    }}
                                     options={currencies || []}
-                                    variant="outlined"
                                     fullWidth
                                     required
                                 />
                             </Grid>
+
                             <Grid item xs={12}>
                                 <TextFieldFormsy
                                     name="description"
