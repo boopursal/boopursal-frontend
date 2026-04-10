@@ -28,9 +28,10 @@ function BuyerOnboarding(props) {
     const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
-    const pays = useSelector(({ onboardingApp }) => onboardingApp.step2.pays);
-    const villes = useSelector(({ onboardingApp }) => onboardingApp.step2.villes);
-    const loading = useSelector(({ onboardingApp }) => onboardingApp.step2.loading);
+    const pays = useSelector(({ onboardingApp }) => onboardingApp?.step2?.pays);
+    const villes = useSelector(({ onboardingApp }) => onboardingApp?.step2?.villes);
+    const loading = useSelector(({ onboardingApp }) => onboardingApp?.step2?.loading);
+
 
     const steps = ['Coordonnées', 'Secteurs d\'achats', 'Finalisation'];
 
