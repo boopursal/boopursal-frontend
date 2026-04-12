@@ -40,8 +40,11 @@ export function setStep3(data, fournisseur_id, history) {
     data.step = 3;
 
 
-    return (dispatch, getState) => {
-
+    return (dispatch) => {
+        console.log(`[STEP3 DEBUG] Submitting for user ${fournisseur_id}`, data);
+        data.isactif = true;
+        data.is_complet = true;
+        
         const request = agent.put(`/api/fournisseurs/${fournisseur_id}`, data);
         dispatch({
             type: REQUEST_UPDATE_FOURNISSEUR,

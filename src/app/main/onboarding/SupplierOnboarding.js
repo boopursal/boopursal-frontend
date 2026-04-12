@@ -112,10 +112,9 @@ function SupplierOnboarding(props) {
             currency: model.currency?.value || model.currency,
             redirect: '/onboarding/fournisseur',
         };
-        dispatch(Actions.setStep2(data, user.id, props.history));
+        dispatch(Actions.setStep2(data, user.data.id, props.history));
         handleNext();
     };
-
 
     const handleAddProduit = (suggestion) => {
         if (!_.find(produitsSuggestion, ["id", suggestion.id])) {
@@ -133,7 +132,7 @@ function SupplierOnboarding(props) {
             categories: categories,
             redirect: '/dashboard'
         };
-        dispatch(Step3Actions.setStep3(data, user.id, props.history));
+        dispatch(Step3Actions.setStep3(data, user.data.id, props.history));
         handleNext();
     };
 
