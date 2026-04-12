@@ -19,7 +19,7 @@ function Dashboard(props) {
         return role === r;
     };
 
-    if (hasRole('ROLE_FOURNISSEUR')) {
+    if (hasRole('ROLE_FOURNISSEUR') || (hasRole('ROLE_FOURNISSEUR_PRE') && user?.data?.fournisseur?.is_complet)) {
         return <DashboardApp />;
     }
 
