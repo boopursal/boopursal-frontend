@@ -104,7 +104,6 @@ export function setStep2(data, fournisseur_id, history) {
                 type: UPDATE_FOURNISSEUR,
             });
         })
-        )
             .catch((error) => {
                 dispatch({
                     type: SAVE_ERROR,
