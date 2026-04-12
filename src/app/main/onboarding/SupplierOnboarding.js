@@ -44,9 +44,13 @@ function SupplierOnboarding(props) {
     const villes = onboardingApp?.step2Module?.step2?.villes;
     const currencies = onboardingApp?.step2Module?.step2?.currencies;
     const loading = onboardingApp?.step2Module?.step2?.loading;
+    const searchCategories = onboardingApp?.step3Module?.searchCategories || { suggestions: [], searchText: '' };
+    
     const [produitsSuggestion, setProduitsSuggestion] = useState([]);
 
-    const steps = ['Profil Société', 'Catalogue / Produits', 'Finalisation'];
+    useEffect(() => {
+        console.log("[ONBOARDING DEBUG] Active Step changed to:", activeStep);
+    }, [activeStep]);
 
     useEffect(() => {
         dispatch(Actions.getPays());
@@ -278,6 +282,7 @@ function SupplierOnboarding(props) {
 
                 );
             case 1:
+                console.log("[ONBOARDING DEBUG] Rendering Step 2 (Catalogue)", { searchCategories, produitsSuggestion });
                 return (
                     <div className="flex flex-col">
                         <Typography variant="h6" className="mb-8 font-800 text-blue-900">
@@ -287,7 +292,7 @@ function SupplierOnboarding(props) {
                             Sélectionnez les produits et services que vous proposez pour recevoir des demandes d'achats ciblées.
                         </Typography>
 
-                        <div className="mb-32">
+                        <div className="mb-32 relative">
                              <TextField
                                 label="Rechercher un produit ou un service..."
                                 variant="outlined"
@@ -298,6 +303,7 @@ function SupplierOnboarding(props) {
                                 }}
                             />
                             {searchCategories?.suggestions && searchCategories.suggestions.length > 0 && (
+
                                 <Paper className="absolute left-0 right-0 mt-8 shadow-lg max-h-300 overflow-auto z-50">
                                     {searchCategories.suggestions.map(item => (
                                         <MenuItem key={item.id} onClick={() => {
