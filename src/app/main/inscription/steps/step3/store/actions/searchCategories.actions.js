@@ -39,6 +39,15 @@ function randomDelay() {
 }
 export function getResults(searchText) {
 
+    if (!searchText || searchText.trim() === "") {
+        return (dispatch) => {
+            dispatch({
+                type: GET_DATA,
+                payload: { 'hydra:member': [] }
+            });
+        };
+    }
+
     cancel && cancel();
     const request = agent.get(`/api/categories?name=${searchText}&del=false&props[]=id&props[]=name`, {
         cancelToken: new CancelToken(function executor(c) {
