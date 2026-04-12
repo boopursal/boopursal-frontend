@@ -59,6 +59,8 @@ function SupplierOnboarding(props) {
         }
     };
 
+    const [isFormValid, setIsFormValid] = useState(false);
+
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         window.scrollTo(0, 0);
@@ -69,7 +71,19 @@ function SupplierOnboarding(props) {
         window.scrollTo(0, 0);
     };
 
+    const enableButton = () => setIsFormValid(true);
+    const disableButton = () => setIsFormValid(false);
+
+    const handleInvalidSubmit = (data) => {
+        console.warn("[ONBOARDING] Form is INVALID:", data);
+        dispatch(Actions.showMessage({
+            message: "Veuillez vérifier les champs en rouge. L'ICE doit contenir exactement 15 chiffres.",
+            variant: 'error'
+        }));
+    };
+
     const submitStep1 = (model) => {
+        console.log("[ONBOARDING] Submitting Step 1 (Valid):", model);
         const data = {
             ...model,
             pays: model.pays?.value || model.pays,
@@ -77,10 +91,10 @@ function SupplierOnboarding(props) {
             currency: model.currency?.value || model.currency,
             redirect: '/onboarding/fournisseur',
         };
-        console.log("[ONBOARDING] Submitting Step 1:", data);
         dispatch(Actions.setStep2(data, user.id, null));
         handleNext();
     };
+
 
     const handleAddProduit = (suggestion) => {
         if (!_.find(produitsSuggestion, ["id", suggestion.id])) {
@@ -106,136 +120,144 @@ function SupplierOnboarding(props) {
         switch (step) {
             case 0:
                 return (
-                    <Formsy onValidSubmit={submitStep1} className="flex flex-col">
-                        <Typography variant="h6" className="mb-24 font-800 text-blue-900 border-b pb-8">
-                            Identification de votre structure
-                        </Typography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6}>
-                                <TextFieldFormsy
-                                    name="societe"
-                                    label="Raison sociale"
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start"><Icon color="action">business</Icon></InputAdornment>,
-                                    }}
-                                />
+                        <Formsy 
+                            onValidSubmit={submitStep1} 
+                            onInvalidSubmit={handleInvalidSubmit}
+                            onValid={enableButton}
+                            onInvalid={disableButton}
+                            className="flex flex-col"
+                        >
+                            <Typography variant="h6" className="mb-24 font-800 text-blue-900 border-b pb-8">
+                                Identification de votre structure
+                            </Typography>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextFieldFormsy
+                                        name="societe"
+                                        label="Raison sociale"
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start"><Icon color="action">business</Icon></InputAdornment>,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextFieldFormsy
+                                        name="ice"
+                                        label="ICE (15 chiffres)"
+                                        variant="outlined"
+                                        fullWidth
+                                        validations={{
+                                            isNumeric: true,
+                                            minLength: 15,
+                                            maxLength: 15
+                                        }}
+                                        validationErrors={{
+                                            isNumeric: 'L\'ICE doit être composé uniquement de chiffres',
+                                            minLength: '15 chiffres requis',
+                                            maxLength: '15 chiffres requis'
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <SelectReactFormsy
+                                        name="pays"
+                                        placeholder="Sélectionner un pays"
+                                        textFieldProps={{
+                                            label: 'Pays d\'origine',
+                                            InputLabelProps: { shrink: true },
+                                            variant: 'outlined',
+                                            required: true
+                                        }}
+                                        options={pays || []}
+                                        fullWidth
+                                        required
+                                        onChange={handleCountryChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <SelectReactFormsy
+                                        name="ville"
+                                        placeholder="Sélectionner une ville"
+                                        textFieldProps={{
+                                            label: 'Ville',
+                                            InputLabelProps: { shrink: true },
+                                            variant: 'outlined',
+                                            required: true
+                                        }}
+                                        options={villes || []}
+                                        fullWidth
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextFieldFormsy
+                                        name="adresse1"
+                                        label="Siège social"
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextFieldFormsy
+                                        name="fix"
+                                        label="Téléphone Professionnel"
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <SelectReactFormsy
+                                        name="currency"
+                                        placeholder="Devise de facturation"
+                                        textFieldProps={{
+                                            label: 'Devise de facturation',
+                                            InputLabelProps: { shrink: true },
+                                            variant: 'outlined',
+                                            required: true
+                                        }}
+                                        options={currencies || []}
+                                        fullWidth
+                                        required
+                                    />
+                                </Grid>
+                                 <Grid item xs={12} sm={6}>
+                                    <TextFieldFormsy
+                                        name="website"
+                                        label="Site Internet (Optionnel)"
+                                        variant="outlined"
+                                        fullWidth
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextFieldFormsy
+                                        name="description"
+                                        label="Présentation de votre activité"
+                                        variant="outlined"
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+                                        required
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextFieldFormsy
-                                    name="ice"
-                                    label="ICE (15 chiffres)"
-                                    variant="outlined"
-                                    fullWidth
-                                    validations={{
-                                        isNumeric: true,
-                                        minLength: 15,
-                                        maxLength: 15
-                                    }}
-                                    validationErrors={{
-                                        isNumeric: 'L\'ICE doit être composé uniquement de chiffres',
-                                        minLength: '15 chiffres requis',
-                                        maxLength: '15 chiffres requis'
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <SelectReactFormsy
-                                    name="pays"
-                                    placeholder="Sélectionner un pays"
-                                    textFieldProps={{
-                                        label: 'Pays d\'origine',
-                                        InputLabelProps: { shrink: true },
-                                        variant: 'outlined',
-                                        required: true
-                                    }}
-                                    options={pays || []}
-                                    fullWidth
-                                    required
-                                    onChange={handleCountryChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <SelectReactFormsy
-                                    name="ville"
-                                    placeholder="Sélectionner une ville"
-                                    textFieldProps={{
-                                        label: 'Ville',
-                                        InputLabelProps: { shrink: true },
-                                        variant: 'outlined',
-                                        required: true
-                                    }}
-                                    options={villes || []}
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextFieldFormsy
-                                    name="adresse1"
-                                    label="Siège social"
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextFieldFormsy
-                                    name="fix"
-                                    label="Téléphone Professionnel"
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <SelectReactFormsy
-                                    name="currency"
-                                    placeholder="Devise de facturation"
-                                    textFieldProps={{
-                                        label: 'Devise de facturation',
-                                        InputLabelProps: { shrink: true },
-                                        variant: 'outlined',
-                                        required: true
-                                    }}
-                                    options={currencies || []}
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                             <Grid item xs={12} sm={6}>
-                                <TextFieldFormsy
-                                    name="website"
-                                    label="Site Internet (Optionnel)"
-                                    variant="outlined"
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextFieldFormsy
-                                    name="description"
-                                    label="Présentation de votre activité"
-                                    variant="outlined"
-                                    fullWidth
-                                    multiline
-                                    rows={4}
-                                    required
-                                />
-                            </Grid>
-                        </Grid>
-                        <div className="flex justify-end mt-40 pt-24 border-t">
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                className="btn-primary-onboarding px-40"
-                                endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Icon>arrow_forward</Icon>}
-                            >
-                                Continuer vers le catalogue
-                            </Button>
-                        </div>
-                    </Formsy>
+                            <div className="flex justify-end mt-40 pt-24 border-t">
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    className="btn-primary-onboarding px-40"
+                                    disabled={!isFormValid || loading}
+                                    endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Icon>arrow_forward</Icon>}
+                                >
+                                    Continuer vers le catalogue
+                                </Button>
+                            </div>
+                        </Formsy>
+
                 );
             case 1:
                 return (
