@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import Formsy from 'formsy-react';
 import { TextFieldFormsy } from '@fuse';
 import SelectReactFormsy from '@fuse/components/formsy/SelectReactFormsy';
@@ -36,6 +36,7 @@ const useStyles = makeStyles(theme => ({
 function SupplierOnboarding(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const history = useHistory();
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
     
@@ -98,7 +99,7 @@ function SupplierOnboarding(props) {
             currency: model.currency?.value || model.currency,
             redirect: '/onboarding/fournisseur',
         };
-        dispatch(Actions.setStep2(data, user.id, null));
+        dispatch(Actions.setStep2(data, user.id, history));
         handleNext();
     };
 
@@ -119,7 +120,7 @@ function SupplierOnboarding(props) {
             categories: categories,
             redirect: '/dashboard'
         };
-        dispatch(Step3Actions.setStep3(data, user.id, props.history));
+        dispatch(Step3Actions.setStep3(data, user.id, history));
         handleNext();
     };
 
