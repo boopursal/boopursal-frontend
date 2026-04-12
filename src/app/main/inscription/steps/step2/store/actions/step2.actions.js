@@ -100,15 +100,10 @@ export function setStep2(data, fournisseur_id, history) {
             type: REQUEST_UPDATE_FOURNISSEUR,
         });
         return request.then((response) => {
-            jwtService.signInWithToken()
-                .then(user => {
-                    dispatch({
-                        type: UPDATE_FOURNISSEUR,
-                    });
-                    dispatch(setUserData(user));
-                    return history.push(user.redirect ? user.redirect : '/login')
-                })
-        }
+            dispatch({
+                type: UPDATE_FOURNISSEUR,
+            });
+        })
         )
             .catch((error) => {
                 dispatch({
