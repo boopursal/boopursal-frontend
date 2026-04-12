@@ -298,13 +298,16 @@ function SupplierOnboarding(props) {
                                     startAdornment: <InputAdornment position="start"><Icon color="action">search</Icon></InputAdornment>,
                                 }}
                             />
-                            {searchCategories?.data?.length > 0 && (
-                                <Paper className="mt-8 shadow-lg max-h-300 overflow-auto z-10 sticky">
-                                    {searchCategories.data.map(item => (
-                                        <MenuItem key={item.id} onClick={() => handleAddProduit(item)}>
+                            {searchCategories?.suggestions && searchCategories.suggestions.length > 0 && (
+                                <Paper className="absolute left-0 right-0 mt-8 shadow-lg max-h-300 overflow-auto z-50">
+                                    {searchCategories.suggestions.map(item => (
+                                        <MenuItem key={item.id} onClick={() => {
+                                            handleAddProduit(item);
+                                            dispatch(searchCategoriesActions.cleanUp());
+                                        }}>
                                             <Highlighter
                                                 highlightClassName="bg-yellow-200"
-                                                searchWords={[searchCategories.searchText]}
+                                                searchWords={[searchCategories.searchText || ""]}
                                                 autoEscape={true}
                                                 textToHighlight={item.name}
                                             />
@@ -312,6 +315,7 @@ function SupplierOnboarding(props) {
                                     ))}
                                 </Paper>
                             )}
+
                         </div>
 
                         <div className="bg-gray-50 p-24 rounded-16 border border-dashed border-gray-300">
