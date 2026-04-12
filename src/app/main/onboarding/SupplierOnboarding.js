@@ -55,9 +55,14 @@ function SupplierOnboarding(props) {
 
     const searchCategories = useSelector(({ onboardingApp }) => onboardingApp?.step3Module?.searchCategories);
     
+    const [isMaroc, setIsMaroc] = useState(false);
+
     const handleCountryChange = (val) => {
         if (val && val.value) {
             dispatch(Actions.getVilles(val.value));
+            // Vérification si c'est le Maroc (ID 144 ou label Maroc)
+            const countryLabel = val.label || "";
+            setIsMaroc(countryLabel.toLowerCase().includes("maroc"));
         }
     };
 
@@ -76,10 +81,10 @@ function SupplierOnboarding(props) {
     const enableButton = () => setIsFormValid(true);
     const disableButton = () => setIsFormValid(false);
 
-    const handleInvalidSubmit = (data) => {
-        console.warn("[ONBOARDING] Form is INVALID:", data);
+    const handleInvalidSubmit = (errors) => {
+        console.warn("[ONBOARDING] Form Validation Errors:", errors);
         dispatch(MessageActions.showMessage({
-            message: "Veuillez vérifier les champs en rouge. L'ICE doit contenir exactement 15 chiffres.",
+            message: "Le formulaire est incomplet ou contient des erreurs. Veuillez vérifier les champs soulignés en rouge.",
             variant: 'error'
         }));
     };
@@ -148,14 +153,14 @@ function SupplierOnboarding(props) {
                                 <Grid item xs={12} sm={6}>
                                     <TextFieldFormsy
                                         name="ice"
-                                        label="ICE (15 chiffres)"
+                                        label={isMaroc ? "ICE (15 chiffres)" : "Identifiant Fiscal / No. Enregistrement"}
                                         variant="outlined"
                                         fullWidth
-                                        validations={{
+                                        validations={isMaroc ? {
                                             isNumeric: true,
                                             minLength: 15,
                                             maxLength: 15
-                                        }}
+                                        } : {}}
                                         validationErrors={{
                                             isNumeric: 'L\'ICE doit être composé uniquement de chiffres',
                                             minLength: '15 chiffres requis',
@@ -165,12 +170,12 @@ function SupplierOnboarding(props) {
                                     <Typography variant="caption" className="flex items-center mt-4">
                                         <Icon className="text-12 mr-4 text-blue-600">info</Icon>
                                         <a 
-                                            href="https://www.ice.gov.ma" 
+                                            href={isMaroc ? "https://ice.marocfacture.com/" : "https://www.google.com/search?q=business+registry"} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
                                             className="text-blue-600 hover:underline font-600"
                                         >
-                                            Vérifier l'ICE sur le portail officiel
+                                            {isMaroc ? "Vérifier l'ICE sur MarocFacture" : "Aide à l'identification fiscale"}
                                         </a>
                                     </Typography>
                                 </Grid>
@@ -198,11 +203,11 @@ function SupplierOnboarding(props) {
                                             label: 'Ville',
                                             InputLabelProps: { shrink: true },
                                             variant: 'outlined',
-                                            required: true
+                                            required: (villes && villes.length > 0)
                                         }}
                                         options={villes || []}
                                         fullWidth
-                                        required
+                                        required={(villes && villes.length > 0)}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
