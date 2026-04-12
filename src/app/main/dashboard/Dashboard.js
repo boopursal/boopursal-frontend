@@ -36,6 +36,12 @@ function Dashboard(props) {
     }
 
     if (hasRole('ROLE_FOURNISSEUR_PRE') || hasRole('ROLE_ACHETEUR_PRE')) {
+        // Sécurité ultime: si le profil est marqué complet en base (et donc dans user.data), on ne redirige PAS vers l'onboarding
+        if (user?.data?.fournisseur?.is_complet || user?.data?.acheteur?.is_complet) {
+            console.log('[DASHBOARD DEBUG] Profile is complete. Bypassing onboarding redirect despite PRE role.');
+            return hasRole('ROLE_FOURNISSEUR_PRE') ? <DashboardApp /> : <DashboardAppAcheteur />;
+        }
+
         let redirectPath = (user && user.data && user.data.redirect) ? user.data.redirect : (user && user.redirect ? user.redirect : null);
         
         // Redirection vers le NOUVEAU onboarding si on est sur l'ancien système
