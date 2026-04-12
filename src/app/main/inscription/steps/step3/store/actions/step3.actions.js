@@ -53,7 +53,7 @@ export function setStep3(data, fournisseur_id, history) {
                         type: UPDATE_FOURNISSEUR,
                     });
                     dispatch(setUserData(user));
-                    return history.push(user.redirect ? user.redirect : '/login')
+                    return history.push('/dashboard');
                 })
         }
         )
