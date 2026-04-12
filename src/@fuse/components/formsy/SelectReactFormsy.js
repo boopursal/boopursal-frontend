@@ -214,18 +214,22 @@ const components = {
 
 
 function SelectReactFormsy(props) {
-
-
-    const options = _.map(props.options, options => ({
-        value: options['@id'] ? options['@id'] : options.id,
-        label: options.name ? options.name : (options.label ? options.label : (options.currency ? options.currency : options.societe)),
+    const options = _.map(props.options, option => ({
+        value: option['@id'] ? option['@id'] : option.id,
+        label: option.name ? option.name : (option.label ? option.label : (option.currency ? option.currency : option.societe)),
     }));
 
+    const changeValue = (val) => {
+        props.setValue(val);
+        if (props.onChange) {
+            props.onChange(val);
+        }
+    };
 
+    const value = _.find(options, { value: props.getValue() });
 
     // An error message is returned only if the component is invalid
     const errorMessage = props.getErrorMessage();
-
 
     return (
         <React.Fragment>
@@ -234,6 +238,8 @@ function SelectReactFormsy(props) {
                 {...props}
                 components={components}
                 options={options}
+                value={value}
+                onChange={changeValue}
             />
             {Boolean(errorMessage) && (
                 <FormHelperText>{errorMessage}</FormHelperText>
@@ -241,5 +247,6 @@ function SelectReactFormsy(props) {
         </React.Fragment>
     );
 }
+
 
 export default React.memo(withFormsy(SelectReactFormsy));
