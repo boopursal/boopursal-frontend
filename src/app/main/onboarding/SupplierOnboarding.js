@@ -14,7 +14,9 @@ import { useForm } from '@fuse/hooks';
 import * as Actions from '../inscription/steps/step2/store/actions';
 import * as Step3Actions from '../inscription/steps/step3/store/actions';
 import * as searchCategoriesActions from '../inscription/steps/step3/store/actions/searchCategories.actions';
+import * as MessageActions from 'app/store/actions/fuse/message.actions';
 import withReducer from 'app/store/withReducer';
+
 import step2ModuleReducer from '../inscription/steps/step2/store/reducers';
 import step3ModuleReducer from '../inscription/steps/step3/store/reducers';
 import { Helmet } from "react-helmet";
@@ -76,7 +78,7 @@ function SupplierOnboarding(props) {
 
     const handleInvalidSubmit = (data) => {
         console.warn("[ONBOARDING] Form is INVALID:", data);
-        dispatch(Actions.showMessage({
+        dispatch(MessageActions.showMessage({
             message: "Veuillez vérifier les champs en rouge. L'ICE doit contenir exactement 15 chiffres.",
             variant: 'error'
         }));
@@ -160,6 +162,17 @@ function SupplierOnboarding(props) {
                                             maxLength: '15 chiffres requis'
                                         }}
                                     />
+                                    <Typography variant="caption" className="flex items-center mt-4">
+                                        <Icon className="text-12 mr-4 text-blue-600">info</Icon>
+                                        <a 
+                                            href="https://www.ice.gov.ma" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 hover:underline font-600"
+                                        >
+                                            Vérifier l'ICE sur le portail officiel
+                                        </a>
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <SelectReactFormsy
