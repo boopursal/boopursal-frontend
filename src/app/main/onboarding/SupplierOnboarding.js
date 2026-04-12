@@ -57,8 +57,6 @@ function SupplierOnboarding(props) {
         dispatch(Actions.getCurrency());
     }, [dispatch]);
 
-    const searchCategories = useSelector(({ onboardingApp }) => onboardingApp?.step3Module?.searchCategories);
-    
     const [isMaroc, setIsMaroc] = useState(false);
 
     const handleCountryChange = (val) => {
