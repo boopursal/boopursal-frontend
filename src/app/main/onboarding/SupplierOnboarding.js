@@ -52,6 +52,8 @@ function SupplierOnboarding(props) {
         console.log("[ONBOARDING DEBUG] Active Step changed to:", activeStep);
     }, [activeStep]);
 
+    const steps = ['Profil Société', 'Catalogue / Produits', 'Finalisation'];
+
     useEffect(() => {
         dispatch(Actions.getPays());
         dispatch(Actions.getCurrency());
