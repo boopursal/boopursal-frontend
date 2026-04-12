@@ -39,13 +39,23 @@ function SupplierOnboarding(props) {
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
     
-    const onboardingApp = useSelector(({ onboardingApp }) => onboardingApp);
-    const pays = onboardingApp?.step2Module?.step2?.pays;
-    const villes = onboardingApp?.step2Module?.step2?.villes;
-    const currencies = onboardingApp?.step2Module?.step2?.currencies;
-    const loading = onboardingApp?.step2Module?.step2?.loading;
-    const searchCategories = onboardingApp?.step3Module?.searchCategories || { suggestions: [], searchText: '' };
+    const appState = useSelector(state => state.supplierWizardApp);
+    const pays = appState?.step2Module?.step2?.pays;
+    const villes = appState?.step2Module?.step2?.villes;
+    const currencies = appState?.step2Module?.step2?.currencies;
+    const loading = appState?.step2Module?.step2?.loading;
+    const searchCategories = appState?.step3Module?.searchCategories || { suggestions: [], searchText: '' };
     
+    useEffect(() => {
+        console.log("[ONBOARDING DEBUG] supplierWizardApp State:", { 
+            stateExists: !!appState,
+            paysCount: pays?.length,
+            villesCount: villes?.length,
+            currenciesCount: currencies?.length,
+            loading
+        });
+    }, [appState, pays, villes, currencies, loading]);
+
     const [produitsSuggestion, setProduitsSuggestion] = useState([]);
 
     useEffect(() => {
@@ -414,5 +424,5 @@ const combinedReducer = combineReducers({
     step3Module: step3ModuleReducer
 });
 
-export default withReducer('onboardingApp', combinedReducer)(withRouter(SupplierOnboarding));
+export default withReducer('supplierWizardApp', combinedReducer)(withRouter(SupplierOnboarding));
 
