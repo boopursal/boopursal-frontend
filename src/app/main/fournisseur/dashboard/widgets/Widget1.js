@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography, makeStyles, Icon } from '@material-ui/core';
+import { Typography, makeStyles } from '@material-ui/core';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -48,7 +49,7 @@ function Widget1(props) {
     return (
         <Link to="/demandes_prix" className={classes.root}>
             <div className={classes.iconWrapper}>
-                <Icon fontSize="small">pending_actions</Icon>
+                <HourglassEmptyIcon fontSize="small" />
             </div>
             
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 'auto' }}>

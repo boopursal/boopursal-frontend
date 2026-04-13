@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography, makeStyles, Icon } from '@material-ui/core';
+import { Typography, makeStyles } from '@material-ui/core';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -48,7 +49,7 @@ function Widget2(props) {
     return (
         <Link to="/consultations" className={classes.root}>
             <div className={classes.iconWrapper}>
-                <Icon fontSize="small">visibility</Icon>
+                <VisibilityIcon fontSize="small" />
             </div>
             
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 'auto' }}>
