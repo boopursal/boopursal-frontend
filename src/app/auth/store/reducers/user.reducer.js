@@ -23,9 +23,14 @@ const user = function (state = initialState, action) {
     switch (action.type) {
         case Actions.SET_USER_DATA:
             {
+                // Hoist user.data.id to user.id so all components using user.id work correctly.
+                // In our JWT flow, the ID lives under user.data.id — this makes it available everywhere.
+                const payload = action.payload;
+                const hoistedId = payload?.data?.id || payload?.id;
                 return {
                     ...initialState,
-                    ...action.payload
+                    ...payload,
+                    id: hoistedId,
                 };
             }
         case Actions.REQUEST_FOURNISSEUR_JETONS:
