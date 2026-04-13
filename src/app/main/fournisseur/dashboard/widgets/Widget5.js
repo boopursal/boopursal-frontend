@@ -54,8 +54,8 @@ function Widget5(props) {
                 <div className={classes.chartContainer}>
                     <Doughnut
                         data={{
-                            labels: widgets.dataDDP.labels,
-                            datasets: widgets.dataDDP.datasets.map(ds => ({
+                            labels: widgets.dataDDP?.labels || [],
+                            datasets: (widgets.dataDDP?.datasets || []).map(ds => ({
                                 ...ds,
                                 borderWidth: 0,
                                 hoverOffset: 4,
