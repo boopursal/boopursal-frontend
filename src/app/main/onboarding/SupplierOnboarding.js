@@ -46,21 +46,11 @@ function SupplierOnboarding(props) {
     const loading = appState?.step2Module?.step2?.loading;
     const searchCategories = appState?.step3Module?.searchCategories || { suggestions: [], searchText: '' };
     
-    useEffect(() => {
-        console.log("[ONBOARDING DEBUG] supplierWizardApp State:", { 
-            stateExists: !!appState,
-            paysCount: pays?.length,
-            villesCount: villes?.length,
-            currenciesCount: currencies?.length,
-            loading
-        });
-    }, [appState, pays, villes, currencies, loading]);
+
 
     const [produitsSuggestion, setProduitsSuggestion] = useState([]);
 
-    useEffect(() => {
-        console.log("[ONBOARDING DEBUG] Active Step changed to:", activeStep);
-    }, [activeStep]);
+
 
     const steps = ['Profil Société', 'Catalogue / Produits', 'Finalisation'];
 
@@ -291,7 +281,6 @@ function SupplierOnboarding(props) {
 
                 );
             case 1:
-                console.log("[ONBOARDING DEBUG] Rendering Step 2 (Catalogue)", { searchCategories, produitsSuggestion });
                 return (
                     <div className="flex flex-col">
                         <Typography variant="h6" className="mb-8 font-800 text-blue-900">

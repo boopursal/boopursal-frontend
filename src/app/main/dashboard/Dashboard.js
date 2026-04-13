@@ -12,7 +12,7 @@ function Dashboard(props) {
     const user = useSelector(({ auth }) => auth.user);
     const role = user.role;
 
-    console.log('[DASHBOARD DEBUG] Current user role:', role);
+
 
     const hasRole = (r) => {
         if (Array.isArray(role)) return role.includes(r);

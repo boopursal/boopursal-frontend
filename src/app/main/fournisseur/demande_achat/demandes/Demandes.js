@@ -16,8 +16,9 @@ function Demandes() {
 
 
     useEffect(() => {
-        dispatch(Actions.getDemandes(parametres,user.id));
-    }, [dispatch, parametres,user.id]);
+        const userId = user.data?.id || user.id;
+        if (userId) dispatch(Actions.getDemandes(parametres, userId));
+    }, [dispatch, parametres, user]);
 
     return (
         <>
