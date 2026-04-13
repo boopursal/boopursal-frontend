@@ -235,14 +235,15 @@ function Profile(props) {
             setForm({ ...profile.data });
             setCategories(profile.data.categories.map(item => item));
 
-            setVille({
+            setVille(profile.data.ville ? {
                 value: profile.data.ville['@id'],
                 label: profile.data.ville.name,
-            });
-            setPays({
+            } : null);
+            
+            setPays(profile.data.pays ? {
                 value: profile.data.pays['@id'],
                 label: profile.data.pays.name,
-            });
+            } : null);
             if (profile.data.autreCategories) {
                 setProduitsSuggestion(_.split(profile.data.autreCategories, ','))
             }
