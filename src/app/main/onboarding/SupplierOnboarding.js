@@ -272,9 +272,9 @@ function SupplierOnboarding(props) {
                                     variant="contained"
                                     className="btn-primary-onboarding px-40"
                                     disabled={!isFormValid || loading}
-                                    endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Icon>arrow_forward</Icon>}
                                 >
                                     Continuer vers le catalogue
+                                    {loading ? <CircularProgress size={20} color="inherit" className="ml-8" /> : <Icon className="ml-8">arrow_forward</Icon>}
                                 </Button>
                             </div>
                         </Formsy>
@@ -344,7 +344,8 @@ function SupplierOnboarding(props) {
                         </div>
 
                         <div className="flex justify-between mt-40 pt-24 border-t">
-                            <Button onClick={handleBack} startIcon={<Icon>arrow_back</Icon>}>
+                            <Button onClick={handleBack}>
+                                <Icon className="mr-8">arrow_back</Icon>
                                 Retour
                             </Button>
                             <Button
@@ -352,9 +353,9 @@ function SupplierOnboarding(props) {
                                 variant="contained"
                                 className="btn-primary-onboarding px-40"
                                 disabled={produitsSuggestion.length === 0}
-                                endIcon={<Icon>check_circle</Icon>}
                             >
                                 Finaliser mon inscription
+                                <Icon className="ml-8">check_circle</Icon>
                             </Button>
                         </div>
                     </div>

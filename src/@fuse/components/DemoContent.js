@@ -6,7 +6,7 @@ function DemoContent()
         <div>
 
             <img
-                src="assets/images/demo-content/morain-lake.jpg"
+                src="/assets/images/demo-content/morain-lake.jpg"
                 alt="beach"
                 style={{
                     maxWidth: '640px',

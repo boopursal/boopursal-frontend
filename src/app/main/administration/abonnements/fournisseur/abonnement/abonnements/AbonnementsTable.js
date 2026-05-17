@@ -1,55 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, IconButton, Chip, Tooltip, TextField } from '@material-ui/core';
-import { FuseAnimate } from '@fuse';
+import { Icon, IconButton, Tooltip, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import * as Actions from '../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import FuseUtils from '@fuse/FuseUtils';
-import ReactTable from "react-table";
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
 import { makeStyles } from '@material-ui/core/styles';
-import _ from '@lodash';
+import clsx from 'clsx';
+
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        '& > * + *': {
-            marginTop: theme.spacing(2),
-        },
+    statusBadge: {
+        fontWeight: 600,
+        fontSize: '0.75rem',
+        padding: '4px 12px',
+        borderRadius: '9999px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        height: 26,
     },
-    chip: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ef5350',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-
-
-    },
-    chip2: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#4caf50',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-    },
-    chipOrange: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ff9800',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-
-    },
+    statusSuccess: { backgroundColor: '#DEF7EC', color: '#03543F' },
+    statusWarning: { backgroundColor: '#FEF3C7', color: '#92400E' },
+    statusError: { backgroundColor: '#FDE2E2', color: '#9B1C1C' },
+    dot: { width: 6, height: 6, borderRadius: '50%' }
 }));
-function AbonnementsTable(props) {
 
+function AbonnementsTable(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const abonnements = useSelector(({ abonnementOffreApp }) => abonnementOffreApp.abonnements.data);
@@ -61,261 +40,153 @@ function AbonnementsTable(props) {
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (abonnements) {
-            setFilteredData(getFilteredArray(abonnements, searchText));
+            const arr = Object.keys(abonnements).map((id) => abonnements[id]);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [abonnements, searchText]);
 
+    if (!filteredData) return null;
 
+    const getStatusBadge = (original) => {
+        const isExpired = original.expired && moment(original.expired) < moment();
+        
+        if (original.statut === false) {
+            if (!original.expired) {
+                return (
+                    <div className={clsx(classes.statusBadge, classes.statusWarning)}>
+                        <div className={classes.dot} style={{ backgroundColor: '#F59E0B' }} /> En attente
+                    </div>
+                );
+            }
+            return (
+                <div className={clsx(classes.statusBadge, classes.statusError)}>
+                    <div className={classes.dot} style={{ backgroundColor: '#EF4444' }} /> {isExpired ? 'Expiré' : 'Annulé'}
+                </div>
+            );
+        }
 
-    if (!filteredData) {
-        return null;
-    }
+        if (isExpired) {
+            return (
+                <div className={clsx(classes.statusBadge, classes.statusError)}>
+                    <div className={classes.dot} style={{ backgroundColor: '#EF4444' }} /> Expiré
+                </div>
+            );
+        }
 
-    const run = (parametres) =>
-        dispatch(Actions.setParametresData(parametres))
-
-    //call run function
-    const fn =
-        _.debounce(run, 1000);
+        return (
+            <div className={clsx(classes.statusBadge, classes.statusSuccess)}>
+                <div className={classes.dot} style={{ backgroundColor: '#10B981' }} /> Actif
+            </div>
+        );
+    };
 
     return (
-        <FuseAnimate animation="transition.slideUpIn" delay={300}>
-            <ReactTable
-                className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                getTrProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64",
-
-                    }
-                }}
-                getTheadProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64 font-bold",
-
-                    }
-                }}
-
-                data={filteredData}
-                columns={[
-
-                    {
-                        Header: "Référence",
-                        className: "font-bold",
-                        accessor: "reference",
-                        filterable: true,
-                        Cell: row => row.original.reference,
-                    },
-                    {
-                        Header: "Offre",
-                        className: "font-bold",
-                        accessor: "offre.name",
-                        filterable: true,
-                        Cell: row => row.original.offre ? row.original.offre.name : '',
-                    },
-                    {
-                        Header: "Fournisseur",
-                        className: "font-bold",
-                        accessor: "fournisseur.societe",
-                        filterable: true,
-                        Cell: row => row.original.fournisseur ? row.original.fournisseur.societe : '',
-                    },
-                    {
-                        Header: "Mode de paiement",
-                        accessor: "mode.name",
-                        filterable: true,
-                        Cell: row => row.original.mode ? row.original.mode.name : '',
-                    },
-
-                    {
-                        Header: "Activités",
-                        accessor: "sousSecteurs.name",
-                        filterable: true,
-                        Cell: row =>
-                            _.truncate(_.join(_.map(row.original.sousSecteurs, 'name'), ', '), {
-                                'length': 25,
-                                'separator': ' '
-                            })
-
-                    },
-                    {
-                        Header: "Date de création",
-                        accessor: "created",
-                        filterable: true,
-                        Cell: row => moment(row.original.created).format('DD/MM/YYYY HH:mm'),
-                        Filter: ({ filter, onChange }) =>
-                            <TextField
-                                onChange={event => onChange(event.target.value)}
-                                style={{ width: "100%" }}
-                                value={filter ? filter.value : ""}
-                                type="date"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                    },
-                    {
-                        Header: "Date d'expiration",
-                        accessor: "expired",
-                        filterable: true,
-                        Cell: row =>
-                            row.original.expired && moment(row.original.expired).format('DD/MM/YYYY HH:mm') + ' ( ' + moment(row.original.expired).diff(moment(), 'days') + ' j )'
-                        , Filter: ({ filter, onChange }) =>
-                            <TextField
-                                onChange={event => onChange(event.target.value)}
-                                style={{ width: "100%" }}
-                                value={filter ? filter.value : ""}
-                                type="date"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                    },
-                    {
-                        Header: "Statut",
-                        accessor: "statut",
-                        sortable: false,
-                        filterable: true,
-                        Cell: row => (
-                            <div className="flex items-center">
-
-                                {
-
-                                    row.original.statut === false
-                                        ?
-                                        (
-                                            !row.original.expired || row.original.expired === undefined
-                                                ?
-                                                <Chip className={classes.chipOrange} label="En attente" />
-                                                :
-                                                (
-                                                    moment(row.original.expired) >= moment()
-                                                        ?
-                                                        <Chip className={classes.chip} label="Annulé" />
-                                                        :
-                                                        <Chip className={classes.chip} label="Expiré" />
-                                                )
-
-                                        )
-                                        :
-                                        (
-                                            moment(row.original.expired) >= moment()
-                                                ?
-                                                <Chip className={classes.chip2} label="En cours" />
-                                                :
-                                                <Chip className={classes.chip} label="Expiré" />
-                                        )
-
-                                }
-
+        <BoopursalTable
+            title="Gestion des Abonnements"
+            data={filteredData}
+            loading={loading}
+            pageCount={pageCount}
+            page={parametres.page - 1}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+            onPageChange={(pageIndex) => {
+                const p = { ...parametres, page: pageIndex + 1 };
+                dispatch(Actions.setParametresData(p));
+            }}
+            onSortedChange={(newSorted) => {
+                const p = { ...parametres, page: 1 };
+                p.filter.id = newSorted[0].id;
+                p.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
+                dispatch(Actions.setParametresData(p));
+            }}
+            columns={[
+                {
+                    Header: "Réf.",
+                    accessor: "reference",
+                    Cell: row => (
+                        <div className="px-8 py-2 rounded-4 bg-slate-50 border border-slate-100 font-700 text-12 text-slate-700">
+                           {row.original.reference}
+                        </div>
+                    ),
+                    width: 100
+                },
+                {
+                    Header: "Fournisseur",
+                    accessor: "fournisseur.societe",
+                    Cell: row => (
+                        <div className="flex items-center gap-12">
+                            <div className="w-32 h-32 rounded-full bg-slate-100 flex items-center justify-center text-12 font-700 text-slate-500">
+                                {row.original.fournisseur?.societe?.charAt(0) || 'F'}
                             </div>
-                        ),
-                        Filter: ({ filter, onChange }) =>
-                            <select
-                                onChange={event => onChange(event.target.value)}
-                                style={{ width: "100%" }}
-                                value={filter ? filter.value : ""}
-                            >
-                                <option value="">Tous</option>
-                                <option value="0">En attente</option>
-                                <option value="1">En cours</option>
-                                <option value="2">Annulé</option>
-                                <option value="3">Expiré</option>
-                            </select>
-
-                    },
-
-                    {
-                        Header: "",
-                        Cell: row => (
-                            <div className="flex items-center">
-                                {
-                                    (moment(row.original.expired) >= moment() || !row.original.expired) &&
-                                    <Tooltip title="Editer" >
-                                        <IconButton className="text-orange text-20"
-                                            onClick={() =>
-                                                props.history.push('/admin/offres/abonnement/' + row.original.id)
-                                            }
-                                        >
-                                            <Icon>edit</Icon>
-                                        </IconButton>
-                                    </Tooltip>
-                                }
-
-                                {
-                                    row.original.statut === true
-                                    &&
-                                    (
-                                        (moment(row.original.expired).diff(moment(), 'month', true) <= 1 && moment(row.original.expired).diff(moment(), 'month', true) > 0)
-                                        &&
-                                        <Tooltip title="Renouveler" >
-                                            <IconButton
-                                                onClick={() => {
-                                                    props.history.push('/admin/offres/renouvellement/' + row.original.id + '/1');
-                                                }} className="text-teal text-20">
-                                                <Icon>autorenew</Icon>
-                                            </IconButton>
-                                        </Tooltip>
-                                    )
-
-                                }
-
-                                {
-                                    row.original.statut === true
-                                    &&
-                                    (
-                                        moment(row.original.expired) < moment()
-                                        &&
-                                        <Tooltip title="Dupliquer" >
-                                            <IconButton
-                                                onClick={() => {
-                                                    props.history.push('/admin/offres/renouvellement/' + row.original.id + '/2');
-                                                }} className="text-green-700 text-20">
-                                                <Icon>file_copy</Icon>
-                                            </IconButton>
-                                        </Tooltip>
-                                    )
-
-                                }
+                            <div className="flex flex-col">
+                                <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>{row.original.fournisseur?.societe || 'N/A'}</Typography>
+                                <Typography variant="caption" style={{ color: '#64748B' }}>{row.original.offre?.name || 'Standard'}</Typography>
                             </div>
-                        )
-                    }
-                ]}
-                manual
-                pages={pageCount}
-                page={parametres.page - 1}
-                defaultPageSize={10}
-                loading={loading}
-                showPageSizeOptions={false}
-                onPageChange={(pageIndex) => {
-                    parametres.page = pageIndex + 1;
-                    dispatch(Actions.setParametresData(parametres))
-                }}
-
-                onSortedChange={(newSorted, column, shiftKey) => {
-                    parametres.page = 1;
-                    parametres.filter.id = newSorted[0].id;
-                    parametres.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
-                    dispatch(Actions.setParametresData(parametres))
-                }}
-                onFilteredChange={filtered => {
-                    parametres.page = 1;
-                    parametres.search = filtered;
-                    fn(parametres);
-                }}
-                noDataText="Aucune abonnement trouvée"
-                loadingText='Chargement...'
-                ofText='sur'
-            />
-        </FuseAnimate>
+                        </div>
+                    ),
+                    minWidth: 220
+                },
+                {
+                    Header: "Mode",
+                    accessor: "mode.name",
+                    Cell: row => <Typography className="text-13 font-500" style={{ color: '#1C2434' }}>{row.original.mode?.name || 'Virement'}</Typography>,
+                    width: 130
+                },
+                {
+                    Header: "Expiraion",
+                    accessor: "expired",
+                    Cell: row => (
+                        <div className="flex flex-col">
+                            <Typography className="text-13 font-600" style={{ color: '#1C2434' }}>{row.original.expired ? moment(row.original.expired).format('DD/MM/YY') : 'Indéfini'}</Typography>
+                            {row.original.expired && (
+                                <Typography variant="caption" style={{ color: moment(row.original.expired) < moment() ? '#EF4444' : '#64748B' }}>
+                                    {moment(row.original.expired).diff(moment(), 'days')} jours restants
+                                </Typography>
+                            )}
+                        </div>
+                    ),
+                    width: 150
+                },
+                {
+                    Header: "Statut",
+                    accessor: "statut",
+                    Cell: row => getStatusBadge(row.original),
+                    width: 130
+                },
+                {
+                    Header: "Actions",
+                    sortable: false,
+                    Cell: row => (
+                        <div className="flex items-center gap-8">
+                             {(moment(row.original.expired) >= moment() || !row.original.expired) && (
+                                <Tooltip title="Éditer">
+                                    <IconButton 
+                                        size="small"
+                                        style={{ color: '#F59E0B', backgroundColor: 'rgba(245, 158, 11, 0.05)' }}
+                                        onClick={() => props.history.push('/admin/offres/abonnement/' + row.original.id)}
+                                    >
+                                        <Icon className="text-18">edit</Icon>
+                                    </IconButton>
+                                </Tooltip>
+                             )}
+                             {row.original.statut === true && moment(row.original.expired).diff(moment(), 'month', true) <= 1 && (
+                                <Tooltip title="Renouveler">
+                                    <IconButton 
+                                        size="small"
+                                        style={{ color: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.05)' }}
+                                        onClick={() => props.history.push('/admin/offres/renouvellement/' + row.original.id + '/1')}
+                                    >
+                                        <Icon className="text-18">autorenew</Icon>
+                                    </IconButton>
+                                </Tooltip>
+                             )}
+                        </div>
+                    ),
+                    width: 100
+                }
+            ]}
+        />
     );
 }
 

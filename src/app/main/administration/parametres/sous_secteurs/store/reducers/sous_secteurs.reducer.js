@@ -66,6 +66,13 @@ const sous_secteursReducer = function (state = initialState, action) {
                     loading: false
                 };
             }
+        case Actions.SET_SEARCH_TEXT:
+            {
+                return {
+                    ...state,
+                    searchText: action.searchText
+                };
+            }
       
         case Actions.SET_PARAMETRES_DATA:
             {

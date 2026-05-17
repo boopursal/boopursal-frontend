@@ -1,119 +1,101 @@
 import React, { useEffect } from "react";
-import { Typography, CircularProgress } from "@material-ui/core";
+import { makeStyles, CircularProgress, Box } from "@material-ui/core";
 import { Line } from "react-chartjs-2";
-import { useTheme } from "@material-ui/styles";
 import * as Actions from "../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 
-function Widget13(props) {
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const widget13 = useSelector(({ dashboardAdmin }) => dashboardAdmin.widget13);
-  const { handleChangeTotal } = props;
+const COLORS = {
+    fournisseurs: { border: '#f093fb', background: 'rgba(240, 147, 251, 0.1)', point: '#f5576c' },
+    acheteurs:    { border: '#4facfe', background: 'rgba(79, 172, 254, 0.1)', point: '#00f2fe' },
+};
 
-  useEffect(() => {
-    dispatch(Actions.getWidget13());
-    return () => {
-      dispatch(Actions.cleanUpWidget13());
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (
-      !widget13.data ||
-      (!widget13.data.totalAcheteurs && !widget13.data.totalFournisseurs)
-    ) {
-      return;
+const useStyles = makeStyles(theme => ({
+    chartWrapper: {
+        position: 'relative',
+        height: 280,
+        paddingBottom: 16,
     }
-    handleChangeTotal(
-      widget13.data.totalFournisseurs,
-      widget13.data.totalAcheteurs
-    );
-  }, [widget13.data]);
+}));
 
-  return (
-    <div>
-      {widget13.loading && (
-        <div className="flex p-16 justify-center ">
-          <CircularProgress />
+function Widget13(props) {
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    const widget13 = useSelector(({ dashboardAdmin }) => dashboardAdmin.widget13);
+    const { handleChangeTotal } = props;
+
+    useEffect(() => {
+        dispatch(Actions.getWidget13());
+        return () => dispatch(Actions.cleanUpWidget13());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!widget13.data || (!widget13.data.totalAcheteurs && !widget13.data.totalFournisseurs)) return;
+        handleChangeTotal(widget13.data.totalFournisseurs, widget13.data.totalAcheteurs);
+    }, [widget13.data]);
+
+    const colorKeys = ['fournisseurs', 'acheteurs'];
+
+    return (
+        <div>
+            {widget13.loading && (
+                <Box display="flex" justifyContent="center" p={4}>
+                    <CircularProgress size={28} style={{ color: '#f093fb' }} />
+                </Box>
+            )}
+            {widget13.data && (
+                <div className={classes.chartWrapper}>
+                    <Line
+                        data={{
+                            labels: widget13.data.years,
+                            datasets: (widget13.data.datasets || []).map((obj, index) => {
+                                const c = COLORS[colorKeys[index % 2]];
+                                return {
+                                    ...obj,
+                                    borderColor: c.border,
+                                    backgroundColor: c.background,
+                                    pointBackgroundColor: c.point,
+                                    pointHoverBackgroundColor: c.border,
+                                    pointBorderColor: '#ffffff',
+                                    pointHoverBorderColor: '#ffffff',
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6,
+                                    borderWidth: 2.5,
+                                    tension: 0.4,
+                                    fill: true,
+                                };
+                            }),
+                        }}
+                        options={{
+                            spanGaps: false,
+                            legend: { display: false },
+                            maintainAspectRatio: false,
+                            tooltips: {
+                                position: "nearest",
+                                mode: "index",
+                                intersect: false,
+                                backgroundColor: '#0f172a',
+                                titleFontColor: '#fff',
+                                bodyFontColor: 'rgba(255,255,255,0.8)',
+                                cornerRadius: 10,
+                                padding: 12,
+                            },
+                            layout: { padding: { left: 8, right: 8 } },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: { display: false },
+                                    ticks: { fontColor: '#94a3b8', fontSize: 11, fontStyle: '600' },
+                                }],
+                                yAxes: [{
+                                    gridLines: { color: '#f1f5f9', tickMarkLength: 8 },
+                                    ticks: { stepSize: 1000, fontColor: '#94a3b8', fontSize: 11 },
+                                }],
+                            },
+                        }}
+                    />
+                </div>
+            )}
         </div>
-      )}
-      {widget13.data && (
-        <Typography className="relative h-200 sm:h-320 sm:pb-16">
-          <Line
-            data={{
-              labels: widget13.data.years,
-              datasets: (widget13.data.datasets || []).map((obj, index) => {
-                const palette =
-                  theme.palette[index === 0 ? "secondary" : "primary"];
-                return {
-                  ...obj,
-                  borderColor: palette.main,
-                  pointBackgroundColor: palette.dark,
-                  pointHoverBackgroundColor: palette.main,
-                  pointBorderColor: palette.contrastText,
-                  pointHoverBorderColor: palette.contrastText,
-                };
-              }),
-            }}
-            options={{
-              spanGaps: false,
-              legend: {
-                display: false,
-              },
-              maintainAspectRatio: false,
-              tooltips: {
-                position: "nearest",
-                mode: "index",
-                intersect: false,
-              },
-              layout: {
-                padding: {
-                  left: 24,
-                  right: 32,
-                },
-              },
-              elements: {
-                point: {
-                  radius: 4,
-                  borderWidth: 2,
-                  hoverRadius: 4,
-                  hoverBorderWidth: 2,
-                },
-              },
-              scales: {
-                xAxes: [
-                  {
-                    gridLines: {
-                      display: false,
-                    },
-                    ticks: {
-                      fontColor: "rgba(0,0,0,0.54)",
-                    },
-                  },
-                ],
-                yAxes: [
-                  {
-                    gridLines: {
-                      tickMarkLength: 16,
-                    },
-                    ticks: {
-                      stepSize: 1000,
-                    },
-                  },
-                ],
-              },
-              plugins: {
-                filler: {
-                  propagate: false,
-                },
-              },
-            }}
-          />
-        </Typography>
-      )}
-    </div>
-  );
+    );
 }
 
 export default React.memo(Widget13);

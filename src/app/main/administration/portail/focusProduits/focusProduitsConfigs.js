@@ -9,7 +9,7 @@ export const focusProduitsConfigs = {
     auth    : authRoles.admin,
     routes  : [
         {
-            path     : '/admin/focus-produits/:produitId/',
+            path     : '/admin/focus-produits/:produitId',
             component: React.lazy(() => import('./focusProduit/FocusProduit'))
         },
         {

@@ -9,23 +9,9 @@ import _ from '@lodash';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-const useStyles = makeStyles(theme => ({
-    faqQuestion: {
-        fontWeight: 950,
-        color: '#0f172a',
-        fontSize: '0.9rem'
-    },
-    faqAnswer: {
-        fontSize: '0.8rem',
-        color: '#64748b',
-        fontWeight: 500
-    }
-}));
-
 function FaqsTable(props) {
-    const classes = useStyles();
     const dispatch = useDispatch();
-    const faqs = useSelector(({ faqsApp }) => faqsApp.faqs.data);
+    const faqs = useSelector(({ faqsApp }) => faqsApp.faqs.entities);
     const loading = useSelector(({ faqsApp }) => faqsApp.faqs.loading);
     const searchText = useSelector(({ faqsApp }) => faqsApp.faqs.searchText);
 
@@ -42,54 +28,60 @@ function FaqsTable(props) {
 
     return (
         <BoopursalTable
-            title="Base de Connaissance & FAQ"
-            icon="help_center"
+            title="Base de Connaissances"
             data={filteredData}
             loading={loading}
             searchText={searchText}
-            onSearchChange={(ev) => dispatch(Actions.setFaqsSearchText(ev))}
-            onRowClick={(row) => props.history.push('/portail/faqs/' + row.id)}
+            onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+            onRowClick={(row) => props.history.push('/admin/faqs/' + row.id)}
             columns={[
                 {
-                    Header: "Identifiant",
+                    Header: "ID",
                     accessor: "id",
-                    Cell: row => <Typography className="font-800 text-slate-300">#{row.original.id}</Typography>,
-                    width: 100
+                    Cell: row => (
+                        <div className="px-8 py-2 rounded-4 bg-slate-50 border border-slate-100 font-700 text-11 text-slate-400">
+                           #{row.original.id}
+                        </div>
+                    ),
+                    width: 80
                 },
                 {
-                    Header: "Question posée & Réponse",
+                    Header: "Question & Réponse",
                     accessor: "question",
                     Cell: (row) => (
                         <div className="flex flex-col py-8">
-                            <Typography className={classes.faqQuestion}>{row.original.question}</Typography>
-                            <Typography className={clsx(classes.faqAnswer, "mt-4")}>
-                                {_.truncate(row.original.reponse, { length: 120 })}
+                            <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>{row.original.question}</Typography>
+                            <Typography className="mt-4 text-13 font-500" style={{ color: '#64748B' }}>
+                                {_.truncate(row.original.reponse, { length: 140 })}
                             </Typography>
                         </div>
                     ),
-                    minWidth: 400
+                    minWidth: 450
                 },
                 {
                     Header: "Actions",
                     sortable: false,
                     Cell: (row) => (
                         <div className="flex items-center gap-8">
-                            <Tooltip title="Modifier">
-                                <IconButton size="small" className="text-slate-400 hover:text-blue-600">
-                                    <Icon className="text-18">edit</Icon>
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Supprimer">
-                                <IconButton size="small" className="text-slate-400 hover:text-red-600" onClick={(ev) => {
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+                            >
+                                <Icon className="text-18">edit</Icon>
+                            </IconButton>
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                                onClick={(ev) => {
                                     ev.stopPropagation();
                                     dispatch(Actions.removeFaq(row.original));
-                                }}>
-                                    <Icon className="text-18">delete</Icon>
-                                </IconButton>
-                            </Tooltip>
+                                }}
+                            >
+                                <Icon className="text-18">delete</Icon>
+                            </IconButton>
                         </div>
                     ),
-                    width: 120
+                    width: 100
                 }
             ]}
         />

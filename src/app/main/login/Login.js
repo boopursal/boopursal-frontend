@@ -40,6 +40,11 @@ const useStyles = makeStyles(theme => ({
         overflow: 'hidden',
         display: 'flex',
         border: '1px solid #e2e8f0',
+        [theme.breakpoints.down('md')]: {
+            flexDirection: 'column',
+            borderRadius: 28,
+            maxWidth: 600,
+        },
         [theme.breakpoints.down('sm')]: {
             flexDirection: 'column',
             borderRadius: 24,
@@ -49,8 +54,11 @@ const useStyles = makeStyles(theme => ({
     loginPane: {
         flex: 1,
         padding: theme.spacing(8),
+        [theme.breakpoints.down('md')]: {
+            padding: theme.spacing(6),
+        },
         [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing(5),
+            padding: theme.spacing(4),
         }
     },
     registerPane: {
@@ -62,6 +70,11 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        [theme.breakpoints.down('md')]: {
+            padding: theme.spacing(6),
+            borderLeft: 'none',
+            borderTop: '1px solid #f1f5f9',
+        },
         [theme.breakpoints.down('sm')]: {
             borderLeft: 'none',
             borderTop: '1px solid #f1f5f9',
@@ -176,7 +189,7 @@ function Login() {
 
                     {/* LE CÔTÉ CONNEXION */}
                     <div className={classes.loginPane}>
-                        <img className={classes.logo} src="assets/images/logos/icon.png" alt="Boopursal" />
+                        <img className={classes.logo} src="/assets/images/logos/icon.png" alt="Boopursal" />
                         <Typography className={classes.title}>Boopursal</Typography>
                         <Typography className={classes.subtitle}>Accédez à votre écosystème d'achats professionnel.</Typography>
 

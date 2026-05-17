@@ -153,7 +153,7 @@ function AdminsDialog(props) {
               src={
                 form.avatar
                   ? URL_SITE + form.avatar.url
-                  : "assets/images/avatars/images.png"
+                  : "/assets/images/avatars/images.png"
               }
             />
           )}

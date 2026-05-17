@@ -2,74 +2,93 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Select, makeStyles, CircularProgress, Box, Icon } from '@material-ui/core';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
-import * as Actions from '../store/actions'
+import * as Actions from '../store/actions';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        padding: theme.spacing(4),
-        borderRadius: 20,
-        background: "#ffffff",
-        border: "1px solid #f0f0f0",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+        padding: '28px',
+        borderRadius: '20px',
+        background: '#ffffff',
+        border: '1px solid #f1f5f9',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.06)',
         display: 'flex',
         flexDirection: 'column',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+            boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
+            transform: 'translateY(-4px)',
+        }
     },
     header: {
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: theme.spacing(4),
+        alignItems: 'flex-start',
+        marginBottom: '32px',
     },
+    titleWrapper: {},
     title: {
-        fontSize: "1.1rem",
-        fontWeight: 700,
-        color: "#1f2937",
+        fontSize: '1.05rem',
+        fontWeight: 800,
+        color: '#0f172a',
+        letterSpacing: '-0.01em',
+    },
+    subtitle: {
+        fontSize: '0.8rem',
+        color: '#94a3b8',
+        fontWeight: 500,
+        marginTop: 2,
     },
     selectField: {
-        background: "#f9fafb",
+        background: '#f8fafc',
         borderRadius: 10,
-        padding: "4px 12px",
-        fontSize: "0.875rem",
-        fontWeight: 600,
-        border: "1px solid #e5e7eb",
+        padding: '4px 12px',
+        fontSize: '0.8rem',
+        fontWeight: 700,
+        border: '1px solid #e2e8f0',
+        color: '#475569',
     },
     content: {
         textAlign: 'center',
-        padding: theme.spacing(2, 0),
+        marginBottom: 20,
     },
     yearLabel: {
-        fontSize: "0.875rem",
-        fontWeight: 600,
-        color: "#9ca3af",
+        fontSize: '0.75rem',
+        fontWeight: 700,
+        color: '#94a3b8',
         textTransform: 'uppercase',
         letterSpacing: '0.1em',
-        marginBottom: theme.spacing(1),
+        marginBottom: 8,
+    },
+    amountWrapper: {
+        display: 'flex',
+        alignItems: 'baseline',
+        justifyContent: 'center',
+        gap: 6,
     },
     amount: {
-        fontSize: "3.5rem",
-        fontWeight: 800,
-        color: "#22c55e",
+        fontSize: '3rem',
+        fontWeight: 900,
+        background: 'linear-gradient(135deg, #11998e, #38ef7d)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
         lineHeight: 1,
-        [theme.breakpoints.down("xs")]: {
-            fontSize: "2.5rem",
-        }
     },
     currency: {
-        fontSize: "1.25rem",
+        fontSize: '1.1rem',
         fontWeight: 600,
-        color: "#9ca3af",
-        marginLeft: theme.spacing(1),
+        color: '#94a3b8',
     },
     footer: {
-        marginTop: theme.spacing(3),
-        paddingTop: theme.spacing(3),
-        borderTop: "1px solid #f3f4f6",
+        marginTop: 20,
+        paddingTop: 16,
+        borderTop: '1px solid #f1f5f9',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
-        color: "#6b7280",
-        fontSize: "0.875rem",
+        gap: 6,
+        color: '#64748b',
+        fontSize: '0.8rem',
         fontWeight: 500,
     }
 }));
@@ -84,17 +103,18 @@ function Widget6(props) {
         dispatch(Actions.getBudgets(currentRange));
     }, [dispatch, currentRange]);
 
-    const handleChangeRange = (ev) => setCurrentRange(ev.target.value);
-
     return (
         <div className={classes.root}>
             <div className={classes.header}>
-                <Typography className={classes.title}>Budget Annuel</Typography>
+                <div className={classes.titleWrapper}>
+                    <Typography className={classes.title}>Budget Annuel</Typography>
+                    <Typography className={classes.subtitle}>Total des dépenses HT</Typography>
+                </div>
                 <Select
                     native
                     className={classes.selectField}
                     value={currentRange}
-                    onChange={handleChangeRange}
+                    onChange={(e) => setCurrentRange(e.target.value)}
                     disableUnderline
                 >
                     {Object.entries({
@@ -108,16 +128,20 @@ function Widget6(props) {
             </div>
 
             {widgets.loadingBudgets ? (
-                <Box display="flex" justifyContent="center" p={6}><CircularProgress size={32} /></Box>
+                <Box display="flex" justifyContent="center" p={4}>
+                    <CircularProgress size={32} style={{ color: '#11998e' }} />
+                </Box>
             ) : (
                 <div className={classes.content}>
                     <Typography className={classes.yearLabel}>Total Dépenses {currentRange}</Typography>
-                    <Typography className={classes.amount}>
-                        {widgets.budgets ? parseFloat(widgets.budgets).toLocaleString('fr', { minimumFractionDigits: 2 }) : "0,00"}
-                        <span className={classes.currency}> DHS</span>
-                    </Typography>
+                    <div className={classes.amountWrapper}>
+                        <Typography className={classes.amount}>
+                            {widgets.budgets ? parseFloat(widgets.budgets).toLocaleString('fr', { minimumFractionDigits: 2 }) : '0,00'}
+                        </Typography>
+                        <Typography className={classes.currency}>DHS</Typography>
+                    </div>
                     <div className={classes.footer}>
-                        <Icon fontSize="small">info_outline</Icon>
+                        <Icon fontSize="small" style={{ fontSize: 16 }}>info_outline</Icon>
                         <span>Montant total Hors Taxes (HT)</span>
                     </div>
                 </div>

@@ -78,7 +78,10 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    [theme.breakpoints.down('sm')]: {
+      padding: '16px',
+    }
   },
   title: {
     fontSize: '1rem',
@@ -88,6 +91,9 @@ const styles = (theme) => ({
     marginBottom: 8,
     lineHeight: 1.3,
     transition: 'color 0.2s',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.9rem',
+    },
     '&:hover': {
       color: theme.palette.primary.main
     }
@@ -199,8 +205,8 @@ function FournisseurListItem(props) {
               <img
                 className={classes.logoScale}
                 alt={fournisseur.societe}
-                src={fournisseur.avatar ? URL_SITE + "/images/avatar/" + fournisseur.avatar.url : "assets/images/ecommerce/product-placeholder.jpg"}
-                onError={(e) => { e.target.src = "assets/images/ecommerce/product-placeholder.jpg" }}
+                src={fournisseur.avatar ? URL_SITE + "/images/avatar/" + fournisseur.avatar.url : "/assets/images/ecommerce/product-placeholder.jpg"}
+                onError={(e) => { e.target.src = "/assets/images/ecommerce/product-placeholder.jpg" }}
               />
             </Link>
 

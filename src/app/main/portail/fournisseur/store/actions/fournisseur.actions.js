@@ -129,7 +129,7 @@ export function getFournisseurProduits(id, parametres) {
 
 }
 export function updateVuPhoneFournisseur(id) {
-    const request = agent.put(`/custom/update_fournisseur/${id}`);
+    const request = agent.put(`/api/fournisseurs/${id}/phone_vu`);
 
     return (dispatch) => {
         dispatch({

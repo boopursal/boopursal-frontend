@@ -29,7 +29,15 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
         paddingTop: 60,
         paddingBottom: 120,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        [theme.breakpoints.down('sm')]: {
+            paddingTop: 40,
+            paddingBottom: 80,
+        },
+        [theme.breakpoints.down('xs')]: {
+            paddingTop: 24,
+            paddingBottom: 70,
+        },
     },
     headerOverlay: {
         position: 'absolute',
@@ -37,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'url("assets/images/backgrounds/pattern-dot.svg") repeat',
+        background: 'url("/assets/images/backgrounds/pattern-dot.svg") repeat',
         opacity: 0.1
     },
     title: {
@@ -45,7 +53,13 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 900,
         color: "#ffffff",
         letterSpacing: "-0.02em",
-        marginBottom: 8
+        marginBottom: 8,
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '1.75rem',
+        },
+        [theme.breakpoints.down('xs')]: {
+            fontSize: '1.4rem',
+        },
     },
     subtitle: {
         fontSize: "1.1rem",
@@ -74,7 +88,15 @@ const useStyles = makeStyles((theme) => ({
         marginTop: -80,
         paddingBottom: 80,
         position: 'relative',
-        zIndex: 10
+        zIndex: 10,
+        [theme.breakpoints.down('sm')]: {
+            marginTop: -60,
+            paddingBottom: 40,
+        },
+        [theme.breakpoints.down('xs')]: {
+            marginTop: -40,
+            paddingBottom: 24,
+        },
     },
     subscriptionCard: {
         background: 'rgba(255, 255, 255, 0.1)',

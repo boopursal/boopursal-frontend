@@ -648,7 +648,7 @@ function Abonnement(props) {
                           <div className="flex items-center mb-80 print:mb-0">
                             <img
                               className="w-80"
-                              src="assets/images/logos/3fi.png"
+                              src="/assets/images/logos/3fi.png"
                               alt="logo"
                             />
                             <div

@@ -1,101 +1,121 @@
 import React from 'react';
-import {Avatar, Table, TableHead, TableCell, TableRow, Typography, Paper, TableBody} from '@material-ui/core';
+import { Avatar, Table, TableHead, TableCell, TableRow, Typography, TableBody, makeStyles, Chip } from '@material-ui/core';
 
-function Widget11(props)
-{
+const useStyles = makeStyles(theme => ({
+    root: {
+        borderRadius: '20px',
+        background: '#ffffff',
+        border: '1px solid #f1f5f9',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.06)',
+        overflow: 'hidden',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+            boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
+        }
+    },
+    header: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '20px 24px',
+        borderBottom: '1px solid #f1f5f9',
+    },
+    title: {
+        fontSize: '1.05rem',
+        fontWeight: 800,
+        color: '#0f172a',
+        letterSpacing: '-0.01em',
+    },
+    badge: {
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        color: '#fff',
+        fontSize: '0.75rem',
+        fontWeight: 700,
+        padding: '3px 12px',
+        borderRadius: 20,
+    },
+    tableHead: {
+        '& th': {
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            color: '#94a3b8',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            padding: '12px 16px',
+            background: '#f8fafc',
+            borderBottom: '1px solid #f1f5f9',
+        }
+    },
+    tableRow: {
+        transition: 'background 0.2s ease',
+        '&:hover': {
+            background: '#f8fafc',
+        },
+        '& td': {
+            padding: '14px 16px',
+            borderBottom: '1px solid #f8fafc',
+            fontSize: '0.875rem',
+            color: '#1e293b',
+            fontWeight: 500,
+        }
+    },
+    avatar: {
+        width: 36,
+        height: 36,
+        border: '2px solid #f1f5f9',
+    },
+    nameCell: {
+        fontWeight: 700,
+        color: '#0f172a',
+    }
+}));
+
+function Widget11(props) {
+    const classes = useStyles();
+
+    if (!props.widget) return null;
+
     return (
-        <Paper className="w-full rounded-8 shadow-none border-1">
-            <div className="flex items-center justify-between px-16 h-64 border-b-1">
-                <Typography className="text-16">{props.widget.title}</Typography>
-                <Typography className="text-11 font-500 rounded-4 text-white bg-blue px-8 py-4">{props.widget.table.rows.length + " Members"}</Typography>
+        <div className={classes.root}>
+            <div className={classes.header}>
+                <Typography className={classes.title}>{props.widget.title}</Typography>
+                <span className={classes.badge}>{props.widget.table.rows.length} Membres</span>
             </div>
-            <div className="table-responsive">
-                <Table className="w-full min-w-full" size="small">
-                    <TableHead>
+            <div style={{ overflowX: 'auto' }}>
+                <Table size="small">
+                    <TableHead className={classes.tableHead}>
                         <TableRow>
-                            {props.widget.table.columns.map(column => {
-                                switch ( column.id )
-                                {
-                                    case 'avatar':
-                                    {
-                                        return (
-                                            <TableCell
-                                                key={column.id}
-                                                className="whitespace-no-wrap p-8 pl-16"
-                                            >
-                                                {column.title}
-                                            </TableCell>
-                                        )
-                                    }
-                                    default:
-                                    {
-                                        return (
-                                            <TableCell
-                                                key={column.id}
-                                                className="whitespace-no-wrap"
-                                            >
-                                                {column.title}
-                                            </TableCell>
-                                        )
-                                    }
-                                }
-                            })}
+                            {props.widget.table.columns.map(column => (
+                                <TableCell key={column.id}>{column.title}</TableCell>
+                            ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {props.widget.table.rows.map(row => (
-                            <TableRow key={row.id}>
+                            <TableRow key={row.id} className={classes.tableRow}>
                                 {row.cells.map(cell => {
-                                        switch ( cell.id )
-                                        {
-                                            case 'avatar':
-                                            {
-                                                return (
-                                                    <TableCell
-                                                        key={cell.id}
-                                                        component="th"
-                                                        scope="row"
-                                                        className="pl-16 pr-0"
-                                                    >
-                                                        <Avatar src={cell.value}/>
-                                                    </TableCell>
-                                                )
-                                            }
-                                            case 'name':
-                                            {
-                                                return (
-                                                    <TableCell
-                                                        key={cell.id}
-                                                        component="th"
-                                                        scope="row"
-                                                        className="truncate font-600"
-                                                    >
-                                                        {cell.value}
-                                                    </TableCell>
-                                                )
-                                            }
-                                            default:
-                                            {
-                                                return (
-                                                    <TableCell
-                                                        key={cell.id}
-                                                        component="th"
-                                                        scope="row"
-                                                        className="truncate"
-                                                    >
-                                                        {cell.value}
-                                                    </TableCell>
-                                                )
-                                            }
-                                        }
+                                    if (cell.id === 'avatar') {
+                                        return (
+                                            <TableCell key={cell.id} style={{ paddingLeft: 16, paddingRight: 8 }}>
+                                                <Avatar src={cell.value} className={classes.avatar} />
+                                            </TableCell>
+                                        );
                                     }
-                                )}
+                                    if (cell.id === 'name') {
+                                        return (
+                                            <TableCell key={cell.id} className={classes.nameCell}>{cell.value}</TableCell>
+                                        );
+                                    }
+                                    return (
+                                        <TableCell key={cell.id}>{cell.value}</TableCell>
+                                    );
+                                })}
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </div>
-        </Paper>
+        </div>
     );
 }
 

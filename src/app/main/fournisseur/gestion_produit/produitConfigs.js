@@ -9,7 +9,7 @@ export const produitConfigs = {
     auth    : authRoles.fournisseur,
     routes  : [
         {
-            path     : '/produits/:produitId/',
+            path     : '/produits/:produitId',
             component: React.lazy(() => import('./produit/Produit'))
         },
         {

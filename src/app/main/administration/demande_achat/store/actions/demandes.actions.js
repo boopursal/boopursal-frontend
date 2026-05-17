@@ -116,7 +116,7 @@ export function setParametresData(parametres) {
     }
 }
 
-export function setDemandesSearchText(event) {
+export function setSearchText(event) {
     return {
         type: SET_DEMANDES_SEARCH_TEXT,
         searchText: event.target.value

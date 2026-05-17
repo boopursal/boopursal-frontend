@@ -63,7 +63,6 @@ export default function BioFournisseur() {
             background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
             color: "#ffffff",
             padding: "40px",
-            minHeight: "500px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",

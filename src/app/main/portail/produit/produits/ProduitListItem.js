@@ -92,7 +92,10 @@ const styles = (theme) => ({
     padding: '24px',
     display: 'flex',
     flexDirection: 'column',
-    flexGrow: 1
+    flexGrow: 1,
+    [theme.breakpoints.down('sm')]: {
+      padding: '16px',
+    }
   },
   category: {
     fontSize: '0.75rem',
@@ -115,6 +118,10 @@ const styles = (theme) => ({
     '-webkit-line-clamp': 2,
     '-webkit-box-orient': 'vertical',
     transition: 'color 0.2s',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      marginBottom: 8,
+    },
     '&:hover': {
       color: theme.palette.primary.main
     }
@@ -129,7 +136,10 @@ const styles = (theme) => ({
     fontSize: '1.5rem',
     fontWeight: 900,
     color: '#0f172a',
-    letterSpacing: '-0.02em'
+    letterSpacing: '-0.02em',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1.25rem',
+    }
   },
   quoteBtn: {
     minWidth: 48,
@@ -224,8 +234,8 @@ function ProduitListItem(props) {
                 <img
                   className={classes.img}
                   alt={produit.titre}
-                  src={produit.featuredImageId ? URL_SITE + "/images/produits/" + produit.featuredImageId.url : "assets/images/ecommerce/product-placeholder.jpg"}
-                  onError={(e) => { e.target.src = "assets/images/ecommerce/product-placeholder.jpg" }}
+                  src={produit.featuredImageId ? URL_SITE + "/images/produits/" + produit.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
+                  onError={(e) => { e.target.src = "/assets/images/ecommerce/product-placeholder.jpg" }}
                 />
                 <div className={classes.imageOverlay}>
                   <Icon className="text-white text-48 drop-shadow-lg">visibility</Icon>

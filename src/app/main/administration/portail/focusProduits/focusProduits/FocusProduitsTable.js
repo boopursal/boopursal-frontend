@@ -1,142 +1,141 @@
 import React, { useEffect, useState } from "react";
-import { Icon, IconButton, Tooltip } from "@material-ui/core";
-import { FuseAnimate, URL_SITE } from "@fuse";
+import { Icon, IconButton, Typography } from "@material-ui/core";
+import { URL_SITE, FuseUtils } from "@fuse";
 import { withRouter } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import FuseUtils from "@fuse/FuseUtils";
-import ReactTable from "react-table";
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+
+const useStyles = makeStyles(theme => ({
+     productImage: {
+        width: 80,
+        height: 54,
+        borderRadius: 8,
+        border: '1px solid #E2E8F0',
+        objectFit: 'cover',
+        backgroundColor: '#F8FAF9'
+    },
+    statusBadge: {
+        fontWeight: 600,
+        fontSize: '0.75rem',
+        padding: '4px 12px',
+        borderRadius: '9999px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        height: 26,
+    },
+    statusActive: { backgroundColor: '#DEF7EC', color: '#03543F' },
+    dot: { width: 6, height: 6, borderRadius: '50%' }
+}));
 
 function FocusProduitsTable(props) {
-  const focusProduits = useSelector(
-    ({ focusProduitsApp }) => focusProduitsApp.focusProduits.data
-  );
-  const searchText = useSelector(
-    ({ focusProduitsApp }) => focusProduitsApp.focusProduits.searchText
-  );
-  const loading = useSelector(
-    ({ focusProduitsApp }) => focusProduitsApp.focusProduits.loading
-  );
+  const classes = useStyles();
+  const focusProduits = useSelector(({ focusProduitsApp }) => focusProduitsApp.focusProduits.data);
+  const searchText = useSelector(({ focusProduitsApp }) => focusProduitsApp.focusProduits.searchText);
+  const loading = useSelector(({ focusProduitsApp }) => focusProduitsApp.focusProduits.loading);
   const [filteredData, setFilteredData] = useState(null);
 
   useEffect(() => {
-    function getFilteredArray(entities, searchText) {
-      const arr = Object.keys(entities).map((id) => entities[id]);
-      if (searchText.length === 0) {
-        return arr;
-      }
-      return FuseUtils.filterArrayByString(arr, searchText);
-    }
-
     if (focusProduits) {
-      setFilteredData(getFilteredArray(focusProduits, searchText));
+      const arr = Object.values(focusProduits);
+      setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
     }
   }, [focusProduits, searchText]);
 
-  if (!filteredData) {
-    return null;
-  }
+  if (!filteredData) return null;
 
   return (
-    <FuseAnimate animation="transition.slideUpIn" delay={300}>
-      <ReactTable
-        className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-        getTrProps={(state, rowInfo, column) => {
-          return {
-            className: "h-64 cursor-pointer",
-            onClick: (e, handleOriginal) => {
-              if (rowInfo) {
-                props.history.push(
-                  "/admin/focus-produits/" + rowInfo.original.id
-                );
-              }
-            },
-          };
-        }}
-        getTheadProps={(state, rowInfo, column) => {
-          return {
-            className: "h-64 font-bold",
-          };
-        }}
+    <BoopursalTable
+        title="Gestion des Emplacements (Top Deals)"
         data={filteredData}
+        loading={loading}
+        searchText={searchText}
+        onSearchChange={(ev) => {/* Logic for search if needed */}}
+        onRowClick={(row) => props.history.push("/admin/focus-produits/" + row.id)}
         columns={[
           {
-            Header: "",
-            accessor: "produit",
-            Cell: (row) =>
-              row.original.produit && row.original.produit.featuredImageId ? (
+            Header: "Emplacement",
+            accessor: "id",
+            Cell: (row) => (
+                <div className="px-12 py-4 rounded-8 font-700 text-13" style={{ backgroundColor: '#F1F5F9', color: '#1C2434', width: 'fit-content' }}>
+                    Slot #{row.original.id}
+                </div>
+            ),
+            width: 140
+          },
+          {
+            Header: "Image du produit assigné",
+            accessor: "produit.image_produit",
+            Cell: (row) => (
                 <img
-                  className="w-full block rounded"
-                  src={URL_SITE + row.original.produit.featuredImageId.url}
+                  className={classes.productImage}
+                  src={row.original.produit?.featuredImageId ? URL_SITE + row.original.produit.featuredImageId.url : "/assets/images/ecommerce/product-image-placeholder.png"}
                   alt=""
                 />
-              ) : (
-                <img
-                  className="w-64 block rounded"
-                  src="assets/images/ecommerce/product-image-placeholder.png"
-                  alt=""
-                />
-              ),
-            className: "justify-center",
-            width: 128,
+            ),
+            width: 130,
             sortable: false,
-            filterable: false,
+          },
+          {
+            Header: "Produit Actuel",
+            accessor: "produit.titre",
+            Cell: (row) => (
+                <div className="flex flex-col">
+                    <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>
+                        {row.original.produit ? row.original.produit.titre : 'Aucun produit assigné (Vide)'}
+                    </Typography>
+                    <Typography variant="caption" style={{ color: '#64748B' }}>
+                        Réf: {row.original.produit?.reference || 'N/A'} • {row.original.produit?.categorie?.name || 'Sans Catégorie'}
+                    </Typography>
+                </div>
+            ),
+            minWidth: 250
           },
           {
             Header: "Fournisseur",
-            accessor: "produit",
-            filterable: false,
-            Cell: (row) =>
-              row.original.produit && row.original.produit.fournisseur
-                ? row.original.produit.fournisseur.societe
-                : "N/A",
+            accessor: "produit.fournisseur.societe",
+            Cell: (row) => (
+                <Typography className="text-13 font-500" style={{ color: '#1C2434' }}>
+                    {row.original.produit?.fournisseur?.societe || 'N/A'}
+                </Typography>
+            ),
+            width: 200
           },
           {
-            Header: "Réf.Produit",
-            accessor: "produit",
-            filterable: false,
-            Cell: (row) =>
-              row.original.produit ? row.original.produit.reference : "N/A",
-          },
-          {
-            Header: "Catégorie",
-            accessor: "produit",
-            filterable: false,
-            Cell: (row) =>
-              row.original.produit && row.original.produit.categorie
-                ? row.original.produit.categorie.name
-                : "N/A",
-          },
-          {
-            Header: "statut",
+            Header: "Dernière modification",
             accessor: "updated",
-            filterable: false,
-            Cell: (row) =>
-              row.original.produit
-                ? "Actif (" + moment(row.original.updated).toNow(moment()) + ")"
-                : "N/A",
+            Cell: (row) => (
+                <div className={clsx(classes.statusBadge, classes.statusActive)}>
+                    <div className={classes.dot} style={{ backgroundColor: '#10B981' }} />
+                    {moment(row.original.updated).fromNow()}
+                </div>
+            ),
+            width: 180
           },
-
           {
-            Header: "",
+            Header: "Actions",
+            width: 80,
             Cell: (row) => (
               <div className="flex items-center">
-                <Tooltip title="Editer">
-                  <IconButton className="text-teal text-20">
-                    <Icon>edit</Icon>
-                  </IconButton>
-                </Tooltip>
+                <IconButton 
+                    size="small"
+                    style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+                    onClick={(ev) => {
+                        ev.stopPropagation();
+                        props.history.push("/admin/focus-produits/" + row.original.id);
+                    }}
+                >
+                  <Icon className="text-18">edit</Icon>
+                </IconButton>
               </div>
             ),
           },
         ]}
-        defaultPageSize={10}
-        loading={loading}
-        noDataText="No Produit found"
-        loadingText="Chargement..."
-        ofText="sur"
-      />
-    </FuseAnimate>
+    />
   );
 }
 

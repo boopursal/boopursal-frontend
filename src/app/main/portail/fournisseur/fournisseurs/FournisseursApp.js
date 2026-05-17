@@ -31,6 +31,9 @@ const useStyles = makeStyles(theme => ({
         padding: '40px 0 80px',
         position: 'relative',
         overflow: 'hidden',
+        [theme.breakpoints.down('sm')]: {
+            padding: '100px 0 60px',
+        },
         '&::before': {
             content: '""',
             position: 'absolute',
@@ -38,7 +41,7 @@ const useStyles = makeStyles(theme => ({
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'url("assets/images/backgrounds/pattern-dot.svg") repeat',
+            background: 'url("/assets/images/backgrounds/pattern-dot.svg") repeat',
             opacity: 0.1
         }
     },
@@ -71,7 +74,10 @@ const useStyles = makeStyles(theme => ({
         maxWidth: 1400,
         margin: '0 auto',
         width: '100%',
-        padding: '0 24px'
+        padding: '0 24px',
+        [theme.breakpoints.down('sm')]: {
+            padding: '0 16px',
+        }
     },
     contentWrapper: {
         marginTop: -40,

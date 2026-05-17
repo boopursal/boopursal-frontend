@@ -128,8 +128,9 @@ function DemandesTable(props) {
 
     return (
         <FuseAnimate animation="transition.slideUpIn" delay={300}>
-            <ReactTable
-                className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
+            <div className="overflow-x-auto">
+                <ReactTable
+                    className="-striped -highlight h-full sm:rounded-16"
                 getTrProps={(state, rowInfo, column) => {
                     return {
                         className: "h-64 cursor-pointer",
@@ -466,6 +467,7 @@ function DemandesTable(props) {
                 loadingText='Chargement...'
                 ofText='sur'
             />
+            </div>
         </FuseAnimate>
     );
 }

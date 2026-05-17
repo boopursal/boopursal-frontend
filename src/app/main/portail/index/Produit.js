@@ -147,7 +147,7 @@ export default function Produit(props) {
 
   const imageUrl = produit.featuredImageId
     ? URL_SITE + "/images/produits/" + produit.featuredImageId.url
-    : "assets/images/ecommerce/product-placeholder.jpg";
+    : "/assets/images/ecommerce/product-placeholder.jpg";
 
   return (
     <Card className={classes.card} elevation={0}>

@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
       " 100%)",
     position: "relative",
     marginBottom: theme.spacing(4),
+    [theme.breakpoints.down("sm")]: {
+      paddingTop: 80,
+    },
   },
   overlay: {
     position: "absolute",

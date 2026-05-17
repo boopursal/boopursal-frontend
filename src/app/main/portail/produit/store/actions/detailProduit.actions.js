@@ -69,7 +69,7 @@ export function getProduit(id) {
 }
 
 export function updateVuPhoneProduit(id) {
-    const request = agent.put(`/custom/update_produit/${id}`);
+    const request = agent.put(`/api/produits/${id}/phone_vu`);
 
     return (dispatch) => {
         dispatch({

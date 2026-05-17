@@ -93,7 +93,7 @@ function ForgotPasswordPage(props) {
         <FuseAnimate animation="transition.expandIn">
           <img
             className="w-128 mb-32"
-            src="assets/images/logos/icon.png"
+            src="/assets/images/logos/icon.png"
             alt="logo"
           />
         </FuseAnimate>

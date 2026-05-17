@@ -1,9 +1,9 @@
-import React from "react";
-import { AppBar, Hidden, Toolbar, Typography, Button, IconButton } from "@material-ui/core";
+import React, { useState } from "react";
+import { AppBar, Hidden, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Box } from "@material-ui/core";
 import { Brightness4 } from "@material-ui/icons";
 import { makeStyles, ThemeProvider } from "@material-ui/styles";
 import clsx from "clsx";
-import NavbarMobileToggleButton from "app/fuse-layouts/shared-components/NavbarMobileToggleButton";
+import { Menu, Close } from "@material-ui/icons";
 import LogoPortail from "app/fuse-layouts/shared-components/LogoPortail";
 import { useSelector } from "react-redux";
 import UserMenu from "app/fuse-layouts/shared-components/UserMenu";
@@ -97,16 +97,38 @@ const useStyles = makeStyles((theme) => ({
     width: 'auto', // Dynamic width
     minWidth: 180,
     justifyContent: "flex-end",
+  },
+  mobileNav: {
+    width: 280,
+    padding: "20px",
+    background: "var(--portal-bg)",
+    height: "100%",
+    color: "var(--portal-text)",
+  },
+  mobileNavLink: {
+    padding: "16px 20px",
+    borderRadius: "12px",
+    marginBottom: "8px",
+    fontSize: "1.1rem",
+    fontWeight: 700,
+    color: "var(--portal-text)",
+    transition: "all 0.2s ease",
+    "&.active": {
+      background: "rgba(255, 90, 90, 0.1)",
+      color: "var(--portal-primary)",
+    }
   }
 }));
 
 function ToolbarLayout3(props) {
   const config = useSelector(({ fuse }) => fuse.settings.current.layout.config);
   const toolbarTheme = useSelector(({ fuse }) => fuse.settings.toolbarTheme);
+  const user = useSelector(({ auth }) => auth.user);
   const path = history.location.pathname;
   const isAuthPage = path.startsWith("/login") || path.startsWith("/register");
 
   const isHome = path === "/" || path === "/portail";
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const classes = useStyles({ isHome });
 
   if (isAuthPage) {
@@ -118,9 +140,14 @@ function ToolbarLayout3(props) {
       <AppBar id="fuse-toolbar" className={classes.root} position="sticky" color="default" elevation={0}>
         <Toolbar className={classes.toolbar}>
           <div className={classes.logoWrapper}>
-            {/* Show toggle button only if navbar is enabled or on mobile */}
-            <Hidden lgUp>
-              <NavbarMobileToggleButton className="mr-8" />
+            <Hidden mdUp>
+              <IconButton 
+                className="mr-8" 
+                onClick={() => setMobileDrawerOpen(true)}
+                style={{ color: 'var(--portal-text)' }}
+              >
+                <Menu />
+              </IconButton>
             </Hidden>
             <LogoPortail />
           </div>
@@ -174,10 +201,97 @@ function ToolbarLayout3(props) {
                 </Hidden>
               </div>
             )}
-            <UserMenu />
+            <Hidden smDown>
+              <UserMenu />
+            </Hidden>
           </div>
         </Toolbar>
       </AppBar>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="left"
+        open={mobileDrawerOpen}
+        onClose={() => setMobileDrawerOpen(false)}
+      >
+        <div className={classes.mobileNav}>
+          <div className="flex items-center justify-between mb-32 px-10">
+            <LogoPortail />
+            <IconButton onClick={() => setMobileDrawerOpen(false)} style={{ color: 'var(--portal-text)' }}>
+              <Close />
+            </IconButton>
+          </div>
+          <List>
+            {[
+              { label: "Accueil", to: "/" },
+              { label: "Secteurs", to: "/annuaire-entreprises" },
+              { label: "Produits", to: "/vente-produits" },
+              { label: "Tarifs", to: "/tarifs/plans" },
+              { label: "Actualités", to: "/actualites" },
+              { label: "Centre d'aide", to: "/faq" },
+            ].map((link) => (
+              <ListItem
+                button
+                component={Link}
+                to={link.to}
+                key={link.to}
+                onClick={() => setMobileDrawerOpen(false)}
+                className={clsx(classes.mobileNavLink, (path === link.to || (link.to === "/" && isHome)) && "active")}
+              >
+                <ListItemText 
+                   primary={link.label} 
+                   primaryTypographyProps={{ style: { fontWeight: 700, fontSize: '1.2rem' } }} 
+                />
+              </ListItem>
+            ))}
+          </List>
+
+          {!user.role || user.role.length === 0 ? (
+            <Box className="mt-24 px-10">
+              <Button
+                component={Link}
+                to="/login"
+                fullWidth
+                variant="contained"
+                onClick={() => setMobileDrawerOpen(false)}
+                style={{
+                  background: 'linear-gradient(135deg, #ff5a5a 0%, #ff2a2a 100%)',
+                  color: '#ffffff',
+                  borderRadius: '16px',
+                  padding: '16px',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  boxShadow: '0 8px 20px rgba(255, 90, 90, 0.3)',
+                  textTransform: 'none'
+                }}
+              >
+                Se connecter
+              </Button>
+            </Box>
+          ) : (
+            <Box className="mt-24 px-10">
+              <Button
+                component={Link}
+                to="/mydashboard"
+                fullWidth
+                variant="outlined"
+                onClick={() => setMobileDrawerOpen(false)}
+                style={{
+                  borderColor: 'var(--portal-primary)',
+                  color: 'var(--portal-primary)',
+                  borderRadius: '16px',
+                  padding: '14px',
+                  fontWeight: 800,
+                  fontSize: '1rem',
+                  textTransform: 'none'
+                }}
+              >
+                Tableau de bord
+              </Button>
+            </Box>
+          )}
+        </div>
+      </Drawer>
     </ThemeProvider>
   );
 }

@@ -475,7 +475,7 @@ function FournisseurDetails(props) {
                                             row.original.featuredImageId ? (
                                                 <img className="w-full block rounded" src={URL_SITE + row.original.featuredImageId.url} alt={row.original.reference} />
                                             ) : (
-                                                    <img className="w-full block rounded" src="assets/images/ecommerce/product-image-placeholder.png" alt={row.original.reference} />
+                                                    <img className="w-full block rounded" src="/assets/images/ecommerce/product-image-placeholder.png" alt={row.original.reference} />
                                                 )
 
                                         ),

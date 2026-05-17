@@ -87,7 +87,7 @@ function UserNavbarHeader(props) {
           src={
             user.data.photoURL && user.data.photoURL !== ""
               ? URL_SITE + user.data.photoURL
-              : "assets/images/avatars/profile.jpg"
+              : "/assets/images/avatars/profile.jpg"
           }
         >
           {user.data.displayName ? user.data.displayName[0] : 'B'}

@@ -9,7 +9,7 @@ export const demandeConfigs = {
     auth    : authRoles.admin,
     routes  : [
         {
-            path     : '/demandes_admin/:demandeId/',
+            path     : '/demandes_admin/:demandeId',
             component: React.lazy(() => import('./demande/Demande'))
         },
         {

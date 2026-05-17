@@ -17,13 +17,17 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-end",
-    height: "360px",
+    height: "clamp(220px, 45vw, 360px)",
     borderRadius: "32px",
     overflow: "hidden",
     textDecoration: "none",
     transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
     background: "var(--portal-surface)",
     border: "1px solid var(--portal-border)",
+    [theme.breakpoints.down("xs")]: {
+      height: "220px",
+      borderRadius: "20px",
+    },
     "&:hover": {
       transform: "translateY(-12px) scale(1.02)",
       borderColor: "rgba(255, 90, 90, 0.3)",
@@ -158,7 +162,7 @@ function Categories(props) {
                 <img
                   className={classes.bgImage}
                   alt={cat.name}
-                  src={cat.url ? URL_SITE + "/images/secteur/" + cat.url : "assets/images/ecommerce/product-placeholder.jpg"}
+                  src={cat.url ? URL_SITE + "/images/secteur/" + cat.url : "/assets/images/ecommerce/product-placeholder.jpg"}
                 />
                 <div className={classes.contentOverlay}>
                   <Typography className={classes.categoryText}>

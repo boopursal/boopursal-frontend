@@ -40,18 +40,21 @@ const useStyles = makeStyles((theme) => ({
 
   // ===== HERO =====
   heroSection: {
-    padding: "100px 20px 80px",
+    padding: "100px 20px 60px",
     position: "relative",
     textAlign: "center",
     zIndex: 1,
+    [theme.breakpoints.down("sm")]: {
+      padding: "160px 16px 40px",
+    },
   },
 
   heroTitle: {
-    fontSize: "clamp(3rem, 8vw, 5.5rem)",
+    fontSize: "clamp(2rem, 8vw, 5.5rem)",
     fontWeight: 900,
     color: "var(--portal-text)",
-    marginBottom: "32px",
-    lineHeight: 1,
+    marginBottom: "24px",
+    lineHeight: 1.1,
     letterSpacing: "-0.04em",
     "& span": {
        background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
@@ -61,11 +64,11 @@ const useStyles = makeStyles((theme) => ({
   },
 
   heroSubtitle: {
-    fontSize: "clamp(1.1rem, 2.5vw, 1.35rem)",
+    fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
     color: "var(--portal-muted)",
     fontWeight: 500,
     lineHeight: 1.6,
-    maxWidth: "1000px",
+    maxWidth: "800px",
     margin: "0 auto 56px",
   },
 
@@ -79,6 +82,10 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     transition: "all 0.5s ease",
     boxShadow: "0 40px 100px rgba(0, 0, 0, 0.5)",
+    [theme.breakpoints.down("sm")]: {
+      borderRadius: "20px",
+      padding: "6px",
+    },
     "&:focus-within": {
       borderColor: "var(--portal-primary)",
       boxShadow: "0 10px 40px rgba(255, 90, 90, 0.15)",
@@ -90,44 +97,59 @@ const useStyles = makeStyles((theme) => ({
     padding: "60px 20px",
     position: "relative",
     zIndex: 2,
+    [theme.breakpoints.down("sm")]: {
+      padding: "32px 16px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "20px 12px",
+    },
   },
 
   statsContainer: {
     maxWidth: "1300px",
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: "repeat(4, 1fr)",
-    gap: "32px",
-    [theme.breakpoints.down("sm")]: {
+    gridTemplateColumns: "repeat(4, 1fr)", // 4 Columns on Desktop
+    gap: "24px",
+    [theme.breakpoints.down("md")]: {
       gridTemplateColumns: "repeat(2, 1fr)",
+    },
+    "@media (max-width: 500px)": {
+      gridTemplateColumns: "1fr",
     },
   },
 
   statItem: {
     background: "var(--portal-surface)",
     borderRadius: "32px",
-    padding: "50px 32px",
+    padding: "32px 24px",
     border: "1px solid var(--portal-border)",
     textAlign: "center",
     transition: "all 0.5s ease",
     boxShadow: "var(--portal-card-shadow)",
+    [theme.breakpoints.down("xs")]: {
+      padding: "32px 20px",
+    },
     "&:hover": {
       transform: "translateY(-8px)",
       borderColor: "var(--portal-primary)",
       boxShadow: "0 20px 40px rgba(255, 90, 90, 0.15)",
     },
     "& h3": {
-      fontSize: "3.5rem",
+      fontSize: "2.6rem", // More professional size
       fontWeight: 900,
       color: "var(--portal-primary)",
-      marginBottom: "12px",
+      marginBottom: "8px",
+      [theme.breakpoints.down("sm")]: {
+          fontSize: "2.2rem",
+      }
     },
     "& p": {
-      fontSize: "0.9rem",
+      fontSize: "0.8rem",
       color: "var(--portal-muted)",
       fontWeight: 700,
       textTransform: "uppercase",
-      letterSpacing: "0.15em",
+      letterSpacing: "0.1em",
     },
   },
 
@@ -155,6 +177,12 @@ const useStyles = makeStyles((theme) => ({
   sectionDark: {
     padding: "70px 20px",
     position: "relative",
+    [theme.breakpoints.down("sm")]: {
+      padding: "40px 16px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "28px 12px",
+    },
   },
 
   // ===== DEMANDES =====
@@ -256,16 +284,27 @@ const useStyles = makeStyles((theme) => ({
   ctaSection: {
     padding: "70px 20px",
     position: "relative",
+    [theme.breakpoints.down("sm")]: {
+      padding: "40px 16px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "28px 12px",
+    },
   },
 
   ctaGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(450px, 1fr))",
-    gap: "64px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "40px",
     maxWidth: "1400px",
     margin: "0 auto",
+    [theme.breakpoints.down("md")]: {
+      gridTemplateColumns: "1fr",
+      gap: "24px",
+    },
     [theme.breakpoints.down("sm")]: {
       gridTemplateColumns: "1fr",
+      gap: "16px",
     },
   },
 
@@ -323,28 +362,32 @@ const useStyles = makeStyles((theme) => ({
 // Slider arrows
 function SampleNextArrow(props) {
   const { style, onClick, className } = props;
+  const isMobile = window.innerWidth < 768;
+  if (isMobile) return null;
   return (
     <div className={className} style={{
       ...style, display: "flex", alignItems: "center", justifyContent: "center",
-      width: "56px", height: "56px", borderRadius: "50%",
+      width: "48px", height: "48px", borderRadius: "50%",
       background: "var(--portal-surface)", border: "1px solid var(--portal-border)",
-      right: "-28px", zIndex: 10, color: "var(--portal-text)",
+      right: "-24px", zIndex: 10, color: "var(--portal-text)",
     }} onClick={onClick}>
-      <Icon style={{ fontSize: 24 }}>arrow_forward_ios</Icon>
+      <Icon style={{ fontSize: 20 }}>arrow_forward_ios</Icon>
     </div>
   );
 }
 
 function SamplePrevArrow(props) {
   const { style, onClick, className } = props;
+  const isMobile = window.innerWidth < 768;
+  if (isMobile) return null;
   return (
     <div className={className} style={{
       ...style, display: "flex", alignItems: "center", justifyContent: "center",
-      width: "56px", height: "56px", borderRadius: "50%",
+      width: "48px", height: "48px", borderRadius: "50%",
       background: "var(--portal-surface)", border: "1px solid var(--portal-border)",
-      left: "-28px", zIndex: 10, color: "var(--portal-text)",
+      left: "-24px", zIndex: 10, color: "var(--portal-text)",
     }} onClick={onClick}>
-      <Icon style={{ fontSize: 24, marginLeft: "8px" }}>arrow_back_ios</Icon>
+      <Icon style={{ fontSize: 20, marginLeft: "6px" }}>arrow_back_ios</Icon>
     </div>
   );
 }
@@ -465,7 +508,7 @@ function Index(props) {
             <Hidden mdDown>
               <Grid item lg={2}>
                 <div className={classes.bannerSide} style={{ height: '700px' }}>
-                  <img src="assets/images/ad_network.png" alt="Networking" />
+                  <img src="/assets/images/ad_network.png" alt="Networking" />
                 </div>
               </Grid>
             </Hidden>
@@ -519,7 +562,7 @@ function Index(props) {
             <Hidden mdDown>
               <Grid item lg={2}>
                 <div className={classes.bannerSide} style={{ height: '700px' }}>
-                  <img src="assets/images/ad_pro.png" alt="Pro" />
+                  <img src="/assets/images/ad_pro.png" alt="Pro" />
                 </div>
               </Grid>
             </Hidden>

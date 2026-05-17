@@ -8,7 +8,6 @@ import * as Actions from 'app/store/actions';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import green from '@material-ui/core/colors/green';
-import ReCAPTCHA from "react-google-recaptcha";
 import Link from '@material-ui/core/Link';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -52,7 +51,6 @@ function AcheteurTab(props) {
     const register = useSelector(({ auth }) => auth.register);
 
     const [isFormValid, setIsFormValid] = useState(false);
-    const [recaptcha, setRecaptcha] = useState('desactive_temporairement'); // TODO: Remettre à null quand le domaine sera validé
     const formRef = useRef(null);
     const [values, setValues] = useState({
         showPassword: false,
@@ -100,12 +98,6 @@ function AcheteurTab(props) {
         dispatch(authActions.submitRegisterAcheteur(model, props.history));
     }
 
-    function onChange(value) {
-        if (value && value.trim().length > 0)
-            setRecaptcha(value);
-        else
-            setRecaptcha(null);
-    }
     return (
 
 
@@ -333,7 +325,7 @@ function AcheteurTab(props) {
                     color="primary"
                     className="w-full mx-auto mt-16 normal-case"
                     aria-label="REGISTER"
-                    disabled={!isFormValid || !recaptcha || register.loading}
+                    disabled={!isFormValid || register.loading}
                     value="legacy"
                 >
                     Enregistrer

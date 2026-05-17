@@ -191,7 +191,7 @@ function Admin(props)
                                     {form.images.length > 0 && form.featuredImageId ? (
                                         <img className="w-32 sm:w-48 mr-8 sm:mr-16 rounded" src={_.find(form.images, {id: form.featuredImageId}).url} alt={form.name}/>
                                     ) : (
-                                        <img className="w-32 sm:w-48 mr-8 sm:mr-16 rounded" src="assets/images/ecommerce/admin-image-placeholder.png" alt={form.name}/>
+                                        <img className="w-32 sm:w-48 mr-8 sm:mr-16 rounded" src="/assets/images/ecommerce/admin-image-placeholder.png" alt={form.name}/>
                                     )}
                                 </FuseAnimate>
                                 <div className="flex flex-col min-w-0">

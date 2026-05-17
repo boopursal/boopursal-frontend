@@ -101,8 +101,9 @@ function ProduitsTable(props) {
 
     return (
         <FuseAnimate animation="transition.slideUpIn" delay={300}>
-            <ReactTable
-                className="-striped -highlight h-full sm:rounded-16 overflow-hidden border-2"
+            <div className="overflow-x-auto">
+                <ReactTable
+                    className="-striped -highlight h-full sm:rounded-16 border-2"
                 getTrProps={(state, rowInfo, column) => {
                     return {
                         className: "h-64 cursor-pointer",
@@ -131,7 +132,7 @@ function ProduitsTable(props) {
                                     row.original.featuredImageId ? (
                                         <img className={clsx("w-full block rounded")} src={URL_SITE + row.original.featuredImageId.url} alt={row.original.reference} />
                                     ) : (
-                                            <img className={clsx("w-full block rounded")} src="assets/images/ecommerce/product-image-placeholder.png" alt={row.original.reference} />
+                                            <img className={clsx("w-full block rounded")} src="/assets/images/ecommerce/product-image-placeholder.png" alt={row.original.reference} />
                                         )
                                 }
                                 {
@@ -318,6 +319,7 @@ function ProduitsTable(props) {
                 loadingText='Chargement...'
                 ofText='sur'
             />
+            </div>
         </FuseAnimate>
     );
 }

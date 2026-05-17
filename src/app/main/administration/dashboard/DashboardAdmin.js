@@ -23,8 +23,14 @@ const useStyles = makeStyles((theme) => ({
     background: "var(--portal-bg)",
     minHeight: "100%",
     color: "var(--portal-text)",
-    padding: '30px', // TailAdmin uses 30px padding for the main container
-    fontFamily: '"Outfit", sans-serif'
+    padding: '30px',
+    fontFamily: '"Outfit", sans-serif',
+    [theme.breakpoints.down('sm')]: {
+      padding: '16px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '10px',
+    },
   },
   card: {
     background: 'var(--portal-surface)',

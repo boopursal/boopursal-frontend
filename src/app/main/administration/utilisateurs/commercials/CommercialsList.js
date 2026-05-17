@@ -1,277 +1,218 @@
-import React, { useEffect, useState } from "react";
-import {
-  Icon,
-  IconButton,
-  Typography,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-  Avatar,
-} from "@material-ui/core";
-import { FuseUtils, FuseAnimate, URL_SITE } from "@fuse";
-import { useDispatch, useSelector } from "react-redux";
-import Tooltip from "@material-ui/core/Tooltip";
-import ReactTable from "react-table";
-import * as Actions from "./store/actions";
-//import AdminsMultiSelectMenu from './AdminsMultiSelectMenu';
-import moment from "moment";
-import _ from "@lodash";
-import { withStyles } from "@material-ui/core/styles";
+import React, { useEffect, useState } from 'react';
+import { Icon, IconButton, Typography, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Avatar, Tooltip } from '@material-ui/core';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { FuseUtils, URL_SITE } from '@fuse';
+import { useDispatch, useSelector } from 'react-redux';
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
+import * as Actions from './store/actions';
+import clsx from 'clsx';
+
+const useStyles = makeStyles(theme => ({
+    avatar: {
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        border: '2px solid #FFFFFF',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+    },
+    statusBadge: {
+        fontWeight: 600,
+        fontSize: '0.75rem',
+        padding: '4px 12px',
+        borderRadius: '9999px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        height: 26,
+    },
+    statusActive: { backgroundColor: '#DEF7EC', color: '#03543F' },
+    statusInactive: { backgroundColor: '#FDE2E2', color: '#9B1C1C' },
+    dot: { width: 6, height: 6, borderRadius: '50%' },
+    cityBadge: {
+        backgroundColor: 'rgba(60, 80, 224, 0.05)',
+        color: '#3C50E0',
+        fontWeight: 600,
+        fontSize: '12px',
+        padding: '4px 12px',
+        borderRadius: '6px',
+        border: '1px solid rgba(60, 80, 224, 0.1)',
+        minWidth: 40,
+        textAlign: 'center'
+    }
+}));
 
 function CommercialsList(props) {
   const dispatch = useDispatch();
-  const commercials = useSelector(
-    ({ commercialsApp }) => commercialsApp.commercials.entities
-  );
-  const loadingComl = useSelector(
-    ({ commercialsApp }) => commercialsApp.commercials.loadingComl
-  );
-
-  //const selectedCommercialsIds = useSelector(({commercialsApp}) => commercialsApp.commercials.selectedcommercialsIds);
-  const searchText = useSelector(
-    ({ commercialsApp }) => commercialsApp.commercials.searchText
-  );
+  const classes = useStyles();
+  const commercials = useSelector(({ commercialsApp }) => commercialsApp.commercials.entities);
+  const loadingComl = useSelector(({ commercialsApp }) => commercialsApp.commercials.loadingComl);
+  const searchText = useSelector(({ commercialsApp }) => commercialsApp.commercials.searchText);
 
   const [filteredData, setFilteredData] = useState(null);
 
   const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
       maxWidth: 220,
-      fontSize: theme.typography.pxToRem(12),
-      border: "1px solid #dadde9",
-      "& b": {
-        fontWeight: theme.typography.fontWeightMedium,
-      },
+      fontSize: 12,
+      backgroundColor: '#1C2434',
+      color: '#FFFFFF',
+      borderRadius: '8px',
+      padding: '8px 12px',
+      boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
     },
   }))(Tooltip);
 
   useEffect(() => {
-    function getFilteredArray(entities, searchText) {
-      const arr = Object.keys(entities).map((id) => entities[id]);
-      if (searchText.length === 0) {
-        return arr;
-      }
-      return FuseUtils.filterArrayByString(arr, searchText);
-    }
-
     if (commercials) {
-      setFilteredData(getFilteredArray(commercials, searchText));
+      const arr = Object.values(commercials);
+      setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
     }
   }, [commercials, searchText]);
 
-  if (!filteredData) {
-    return null;
-  }
-
-  if (filteredData.length === 0) {
-    return (
-      <div className="flex flex-1 items-center justify-center h-full">
-        <Typography color="textSecondary" variant="h5">
-          Il n'y a pas de commerciaux!
-        </Typography>
-      </div>
-    );
-  }
+  if (!filteredData) return null;
 
   return (
-    <FuseAnimate animation="transition.slideUpIn" delay={300}>
-      <ReactTable
-        className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-        getTrProps={(state, rowInfo, column) => {
-          return {
-            className: "cursor-pointer",
-            onClick: (e, handleOriginal) => {
-              if (rowInfo) {
-                dispatch(Actions.openEditCommercialsDialog(rowInfo.original));
-              }
-            },
-          };
-        }}
+    <BoopursalTable
+        title="Équipe Commerciale"
         data={filteredData}
-        columns={[
-          {
-            Header: "",
-            Cell: (row) =>
-              row.original.avatar ? (
-                <Avatar
-                  className="mr-8"
-                  alt={row.original.firstName}
-                  src={URL_SITE + row.original.avatar.url}
-                />
-              ) : (
-                <Avatar
-                  className="mr-8"
-                  alt={row.original.firstName}
-                  src="assets/images/avatars/images.png"
-                />
-              ),
-
-            className: "justify-center",
-            width: 64,
-            sortable: false,
-          },
-          {
-            Header: "Nom",
-            accessor: "lastName",
-            filterable: true,
-          },
-          {
-            Header: "Prénom",
-            accessor: "firstName",
-            filterable: true,
-          },
-          {
-            Header: "Email",
-            accessor: "email",
-            filterable: true,
-          },
-          {
-            Header: "Téléphone",
-            accessor: "phone",
-            filterable: true,
-          },
-          {
-            Header: "Date de création",
-            Cell: (row) =>
-              moment(row.original.created).format("DD/MM/YYYY HH:mm"),
-          },
-          {
-            Header: "Admin",
-            width: 140,
-            Cell: (row) =>
-              row.original.parent1
-                ? row.original.parent1.firstName +
-                  " " +
-                  row.original.parent1.lastName
-                : "",
-          },
-          {
-            Header: "Villes",
-            width: 64,
-            className: "font-bold",
-            Cell: (row) => (
-              <div className="flex items-center">
-                <HtmlTooltip
-                  title={
-                    <React.Fragment>
-                      {Object.keys(row.original.villes || {}).length === 0 ? (
-                        "Il n'y aucun villes"
-                      ) : (
-                        <ul>
-                          {_.map(row.original.villes || {}, function (value, key) {
-                            return <li key={key}> {value.name} </li>;
-                          })}
-                        </ul>
-                      )}
-                    </React.Fragment>
-                  }
-                >
-                  <Button
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                    }}
-                  >
-                    {Object.keys(row.original.villes || {}).length}
-                  </Button>
-                </HtmlTooltip>
-              </div>
-            ),
-          },
-          {
-            Header: "Statut",
-            width: 64,
-            Cell: (row) =>
-              row.original.isactif ? (
-                <Tooltip title="Activé">
-                  <IconButton
-                    className="text-green text-20"
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      dispatch(Actions.activeAccount(row.original, false));
-                    }}
-                  >
-                    <Icon>check_circle</Icon>
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <Tooltip title="Désactivé">
-                  <IconButton
-                    className="text-red text-20"
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      dispatch(Actions.activeAccount(row.original, true));
-                    }}
-                  >
-                    <Icon>remove_circle</Icon>
-                  </IconButton>
-                </Tooltip>
-              ),
-          },
-
-          {
-            Header: "",
-            width: 64,
-            Cell: (row) => (
-              <div className="flex items-center">
-                <IconButton
-                  className="text-red text-20"
-                  onClick={(ev) => {
-                    ev.stopPropagation();
-                    dispatch(
-                      Actions.openDialog({
-                        children: (
-                          <React.Fragment>
-                            <DialogTitle id="alert-dialog-title">
-                              Suppression
-                            </DialogTitle>
-                            <DialogContent>
-                              <DialogContentText id="alert-dialog-description">
-                                Voulez vous vraiment supprimer cet
-                                enregistrement ?
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button
-                                onClick={() => dispatch(Actions.closeDialog())}
-                                color="primary"
-                              >
-                                Non
-                              </Button>
-                              <Button
-                                onClick={(ev) => {
-                                  dispatch(
-                                    Actions.removeCommercial(row.original)
-                                  );
-                                  dispatch(Actions.closeDialog());
-                                }}
-                                color="primary"
-                                autoFocus
-                              >
-                                Oui
-                              </Button>
-                            </DialogActions>
-                          </React.Fragment>
-                        ),
-                      })
-                    );
-                  }}
-                >
-                  <Icon>delete</Icon>
-                </IconButton>
-              </div>
-            ),
-          },
-        ]}
         loading={loadingComl}
-        defaultPageSize={10}
-        noDataText="Aucun commercial trouvé"
-        loadingText="Chargement..."
-        ofText="sur"
-      />
-    </FuseAnimate>
+        searchText={searchText}
+        onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+        onRowClick={(row) => dispatch(Actions.openEditCommercialsDialog(row))}
+        columns={[
+            {
+                Header: "Identité",
+                accessor: "lastName",
+                Cell: (row) => (
+                    <div className="flex items-center gap-12">
+                        <Avatar
+                            className={classes.avatar}
+                            alt={row.original.firstName}
+                            src={row.original.avatar ? URL_SITE + row.original.avatar.url : "/assets/images/avatars/images.png"}
+                        />
+                        <div className="flex flex-col">
+                            <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>
+                                {row.original.firstName} {row.original.lastName}
+                            </Typography>
+                            <Typography variant="caption" style={{ color: '#64748B' }}>
+                                {row.original.email}
+                            </Typography>
+                        </div>
+                    </div>
+                ),
+                minWidth: 240
+            },
+            {
+                Header: "Contact",
+                accessor: "phone",
+                Cell: row => (
+                    <div className="flex flex-col">
+                        <Typography className="text-13" style={{ color: '#1C2434' }}>{row.original.phone || 'N/A'}</Typography>
+                        <Typography variant="caption" style={{ color: '#3C50E0', fontWeight: 600 }}>
+                            {row.original.parent1 ? `Resp: ${row.original.parent1.firstName}` : 'Sans Responsable'}
+                        </Typography>
+                    </div>
+                ),
+                width: 160
+            },
+            {
+                Header: "Villes",
+                width: 80,
+                Cell: (row) => (
+                    <HtmlTooltip
+                        title={
+                            <div className="flex flex-col gap-4">
+                                {Object.keys(row.original.villes || {}).length === 0 ? (
+                                    "Aucune ville assignée"
+                                ) : (
+                                    Object.values(row.original.villes).map((v, i) => (
+                                        <div key={i} className="flex items-center gap-4 text-11 font-500">
+                                            <div className="w-4 h-4 rounded-full bg-white/30" /> {v.name}
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        }
+                    >
+                        <div className={classes.cityBadge}>
+                            {Object.keys(row.original.villes || {}).length}
+                        </div>
+                    </HtmlTooltip>
+                ),
+            },
+            {
+                Header: "Statut",
+                width: 130,
+                Cell: (row) => (
+                    <div 
+                        className={clsx(classes.statusBadge, row.original.isactif ? classes.statusActive : classes.statusInactive)}
+                        style={{ cursor: 'pointer' }}
+                        onClick={(ev) => {
+                            ev.stopPropagation();
+                            dispatch(Actions.activeAccount(row.original, !row.original.isactif));
+                        }}
+                    >
+                        <div className={classes.dot} style={{ backgroundColor: row.original.isactif ? '#10B981' : '#EF4444' }} />
+                        {row.original.isactif ? 'Activé' : 'Bloqué'}
+                    </div>
+                ),
+            },
+            {
+                Header: "Actions",
+                width: 100,
+                Cell: (row) => (
+                    <div className="flex items-center gap-8">
+                        <IconButton
+                            size="small"
+                            style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+                            onClick={(ev) => {
+                                ev.stopPropagation();
+                                dispatch(Actions.openEditCommercialsDialog(row.original));
+                            }}
+                        >
+                            <Icon className="text-18">edit</Icon>
+                        </IconButton>
+                        <IconButton
+                            size="small"
+                            style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                            onClick={(ev) => {
+                                ev.stopPropagation();
+                                dispatch(openDeleteDialog(row.original, dispatch));
+                            }}
+                        >
+                            <Icon className="text-18">delete</Icon>
+                        </IconButton>
+                    </div>
+                ),
+            },
+        ]}
+    />
   );
 }
+
+const openDeleteDialog = (item, dispatch) => Actions.openDialog({
+    children: (
+      <React.Fragment>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Voulez-vous vraiment supprimer ce commercial ?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => dispatch(Actions.closeDialog())}>Annuler</Button>
+          <Button 
+            variant="contained" 
+            style={{ backgroundColor: '#D34053', color: 'white' }}
+            onClick={() => {
+              dispatch(Actions.removeCommercial(item));
+              dispatch(Actions.closeDialog());
+            }}
+          >
+            Confirmer
+          </Button>
+        </DialogActions>
+      </React.Fragment>
+    ),
+});
 
 export default CommercialsList;

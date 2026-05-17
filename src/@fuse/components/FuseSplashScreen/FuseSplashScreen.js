@@ -8,7 +8,7 @@ function FuseSplashScreen()
             <div className="center">
 
                 <div className="logo">
-                    <img width="128" src="assets/images/logos/icon.png" alt="logo"/>
+                    <img width="128" src="/assets/images/logos/icon.png" alt="logo"/>
                 </div>
                 <div className="spinner-wrapper">
                     <div className="spinner">

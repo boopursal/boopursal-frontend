@@ -95,7 +95,7 @@
         "webpack-bundle-analyzer": "3.3.2"
     },
     "scripts": {
-        "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider npm run tailwind && react-scripts start",
+        "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider npm run tailwind && cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
         "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider CI=false npm run tailwind && node ./purge-tailwindcss.js && cross-env NODE_OPTIONS=--openssl-legacy-provider CI=false react-scripts build",
         "tailwind": "npx tailwind build ./src/styles/tailwind.base.css -c ./tailwind.js -o ./src/styles/tailwind.css",
         "test": "react-scripts test --env=node",

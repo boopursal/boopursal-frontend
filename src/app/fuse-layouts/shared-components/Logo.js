@@ -32,9 +32,9 @@ function Logo({ inverted, folded }) {
         <div className={clsx(classes.root, "flex items-center", inverted && "inverted")}>
             <Link to="/" className="flex items-center">
                 {folded ? (
-                    <img className="w-32 h-auto" src="assets/images/logos/icon.png" alt="Boopursal Icon" />
+                    <img className="w-32 h-auto" src="/assets/images/logos/icon.png" alt="Boopursal Icon" />
                 ) : (
-                    <img className="" src="assets/images/logos/logo.png" alt="Boopursal" />
+                    <img className="" src="/assets/images/logos/logo.png" alt="Boopursal" />
                 )}
             </Link>
         </div>

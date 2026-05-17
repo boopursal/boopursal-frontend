@@ -71,7 +71,7 @@ function TeamsList(props) {
                 <Avatar
                   className="mr-8"
                   alt={row.original.firstName}
-                  src="assets/images/avatars/images.png"
+                  src="/assets/images/avatars/images.png"
                 />
               ),
             className: "justify-center",

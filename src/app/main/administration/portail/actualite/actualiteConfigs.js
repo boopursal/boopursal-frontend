@@ -9,7 +9,7 @@ export const actualiteConfigs = {
     auth    : authRoles.admin,
     routes  : [
         {
-            path     : '/admin/actualites/:actualiteId/',
+            path     : '/admin/actualites/:actualiteId',
             component: React.lazy(() => import('./actualite/Actualite'))
         },
         {

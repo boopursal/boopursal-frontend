@@ -137,7 +137,7 @@ function AdminsTable(props) {
                       ) : (
                         <img
                           className="w-full block rounded"
-                          src="assets/images/avatars/images.png"
+                          src="/assets/images/avatars/images.png"
                           alt={n.name}
                         />
                       )}

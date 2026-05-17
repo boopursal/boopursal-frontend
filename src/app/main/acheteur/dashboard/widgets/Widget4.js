@@ -4,48 +4,90 @@ import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        padding: theme.spacing(3),
-        borderRadius: 20,
-        background: "#ffffff",
-        border: "1px solid #f0f0f0",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
-        height: "100%",
+        padding: '28px',
+        background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+        borderRadius: '20px',
+        boxShadow: '0 10px 40px rgba(168, 237, 234, 0.35)',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-        transition: 'all 0.3s ease',
+        height: '100%',
         textDecoration: 'none',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: '-50%',
+            right: '-20%',
+            width: '200px',
+            height: '200px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.15)',
+            transition: 'all 0.4s ease',
+        },
+        '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: '-30%',
+            left: '-10%',
+            width: '150px',
+            height: '150px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.1)',
+        },
         '&:hover': {
-            transform: 'translateY(-4px)',
-            boxShadow: '0 12px 20px rgba(75, 85, 99, 0.1)',
-            borderColor: '#4b5563',
+            transform: 'translateY(-6px) scale(1.02)',
+            boxShadow: '0 20px 60px rgba(168, 237, 234, 0.5)',
+            '&::before': {
+                transform: 'scale(1.3) rotate(15deg)',
+            }
         }
     },
-    iconBox: {
-        width: 48,
-        height: 48,
-        borderRadius: 12,
-        background: "#f3f4f6",
+    iconWrapper: {
+        width: '52px',
+        height: '52px',
+        borderRadius: '16px',
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',
+        backdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: theme.spacing(2),
-        color: "#4b5563",
-    },
-    title: {
-        fontSize: "0.875rem",
-        fontWeight: 600,
-        color: "#6b7280",
-        textTransform: "uppercase",
-        letterSpacing: "0.05em",
-        marginBottom: theme.spacing(1),
+        color: '#4b5563',
+        marginBottom: '20px',
+        position: 'relative',
+        zIndex: 1,
+        border: '1px solid rgba(255,255,255,0.5)',
     },
     value: {
-        fontSize: "2.5rem",
-        fontWeight: 800,
-        color: "#111827",
+        fontSize: '2.2rem',
+        fontWeight: 900,
+        color: '#1f2937',
         lineHeight: 1,
+        marginBottom: '6px',
+        position: 'relative',
+        zIndex: 1,
+        letterSpacing: '-0.02em',
+    },
+    title: {
+        fontSize: '0.875rem',
+        fontWeight: 600,
+        color: 'rgba(31, 41, 55, 0.75)',
+        position: 'relative',
+        zIndex: 1,
+    },
+    badge: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+        fontSize: '0.8rem',
+        fontWeight: 700,
+        color: '#4b5563',
+        background: 'rgba(255,255,255,0.35)',
+        padding: '3px 10px',
+        borderRadius: 20,
+        position: 'relative',
+        zIndex: 1,
     }
 }));
 
@@ -53,12 +95,20 @@ function Widget4(props) {
     const classes = useStyles();
 
     return (
-        <Link to="/demandes" className={classes.root}>
-            <div className={classes.iconBox}>
-                <Icon>block</Icon>
+        <Link to="/demandes" className={classes.root} style={{ textDecoration: 'none' }}>
+            <div className={classes.iconWrapper}>
+                <Icon style={{ fontSize: 22 }}>block</Icon>
             </div>
-            <Typography className={classes.title}>Rejetées</Typography>
-            <Typography className={classes.value}>{props.widget}</Typography>
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 'auto', position: 'relative', zIndex: 1 }}>
+                <div>
+                    <Typography className={classes.value}>{props.widget || 0}</Typography>
+                    <Typography className={classes.title}>Rejetées</Typography>
+                </div>
+                <span className={classes.badge}>
+                    <Icon style={{ fontSize: 14 }}>cancel</Icon>
+                    Refusé
+                </span>
+            </div>
         </Link>
     );
 }

@@ -12,27 +12,27 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   newsImage: {
-    width: 64,
-    height: 44,
-    borderRadius: 8,
-    border: '1px solid #f1f5f9',
-    objectFit: 'cover'
-  },
-  newsTitle: {
-    fontWeight: 900,
-    color: '#1e293b',
-    fontSize: '0.95rem',
-    letterSpacing: '-0.01em'
+    width: 60,
+    height: 40,
+    borderRadius: 6,
+    border: '1px solid #E2E8F0',
+    objectFit: 'cover',
+    backgroundColor: '#F8FAF9'
   },
   statusBadge: {
-    fontWeight: 900,
-    fontSize: '0.65rem',
-    textTransform: 'uppercase',
-    height: 22,
-    borderRadius: 6,
-    '&.active': { background: '#f0fdf4', color: '#166534', border: '1px solid #bcf0da' },
-    '&.inactive': { background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0' }
-  }
+    fontWeight: 600,
+    fontSize: '0.75rem',
+    padding: '4px 12px',
+    borderRadius: '9999px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    height: 26,
+  },
+  statusActive: { backgroundColor: '#DEF7EC', color: '#03543F' },
+  statusInactive: { backgroundColor: '#F1F5F9', color: '#475569' },
+  dot: { width: 6, height: 6, borderRadius: '50%' }
 }));
 
 function ActualitesTable(props) {
@@ -57,14 +57,13 @@ function ActualitesTable(props) {
 
   return (
     <BoopursalTable
-      title="Gestion du Portail Actualités"
-      icon="newspaper"
+      title="Actualités du Portail"
       data={filteredData}
       loading={loading}
       pageCount={pageCount}
       page={parametres.page - 1}
       searchText={searchText}
-      onSearchChange={(ev) => dispatch(Actions.setActualitesSearchText(ev))}
+      onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
       onPageChange={(pageIndex) => {
         parametres.page = pageIndex + 1;
         dispatch(Actions.setParametresData(parametres))
@@ -78,25 +77,25 @@ function ActualitesTable(props) {
       onRowClick={(row) => props.history.push('/portail/actualites/' + row.id)}
       columns={[
         {
-          Header: "Illustration",
+          Header: "Image",
           accessor: "image",
           Cell: (row) => (
             <img
               className={classes.newsImage}
               alt="News"
-              src={row.original.image ? URL_SITE + "/images/actualite/" + row.original.image.url : "assets/images/defaults/news-placeholder.jpg"}
+              src={row.original.image ? URL_SITE + "/images/actualite/" + row.original.image.url : "/assets/images/defaults/news-placeholder.jpg"}
             />
           ),
-          width: 100,
+          width: 90,
           sortable: false,
         },
         {
-          Header: "Titre de l'Actualité",
+          Header: "Article",
           accessor: "titre",
           Cell: (row) => (
             <div className="flex flex-col">
-              <Typography className={classes.newsTitle}>{_.truncate(row.original.titre, { length: 50 })}</Typography>
-              <Typography variant="caption" className="text-slate-400 font-600">
+              <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>{_.truncate(row.original.titre, { length: 60 })}</Typography>
+              <Typography variant="caption" style={{ color: '#64748B' }}>
                 Publié le {moment(row.original.created).format("DD/MM/YYYY")}
               </Typography>
             </div>
@@ -104,34 +103,40 @@ function ActualitesTable(props) {
           minWidth: 300
         },
         {
-          Header: "Visibilité",
+          Header: "Statut",
           accessor: "isActive",
           Cell: (row) => (
-            <Chip
-              className={clsx(classes.statusBadge, row.original.isActive ? 'active' : 'inactive')}
-              label={row.original.isActive ? "Publié" : "Brouillon"}
-            />
+            <div className={clsx(
+              classes.statusBadge,
+              row.original.isActive ? classes.statusActive : classes.statusInactive
+            )}>
+              <div className={classes.dot} style={{ backgroundColor: row.original.isActive ? '#10B981' : '#64748B' }} />
+              {row.original.isActive ? 'Publié' : 'Brouillon'}
+            </div>
           ),
-          width: 120
+          width: 130
         },
         {
           Header: "Actions",
           sortable: false,
           Cell: (row) => (
             <div className="flex items-center gap-8">
-              <Tooltip title="Éditer">
-                <IconButton size="small" className="text-slate-400 hover:text-blue-600">
-                  <Icon className="text-18">edit</Icon>
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Supprimer">
-                <IconButton size="small" className="text-slate-400 hover:text-red-600" onClick={(ev) => {
-                  ev.stopPropagation();
-                  dispatch(Actions.removeActualite(row.original, parametres));
-                }}>
-                  <Icon className="text-18">delete</Icon>
-                </IconButton>
-              </Tooltip>
+              <IconButton 
+                  size="small" 
+                  style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+              >
+                <Icon className="text-18">edit</Icon>
+              </IconButton>
+              <IconButton 
+                  size="small" 
+                  style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    dispatch(Actions.removeActualite(row.original, parametres));
+                  }}
+              >
+                <Icon className="text-18">delete</Icon>
+              </IconButton>
             </div>
           ),
           width: 100

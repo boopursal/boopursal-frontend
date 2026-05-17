@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'url("assets/images/backgrounds/pattern-dot.svg") repeat',
+            background: 'url("/assets/images/backgrounds/pattern-dot.svg") repeat',
             opacity: 0.1
         }
     },

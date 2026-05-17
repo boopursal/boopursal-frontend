@@ -47,7 +47,7 @@ export function setParametresData(parametres) {
     }
 }
 
-export function setCommandesSearchText(event) {
+export function setSearchText(event) {
     return {
         type: SET_COMMANDES_SEARCH_TEXT,
         searchText: event.target.value

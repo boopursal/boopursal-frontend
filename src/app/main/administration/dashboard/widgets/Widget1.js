@@ -1,47 +1,130 @@
 import React, { useEffect } from "react";
-import { Card, Typography, CircularProgress, Icon, Box } from "@material-ui/core";
+import { Typography, makeStyles, Icon } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import * as Actions from "../store/actions";
 import { LOCAL_CURRENCY } from "@fuse/Constants";
 import clsx from "clsx";
 
+const useStyles = makeStyles(theme => ({
+    root: {
+        padding: '28px',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        borderRadius: '20px',
+        boxShadow: '0 10px 40px rgba(102, 126, 234, 0.35)',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: '-50%',
+            right: '-20%',
+            width: '200px',
+            height: '200px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.08)',
+            transition: 'all 0.4s ease',
+        },
+        '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: '-30%',
+            left: '-10%',
+            width: '150px',
+            height: '150px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.05)',
+        },
+        '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: '0 20px 60px rgba(102, 126, 234, 0.5)',
+        }
+    },
+    iconWrapper: {
+        width: '52px',
+        height: '52px',
+        borderRadius: '16px',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#ffffff',
+        marginBottom: '20px',
+        position: 'relative',
+        zIndex: 1,
+        border: '1px solid rgba(255,255,255,0.3)',
+    },
+    value: {
+        fontSize: '1.6rem',
+        fontWeight: 900,
+        color: '#ffffff',
+        lineHeight: 1,
+        marginBottom: '6px',
+        position: 'relative',
+        zIndex: 1,
+        letterSpacing: '-0.02em',
+    },
+    label: {
+        fontSize: '0.875rem',
+        fontWeight: 600,
+        color: 'rgba(255,255,255,0.8)',
+        position: 'relative',
+        zIndex: 1,
+    },
+    trend: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+        fontSize: '0.8rem',
+        fontWeight: 700,
+        padding: '3px 10px',
+        borderRadius: 20,
+        position: 'relative',
+        zIndex: 1,
+    }
+}));
+
 function Widget1(props) {
-  const dispatch = useDispatch();
-  const widget1 = useSelector(({ dashboardAdmin }) => dashboardAdmin.widget1);
-  const { currentRange } = props;
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    const widget1 = useSelector(({ dashboardAdmin }) => dashboardAdmin.widget1);
+    const { currentRange } = props;
 
-  useEffect(() => {
-    if (!currentRange) return;
-    dispatch(Actions.getWidget1(currentRange));
-    return () => dispatch(Actions.cleanUpWidget1());
-  }, [dispatch, currentRange]);
+    useEffect(() => {
+        if (!currentRange) return;
+        dispatch(Actions.getWidget1(currentRange));
+        return () => dispatch(Actions.cleanUpWidget1());
+    }, [dispatch, currentRange]);
 
-  const financial = (x) => parseFloat(x).toLocaleString("fr", { minimumFractionDigits: 2 });
+    const financial = (x) => parseFloat(x).toLocaleString("fr", { minimumFractionDigits: 2 });
+    const isPositive = (widget1.data?.growth || 0) >= 0;
 
-  return (
-    <div className="flex flex-col h-full bg-white p-24">
-      <div className="flex items-center gap-16 mb-20">
-        <div className="w-48 h-48 rounded-full bg-[#E0E7FF] flex items-center justify-center text-[#3c50e0]">
-          <Icon className="text-24">payments</Icon>
+    return (
+        <div className={classes.root}>
+            <div className={classes.iconWrapper}>
+                <Icon style={{ fontSize: 22 }}>payments</Icon>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 'auto', position: 'relative', zIndex: 1 }}>
+                <div>
+                    <Typography className={classes.value}>
+                        {widget1.data ? financial(widget1.data.value) : "0,00"} {LOCAL_CURRENCY}
+                    </Typography>
+                    <Typography className={classes.label}>CA Abonnements</Typography>
+                </div>
+                <span className={classes.trend} style={{
+                    background: isPositive ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)',
+                    color: isPositive ? '#4ade80' : '#fca5a5',
+                }}>
+                    {widget1.data?.growth || "0"}%
+                    <Icon style={{ fontSize: 14 }}>{isPositive ? "arrow_upward" : "arrow_downward"}</Icon>
+                </span>
+            </div>
         </div>
-      </div>
-      <div className="flex items-end justify-between mt-auto">
-        <div>
-          <Typography className="text-24 font-700 text-[#1c2434] leading-none mb-4">
-            {widget1.data ? financial(widget1.data.value) : "0,00"} {LOCAL_CURRENCY}
-          </Typography>
-          <Typography className="text-14 font-500 text-[#64748b]">
-            CA Abonnements
-          </Typography>
-        </div>
-
-        <span className={clsx("text-14 font-500 flex items-center gap-4", widget1.data?.growth >= 0 ? "text-[#10b981]" : "text-[#ef4444]")}>
-          {widget1.data?.growth || "0"}%
-          <Icon className="text-16">{widget1.data?.growth >= 0 ? "arrow_upward" : "arrow_downward"}</Icon>
-        </span>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default React.memo(Widget1);

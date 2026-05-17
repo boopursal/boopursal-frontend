@@ -19,6 +19,14 @@ export const ADD_SOUS_SECTEUR = '[SOUS_SECTEURS APP] ADD SOUS_SECTEUR';
 export const SAVE_ERROR = '[SOUS_SECTEURS APP] SAVE ERROR';
 export const UPDATE_SOUS_SECTEUR = '[SOUS_SECTEURS APP] UPDATE SOUS_SECTEUR';
 export const REMOVE_SOUS_SECTEUR = '[SOUS_SECTEURS APP] REMOVE SOUS_SECTEUR';
+export const SET_SEARCH_TEXT = '[SOUS_SECTEURS APP] SET SEARCH TEXT';
+
+export function setSearchText(event) {
+    return {
+        type: SET_SEARCH_TEXT,
+        searchText: event.target.value
+    }
+}
 
 export function getSecteurs() {
     const request = agent.get('/api/secteurs?pagination=false&props[]=id&props[]=name');

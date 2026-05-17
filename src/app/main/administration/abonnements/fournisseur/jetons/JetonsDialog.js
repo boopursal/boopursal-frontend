@@ -107,15 +107,23 @@ function JetonsDialog(props) {
              * Dialog type: 'edit'
              */
             if (JetonsDialog.type === 'edit' && JetonsDialog.data) {
-               
-                setForm({ ...JetonsDialog.data });
-                setFournisseur(JetonsDialog.data.fournisseur);
-                setForm(_.set({ ...JetonsDialog.data }, 'fournisseur', JetonsDialog.data.fournisseur['@id']));
-                setForm(_.set({ ...JetonsDialog.data }, 'paiement', {
-                    value: JetonsDialog.data.paiement['@id'],
-                    label: JetonsDialog.data.paiement.name,
-                }));
-
+                const data = JetonsDialog.data;
+                let updatedForm = { ...data };
+                
+                setFournisseur(data.fournisseur || { societe: '' });
+                
+                if (data.fournisseur) {
+                    updatedForm = _.set(updatedForm, 'fournisseur', data.fournisseur['@id']);
+                }
+                
+                if (data.paiement) {
+                    updatedForm = _.set(updatedForm, 'paiement', {
+                        value: data.paiement['@id'],
+                        label: data.paiement.name,
+                    });
+                }
+                
+                setForm(updatedForm);
             }
 
             /**

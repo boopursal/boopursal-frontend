@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, IconButton, Chip, Tooltip, TextField, DialogTitle, DialogContent, DialogActions, DialogContentText, Button } from '@material-ui/core';
+import { Icon, IconButton, Chip, Tooltip, TextField, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, Typography } from '@material-ui/core';
+import clsx from 'clsx';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import * as Actions from '../store/actions';
@@ -10,291 +11,144 @@ import ReactTable from "react-table";
 import { makeStyles } from '@material-ui/core/styles';
 import _ from '@lodash';
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        '& > * + *': {
-            marginTop: theme.spacing(2),
-        },
-    },
-    chip: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ef5350',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
 
-
-    },
-    chip2: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#4caf50',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-    },
-    chipOrange: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ff9800',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-
-    },
-}));
 function DemandesDevisTable(props) {
-
-    const classes = useStyles();
     const dispatch = useDispatch();
     const demandesDevis = useSelector(({ demandesDevisApp }) => demandesDevisApp.demandesDevis.data);
     const loading = useSelector(({ demandesDevisApp }) => demandesDevisApp.demandesDevis.loading);
     const pageCount = useSelector(({ demandesDevisApp }) => demandesDevisApp.demandesDevis.pageCount);
     const parametres = useSelector(({ demandesDevisApp }) => demandesDevisApp.demandesDevis.parametres);
-
     const searchText = useSelector(({ demandesDevisApp }) => demandesDevisApp.demandesDevis.searchText);
 
     const [filteredData, setFilteredData] = useState(null);
 
-    const run = (parametres) =>
-        dispatch(Actions.setParametresData(parametres))
-
-    //call run function
-    const fn =
-        _.debounce(run, 1000);
-
-
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (demandesDevis) {
-            setFilteredData(getFilteredArray(demandesDevis, searchText));
+            const arr = Object.keys(demandesDevis).map((id) => demandesDevis[id]);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [demandesDevis, searchText]);
 
-
-
-    if (!filteredData) {
-        return null;
-    }
-
-
-
+    if (!filteredData) return null;
 
     return (
-        <div className="w-full flex flex-col">
-
-
-            <FuseAnimate animation="transition.slideUpIn" delay={300}>
-
-                <ReactTable
-
-                    className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                    getTrProps={(state, rowInfo, column) => {
-                        return {
-                            className: "h-64 cursor-pointer",
-                            onClick: (e, handleOriginal) => {
-                                if (rowInfo) {
-                                    props.history.push('/demandes_devis/' + rowInfo.original.id);
-                                }
-                            }
-                        }
-                    }}
-                    getTheadProps={(state, rowInfo, column) => {
-                        return {
-                            className: "h-64",
-
-                        }
-                    }}
-
-                    data={filteredData}
-                    columns={[
-
-                        {
-                            Header: "Fournisseur",
-                            className: "font-bold",
-                            accessor: "fournisseur",
-                            filterable: true,
-                            Cell: row => row.original.fournisseur ? row.original.fournisseur.societe : '',
-                        },
-                        {
-                            Header: "Produit réf.",
-                            className: "font-bold",
-                            accessor: "produit.reference",
-                            filterable: true,
-                            Cell: row => row.original.produit ? row.original.produit.reference : '',
-
-                        },
-                        {
-                            Header: "Quantité",
-                            accessor: "quantity",
-                            filterable: true,
-                            Cell: row => row.original.quantity ? row.original.quantity : '',
-                        },
-                        {
-                            Header: "Nom Contact",
-                            accessor: "contact",
-                            filterable: true,
-                            Cell: row => row.original.contact ? row.original.contact : '',
-
-                        },
-                        {
-                            Header: "Société",
-                            accessor: "societe",
-                            filterable: true,
-                            Cell: row => row.original.societe ? row.original.societe : '',
-                        },
-                        {
-                            Header: "Téléphone",
-                            accessor: "phone",
-                            filterable: true,
-                            Cell: row => row.original.phone ? row.original.phone : '',
-                        },
-                        {
-                            Header: "Email",
-                            accessor: "email",
-                            filterable: true,
-                            Cell: row => row.original.email ? row.original.email : '',
-
-                        },
-                        {
-                            Header: "Adresse",
-                            accessor: "adresse",
-                            filterable: true,
-                            Cell: row => row.original.adresse ? row.original.adresse : '',
-                        },
-                        {
-                            Header: "Message",
-                            accessor: "message",
-                            filterable: true,
-                            Cell: row =>
-                                _.truncate(row.original.message, {
-                                    'length': 36,
-                                    'separator': ' '
-                                })
-
-                        },
-                        {
-                            Header: "Date de création",
-                            accessor: "created",
-                            filterable: true,
-                            Cell: row => moment(row.original.created).format('DD/MM/YYYY HH:mm'),
-                            Filter: ({ filter, onChange }) =>
-                                <TextField
-                                    onChange={event => onChange(event.target.value)}
-                                    style={{ width: "100%" }}
-                                    value={filter ? filter.value : ""}
-                                    type="date"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />,
-                        },
-                        {
-                            Header: "",
-                            Cell: row => (
-                                <div className="flex items-center">
-                                    {
-                                        row.original.statut !== 1 ?
-
-                                            <Tooltip title="Supprimer" >
-                                                <IconButton className="text-red text-20"
-                                                    onClick={(ev) => {
-                                                        ev.stopPropagation();
-                                                        dispatch(Actions.openDialog({
-                                                            children: (
-                                                                <React.Fragment>
-                                                                    <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                                                                    <DialogContent>
-                                                                        <DialogContentText id="alert-dialog-description">
-                                                                            Voulez vous vraiment supprimer cette demande ?
-                                                                            </DialogContentText>
-                                                                    </DialogContent>
-                                                                    <DialogActions>
-                                                                        <Button variant="contained" onClick={() => dispatch(Actions.closeDialog())} color="primary">
-                                                                            Non
-                                                                        </Button>
-                                                                        <Button onClick={(ev) => {
-                                                                            dispatch(Actions.removeDemande(row.original, parametres));
-                                                                            dispatch(Actions.closeDialog())
-                                                                        }} color="primary" autoFocus>
-                                                                            Oui
-                                                                        </Button>
-
-                                                                    </DialogActions>
-                                                                </React.Fragment>
-                                                            )
-                                                        }))
-                                                    }}
-                                                >
-                                                    <Icon>delete</Icon>
-                                                </IconButton>
-                                            </Tooltip>
-                                            : <Tooltip title="Interdit!" >
-                                                <IconButton className="text-20 cursor-not-allowed disable"
-                                                    onClick={(ev) => {
-                                                        ev.stopPropagation();
-                                                    }}
-                                                >
-                                                    <Icon>delete</Icon>
-                                                </IconButton>
-                                            </Tooltip>
-                                    }
-                                    <Tooltip title="Détails" >
-                                        <IconButton className="text-teal text-20">
-                                            <Icon>remove_red_eye</Icon>
-                                        </IconButton>
-                                    </Tooltip>
-
-                                </div>
-                            )
-                        }
-                    ]}
-                    manual
-
-                    defaultSortDesc={true}
-                    pages={pageCount}
-                    page={parametres.page - 1}
-                    defaultPageSize={10}
-                    loading={loading}
-                    showPageSizeOptions={false}
-                    onPageChange={(pageIndex) => {
-                        parametres.page = pageIndex + 1;
-                        dispatch(Actions.setParametresData(parametres))
-                    }}
-
-                    onSortedChange={(newSorted, column, shiftKey) => {
-                        parametres.page = 1;
-                        parametres.filter.id = newSorted[0].id;
-                        parametres.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
-                        dispatch(Actions.setParametresData(parametres))
-                    }}
-                    onFilteredChange={filtered => {
-                        parametres.page = 1;
-                        parametres.search = filtered;
-                        fn(parametres);
-                    }}
-                    noDataText="Aucune demande trouvée"
-                    loadingText='Chargement...'
-                    ofText='sur'
-                />
-            </FuseAnimate>
-
-
-
-
-        </div>
+        <BoopursalTable
+            title="Demandes de Devis (En attente)"
+            data={filteredData}
+            loading={loading}
+            pageCount={pageCount}
+            page={parametres.page - 1}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+            onRowClick={(row) => props.history.push('/demandes_devis/' + row.id)}
+            onPageChange={(pageIndex) => {
+                const p = { ...parametres, page: pageIndex + 1 };
+                dispatch(Actions.setParametresData(p));
+            }}
+            onSortedChange={(newSorted) => {
+                const p = { ...parametres, page: 1 };
+                p.filter.id = newSorted[0].id;
+                p.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
+                dispatch(Actions.setParametresData(p));
+            }}
+            columns={[
+                {
+                    Header: "Fournisseur",
+                    accessor: "fournisseur.societe",
+                    Cell: row => (
+                        <div className="flex items-center gap-12">
+                            <div className="w-32 h-32 rounded-full bg-blue-50 flex items-center justify-center text-12 font-700 text-blue-500">
+                                {row.original.fournisseur?.societe?.charAt(0) || 'F'}
+                            </div>
+                            <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>{row.original.fournisseur?.societe || 'N/A'}</Typography>
+                        </div>
+                    ),
+                    minWidth: 200
+                },
+                {
+                    Header: "Produit",
+                    accessor: "produit.titre",
+                    Cell: row => (
+                        <div className="flex flex-col">
+                            <Typography className="font-600 text-13 truncate" style={{ maxWidth: 220, color: '#1C2434' }}>{row.original.produit?.titre || 'Produit direct'}</Typography>
+                            <Typography variant="caption" style={{ color: '#64748B' }}>Réf: {row.original.produit?.reference || 'N/A'}</Typography>
+                        </div>
+                    ),
+                    minWidth: 200
+                },
+                {
+                    Header: "Acheteur",
+                    accessor: "societe",
+                    Cell: row => (
+                        <div className="flex flex-col">
+                            <Typography className="font-600 text-13 truncate" style={{ color: '#1C2434' }}>{row.original.societe}</Typography>
+                            <Typography variant="caption" style={{ color: '#64748B' }}>{row.original.contact}</Typography>
+                        </div>
+                    ),
+                    minWidth: 180
+                },
+                {
+                    Header: "Quantité",
+                    accessor: "quantity",
+                    width: 100,
+                    Cell: row => (
+                        <div className="px-10 py-4 rounded-4 bg-slate-50 border border-slate-100 flex items-center justify-center">
+                            <Typography className="font-700 text-13" style={{ color: '#3C50E0' }}>{row.original.quantity}</Typography>
+                        </div>
+                    )
+                },
+                {
+                    Header: "Date",
+                    accessor: "created",
+                    Cell: row => <Typography className="text-13" style={{ color: '#64748B' }}>{moment(row.original.created).format('DD/MM/YY HH:mm')}</Typography>,
+                    width: 140
+                },
+                {
+                    Header: "Actions",
+                    sortable: false,
+                    Cell: row => (
+                        <div className="flex items-center gap-8">
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    props.history.push('/demandes_devis/' + row.original.id);
+                                }}
+                            >
+                                <Icon className="text-18">visibility</Icon>
+                            </IconButton>
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    dispatch(Actions.openDialog({
+                                        children: (
+                                            <React.Fragment>
+                                                <DialogTitle>Supprimer la demande ?</DialogTitle>
+                                                <DialogContent><DialogContentText>Cette action déplacera la demande vers la corbeille.</DialogContentText></DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={() => dispatch(Actions.closeDialog())}>Annuler</Button>
+                                                    <Button variant="contained" style={{ backgroundColor: '#D34053', color: 'white' }} onClick={() => {
+                                                        dispatch(Actions.removeDemande(row.original, parametres));
+                                                        dispatch(Actions.closeDialog());
+                                                    }}>Oui, supprimer</Button>
+                                                </DialogActions>
+                                            </React.Fragment>
+                                        )
+                                    }));
+                                }}
+                            >
+                                <Icon className="text-18">delete</Icon>
+                            </IconButton>
+                        </div>
+                    ),
+                    width: 100
+                }
+            ]}
+        />
     );
 }
 

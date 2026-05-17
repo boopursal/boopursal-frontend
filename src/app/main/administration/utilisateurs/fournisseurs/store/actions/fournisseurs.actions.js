@@ -66,7 +66,7 @@ export function setParametresData(parametres) {
     }
 }
 
-export function setFournisseursSearchText(event) {
+export function setSearchText(event) {
     return {
         type: SET_FOURNISSEURS_SEARCH_TEXT,
         searchText: event.target.value

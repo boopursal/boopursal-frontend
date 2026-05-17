@@ -127,7 +127,7 @@ function Suggestion(props) {
                                                             <IconButton
                                                                 color="secondary"
                                                                 aria-label="toggle add secteur"
-                                                                disabled={suggestion.secteur || !form.secteur}
+                                                                disabled={!!suggestion.secteur || !form.secteur}
                                                                 onClick={() => handleAddSecteur(form.secteur)}
                                                             >
                                                                 <Icon>add_circle</Icon>
@@ -157,7 +157,7 @@ function Suggestion(props) {
                                                             <IconButton
                                                                 color="secondary"
                                                                 aria-label="toggle add sous secteur"
-                                                                disabled={suggestion.sousSecteur || !suggestion.secteur || !form.sousSecteur}
+                                                                disabled={!!suggestion.sousSecteur || !suggestion.secteur || !form.sousSecteur}
                                                                 onClick={() => handleAddSousSecteur(form.sousSecteur, suggestion.secteur['@id'])}
                                                             >
                                                                 <Icon>add_circle</Icon>
@@ -187,7 +187,7 @@ function Suggestion(props) {
                                                             <IconButton
                                                                 color="secondary"
                                                                 aria-label="toggle add sous secteur"
-                                                                disabled={suggestion.categorie || !suggestion.sousSecteur || !form.categorie}
+                                                                disabled={!!suggestion.categorie || !suggestion.sousSecteur || !form.categorie}
                                                                 onClick={() => handleAddCategorie(form.categorie, suggestion.sousSecteur['@id'])}
                                                             //onClick={handleClickShowPassword}
                                                             >

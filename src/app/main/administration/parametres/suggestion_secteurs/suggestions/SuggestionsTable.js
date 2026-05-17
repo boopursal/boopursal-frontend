@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, IconButton, Tooltip, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
-import { FuseUtils, FuseAnimate } from '@fuse';
-import { withRouter } from 'react-router-dom';
+import { Icon, IconButton, Typography, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
+import { FuseUtils } from '@fuse';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactTable from "react-table";
+import { withRouter } from 'react-router-dom';
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
 import * as Actions from '../store/actions';
 
 function SuggestionsTable(props) {
@@ -15,137 +15,116 @@ function SuggestionsTable(props) {
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (suggestions) {
-            setFilteredData(getFilteredArray(suggestions, searchText));
+            const arr = Object.values(suggestions);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [suggestions, searchText]);
 
-
-
-    if (!filteredData) {
-        return null;
-    }
-
+    if (!filteredData) return null;
 
     return (
-        <FuseAnimate animation="transition.slideUpIn" delay={300}>
-            <ReactTable
-                className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                getTrProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64 cursor-pointer",
-                        onClick: (e, handleOriginal) => {
-                            if (rowInfo) {
-                                props.history.push('/parametres/suggestions/' + rowInfo.original.id);
-                            }
-                        }
-                    }
-                }}
-
-                getTheadProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64 font-bold",
-
-                    }
-                }}
-
-                data={filteredData}
-                columns={[
-                    {
-                        Header: "Societé",
-                        filterable: true,
-                        accessor: "user",
-                        className: "font-bold",
-                        Cell: row => (row.original.user && row.original.user.societe ? row.original.user.societe : 'N/A')
-                    },
-                    {
-                        Header: "Secteur",
-                        filterable: true,
-                        accessor: "secteur",
-                    },
-                    {
-                        Header: "Activité",
-                        filterable: true,
-                        accessor: "sousSecteur",
-                    },
-                    {
-                        Header: "Produit",
-                        filterable: true,
-                        accessor: "categorie",
-                    },
-                    {
-                        Header: "Page",
-                        filterable: true,
-                        accessor: "pageSuggestion",
-                    },
-                    {
-                        Header: "",
-                        Cell: row => (
-                            <div className="flex items-center">
-
-                                <Tooltip title="Editer" >
-                                    <IconButton className="text-teal text-20">
-                                        <Icon>edit</Icon>
-                                    </IconButton>
-                                </Tooltip>
-
-                                <Tooltip title="Supprimer" >
-                                    <IconButton className="text-red text-20"
-                                        onClick={(ev) => {
-                                            ev.stopPropagation();
-                                            dispatch(Actions.openDialog({
-                                                children: (
-                                                    <React.Fragment>
-                                                        <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                                                        <DialogContent>
-                                                            <DialogContentText id="alert-dialog-description">
-                                                                Voulez vous vraiment supprimer cet enregistrement ?
-                                                            </DialogContentText>
-                                                        </DialogContent>
-                                                        <DialogActions>
-                                                            <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
-                                                                Non
-                                                            </Button>
-                                                            <Button
-                                                                onClick={(ev) => {
-                                                                    dispatch(Actions.removeSuggestion(row.original));
-                                                                    dispatch(Actions.closeDialog())
-                                                                }}
-                                                                color="primary"
-                                                                autoFocus>
-                                                                Oui
-                                                            </Button>
-                                                        </DialogActions>
-                                                    </React.Fragment>
-                                                )
-                                            }))
-                                        }}
-                                    >
-                                        <Icon>delete</Icon>
-                                    </IconButton>
-
-                                </Tooltip>
-
+        <BoopursalTable
+            title="Suggestions de Nouveaux Secteurs"
+            data={filteredData}
+            loading={loading}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+            onRowClick={(row) => props.history.push('/parametres/suggestions/' + row.id)}
+            columns={[
+                {
+                    Header: "Société / Utilisateur",
+                    accessor: "user",
+                    Cell: row => (
+                        <div className="flex flex-col">
+                            <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>
+                                {row.original.user?.societe || 'N/A'}
+                            </Typography>
+                            <Typography variant="caption" style={{ color: '#64748B' }}>
+                                ID: #{row.original.id}
+                            </Typography>
+                        </div>
+                    ),
+                    minWidth: 200
+                },
+                {
+                    Header: "Secteur Proposé",
+                    accessor: "secteur",
+                    Cell: row => (
+                        <div className="flex flex-col gap-4">
+                            <Typography className="text-13 font-500" style={{ color: '#1C2434' }}>{row.original.secteur || 'N/A'}</Typography>
+                            <div className="flex flex-wrap gap-4">
+                                {row.original.sousSecteur && (
+                                    <div className="px-8 py-2 rounded-4 bg-slate-50 border border-slate-100 text-11 font-600 text-slate-500 uppercase">
+                                        Activité: {row.original.sousSecteur}
+                                    </div>
+                                )}
                             </div>
-                        )
-                    }
-                ]}
-                defaultPageSize={10}
-                loading={loading}
-                noDataText="Aucune suggestion trouvée"
-                loadingText='Chargement...'
-                ofText='sur'
-
-            />
-        </FuseAnimate>
+                        </div>
+                    ),
+                    minWidth: 250
+                },
+                {
+                    Header: "Produit/Catégorie",
+                    accessor: "categorie",
+                    Cell: row => (
+                        <Typography className="text-13 font-500 text-slate-600">{row.original.categorie || 'N/A'}</Typography>
+                    ),
+                    width: 200
+                },
+                {
+                    Header: "Actions",
+                    width: 100,
+                    sortable: false,
+                    Cell: row => (
+                        <div className="flex items-center gap-8">
+                             <IconButton 
+                                size="small" 
+                                style={{ color: '#319795', backgroundColor: 'rgba(49, 151, 149, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    props.history.push('/parametres/suggestions/' + row.original.id);
+                                }}
+                            >
+                                <Icon className="text-18">edit</Icon>
+                            </IconButton>
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    dispatch(Actions.openDialog({
+                                        children: (
+                                            <React.Fragment>
+                                                <DialogTitle>Confirmation</DialogTitle>
+                                                <DialogContent>
+                                                    <DialogContentText>Voulez-vous vraiment supprimer cette suggestion ?</DialogContentText>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={() => dispatch(Actions.closeDialog())}>Annuler</Button>
+                                                    <Button 
+                                                        variant="contained" 
+                                                        style={{ backgroundColor: '#D34053', color: 'white' }}
+                                                        onClick={() => {
+                                                            dispatch(Actions.removeSuggestion(row.original));
+                                                            dispatch(Actions.closeDialog());
+                                                        }}
+                                                    >
+                                                        Supprimer
+                                                    </Button>
+                                                </DialogActions>
+                                            </React.Fragment>
+                                        )
+                                    }));
+                                }}
+                            >
+                                <Icon className="text-18">delete</Icon>
+                            </IconButton>
+                        </div>
+                    ),
+                }
+            ]}
+        />
     );
 }
 

@@ -25,7 +25,7 @@
         var global = window;
     </script>
 
-    <!-- Smartsupp Live Chat script -->
+    <!-- Smartsupp Live Chat script DESACTIVE POUR DEBUG 
     <script type="text/javascript">
         var _smartsupp = _smartsupp || {};
         _smartsupp.key = '8f4b8dbaaf4d5ddc18184abcfbbb25674ceeca5c';
@@ -36,6 +36,7 @@
             c.src = 'https://www.smartsuppchat.com/loader.js?'; s.parentNode.insertBefore(c, s);
         })(document);
     </script>
+    -->
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105310719-1"></script>
     <script>
@@ -45,9 +46,11 @@
         gtag('config', 'UA-105310719-1');
     </script>
 
+    <!--
     <script>smartsupp('group', 'bVHtLq3a0e'); //group Support</script>
     <script>smartsupp('group', 'sP1UysClx9'); //group Facturation</script>
     <script>smartsupp('group', 'VRKl1HXakd'); //group Vente</script>
+    -->
 
     <title>Boopursal | La place de marché BtoB</title>
     <meta name="description"
@@ -212,6 +215,14 @@
                 transform: rotate(1080deg);
             }
         }
+
+        /* Smartsupp mobile adjustment */
+        @media (max-width: 600px) {
+            #smartsupp-widget-container iframe {
+                transform: scale(0.85);
+                transform-origin: bottom right;
+            }
+        }
     </style>
 </head>
 
@@ -243,11 +254,12 @@
     </div>
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./serviceworker.js')
-                    .then((reg) => console.log('Success: ', reg.scope))
-                    .catch((err) => console.log('Failure: ', err))
-            })
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                    console.log('Service Worker Unregistered');
+                }
+            });
         }
     </script>
 </body>

@@ -6,11 +6,6 @@ import { useTheme } from '@material-ui/core/styles';
 import _ from '@lodash';
 import clsx from 'clsx';
 
-// Local polyfill for process to avoid ReferenceError in some environments
-if (typeof process === 'undefined') {
-  var process = { env: { NODE_ENV: 'development' } };
-}
-
 
 function NavbarMobileToggleButton(props)
 {

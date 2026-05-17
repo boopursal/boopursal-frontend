@@ -884,7 +884,7 @@ function Profile(props) {
                           ) : (
                             <img
                               className="max-w-none w-auto h-full"
-                              src="assets/images/avatars/profile.jpg"
+                              src="/assets/images/avatars/profile.jpg"
                               alt={form.societe}
                             />
                           )}

@@ -741,7 +741,7 @@ function Produit(props) {
                   ) : (
                     <img
                       className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
-                      src="assets/images/ecommerce/product-image-placeholder.png"
+                      src="/assets/images/ecommerce/product-image-placeholder.png"
                       alt={form.reference}
                     />
                   )}

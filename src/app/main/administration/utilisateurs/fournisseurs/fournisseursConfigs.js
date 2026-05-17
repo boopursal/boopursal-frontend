@@ -9,11 +9,11 @@ export const fournisseursConfigs = {
     auth: authRoles.admin,
     routes: [
         {
-            path: '/users/fournisseur/show/:fournisseurId/',
+            path: '/users/fournisseur/show/:fournisseurId',
             component: React.lazy(() => import('./fournisseur/FournisseurDetails'))
         },
         {
-            path: '/users/fournisseurs/:fournisseurId/',
+            path: '/users/fournisseurs/:fournisseurId',
             component: React.lazy(() => import('./fournisseur/Fournisseur'))
         },
         {

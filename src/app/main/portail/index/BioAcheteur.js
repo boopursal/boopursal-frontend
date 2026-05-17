@@ -67,7 +67,6 @@ export default function BioAcheteur() {
             background: "#ffffff",
             color: "#0f172a",
             padding: "40px",
-            minHeight: "500px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",

@@ -19,7 +19,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import green from "@material-ui/core/colors/green";
-import ReCAPTCHA from "react-google-recaptcha";
 import Link from "@material-ui/core/Link";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
@@ -61,7 +60,6 @@ function FournisseurTab(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const register = useSelector(({ auth }) => auth.register);
-  const [recaptcha, setRecaptcha] = useState('desactive_temporairement'); // TODO: Remettre à null quand le domaine sera validé
   const [open, setOpen] = useState(false);
   const [parentErreur, setParentErreur] = useState(null);
 
@@ -124,10 +122,6 @@ function FournisseurTab(props) {
     dispatch(authActions.submitRegisterFournisseur(model, props.history));
   }
 
-  function onChange(value) {
-    if (value && value.trim().length > 0) setRecaptcha(value);
-    else setRecaptcha(null);
-  }
   return (
     <div className="w-full">
       <Helmet>
@@ -418,7 +412,7 @@ Afin de recevoir le maximum d'alertes, veuillez choisir le maximum de produits p
           color="primary"
           className="w-full mx-auto mt-16 normal-case"
           aria-label="REGISTER"
-          disabled={!isFormValid || !recaptcha || register.loading}
+          disabled={!isFormValid || register.loading}
           value="legacy"
         >
           Enregistrer

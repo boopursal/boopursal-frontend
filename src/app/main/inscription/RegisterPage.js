@@ -154,7 +154,7 @@ function RegisterPage(props) {
 
             <FuseAnimate animation="transition.slideUpIn" delay={200}>
                 <Card className={classes.card} elevation={0}>
-                    <img className={classes.logo} src="assets/images/logos/icon.png" alt="Boopursal" />
+                    <img className={classes.logo} src="/assets/images/logos/icon.png" alt="Boopursal" />
 
                     <Typography className={classes.title}>Inscription</Typography>
                     <Typography className={classes.subtitle}>Sélectionnez votre profil pour commencer l'aventure Boopursal</Typography>

@@ -1,82 +1,179 @@
-import React, {useState} from 'react';
-import {Typography, Select, Paper, Divider} from '@material-ui/core';
-import {Line} from 'react-chartjs-2';
+import React, { useState, useEffect } from 'react';
+import { Typography, Select, makeStyles, CircularProgress, Box, Icon } from '@material-ui/core';
+import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+import * as Actions from '../store/actions';
+import { Line } from 'react-chartjs-2';
 import _ from 'lodash';
 
-function Widget9(props)
-{
-    const [currentRange, setCurrentRange] = useState(props.widget.currentRange);
+const useStyles = makeStyles(theme => ({
+    root: {
+        padding: '28px',
+        borderRadius: '20px',
+        background: '#ffffff',
+        border: '1px solid #f1f5f9',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.06)',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+            boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
+        }
+    },
+    header: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '24px',
+    },
+    title: {
+        fontSize: '1.05rem',
+        fontWeight: 800,
+        color: '#0f172a',
+        letterSpacing: '-0.01em',
+    },
+    subtitle: {
+        fontSize: '0.8rem',
+        color: '#94a3b8',
+        fontWeight: 500,
+        marginTop: 2,
+    },
+    selectField: {
+        background: '#f8fafc',
+        borderRadius: 10,
+        padding: '4px 12px',
+        fontSize: '0.8rem',
+        fontWeight: 700,
+        border: '1px solid #e2e8f0',
+        color: '#475569',
+    },
+    statRow: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '16px 0',
+        borderBottom: '1px solid #f8fafc',
+        gap: 16,
+        '&:last-child': {
+            borderBottom: 'none',
+        }
+    },
+    statLabel: {
+        fontSize: '0.85rem',
+        color: '#64748b',
+        fontWeight: 600,
+        minWidth: 120,
+    },
+    statValue: {
+        fontSize: '1.4rem',
+        fontWeight: 900,
+        color: '#0f172a',
+        letterSpacing: '-0.02em',
+        minWidth: 80,
+    },
+    chartBox: {
+        flex: 1,
+        height: 48,
+    },
+    divider: {
+        height: 1,
+        background: '#f1f5f9',
+        margin: '8px 0',
+    },
+    totalRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '16px 0',
+        marginTop: 4,
+    },
+    totalLabel: {
+        fontSize: '0.85rem',
+        fontWeight: 700,
+        color: '#64748b',
+    },
+    totalValue: {
+        fontSize: '1.6rem',
+        fontWeight: 900,
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        letterSpacing: '-0.02em',
+    },
+}));
+
+function Widget9(props) {
+    const classes = useStyles();
+    const [currentRange, setCurrentRange] = useState(props.widget?.currentRange || Object.keys(props.widget?.ranges || {})[0]);
     const widget = _.merge({}, props.widget);
 
-    function handleChangeRange(ev)
-    {
-        setCurrentRange(ev.target.value);
-    }
+    if (!props.widget) return null;
+
+    const statIds = ['weeklySpent', 'totalSpent', 'remaining'];
 
     return (
-        <Paper className="w-full rounded-8 shadow-none border-1">
-            <div className="flex items-center justify-between px-16 h-64 border-b-1">
-                <Typography className="text-16">{widget.title}</Typography>
-
+        <div className={classes.root}>
+            <div className={classes.header}>
+                <div>
+                    <Typography className={classes.title}>{widget.title}</Typography>
+                    <Typography className={classes.subtitle}>Analyse des dépenses budgétaires</Typography>
+                </div>
                 <Select
                     native
+                    className={classes.selectField}
                     value={currentRange}
-                    onChange={handleChangeRange}
-                    inputProps={{
-                        name: 'currentRange'
-                    }}
-                    disableUnderline={true}
+                    onChange={(e) => setCurrentRange(e.target.value)}
+                    disableUnderline
                 >
-                    {Object.entries(widget.ranges).map(([key, n]) => {
-                        return (
-                            <option key={key} value={key}>{n}</option>
-                        )
-                    })}
+                    {Object.entries(widget.ranges || {}).map(([key, n]) => (
+                        <option key={key} value={key}>{n}</option>
+                    ))}
                 </Select>
             </div>
-            {['weeklySpent', 'totalSpent', 'remaining'].map(id => (
-                <div className="flex flex-wrap items-center w-full p-8" key={id}>
-                    <div className="flex flex-col w-full sm:w-1/2 p-8">
-                        <Typography className="text-14" color="textSecondary">
-                            {widget[id].title}
+
+            {statIds.map(id => widget[id] && (
+                <div key={id} className={classes.statRow}>
+                    <div style={{ minWidth: 120 }}>
+                        <Typography className={classes.statLabel}>{widget[id].title}</Typography>
+                        <Typography className={classes.statValue}>
+                            $ {widget[id].count?.[currentRange] ?? 0}
                         </Typography>
-                        <div className="flex items-center">
-                            <Typography className="text-32 mr-4" color="textSecondary">
-                                $
-                            </Typography>
-                            <Typography className="text-32">
-                                {widget[id].count[currentRange]}
-                            </Typography>
-                        </div>
                     </div>
-                    <div className="flex w-full sm:w-1/2 p-8">
-                        <div className="h-48 w-full">
+                    <div className={classes.chartBox}>
+                        {widget[id].chart?.[currentRange] && (
                             <Line
                                 data={{
-                                    labels  : widget[id].chart[currentRange].labels,
-                                    datasets: widget[id].chart[currentRange].datasets
+                                    labels: widget[id].chart[currentRange].labels,
+                                    datasets: (widget[id].chart[currentRange].datasets || []).map(ds => ({
+                                        ...ds,
+                                        borderWidth: 2,
+                                        pointRadius: 0,
+                                        tension: 0.4,
+                                    }))
                                 }}
-                                options={widget[id].chart.options}
+                                options={{
+                                    maintainAspectRatio: false,
+                                    legend: { display: false },
+                                    scales: {
+                                        xAxes: [{ display: false }],
+                                        yAxes: [{ display: false }],
+                                    },
+                                    tooltips: { enabled: false },
+                                }}
                             />
-                        </div>
+                        )}
                     </div>
                 </div>
             ))}
-            <Divider/>
-            <div className="flex flex-col w-full px-16 py-24">
-                <Typography className="text-14" color="textSecondary">
-                    {widget.totalBudget.title}
+
+            <div className={classes.divider} />
+            <div className={classes.totalRow}>
+                <Typography className={classes.totalLabel}>{widget.totalBudget?.title || 'Budget Total'}</Typography>
+                <Typography className={classes.totalValue}>
+                    $ {widget.totalBudget?.count ?? 0}
                 </Typography>
-                <div className="flex items-center">
-                    <Typography className="text-32 mr-4" color="textSecondary">
-                        $
-                    </Typography>
-                    <Typography className="text-32">
-                        {widget.totalBudget.count}
-                    </Typography>
-                </div>
             </div>
-        </Paper>
+        </div>
     );
 }
 

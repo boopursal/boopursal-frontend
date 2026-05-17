@@ -72,7 +72,7 @@ export function setParametresData(parametres) {
     }
 }
 
-export function setContactSearchText(event) {
+export function setSearchText(event) {
     return {
         type: SET_CONTACTS_SEARCH_TEXT,
         searchText: event.target.value

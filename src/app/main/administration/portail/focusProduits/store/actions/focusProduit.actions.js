@@ -62,7 +62,7 @@ export function getFournisseurHasProducts() {
         return request.then((response) => {
             dispatch({
                 type: GET_FOURNISSEUR_SELECTED,
-                payload: response.data
+                payload: response.data['hydra:member'] !== undefined ? response.data['hydra:member'] : response.data
             })
         }
 
@@ -89,7 +89,7 @@ export function GetAllCategorieByFournisseur(id_fournisseur) {
         return request.then((response) => {
             dispatch({
                 type: GET_CATEGORIE_SELECTED,
-                payload: response.data
+                payload: response.data['hydra:member'] !== undefined ? response.data['hydra:member'] : response.data
             })
         }
 
@@ -106,7 +106,11 @@ export function GetAllCategorieByFournisseur(id_fournisseur) {
 
 export function GetProductsByCategorieByFournisseur(id_fournisseur, id_categorie) {
 
-    const request = agent.get(`/api/produits?fournisseur=${id_fournisseur}&categorie=${id_categorie}`);
+    let urlStr = `/api/produits?fournisseur=${id_fournisseur}&is_valid=true&del=false`;
+    if (id_categorie) {
+        urlStr += `&categorie=${id_categorie}`;
+    }
+    const request = agent.get(urlStr);
 
     return (dispatch) => {
         dispatch({
@@ -155,5 +159,29 @@ export function putFocusProduit(produit, url) {
             });
         });
     }
+}
+export function toggleFocusProduit(produitId) {
+    const request = agent.put(`/api/toggle_focus/${produitId}`);
 
+    return (dispatch) => {
+        dispatch({ type: REQUEST_SAVE });
+        return request.then((response) => {
+            if (response.data.error) {
+                dispatch(showMessage({ message: 'Erreur: Impossible de modifier le slot.' }));
+            } else {
+                dispatch(showMessage({ message: response.data.action === 'added' ? '✅ Produit mis en vedette' : '❌ Produit retiré' }));
+            }
+            dispatch({
+                type: SAVE_PRODUIT_SELECTED,
+                payload: response.data
+            });
+            return response;
+        }).catch((error) => {
+            dispatch({
+                type: SAVE_ERROR,
+                payload: FuseUtils.parseApiErrors(error)
+            });
+            return error;
+        });
+    }
 }

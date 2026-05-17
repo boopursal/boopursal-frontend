@@ -10,10 +10,13 @@ const useStyles = makeStyles(theme => ({
             transform: "scale(1.02)",
         },
         "& img": {
-            height: 70, // Consistent with Layout3 settings
+            height: 70, // Desktop height
             width: "auto",
             display: "block",
             transition: "all 0.3s ease",
+            [theme.breakpoints.down("sm")]: {
+                height: 48, // Mobile height
+            }
         }
     },
 }));
@@ -25,7 +28,7 @@ function LogoPortail() {
         <div className={clsx(classes.root, "flex items-center")}>
 
             <Link to="/">
-                <img className="" src="assets/images/logos/logo_final_boopursal.png" alt="Boopursal LOGO" />
+                <img className="" src="/assets/images/logos/logo_final_boopursal.png" alt="Boopursal LOGO" />
             </Link>
 
         </div>

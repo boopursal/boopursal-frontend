@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, IconButton, Tooltip, Typography, Button, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress } from '@material-ui/core';
+import { Icon, IconButton, Tooltip, Typography, Button, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, Avatar } from '@material-ui/core';
 import { FuseAnimate } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import * as Actions from '../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import FuseUtils from '@fuse/FuseUtils';
-import ReactTable from "react-table";
-
 import { makeStyles } from '@material-ui/styles';
-import green from '@material-ui/core/colors/green';
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
 
 const useStyles = makeStyles(theme => ({
-
+    avatar: {
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        backgroundColor: '#F1F5F9',
+        color: '#64748B',
+        fontWeight: 700,
+        fontSize: '0.875rem'
+    },
     buttonProgress: {
-        color: green[500],
+        color: '#D34053',
         position: 'absolute',
         top: '50%',
         left: '50%',
         marginTop: -12,
         marginLeft: -12,
     },
-
 }));
 
 function ChildTable(props) {
-
     const dispatch = useDispatch();
     const classes = useStyles();
     const childs = useSelector(({ childsFrsAdminApp }) => childsFrsAdminApp.childs.data);
@@ -37,160 +41,100 @@ function ChildTable(props) {
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (childs) {
-            setFilteredData(getFilteredArray(childs, searchText));
+            const arr = Object.values(childs);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [childs, searchText]);
 
-
-
-    if (!filteredData) {
-        return null;
-    }
-
-    if (filteredData.length === 0 && loading === false) {
-        return (
-            <div className="flex flex-1 items-center justify-center h-full">
-                <Typography color="textSecondary" variant="h5">
-                    Aucune tentative trouvée
-                </Typography>
-            </div>
-        );
-    }
-
+    if (!filteredData) return null;
 
     return (
-        <div className="w-full flex flex-col">
-
-
-            <FuseAnimate animation="transition.slideUpIn" delay={300}>
-
-                <ReactTable
-
-                    className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                    getTrProps={(state, rowInfo, column) => {
-                        return {
-                            className: "h-64 ",
-
-                        }
-                    }}
-                    getTheadProps={(state, rowInfo, column) => {
-                        return {
-                            className: "h-64",
-
-                        }
-                    }}
-
-                    data={filteredData}
-                    columns={[
-
-                        {
-                            Header: "Nom",
-                            accessor: "firstName",
-                            filterable: true,
-                            className: "justify-center ",
-                            Cell: row => row.original.firstName ? row.original.firstName : '',
-                        },
-                        {
-                            Header: "Prénom",
-                            accessor: "lastName",
-                            className: "justify-center ",
-                            filterable: true,
-                            Cell: row => row.original.lastName ? row.original.lastName : '',
-                        },
-                        {
-                            Header: "Téléphone",
-                            accessor: "phone",
-                            className: "justify-center ",
-                            filterable: true,
-                            Cell: row => row.original.phone ? row.original.phone : '',
-                        },
-                        {
-                            Header: "Email",
-                            accessor: "email",
-                            className: "justify-center ",
-                            filterable: true,
-                            Cell: row => row.original.email ? row.original.email : '',
-
-                        },
-                        {
-                            Header: "Date de création",
-                            accessor: "created",
-                            filterable: false,
-                            className: "justify-center ",
-                            Cell: row => row.original.created ? moment(row.original.created).format('DD/MM/YYYY HH:mm') : 'N/A'
-                        },
-
-                        {
-                            Header: "",
-                            className: "justify-center ",
-                            Cell: row => (
-                                <div className="flex items-center">
-
-                                    <Tooltip title="Supprimer" >
-                                        <IconButton className="text-red text-20"
-                                            disabled={loadingEdit}
-                                            onClick={(ev) => {
-                                                ev.stopPropagation();
-                                                dispatch(Actions.openDialog({
-                                                    children: (
-                                                        <React.Fragment>
-                                                            <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                                                            <DialogContent>
-                                                                <DialogContentText id="alert-dialog-description">
-                                                                    Voulez vous vraiment supprimer cet enregistrement ?
-                                                                </DialogContentText>
-                                                            </DialogContent>
-                                                            <DialogActions>
-                                                                <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
-                                                                    Non
-                                                                </Button>
-                                                                <Button
-                                                                    onClick={(ev) => {
-                                                                        dispatch(Actions.removeTentative(row.original, user))
-                                                                        dispatch(Actions.closeDialog())
-                                                                    }}
-                                                                    color="primary"
-                                                                    autoFocus>
-                                                                    Oui
-                                                                </Button>
-                                                            </DialogActions>
-                                                        </React.Fragment>
-                                                    )
-                                                }))
-                                            }}
-                                        >
-                                            <Icon>
-                                                {loadingEdit && <CircularProgress size={24} className={classes.buttonProgress} />}
-                                                delete
-                                            </Icon>
-                                        </IconButton>
-                                    </Tooltip>
-
-                                </div>
-                            )
-                        }
-                    ]}
-                    defaultPageSize={10}
-                    noDataText="Aucune tentative trouvée"
-                    loading={loading}
-                    loadingText='Chargement...'
-                    ofText='sur'
-                />
-            </FuseAnimate>
-
-
-
-
-        </div>
+        <BoopursalTable
+            title="Tentatives d'inscription Fournisseurs"
+            data={filteredData}
+            loading={loading}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+            columns={[
+                {
+                    Header: "Identité",
+                    accessor: "firstName",
+                    Cell: row => (
+                        <div className="flex items-center gap-12">
+                            <Avatar className={classes.avatar}>
+                                {row.original.firstName?.charAt(0) || 'U'}
+                            </Avatar>
+                            <div className="flex flex-col">
+                                <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>
+                                    {row.original.firstName} {row.original.lastName}
+                                </Typography>
+                                <Typography variant="caption" style={{ color: '#64748B' }}>
+                                    {row.original.email}
+                                </Typography>
+                            </div>
+                        </div>
+                    ),
+                    minWidth: 250
+                },
+                {
+                    Header: "Téléphone",
+                    accessor: "phone",
+                    Cell: row => <Typography className="text-13" style={{ color: '#1C2434' }}>{row.original.phone || 'Non renseigné'}</Typography>,
+                    width: 150
+                },
+                {
+                    Header: "Date de création",
+                    accessor: "created",
+                    Cell: row => <Typography className="text-13" style={{ color: '#64748B' }}>{row.original.created ? moment(row.original.created).format('DD/MM/YYYY HH:mm') : 'N/A'}</Typography>,
+                    width: 160
+                },
+                {
+                    Header: "Actions",
+                    sortable: false,
+                    Cell: row => (
+                        <div className="flex items-center gap-8">
+                            <Tooltip title="Supprimer">
+                                <IconButton 
+                                    size="small"
+                                    style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                                    disabled={loadingEdit}
+                                    onClick={(ev) => {
+                                        ev.stopPropagation();
+                                        dispatch(Actions.openDialog({
+                                            children: (
+                                                <React.Fragment>
+                                                    <DialogTitle>Confirmation de suppression</DialogTitle>
+                                                    <DialogContent>
+                                                        <DialogContentText>Voulez-vous vraiment supprimer définitivement cette tentative d'inscription ?</DialogContentText>
+                                                    </DialogContent>
+                                                    <DialogActions>
+                                                        <Button onClick={() => dispatch(Actions.closeDialog())}>Annuler</Button>
+                                                        <Button 
+                                                            variant="contained" 
+                                                            style={{ backgroundColor: '#D34053', color: 'white' }}
+                                                            onClick={() => {
+                                                                dispatch(Actions.removeTentative(row.original, user));
+                                                                dispatch(Actions.closeDialog());
+                                                            }}
+                                                        >
+                                                            Supprimer
+                                                        </Button>
+                                                    </DialogActions>
+                                                </React.Fragment>
+                                            )
+                                        }));
+                                    }}
+                                >
+                                    {loadingEdit ? <CircularProgress size={18} style={{ color: '#D34053' }} /> : <Icon className="text-18">delete</Icon>}
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    ),
+                    width: 100
+                }
+            ]}
+        />
     );
 }
 

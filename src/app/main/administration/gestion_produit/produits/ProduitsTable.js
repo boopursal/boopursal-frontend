@@ -12,33 +12,33 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   productLogo: {
-    width: 52,
-    height: 52,
-    borderRadius: 12,
-    border: '1px solid #f1f5f9',
-    backgroundColor: '#fff'
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    border: '1px solid #E2E8F0',
+    backgroundColor: '#F8FAF9',
+    padding: 2
   },
-  productName: {
-    fontWeight: 950,
-    color: '#1e293b',
-    fontSize: '0.925rem',
-    letterSpacing: '-0.02em'
+  statusBadge: {
+    fontWeight: 600,
+    fontSize: '0.75rem',
+    padding: '4px 12px',
+    borderRadius: '9999px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    height: 26,
   },
-  badge: {
-    width: 10,
-    height: 10,
-    borderRadius: '50%',
-    marginRight: 8,
-    '&.active': { backgroundColor: '#22c55e' },
-    '&.inactive': { backgroundColor: '#ef4444' }
-  }
+  statusActive: { backgroundColor: '#DEF7EC', color: '#03543F' },
+  statusInactive: { backgroundColor: '#FDE2E2', color: '#9B1C1C' },
+  dot: { width: 6, height: 6, borderRadius: '50%' }
 }));
 
 function ProduitsTable(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  // FIXING REDUX SELECTOR: WAS produitsApp in Produits.js
   const produits = useSelector(({ produitsApp }) => produitsApp.produits.data);
   const loading = useSelector(({ produitsApp }) => produitsApp.produits.loading);
   const pageCount = useSelector(({ produitsApp }) => produitsApp.produits.pageCount);
@@ -56,18 +56,15 @@ function ProduitsTable(props) {
 
   if (!filteredData) return null;
 
-  const fn = _.debounce((p) => dispatch(Actions.setParametresData(p)), 1000);
-
   return (
     <BoopursalTable
-      title="Validation des Articles Industriels"
-      icon="shopping_basket"
+      title="Catalogue des Produits"
       data={filteredData}
       loading={loading}
       pageCount={pageCount}
       page={parametres.page - 1}
       searchText={searchText}
-      onSearchChange={(ev) => dispatch(Actions.setProduitsSearchText(ev))}
+      onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
       onPageChange={(pageIndex) => {
         parametres.page = pageIndex + 1;
         dispatch(Actions.setParametresData(parametres))
@@ -78,7 +75,7 @@ function ProduitsTable(props) {
         parametres.filter.direction = newSorted[0].desc ? 'desc' : 'asc';
         dispatch(Actions.setParametresData(parametres))
       }}
-      onRowClick={(row) => props.history.push("/gestion_produit/show/" + row.id)}
+      onRowClick={(row) => props.history.push("/products/" + row.id)}
       columns={[
         {
           Header: "Aperçu",
@@ -87,53 +84,59 @@ function ProduitsTable(props) {
             <Avatar
               className={classes.productLogo}
               alt={row.original.name}
-              src={row.original.logo ? URL_SITE + row.original.logo.url : "assets/images/defaults/product.png"}
+              src={row.original.logo ? URL_SITE + "/images/produits/" + row.original.logo.url : "/assets/images/ecommerce/product-placeholder.jpg"}
               variant="rounded"
             />
           ),
-          width: 70,
+          width: 80,
           sortable: false,
         },
         {
-          Header: "Produit & Marque",
+          Header: "Désignation & Marque",
           accessor: "name",
           Cell: (row) => (
             <div className="flex flex-col">
-              <Typography className={classes.productName}>{row.original.name}</Typography>
-              <Typography variant="caption" className="text-slate-400 font-700 uppercase">{row.original.marque || 'Standard'}</Typography>
+              <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>{row.original.name}</Typography>
+              <Typography variant="caption" style={{ color: '#64748B', fontWeight: 600 }}>{row.original.marque || 'SANS MARQUE'}</Typography>
             </div>
           ),
-          minWidth: 200
+          minWidth: 250
         },
         {
-          Header: "Fournisseur Hub",
+          Header: "Fournisseur",
           accessor: "fournisseur.societe",
-          Cell: (row) => <Typography className="text-13 font-800 text-blue-600">{row.original.fournisseur?.societe || 'Inconnu'}</Typography>,
-          minWidth: 150
+          Cell: (row) => (
+            <div className="flex items-center gap-8 px-10 py-4 rounded-4 bg-blue-50/50 border border-blue-100/50">
+               <Typography className="text-13 font-600" style={{ color: '#3C50E0' }}>{row.original.fournisseur?.societe || 'N/A'}</Typography>
+            </div>
+          ),
+          minWidth: 180
         },
         {
           Header: "État",
           accessor: "isactif",
           Cell: (row) => (
-            <div className="flex items-center">
-              <div className={clsx(classes.badge, row.original.isactif ? 'active' : 'inactive')} />
-              <Typography className="text-11 font-900 uppercase tracking-widest" style={{ color: row.original.isactif ? '#15803d' : '#b91c1c' }}>
-                {row.original.isactif ? 'En ligne' : 'Inactif'}
-              </Typography>
+            <div className={clsx(
+              classes.statusBadge,
+              row.original.isactif ? classes.statusActive : classes.statusInactive
+            )}>
+              <div className={classes.dot} style={{ backgroundColor: row.original.isactif ? '#10B981' : '#EF4444' }} />
+              {row.original.isactif ? 'Publié' : 'Brouillon'}
             </div>
           ),
-          width: 120
+          width: 130
         },
         {
-          Header: "Détails",
+          Header: "Actions",
           sortable: false,
           Cell: (row) => (
             <div className="flex items-center gap-8">
-              <Tooltip title="Inventaire">
-                <IconButton size="small" className="text-slate-400 hover:text-blue-600">
-                  <Icon className="text-18 font-900">inventory_2</Icon>
-                </IconButton>
-              </Tooltip>
+              <IconButton 
+                  size="small" 
+                  style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+              >
+                <Icon className="text-18">edit</Icon>
+              </IconButton>
             </div>
           ),
           width: 80

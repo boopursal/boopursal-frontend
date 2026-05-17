@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, IconButton, Typography, Tooltip } from '@material-ui/core';
-import { FuseUtils, FuseAnimate } from '@fuse';
+import { Icon, IconButton, Typography } from '@material-ui/core';
+import { FuseUtils } from '@fuse';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactTable from "react-table";
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
 import * as Actions from './store/actions';
 
 function FaqCategoriesList(props) {
@@ -14,89 +14,64 @@ function FaqCategoriesList(props) {
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (categories) {
-            setFilteredData(getFilteredArray(categories, searchText));
+            const arr = Object.values(categories);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [categories, searchText]);
 
-    if (!filteredData) {
-        return null;
-    }
-
-    if (filteredData.length === 0) {
-        return (
-            <div className="flex flex-1 items-center justify-center h-full">
-                <Typography color="textSecondary" variant="h5">
-                    Aucune catégorie trouvée
-                </Typography>
-            </div>
-        );
-    }
+    if (!filteredData) return null;
 
     return (
-
-        <FuseAnimate animation="transition.slideUpIn" delay={300}>
-
-            <ReactTable
-                className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                getTrProps={(state, rowInfo, column) => {
-                    return {
-                        className: "cursor-pointer",
-                        onClick: (e, handleOriginal) => {
-                            if (rowInfo) {
-                                dispatch(Actions.openEditFaqCategorieDialog(rowInfo.original));
-                            }
-                        }
-                    }
-                }}
-                data={filteredData}
-                columns={[
-
-                    {
-                        Header: "Categorie",
-                        accessor: "name",
-                        filterable: false,
-                    },
-
-                    {
-                        Header: "",
-                        Cell: row => (
-                            <div className="flex items-center">
-                                <Tooltip title="Editer" >
-                                    <IconButton className="text-teal text-20">
-                                        <Icon>edit</Icon>
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Supprimer" >
-                                    <IconButton className="text-red text-20"
-                                        onClick={(ev) => {
-                                            ev.stopPropagation();
-                                            dispatch(Actions.removeCategorie(row.original));
-                                        }}
-                                    >
-                                        <Icon>delete</Icon>
-                                    </IconButton>
-                                </Tooltip>
-
-                            </div>
-                        )
-                    }
-                ]}
-                defaultPageSize={10}
-                loading={loading}
-                noDataText="Aucune catégorie trouvée"
-                loadingText='Chargement...'
-                ofText='sur'
-            />
-        </FuseAnimate>
+        <BoopursalTable
+            title="Catégories de FAQ"
+            data={filteredData}
+            loading={loading}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+            onRowClick={(row) => dispatch(Actions.openEditFaqCategorieDialog(row))}
+            columns={[
+                {
+                    Header: "Nom de la Catégorie",
+                    accessor: "name",
+                    Cell: row => (
+                        <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>
+                            {row.original.name}
+                        </Typography>
+                    ),
+                    minWidth: 400
+                },
+                {
+                    Header: "Actions",
+                    sortable: false,
+                    Cell: row => (
+                        <div className="flex items-center gap-8">
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    dispatch(Actions.openEditFaqCategorieDialog(row.original));
+                                }}
+                            >
+                                <Icon className="text-18">edit</Icon>
+                            </IconButton>
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    dispatch(Actions.removeCategorie(row.original));
+                                }}
+                            >
+                                <Icon className="text-18">delete</Icon>
+                            </IconButton>
+                        </div>
+                    ),
+                    width: 100
+                }
+            ]}
+        />
     );
 }
 

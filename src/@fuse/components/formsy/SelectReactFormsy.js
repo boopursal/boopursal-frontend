@@ -226,7 +226,13 @@ function SelectReactFormsy(props) {
         }
     };
 
-    const value = _.find(options, { value: props.getValue() });
+    let value;
+    if (props.isMulti) {
+        const valArray = Array.isArray(props.getValue()) ? props.getValue() : [];
+        value = _.filter(options, opt => valArray.some(v => v === opt.value || v.value === opt.value));
+    } else {
+        value = _.find(options, { value: props.getValue() });
+    }
 
     // An error message is returned only if the component is invalid
     const errorMessage = props.getErrorMessage();

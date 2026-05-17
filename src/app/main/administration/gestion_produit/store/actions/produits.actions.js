@@ -76,7 +76,7 @@ export function setParametresData(parametres)
     }
 }
 
-export function setProduitsSearchText(event)
+export function setSearchText(event)
 {
     return {
         type      : SET_PRODUITS_SEARCH_TEXT,

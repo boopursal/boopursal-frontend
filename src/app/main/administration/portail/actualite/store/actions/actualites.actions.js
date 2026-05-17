@@ -90,7 +90,7 @@ export function setParametresData(parametres) {
     }
 }
 
-export function setActualitesSearchText(event) {
+export function setSearchText(event) {
     return {
         type: SET_ACTUALITES_SEARCH_TEXT,
         searchText: event.target.value

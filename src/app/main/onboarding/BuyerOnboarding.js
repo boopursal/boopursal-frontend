@@ -124,9 +124,9 @@ function BuyerOnboarding(props) {
                                 type="submit"
                                 variant="contained"
                                 className="btn-primary-onboarding"
-                                endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Icon>arrow_forward</Icon>}
                             >
                                 Continuer
+                                {loading ? <CircularProgress size={20} color="inherit" className="ml-8" /> : <Icon className="ml-8">arrow_forward</Icon>}
                             </Button>
                         </div>
                     </Formsy>

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, IconButton, Tooltip, Typography } from '@material-ui/core';
-import { FuseUtils, FuseAnimate } from '@fuse';
+import { Icon, IconButton, Tooltip, Typography, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
+import { FuseUtils } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactTable from "react-table";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import BoopursalTable from '@fuse/components/BoopursalTable/BoopursalTable';
 import * as Actions from '../store/actions';
+import { openDialog, closeDialog } from 'app/store/actions/fuse';
 
 function ConditionsTable(props) {
     const dispatch = useDispatch();
@@ -15,106 +15,87 @@ function ConditionsTable(props) {
 
     const [filteredData, setFilteredData] = useState(null);
 
-
     useEffect(() => {
-        function getFilteredArray(entities, searchText) {
-            const arr = Object.keys(entities).map((id) => entities[id]);
-            if (searchText.length === 0) {
-                return arr;
-            }
-            return FuseUtils.filterArrayByString(arr, searchText);
-        }
-
         if (conditions) {
-            setFilteredData(getFilteredArray(conditions, searchText));
+            const arr = Object.values(conditions);
+            setFilteredData(searchText.length === 0 ? arr : FuseUtils.filterArrayByString(arr, searchText));
         }
     }, [conditions, searchText]);
 
-
-
-    if (!filteredData) {
-        return null;
-    }
-    if (loading) {
-        return (
-            <div className="flex flex-1 items-center justify-center h-full">
-                <CircularProgress color="secondary" /> &ensp;
-               Chargement ...
-            </div>
-        );
-    }
-    if (filteredData.length === 0) {
-        return (
-            <div className="flex flex-1 items-center justify-center h-full">
-                <Typography color="textSecondary" variant="h5">
-                    Aucun Condition trouvé
-                </Typography>
-            </div>
-        );
-    }
+    if (!filteredData) return null;
 
     return (
-        <FuseAnimate animation="transition.slideUpIn" delay={300}>
-            <ReactTable
-                className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                getTrProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64 cursor-pointer",
-                        onClick: (e, handleOriginal) => {
-                            if (rowInfo) {
-                                props.history.push('/admin/conditions/' + rowInfo.original.id);
-                            }
-                        }
-                    }
-                }}
-                getTheadProps={(state, rowInfo, column) => {
-                    return {
-                        className: "h-64 font-bold",
-
-                    }
-                }}
-
-                data={filteredData}
-                columns={[
-
-
-                    {
-                        Header: "titre",
-                        filterable: true,
-                        accessor: "titre",
-                    },
-                    {
-                        Header: "",
-                        Cell: row => (
-                            <div className="flex items-center">
-                                <Tooltip title="Editer" >
-                                    <IconButton className="text-teal text-20">
-                                        <Icon>edit</Icon>
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Supprimer" >
-                                    <IconButton className="text-red text-20"
-                                        onClick={(ev) => {
-                                            ev.stopPropagation();
-                                            dispatch(Actions.removeCondition(row.original));
-                                        }}
-                                    >
-                                        <Icon>delete</Icon>
-                                    </IconButton>
-                                </Tooltip>
-
-                            </div>
-                        )
-                    }
-                ]}
-                defaultPageSize={10}
-                loading={loading}
-                noDataText="Aucun condition trouvé"
-                loadingText='Chargement...'
-                ofText='sur'
-
-            />
-        </FuseAnimate>
+        <BoopursalTable
+            title="Conditions Générales"
+            data={filteredData}
+            loading={loading}
+            searchText={searchText}
+            onSearchChange={(ev) => dispatch(Actions.setSearchText(ev))}
+            onRowClick={(row) => props.history.push('/admin/conditions/' + row.id)}
+            columns={[
+                {
+                    Header: "Titre de la Condition",
+                    accessor: "titre",
+                    Cell: row => (
+                        <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>
+                            {row.original.titre}
+                        </Typography>
+                    ),
+                    minWidth: 400
+                },
+                {
+                    Header: "Actions",
+                    width: 100,
+                    sortable: false,
+                    Cell: row => (
+                        <div className="flex items-center gap-8">
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#319795', backgroundColor: 'rgba(49, 151, 149, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    props.history.push('/admin/conditions/' + row.original.id);
+                                }}
+                            >
+                                <Icon className="text-18">edit</Icon>
+                            </IconButton>
+                            <IconButton 
+                                size="small" 
+                                style={{ color: '#D34053', backgroundColor: 'rgba(211, 64, 83, 0.05)' }}
+                                onClick={(ev) => {
+                                    ev.stopPropagation();
+                                    dispatch(openDialog({
+                                        children: (
+                                            <React.Fragment>
+                                                <DialogTitle>Confirmation</DialogTitle>
+                                                <DialogContent>
+                                                    <DialogContentText>Voulez-vous vraiment supprimer cette condition ?</DialogContentText>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={() => dispatch(closeDialog())}>Annuler</Button>
+                                                    <Button 
+                                                        variant="contained" 
+                                                        style={{ backgroundColor: '#D34053', color: 'white' }}
+                                                        onClick={() => {
+                                                            dispatch(Actions.removeCondition(row.original));
+                                                            dispatch(closeDialog());
+                                                        }}
+                                                    >
+                                                        Supprimer
+                                                    </Button>
+                                                </DialogActions>
+                                            </React.Fragment>
+                                        )
+                                    }));
+                                }}
+                            >
+                                <Icon className="text-18">delete</Icon>
+                            </IconButton>
+                        </div>
+                    ),
+                }
+            ]}
+        />
     );
 }
 

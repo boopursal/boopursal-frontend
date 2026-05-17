@@ -1,8 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Button, Tab, Tabs, InputAdornment, Icon, Typography, LinearProgress, Popper, Chip, Grid, CircularProgress, IconButton, Tooltip, FormControlLabel, Radio, MenuItem, ListItemText, DialogTitle, DialogContent, DialogActions, DialogContentText, Divider } from '@material-ui/core';
+import {
+    Button, Tab, Tabs, Icon, Typography, LinearProgress,
+    Chip, CircularProgress, IconButton, FormControlLabel,
+    Radio, MenuItem, ListItemText, Paper
+} from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 import { red } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/styles';
-import { FuseAnimate, FusePageCarded, URL_SITE, TextFieldFormsy, DatePickerFormsy, CheckboxFormsy, RadioGroupFormsy, SelectReactFormsy } from '@fuse';
+import {
+    FuseAnimate, FusePageCarded, URL_SITE,
+    TextFieldFormsy, DatePickerFormsy, CheckboxFormsy,
+    RadioGroupFormsy, SelectReactFormsy, FuseChipSelect
+} from '@fuse';
+import AsyncSelect from 'react-select/lib/Async';
+import agent from 'agent';
 import { useForm } from '@fuse/hooks';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
@@ -16,52 +27,156 @@ import moment from 'moment';
 import green from '@material-ui/core/colors/green';
 import ReactTable from "react-table";
 import Autosuggest from 'react-autosuggest';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
 import Highlighter from "react-highlight-words";
 import SuggestionDialog from './SuggestionDialog';
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        '& > * + *': {
-            marginTop: theme.spacing(2),
+    headerRoot: {
+        background: 'linear-gradient(135deg, #1a2744 0%, #2c3e6b 100%)',
+        minHeight: 200,
+    },
+    card: {
+        background: '#fff',
+        borderRadius: 16,
+        border: '1px solid #f0f0f0',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+        padding: 32,
+        marginBottom: 24,
+    },
+    cardHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: 20,
+        paddingBottom: 16,
+        borderBottom: '1px solid #f5f5f5',
+        fontWeight: 900,
+        fontSize: 13,
+        letterSpacing: 1,
+        color: '#1a2744',
+        textTransform: 'uppercase',
+    },
+    cardIcon: {
+        width: 36,
+        height: 36,
+        borderRadius: 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 14,
+        fontWeight: 'bold',
+    },
+    sidebar: {
+        width: 320,
+        flexShrink: 0,
+        marginLeft: 32,
+        '@media (max-width: 1279px)': {
+            width: '100%',
+            marginLeft: 0,
+            marginTop: 24,
         },
     },
-    chip2: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#4caf50',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
+    sideCard: {
+        borderRadius: 16,
+        marginBottom: 20,
+        overflow: 'hidden',
     },
-    chipOrange: {
-        marginLeft: theme.spacing(1),
-        padding: 2,
-        background: '#ff9800',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '11px',
-        height: 20
-
+    auditCard: {
+        borderRadius: 16,
+        marginBottom: 20,
+        padding: 24,
     },
-    chips: {
-        flex: 1,
+    auditAlert: {
         display: 'flex',
-        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        background: 'rgba(255,255,255,0.85)',
+        borderRadius: 12,
+        padding: '10px 14px',
+        marginBottom: 8,
+        border: '1px solid rgba(255,255,255,0.5)',
     },
-    suggestion: {
-        display: 'block',
+    statusBadge: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        padding: '3px 12px',
+        borderRadius: 20,
+        fontSize: 11,
+        fontWeight: 900,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
     },
-    suggestionsList: {
-        margin: 0,
-        padding: 0,
-        listStyleType: 'none',
+    decisionCard: {
+        background: 'linear-gradient(135deg, #2779BD 0%, #1C3D5A 100%)',
+        borderRadius: 16,
+        padding: 28,
+        color: '#fff',
+        marginBottom: 20,
     },
-    divider: {
-        height: theme.spacing(2),
+    couvertureCard: {
+        background: '#1a2744',
+        borderRadius: 16,
+        padding: 24,
+        color: '#fff',
+        marginBottom: 20,
+    },
+    budgetBox: {
+        background: '#1a2744',
+        borderRadius: 12,
+        padding: 20,
+        color: '#fff',
+        marginBottom: 16,
+        position: 'relative',
+        overflow: 'hidden',
+    },
+    twoColLayout: {
+        display: 'flex',
+        alignItems: 'flex-start',
+        width: '100%',
+        '@media (max-width: 1279px)': {
+            flexDirection: 'column',
+        },
+    },
+    mainCol: {
+        flex: 1,
+        minWidth: 0,
+    },
+    refBadge: {
+        display: 'inline-block',
+        padding: '2px 10px',
+        borderRadius: 6,
+        background: 'rgba(52,144,220,0.15)',
+        color: '#2779BD',
+        fontWeight: 900,
+        fontSize: 11,
+        marginRight: 8,
+        border: '1px solid rgba(52,144,220,0.25)',
+    },
+    backLink: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        color: 'rgba(255,255,255,0.6)',
+        textDecoration: 'none',
+        fontWeight: 700,
+        fontSize: 12,
+        letterSpacing: 1,
+        textTransform: 'uppercase',
+        marginBottom: 20,
+        '&:hover': { color: '#fff' },
+    },
+    suggestionChip: {
+        margin: '4px 6px 4px 0',
+        background: '#fff',
+        border: '1px solid #e0e0e0',
+        fontWeight: 700,
+        borderRadius: 8,
+    },
+    optionRow: {
+        border: '1px solid #f0f0f0',
+        borderRadius: 12,
+        padding: '10px 16px',
+        marginBottom: 8,
+        display: 'flex',
+        alignItems: 'center',
+        background: '#fafafa',
     },
     buttonProgress: {
         color: green[500],
@@ -71,83 +186,29 @@ const useStyles = makeStyles(theme => ({
         marginTop: -12,
         marginLeft: -12,
     },
-    demandeImageFeaturedStar: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        color: red[400],
-        opacity: 0
-    },
-    demandeImageUpload: {
-        transitionProperty: 'box-shadow',
-        transitionDuration: theme.transitions.duration.short,
-        transitionTimingFunction: theme.transitions.easing.easeInOut,
-    },
-    select: {
-        zIndex: 999,
-    },
-    demandeImageItem: {
-        transitionProperty: 'box-shadow',
-        transitionDuration: theme.transitions.duration.short,
-        transitionTimingFunction: theme.transitions.easing.easeInOut,
-        '&:hover': {
-            '& $demandeImageFeaturedStar': {
-                opacity: .8
-            }
-        },
-        '&.featured': {
-            pointerEvents: 'none',
-            boxShadow: theme.shadows[3],
-            '& $demandeImageFeaturedStar': {
-                opacity: 1
-            },
-            '&:hover $demandeImageFeaturedStar': {
-                opacity: 1
-            }
-        }
-    }
 }));
+
 moment.defaultFormat = "DD/MM/YYYY HH:mm";
+
 function renderSuggestion(suggestion, { query, isHighlighted }) {
     return (
-
-        <MenuItem selected={isHighlighted} component="div" className="z-999" dense={true}>
-            <ListItemText
-                className="pl-0 "
-                primary={
-                    <Highlighter
-                        highlightClassName="YourHighlightClass"
-                        searchWords={[query]}
-                        autoEscape={true}
-                        textToHighlight={suggestion.name}
-                    />
-                }
-            />
+        <MenuItem selected={isHighlighted} component="div" dense>
+            <ListItemText primary={
+                <Highlighter highlightClassName="YourHighlightClass" searchWords={[query]} autoEscape textToHighlight={suggestion.name} />
+            } />
         </MenuItem>
-
     );
-
 }
+
 function renderInputComponent(inputProps) {
-    const { classes, inputRef = () => { }, ref, ...other } = inputProps;
+    const { classes, inputRef = () => {}, ref, ...other } = inputProps;
     return (
-        <TextField
-            fullWidth
-            InputProps={{
-                inputRef: node => {
-                    ref(node);
-                    inputRef(node);
-                },
-                classes: {
-                    input: classes.input,
-                },
-            }}
-            {...other}
-        />
+        <TextField fullWidth InputProps={{ inputRef: node => { ref(node); inputRef(node); } }} {...other} />
     );
 }
 
 function Demande(props) {
+    const classes = useStyles(props);
     const suggestionsNode = useRef(null);
     const popperNode = useRef(null);
     const searchCategories = useSelector(({ demandesAdminApp }) => demandesAdminApp.searchCategories);
@@ -157,61 +218,41 @@ function Demande(props) {
     const demande = useSelector(({ demandesAdminApp }) => demandesAdminApp.demande);
 
     const [isFormValid, setIsFormValid] = useState(false);
-    const [showDiffusion, setShowDiffusion] = useState(false);
     const formRef = useRef(null);
     const { form, handleChange, setForm } = useForm();
 
-    const classes = useStyles(props);
     const [tabValue, setTabValue] = useState(0);
     const [sousSecteurs] = useState(null);
     const [motif, setMotif] = useState(null);
     const params = props.match.params;
     const { demandeId } = params;
-    useEffect(() => {
-        function updateDemandeState() {
-            if (demandeId === 'new') {
-                dispatch(Actions.newDemande());
-            }
-            else {
-                dispatch(Actions.getDemande(demandeId));
-                dispatch(Actions.getFournisseurParticipe(demandeId));
-            }
-            dispatch(Actions.getMotifs());
-            dispatch(Actions.getSecteurs());
-        }
 
-        updateDemandeState();
-        return () => {
-            dispatch(Actions.cleanUpDemande())
+    useEffect(() => {
+        if (demandeId === 'new') {
+            dispatch(Actions.newDemande());
+        } else {
+            dispatch(Actions.getDemande(demandeId));
+            dispatch(Actions.getFournisseurParticipe(demandeId));
         }
+        dispatch(Actions.getMotifs());
+        dispatch(Actions.getSecteurs());
+        return () => dispatch(Actions.cleanUpDemande());
     }, [dispatch, demandeId]);
 
-
     useEffect(() => {
-
         if (demande.attachement) {
-            setForm(_.set({ ...form }, 'attachements', [
-                demande.attachement,
-                ...form.attachements
-            ]));
+            setForm(_.set({ ...form }, 'attachements', [demande.attachement, ...form.attachements]));
             demande.attachement = null;
         }
-
     }, [demande.attachement, form, setForm]);
 
-
     useEffect(() => {
-        if (demande.error && (demande.error.reference || demande.error.statut || demande.error.motifRejet || demande.error.description || demande.error.dateExpiration || demande.error.isPublic || demande.error.isAnonyme || demande.error.sousSecteurs || demande.error.budget)) {
-
-            formRef.current.updateInputsWithError({
-                ...demande.error
-            });
-
-            disableButton();
+        if (demande.error && (demande.error.reference || demande.error.statut || demande.error.motifRejet || demande.error.description || demande.error.dateExpiration)) {
+            formRef.current && formRef.current.updateInputsWithError({ ...demande.error });
+            setIsFormValid(false);
             demande.error = null;
         }
     }, [demande.error]);
-
 
     useEffect(() => {
         if (demande.attachement_deleted) {
@@ -220,1127 +261,505 @@ function Demande(props) {
         }
     }, [demande.attachement_deleted, form, setForm]);
 
-
     useEffect(() => {
-        if (
-            (demande.data && !form) ||
-            (demande.data && form && demande.data.id !== form.id)
-        ) {
-
-            if (demande.data.categories) {
-                setCategories(demande.data.categories.map(item => item));
-            }
-            if (demande.data.motifRejet)
-                setMotif({
-                    value: demande.data.motifRejet['@id'],
-                    label: demande.data.motifRejet.name,
-                });
-            if (demande.data.autreCategories) {
-                setSuggestions(_.split(demande.data.autreCategories, ','))
-            }
+        if ((demande.data && !form) || (demande.data && form && demande.data.id !== form.id)) {
+            if (demande.data.categories) setCategories(demande.data.categories.map(item => item));
+            if (demande.data.motifRejet) setMotif({ value: demande.data.motifRejet['@id'], label: demande.data.motifRejet.name });
+            if (demande.data.autreCategories) setSuggestions(_.split(demande.data.autreCategories, ','));
             setForm({ ...demande.data });
-
         }
     }, [form, demande.data, setForm]);
 
     useEffect(() => {
         if (demande.produit) {
             setCategories([...categories, demande.produit]);
-            setSuggestions(_.reject(suggestions, function (i) { return i === demande.produit.name }))
+            setSuggestions(_.reject(suggestions, i => i === demande.produit.name));
         }
     }, [demande.produit, categories, suggestions]);
 
-    function handleChangeTab(event, tabValue) {
-        setTabValue(tabValue);
+    function handleSuggestionsFetchRequested({ value, reason }) {
+        if (reason === 'input-changed') {
+            value && value.trim().length > 1 && dispatch(Actions.loadSuggestions(value.trim()));
+        }
     }
+    function handleSuggestionsClearRequested() {}
 
     function handleUploadChange(e) {
         const file = e.target.files[0];
-        if (!file) {
-            return;
-        }
+        if (!file) return;
         dispatch(Actions.uploadAttachement(file));
     }
 
-    function handleDateChange(value, name) {
-        setForm(_.set({ ...form }, name, moment(value).format('YYYY-MM-DDTHH:mm:ssZ')));
-    }
-
-    function handleChipChange2(value, name) {
-        setForm(_.set({ ...form }, name, value));
-        setMotif(value)
-    }
-
     function handleRadioChange(e) {
-        if (parseInt(e.target.value) === 2) {
-            form.isPublic = false;
-        }
+        if (parseInt(e.target.value) === 2) form.isPublic = false;
         setForm(_.set({ ...form }, 'statut', parseInt(e.target.value)));
-
     }
-    function handleRadioLocalisation(e) {
 
+    function handleRadioLocalisation(e) {
         setForm(_.set({ ...form }, 'localisation', parseInt(e.target.value)));
     }
-    function handleCheckBoxChange(e, name) {
 
-        setForm(_.set({ ...form }, name, e.target.checked));
-    }
-
-    function disableButton() {
-        setIsFormValid(false);
-    }
-
-    function enableButton() {
-        setIsFormValid(true);
-    }
-
-
-    function handleChangeSearch(event) {
-        dispatch(Actions.setGlobalSearchText(event))
-    }
-    function showSearch() {
-        dispatch(Actions.showSearch());
-        document.addEventListener("keydown", escFunction, false);
-    }
-
-    function escFunction(event) {
-        if (event.keyCode === 27) {
-            hideSearch();
-            dispatch(Actions.cleanUp());
+    const loadCategoryOptions = (inputValue, callback) => {
+        if (!inputValue || inputValue.length < 2) {
+            callback([]);
+            return;
         }
-
-    }
-
-    function hideSearch() {
-        dispatch(Actions.hideSearch());
-        document.removeEventListener("keydown", escFunction, false);
-
-    }
-
-
-    function handleSuggestionsFetchRequested({ value, reason }) {
-
-        if (reason === 'input-changed') {
-            value && value.trim().length > 1 && dispatch(Actions.loadSuggestions(value.trim()));
-            // Fake an AJAX call
-        }
-
-    }
-    function handleSuggestionsClearRequested() {
-        //dispatch(Actions.hideSearch());
-
-    }
-    const autosuggestProps = {
-        renderInputComponent,
-        //alwaysRenderSuggestions: true,
-        suggestions: searchCategories.suggestions,
-        focusInputOnSuggestionClick: false,
-        onSuggestionsFetchRequested: handleSuggestionsFetchRequested,
-        onSuggestionsClearRequested: handleSuggestionsClearRequested,
-        renderSuggestion
+        agent.get(`/api/categories?name=${inputValue}&del=false&props[]=id&props[]=name`)
+            .then(res => {
+                const results = res.data['hydra:member'] || [];
+                const opts = results.map(item => ({
+                    value: item.id,
+                    label: item.name,
+                    '@id': `/api/categories/${item.id}`
+                }));
+                callback(opts);
+            })
+            .catch(() => callback([]));
     };
 
-    function handleDelete(id) {
-        setCategories(_.reject(categories, function (o) { return o.id === id; }))
+    function handleAsyncCategoriesChange(selected) {
+        if (selected && Array.isArray(selected)) {
+            setCategories(selected.map(s => ({
+                id: s.value,
+                name: s.label,
+                '@id': s['@id'] || `/api/categories/${s.value}`
+            })));
+        } else {
+            setCategories([]);
+        }
     }
-    function handleDeleteSuggestion(item) {
-        setSuggestions(_.reject(suggestions, function (i) { return i === item }))
 
+    function handleRemoveSuggestion(item) {
+        setSuggestions(_.reject(suggestions, s => s === item));
     }
 
     function handleSubmit() {
         dispatch(Actions.putDemande(form, sousSecteurs, suggestions, motif, form.id, props.history, categories));
     }
 
+    if (!form) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', padding: 40 }}>
+                <CircularProgress />
+            </div>
+        );
+    }
+
+    const acheteur = form.acheteur || demande.data?.acheteur;
+    const statusLabel = form.statut === 1 ? 'Validée' : form.statut === 2 ? 'Rejetée' : 'En attente';
+    const statusColor = form.statut === 1 ? '#1F9D55' : form.statut === 2 ? '#CC1F1A' : '#DE751F';
+    const report = demande.data?.validationReport;
+
     return (
         <>
             <FusePageCarded
                 classes={{
-                    toolbar: "p-0",
-                    header: "min-h-72 h-72 sm:h-136 sm:min-h-136"
+                    toolbar: 'p-0',
+                    header: 'min-h-72 h-72 sm:h-136 sm:min-h-136 bg-blue-darkest text-white',
+                    contentWrapper: 'p-0',
+                    content: 'flex flex-col flex-1 relative',
                 }}
                 header={
-                    !demande.loading
-                        ?
-
-                        form && (
-                            <div className="flex flex-1 w-full items-center justify-between">
-
-                                <div className="flex flex-col items-start max-w-full">
-
-                                    <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                                        <Typography className="normal-case flex items-center sm:mb-12" component={Link} role="button" to="/demandes_admin" color="inherit">
-                                            <Icon className="mr-4 text-20">arrow_back</Icon>
-                                            Retour
+                    <div className="flex flex-1 w-full items-center justify-between px-24 py-16">
+                        <div className="flex flex-col items-start min-w-0">
+                            <FuseAnimate animation="transition.slideRightIn" delay={300}>
+                                <Typography className="normal-case flex items-center sm:mb-12 cursor-pointer font-bold" onClick={() => props.history.push('/demandes_admin')}>
+                                    <Icon className="mr-4 text-20">arrow_back</Icon>
+                                    Retour à la liste
+                                </Typography>
+                            </FuseAnimate>
+                            <div className="flex items-center min-w-0">
+                                <FuseAnimate animation="transition.expandIn" delay={300}>
+                                    <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg flex items-center justify-center mr-16" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                                        <Icon className="text-32 text-blue-light">assignment</Icon>
+                                    </div>
+                                </FuseAnimate>
+                                <div className="flex flex-col min-w-0">
+                                    <FuseAnimate animation="transition.slideLeftIn" delay={300}>
+                                        <Typography variant="h5" className="truncate font-bold">
+                                            {form.titre || 'Nouvelle Demande'}
                                         </Typography>
                                     </FuseAnimate>
-
-                                    <div className="flex items-center max-w-full">
-
-                                        <div className="flex flex-col min-w-0">
-                                            <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                                                <Typography className="text-16 sm:text-20 truncate">
-                                                    {form.titre ? form.titre : 'Nouvelle Demande'}
-                                                </Typography>
-                                            </FuseAnimate>
-                                            {form.reference &&
-                                                <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                                                    <Typography variant="caption">RFQ-{form.reference}</Typography>
-                                                </FuseAnimate>
-                                            }
-
-                                            <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                                                <Typography variant="caption">Détails de la demande</Typography>
-                                            </FuseAnimate>
-                                        </div>
-                                    </div>
+                                    <FuseAnimate animation="transition.slideLeftIn" delay={300}>
+                                        <Typography variant="caption" className="flex items-center mt-4">
+                                            {form.reference && (
+                                                <span className="font-bold mr-8 tracking-wide">#{form.reference}</span>
+                                            )}
+                                            {statusLabel && <span className="font-bold" style={{ color: statusColor }}>• {statusLabel}</span>}
+                                        </Typography>
+                                    </FuseAnimate>
                                 </div>
-                                <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                                    <Button
-                                        className="whitespace-no-wrap"
-                                        variant="contained"
-                                        type="submit"
-                                        disabled={!isFormValid || demande.loading || !categories.length}
-                                        onClick={() => handleSubmit()}
-                                    >
-                                        Sauvegarder
-                                        {demande.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
-                                    </Button>
-                                </FuseAnimate>
-
                             </div>
-                        )
-                        :
-                        ''
+                        </div>
+                    </div>
                 }
                 contentToolbar={
-                    demande.loading ?
-                        <div className={classes.root}>
-                            <LinearProgress color="secondary" />
+                    demande.loading ? (
+                        <div className="w-full"><LinearProgress color="secondary" /></div>
+                    ) : (
+                        <div style={{ borderBottom: '1px solid #f0f0f0', background: '#fff', paddingLeft: 16 }}>
+                            <Tabs
+                                value={(() => {
+                                    const t = [0, 1, 2];
+                                    if (form?.diffusionsdemandes?.length > 0) t.push(3);
+                                    if (demande?.fournisseurs?.length > 0 && !form.isAnonyme) t.push(4);
+                                    const idx = t.indexOf(tabValue);
+                                    return idx !== -1 ? idx : 0;
+                                })()}
+                                onChange={(e, n) => {
+                                    const t = [0, 1, 2];
+                                    if (form?.diffusionsdemandes?.length > 0) t.push(3);
+                                    if (demande?.fournisseurs?.length > 0 && !form.isAnonyme) t.push(4);
+                                    setTabValue(t[n]);
+                                }}
+                                variant="scrollable"
+                                classes={{ root: 'min-h-72', indicator: 'bg-blue h-4' }}
+                            >
+                                <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>assignment</Icon>Général</span>} />
+                                <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>attach_file</Icon>Documents {form?.attachements?.length > 0 && <span style={{ marginLeft: 8, background: '#E3342F', color: '#fff', borderRadius: 12, padding: '2px 8px', fontSize: 11 }}>{form.attachements.length}</span>}</span>} />
+                                <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>person</Icon>Acheteur</span>} />
+                                {form?.diffusionsdemandes?.length > 0 && <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>send</Icon>Diffusion</span>} />}
+                                {demande?.fournisseurs?.length > 0 && !form.isAnonyme && <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>people</Icon>Participants</span>} />}
+                            </Tabs>
                         </div>
-                        :
-                        <Tabs
-                            value={tabValue}
-                            onChange={handleChangeTab}
-                            indicatorColor="secondary"
-                            textColor="secondary"
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            classes={{ root: "w-full h-64" }}
-                        >
-                            <Tab className="h-64 normal-case" label="Infos générales" />
-                            <Tab className="h-64 normal-case"
-                                label={
-                                    form && form.attachements && form.attachements.length > 0
-                                        ? "Pièce(s) jointe(s) (" + form.attachements.length + ")"
-                                        : "Pièce(s) jointe(s)"}
-                            />
-                            <Tab className="h-64 normal-case" label="Infos Acheteur" />
-
-                            {form && form.diffusionsdemandes && form.diffusionsdemandes.length > 0 ?
-                                <Tab className="h-64 normal-case" label={"Diffuser (" + form.diffusionsdemandes.length + " fois)"} />
-                                : ''}
-                            {demande && demande.fournisseurs && demande.fournisseurs.length > 0 && demande.data && !demande.data.isAnonyme ?
-                                <Tab className={clsx("h-64 normal-case text-orange", demande.data.statut === 3 ? "text-green" : "text-orange")} label=
-                                    {
-                                        demande.data && demande.data.statut === 3 ?
-                                            'Adjugée' :
-                                            (demande.fournisseurs ? demande.fournisseurs.length : 0) + " fournisseur(s) participant(s)"
-                                    } />
-                                : ''}
-
-                        </Tabs>
-
+                    )
                 }
                 content={
-                    !demande.loading ?
+                    <div className="p-16 sm:p-24 w-full" style={{ maxWidth: 1200, margin: '0 auto' }}>
+                        <Formsy onValidSubmit={handleSubmit} onValid={() => setIsFormValid(true)} onInvalid={() => setIsFormValid(false)} ref={formRef}>
 
-                        form && (
-                            <div className="p-10  sm:p-24 max-w-2xl">
-                                {tabValue === 0 &&
-                                    (
-                                        <Formsy
-                                            onValidSubmit={handleSubmit}
-                                            onValid={enableButton}
-                                            onInvalid={disableButton}
-                                            ref={formRef}
-                                            className="flex pt-10 flex-col ">
-                                            <Grid container spacing={3} >
-                                                <Grid item xs={12} sm={8}>
-                                                    <TextFieldFormsy
-                                                        className="mb-24"
-                                                        label="Designation"
-                                                        autoFocus
-                                                        id="titre"
-                                                        name="titre"
-                                                        value={form.titre}
-                                                        onChange={handleChange}
-                                                        variant="outlined"
-                                                        validations={{
-                                                            minLength: 4,
-                                                            maxLength: 255,
-                                                        }}
-                                                        validationErrors={{
-                                                            minLength: 'Min character length is 4',
-                                                            maxLength: 'Max character length is 255'
-                                                        }}
-                                                        required
-                                                        fullWidth
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={12} sm={4}>
-                                                    <TextFieldFormsy
-                                                        className="mb-24"
-                                                        label="Référence"
-                                                        id="reference"
-                                                        name="reference"
-                                                        value={form.reference ? form.reference : 'En attente'}
-                                                        variant="outlined"
-                                                        InputProps={{
-                                                            startAdornment: <InputAdornment position="start">RFQ-</InputAdornment>,
-                                                        }}
-                                                        disabled
-                                                        fullWidth
-                                                    />
-                                                </Grid>
+                            {/* ── TAB 0 : GÉNÉRAL ── */}
+                            {tabValue === 0 && (
+                                <div className="flex flex-col xl:flex-row xl:items-start xl:justify-center w-full">
 
+                                    {/* COLONNE GAUCHE (Formulaire Principal) */}
+                                    <div className="flex-1 min-w-0 pr-0 xl:pr-24">
 
-                                            </Grid>
-                                            <Grid container spacing={3} >
+                                        {/* Identification */}
+                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
+                                                <Icon className="text-blue mr-8 text-20">edit</Icon>
+                                                Identification du besoin
+                                            </div>
+                                            <div className="p-16 sm:p-24 flex flex-col sm:flex-row flex-wrap -mx-8">
+                                                <div className="w-full sm:w-1/2 px-8 mb-16 sm:mb-0">
+                                                    <TextFieldFormsy name="titre" label="Objet de la demande *" value={form.titre} variant="outlined" required fullWidth />
+                                                </div>
+                                                <div className="w-full sm:w-1/2 px-8">
+                                                    <TextFieldFormsy name="reference" label="Référence interne" value={form.reference} variant="outlined" disabled fullWidth />
+                                                </div>
+                                                <div className="w-full sm:w-1/2 px-8 mt-16">
+                                                    <TextFieldFormsy name="budget" label="Budget estimatif (MAD)" value={form.budget !== undefined && form.budget !== null ? String(form.budget) : ''} type="number" variant="outlined" fullWidth className="font-bold text-lg" />
+                                                </div>
+                                                <div className="w-full sm:w-1/2 px-8 mt-16">
+                                                    <DatePickerFormsy name="dateExpiration" value={form.dateExpiration} label="Fin de validité" format="DD/MM/YYYY" variant="outlined" fullWidth />
+                                                </div>
+                                            </div>
+                                        </Paper>
 
-                                                <Grid item xs={12} sm={6}>
+                                        {/* Description */}
+                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
+                                                <Icon className="text-purple mr-8 text-20">description</Icon>
+                                                Cahier des charges
+                                            </div>
+                                            <div className="p-16 sm:p-24">
+                                                <TextFieldFormsy name="description" label="Spécifications techniques détaillées *" value={form.description} multiline rows={6} variant="outlined" required fullWidth />
+                                                
+                                                {form.autre_categories && (
+                                                    <div className="mt-16">
+                                                        <TextFieldFormsy name="autre_categories" label="Autres catégories spécifiées" value={form.autre_categories} variant="outlined" disabled fullWidth />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </Paper>
 
-
-                                                    <DatePickerFormsy
-                                                        className="mb-24"
-                                                        label="Date d'expiration"
-                                                        id="dateExpiration"
-                                                        name="dateExpiration"
-                                                        value={form.dateExpiration}
-                                                        onChange={(value) => handleDateChange(value, 'dateExpiration')}
-                                                        variant="outlined"
-                                                        required
-                                                        fullWidth
-                                                    />
-                                                </Grid>
-
-                                                <Grid item xs={12} sm={6}>
-                                                    <TextFieldFormsy
-                                                        className="mb-24"
-                                                        label="Budget"
-                                                        id="budget"
-                                                        type="number"
-                                                        name="budget"
-                                                        value={_.toString(form.budget)}
-                                                        onChange={handleChange}
-                                                        variant="outlined"
-                                                        validations={{
-                                                            isNumeric: true,
-                                                        }}
-                                                        validationErrors={{
-                                                            isNumeric: 'Numeric value required',
-                                                        }}
-                                                        step='any'
-                                                        required
-                                                        fullWidth
-                                                    />
-                                                </Grid>
-                                            </Grid>
-
-                                            <div ref={popperNode} >
-                                                <Autosuggest
-                                                    {...autosuggestProps}
-                                                    getSuggestionValue={suggestion => searchCategories.searchText}
-                                                    onSuggestionSelected={(event, { suggestion, method }) => {
-                                                        if (method === "enter") {
-                                                            event.preventDefault();
-                                                        }
-                                                        !_.find(categories, ['name', suggestion.name]) &&
-                                                            setCategories([suggestion, ...categories]);
-                                                        //setForm(_.set({ ...form }, 'categories', suggestion['@id']))
-                                                        //hideSearch();
-                                                        popperNode.current.focus();
+                                        {/* Catégories */}
+                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
+                                                <Icon className="text-orange mr-8 text-20">layers</Icon>
+                                                Classification partenaires
+                                            </div>
+                                            <div className="p-16 sm:p-24">
+                                                <Typography variant="body2" className="font-bold text-gray-dark block mb-8">Secteurs d'activités cibles *</Typography>
+                                                <AsyncSelect
+                                                    cacheOptions
+                                                    defaultOptions={categories.map(c => ({ value: c.id, label: c.name, '@id': c['@id'] }))}
+                                                    loadOptions={loadCategoryOptions}
+                                                    value={categories.map(c => ({ value: c.id, label: c.name, '@id': c['@id'] }))}
+                                                    onChange={handleAsyncCategoriesChange}
+                                                    placeholder="Lancer une recherche par mot-clé (ex: Informatique, Acier...)"
+                                                    isMulti
+                                                    noOptionsMessage={() => "Aucun résultat"}
+                                                    loadingMessage={() => "Recherche..."}
+                                                    styles={{
+                                                        control: (base) => ({
+                                                            ...base,
+                                                            minHeight: 48,
+                                                            borderColor: '#e2e8f0',
+                                                            '&:hover': { borderColor: '#cbd5e1' }
+                                                        })
                                                     }}
-                                                    required
-                                                    inputProps={{
-                                                        classes,
-                                                        label: 'Activités',
-                                                        placeholder: "Activité (ex: Rayonnage lourd)",
-                                                        value: searchCategories.searchText,
-                                                        variant: "outlined",
-                                                        name: "categories",
-                                                        onChange: handleChangeSearch,
-                                                        onFocus: showSearch,
-                                                        InputLabelProps: {
-                                                            shrink: true,
-                                                        }
-
-                                                    }}
-                                                    theme={{
-                                                        container: classes.container,
-                                                        suggestionsContainerOpen: classes.suggestionsContainerOpen,
-                                                        suggestionsList: classes.suggestionsList,
-                                                        suggestion: classes.suggestion,
-                                                    }}
-                                                    renderSuggestionsContainer={options => (
-                                                        <Popper
-                                                            anchorEl={popperNode.current}
-                                                            open={Boolean(options.children) || searchCategories.noSuggestions || searchCategories.loading}
-                                                            popperOptions={{ positionFixed: true }}
-                                                            className="z-9999 mb-8"
-                                                        >
-                                                            <div ref={suggestionsNode}>
-                                                                <Paper
-                                                                    elevation={1}
-                                                                    square
-                                                                    {...options.containerProps}
-                                                                    style={{ width: popperNode.current ? popperNode.current.clientWidth : null }}
-                                                                >
-                                                                    {options.children}
-                                                                    {searchCategories.noSuggestions && (
-                                                                        <Typography className="px-16 py-12">
-                                                                            Aucun résultat..
-                                                                        </Typography>
-                                                                    )}
-                                                                    {searchCategories.loading && (
-                                                                        <div className="px-16 py-12 text-center">
-                                                                            <CircularProgress color="secondary" /> <br /> Chargement ...
-                                                                        </div>
-                                                                    )}
-                                                                </Paper>
-                                                            </div>
-                                                        </Popper>
-                                                    )}
                                                 />
+                                                {suggestions.length > 0 && (
+                                                    <div className="mt-16 p-12 bg-gray-lightest border border-gray-lighter rounded-md">
+                                                        <Typography variant="caption" className="font-bold text-gray-dark mb-8 block uppercase tracking-wide">
+                                                            Suggestions de l'acheteur
+                                                        </Typography>
+                                                        <div className="flex flex-wrap">
+                                                            {suggestions.map((item, i) => (
+                                                                <Chip key={i} label={item} onDelete={() => handleRemoveSuggestion(item)} size="small" className="mr-8 mb-4 bg-white border border-gray-light font-bold" />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <div className={clsx(classes.chips)}>
-                                                {
-                                                    categories && categories.length > 0 &&
-                                                    categories.map((item, index) => (
-                                                        <Chip
-                                                            key={index}
-                                                            label={item.name}
-                                                            onDelete={(ev) => {
-                                                                ev.stopPropagation();
-                                                                dispatch(Actions.openDialog({
-                                                                    children: (
-                                                                        <React.Fragment>
-                                                                            <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                                                                            <DialogContent>
-                                                                                <DialogContentText id="alert-dialog-description">
-                                                                                    Voulez vous vraiment supprimer ce produit ?
-                                                                                </DialogContentText>
-                                                                            </DialogContent>
-                                                                            <DialogActions>
-                                                                                <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
-                                                                                    Non
-                                                                                </Button>
-                                                                                <Button onClick={(ev) => {
-                                                                                    handleDelete(item.id);
-                                                                                    dispatch(Actions.closeDialog())
-                                                                                }} color="primary" autoFocus>
-                                                                                    Oui
-                                                                                </Button>
+                                        </Paper>
 
-                                                                            </DialogActions>
-                                                                        </React.Fragment>
-                                                                    )
-                                                                }))
-                                                            }}
-                                                            className="mt-8 mr-8"
-                                                        />
-                                                    ))
-                                                }
-                                                {
-                                                    suggestions && suggestions.length > 0 &&
-                                                    suggestions.map((item, index) => (
-                                                        <Chip
-                                                            key={index}
-                                                            label={'Suggestion : ' + item}
-                                                            color="secondary"
-                                                            onClick={(ev) => {
-                                                                dispatch(Actions.openSuggestionDialog({ name: item }))
-                                                            }}
-                                                            onDelete={(ev) => {
-                                                                ev.stopPropagation();
-                                                                dispatch(Actions.openDialog({
-                                                                    children: (
-                                                                        <React.Fragment>
-                                                                            <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                                                                            <DialogContent>
-                                                                                <DialogContentText id="alert-dialog-description">
-                                                                                    Voulez vous vraiment supprimer cette suggestion ?
-                                                                                </DialogContentText>
-                                                                            </DialogContent>
-                                                                            <DialogActions>
-                                                                                <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
-                                                                                    Non
-                                                                                </Button>
-                                                                                <Button onClick={(ev) => {
-                                                                                    handleDeleteSuggestion(item);
-                                                                                    dispatch(Actions.closeDialog())
-                                                                                }} color="primary" autoFocus>
-                                                                                    Oui
-                                                                                </Button>
+                                    </div>
 
-                                                                            </DialogActions>
-                                                                        </React.Fragment>
-                                                                    )
-                                                                }))
-                                                            }}
-                                                            className="mt-8 mr-8"
-                                                        />
-                                                    ))
+                                    {/* COLONNE DROITE — SIDEBAR */}
+                                    <div className="w-full xl:w-320 flex-shrink-0 mt-24 xl:mt-0">
 
+                                        {/* Audit IA */}
+                                        {report && (
+                                            <Paper className="mb-24 rounded-lg shadow-sm border" style={{
+                                                background: report.score >= 80 ? '#E3FCEC' : report.score >= 60 ? '#FFF9C2' : '#FCEBEA',
+                                                borderColor: report.score >= 80 ? '#51D88A' : report.score >= 60 ? '#F2D024' : '#EF5753',
+                                            }}>
+                                                <div className="p-16 pb-8 border-b border-transparent flex justify-between items-center text-gray-darkest font-extrabold uppercase text-13">
+                                                    <span className="flex items-center"><Icon className="mr-8 text-20">verified_user</Icon> Analyse IA</span>
+                                                    <span className="text-20 font-black">{report.score}%</span>
+                                                </div>
+                                                <div className="px-16 pb-16">
+                                                    <LinearProgress variant="determinate" value={report.score} style={{ height: 6, borderRadius: 3, marginBottom: 16, background: 'rgba(0,0,0,0.1)' }} />
+                                                    {report.alerts.map((alert, idx) => (
+                                                        <div key={idx} className="flex items-start bg-white bg-opacity-75 rounded p-8 mb-8 border border-white border-opacity-50">
+                                                            <Icon className={`text-18 mr-8 mt-2 flex-shrink-0 ${alert.type === 'CRITICAL' ? 'text-red' : 'text-orange'}`}>
+                                                                {alert.type === 'CRITICAL' ? 'report' : 'warning_amber'}
+                                                            </Icon>
+                                                            <div>
+                                                                <Typography variant="body2" className="font-bold text-gray-darkest leading-tight">{alert.message}</Typography>
+                                                                <Typography variant="caption" className="font-bold text-gray-dark uppercase tracking-tight">{alert.detail}</Typography>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </Paper>
+                                        )}
 
-                                                }
+                                        {/* Paramètres & Diffusion */}
+                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
+                                                <Icon className="text-blue mr-8 text-20">settings</Icon>
+                                                Paramètres & Options
                                             </div>
-
-
-
-                                            <TextFieldFormsy
-                                                className="mb-16 mt-16  w-full"
-                                                type="text"
-                                                name="description"
-                                                value={form.description}
-                                                onChange={handleChange}
-                                                label="Description"
-                                                autoComplete="description"
-                                                validations={{
-                                                    minLength: 10,
-                                                }}
-                                                validationErrors={{
-                                                    minLength: 'La longueur minimale de caractère est 10',
-                                                }}
-
-                                                variant="outlined"
-                                                multiline
-                                                rows="4"
-                                                required
-
-                                            />
-
-
-                                            <Grid container spacing={3} >
-
-                                                <Grid item xs={12} sm={3}>
-
-                                                    <RadioGroupFormsy
-                                                        className="inline"
-                                                        name="statut"
-                                                        onChange={handleRadioChange}
-                                                    >
-                                                        <FormControlLabel value="1" checked={form.statut === 1} control={<Radio />} label="Valider" />
-                                                        <FormControlLabel disabled={form.reference !== null} value="2" checked={form.statut === 2} control={<Radio />} label="Rejeter" />
-
+                                            <div className="p-16">
+                                                <div className="mb-16 border-b border-gray-lighter pb-12"><CheckboxFormsy name="isPublic" value={!!form.isPublic} label={<span className="font-bold text-14">Publié sur le portail</span>} /></div>
+                                                <div className="mb-16 border-b border-gray-lighter pb-12"><CheckboxFormsy name="isAnonyme" value={!!form.isAnonyme} label={<span className="font-bold text-14">Client masqué</span>} /></div>
+                                                <div className="p-12 mt-12 bg-blue-lightest border border-blue-lighter rounded-lg"><CheckboxFormsy name="sendEmail" value={!!form.sendEmail} label={<span className="font-bold text-14 text-blue-darker">Alerter les Partenaires par e-mail</span>} /></div>
+                                                
+                                                <div className="mt-20 pt-16 border-t border-gray-lighter">
+                                                    <Typography variant="caption" className="font-bold text-gray flex items-center uppercase mb-12"><Icon className="text-16 mr-4">public</Icon> Couverture Géographique</Typography>
+                                                    <RadioGroupFormsy name="localisation" onChange={handleRadioLocalisation} className="flex-col">
+                                                        <FormControlLabel value="2" checked={form.localisation === 2} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13">Locale (Maroc)</span>} />
+                                                        <FormControlLabel value="3" checked={form.localisation === 3} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13">Internationale</span>} />
+                                                        <FormControlLabel value="1" checked={form.localisation === 1} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13">Global (Les deux)</span>} />
                                                     </RadioGroupFormsy>
+                                                </div>
+                                            </div>
+                                        </Paper>
 
-                                                </Grid>
-                                                <Grid item xs={12} sm={3} className="flex flex-col">
-                                                    <CheckboxFormsy
-                                                        name="sendEmail"
-                                                        disabled={form.statut !== 1 || !form.isPublic}
-                                                        onChange={(e) => handleCheckBoxChange(e, 'sendEmail')}
-                                                        label={"Alerter Fournisseurs"}
-                                                        value={form.sendEmail}
-                                                    />
-                                                    {
-                                                        form.diffusionsdemandes.length && <span style={{ color: 'red' }}> ( déjà diffusée ) </span>
-                                                    }
-                                                </Grid>
-                                                <Grid item xs={12} sm={3}>
-                                                    <CheckboxFormsy
-                                                        name="isPublic"
-                                                        value={form.isPublic}
-                                                        disabled={form.statut === 2}
-                                                        onChange={(e) => handleCheckBoxChange(e, 'isPublic')}
-                                                        label="Mettre en ligne"
-                                                    />
-                                                </Grid>
-
-                                                <Grid item xs={12} sm={3}>
-                                                    <CheckboxFormsy
-                                                        disabled={form.statut !== 1}
-                                                        name="isAnonyme"
-                                                        value={form.isAnonyme}
-                                                        onChange={(e) => handleCheckBoxChange(e, 'isAnonyme')}
-                                                        label="Mettre la demande anonyme"
-                                                    />
-                                                </Grid>
-                                                {(form.statut === 2 || form.motifRejet)
-                                                    ?
-                                                    <Grid item xs={12}>
+                                        {/* Décision Admin */}
+                                        <Paper className="rounded-lg shadow-sm bg-blue-darkest border border-blue-darkest text-white">
+                                            <div className="p-16 border-b border-transparent flex items-center text-blue-light font-extrabold uppercase text-13">
+                                                <Icon className="mr-8 text-20">gavel</Icon>
+                                                Décision Modérateur
+                                            </div>
+                                            <div className="p-16 pt-0">
+                                                <div className="bg-white bg-opacity-10 rounded p-8 mb-16">
+                                                    <RadioGroupFormsy name="statut" onChange={handleRadioChange} className="flex-col">
+                                                        <FormControlLabel value="1" checked={form.statut === 1} control={<Radio size="small" style={{ color: '#51D88A' }} />} label={<span className="font-bold text-13 text-green-light">Approuver & Diffuser</span>} />
+                                                        <FormControlLabel value="2" checked={form.statut === 2} control={<Radio size="small" style={{ color: '#F9ACAA' }} />} label={<span className="font-bold text-13 text-red-lighter">Rejeter la demande</span>} />
+                                                    </RadioGroupFormsy>
+                                                </div>
+                                                {form.statut === 2 && demande.motifs && (
+                                                    <div className="mb-16">
                                                         <SelectReactFormsy
-
                                                             id="motifRejet"
                                                             name="motifRejet"
-                                                            className="MuiFormControl-fullWidth MuiTextField-root"
-                                                            value={
-
-                                                                motif
-
-
-                                                            }
-                                                            onChange={(value) => handleChipChange2(value, 'motifRejet')}
-                                                            placeholder="Sélectionner le motif du rejet"
+                                                            value={motif}
+                                                            options={_.map(demande.motifs, item => ({ value: item['@id'], label: item.name }))}
                                                             textFieldProps={{
-                                                                label: 'Motif du rejet',
-                                                                InputLabelProps: {
-                                                                    shrink: true
-                                                                },
-                                                                variant: 'outlined'
+                                                                label: 'Raison du rejet',
+                                                                variant: 'outlined',
+                                                                InputLabelProps: { shrink: true, style: { color: 'rgba(255,255,255,0.7)' } },
+                                                                style: { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: 4 }
                                                             }}
-                                                            options={demande.motifs}
-                                                            fullWidth
-                                                            required
+                                                            onChange={val => setMotif(val)}
                                                         />
-                                                    </Grid>
-                                                    :
-                                                    ''}
-                                                <Grid item xs={12} sm={6} className="flex items-center">
-                                                    <RadioGroupFormsy
-                                                        className="inline"
-                                                        name="statut"
-                                                        label="Diffuser à l'échelle"
-                                                        onChange={handleRadioLocalisation}
-                                                    >
-                                                        <FormControlLabel value="2" disabled={!showDiffusion} checked={form.localisation === 2} control={<Radio />} label="Locale" />
-                                                        <FormControlLabel value="3" disabled={!showDiffusion} checked={form.localisation === 3} control={<Radio />} label="Internationale" />
-                                                        <FormControlLabel value="1" disabled={!showDiffusion} checked={form.localisation === 1} control={<Radio />} label="Les deux" />
-
-
-                                                    </RadioGroupFormsy>
-                                                    <IconButton onClick={() => setShowDiffusion(!showDiffusion)}>
-                                                        <Icon color="secondary">
-                                                            {
-                                                                showDiffusion ? 'visibility_off' : 'visibility'
-                                                            }
-                                                        </Icon>
-                                                    </IconButton>
-                                                </Grid>
-
-                                                <Grid item sm={6} xs={12}>
-                                                    <Button
-                                                        type="submit"
-                                                        variant="contained"
-                                                        color="secondary"
-                                                        className="w-200 pr-auto mt-16 normal-case"
-                                                        aria-label="Suivant"
-                                                        disabled={!isFormValid || demande.loading}
-                                                        value="legacy"
-                                                    >
-                                                        Sauvegarder
-                                                        {demande.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
-                                                    </Button>
-                                                </Grid>
-
-                                            </Grid>
-
-
-                                        </Formsy>
-                                    )}
-                                {tabValue === 1 && (
-                                    <div>
-                                        <input
-                                            accept="text/plain,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/pdf,image/jpeg,image/gif,image/png,application/pdf,"
-                                            className="hidden"
-                                            id="button-file"
-                                            type="file"
-                                            disabled={demande.attachementReqInProgress}
-                                            onChange={handleUploadChange}
-                                        />
-                                        <div className="flex justify-center sm:justify-start flex-wrap">
-                                            <label
-                                                htmlFor="button-file"
-
-                                                className={
-                                                    clsx(
-                                                        classes.demandeImageUpload,
-                                                        "flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
-                                                        (form.attachements.length === 5) && 'hidden'
-                                                    )}
-                                            >
-                                                {
-                                                    demande.attachementReqInProgress ?
-                                                        <CircularProgress size={24} className={classes.buttonProgress} />
-                                                        :
-                                                        <Icon fontSize="large" color="action">arrow_upward</Icon>
-
-                                                }
-                                            </label>
-
-
-                                            {form.attachements && form.attachements.map(media => (
-                                                <div
-                                                    className={
-                                                        clsx(
-                                                            classes.demandeImageItem,
-                                                            "flex items-center cursor-pointer justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden  shadow-1 hover:shadow-5")
-                                                    }
-                                                    key={media.id}
-                                                    onClick={() => window.open(URL_SITE + media.url, "_blank")}
-                                                >
-                                                    <Tooltip title="Supprimer" >
-                                                        <IconButton
-                                                            className="text-red text-20"
-                                                            onClick={(ev) => {
-                                                                ev.stopPropagation();
-                                                                dispatch(
-                                                                    Actions.openDialog({
-                                                                        children: (
-                                                                            <>
-                                                                                <DialogTitle id="alert-dialog-title">Suppression</DialogTitle>
-                                                                                <DialogContent>
-                                                                                    <DialogContentText id="alert-dialog-description">
-                                                                                        Voulez-vous vraiment supprimer ce média ?
-                                                                                    </DialogContentText>
-                                                                                </DialogContent>
-                                                                                <DialogActions>
-                                                                                    <Button
-                                                                                        variant="contained"
-                                                                                        onClick={() => dispatch(Actions.closeDialog())}
-                                                                                        color="primary"
-                                                                                    >
-                                                                                        Non
-                                                                                    </Button>
-                                                                                    <Button
-                                                                                        onClick={() => {
-                                                                                            dispatch(Actions.deleteMedia(media));
-                                                                                            dispatch(Actions.closeDialog());
-                                                                                        }}
-                                                                                        color="primary"
-                                                                                        autoFocus
-                                                                                    >
-                                                                                        Oui
-                                                                                    </Button>
-                                                                                </DialogActions>
-                                                                            </>
-                                                                        ),
-                                                                    })
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Icon>delete</Icon>
-                                                        </IconButton>
-                                                    </Tooltip>
-
-                                                    {_.split(media.type, '/', 1)[0] === 'image' ?
-                                                        <img className="max-w-none w-auto h-full"
-                                                            src={URL_SITE + media.url}
-                                                            alt="demande" />
-                                                        :
-                                                        <Icon color="secondary" style={{ fontSize: 80 }}>insert_drive_file</Icon>
-                                                    }
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                    </div>
-                                )}
-                                {tabValue === 2 && (
-                                    <Formsy
-                                        className="flex flex-col">
-
-                                        <Grid container spacing={3} className="mb-5">
-
-                                            <Grid item xs={12} sm={4}>
-                                                <div className="flex">
-                                                    <TextFieldFormsy
-                                                        className=""
-                                                        type="text"
-                                                        name="fullname"
-                                                        value={form.acheteur.civilite + ' ' + form.acheteur.firstName + ' ' + form.acheteur.lastName}
-                                                        label="Nom complet"
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                        }}
-                                                        fullWidth
-
-                                                    />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <div className="flex">
-                                                    <TextFieldFormsy
-                                                        className=""
-                                                        name="email"
-                                                        value={form.acheteur.email}
-                                                        label="Email"
-                                                        fullWidth
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                            endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">email</Icon></InputAdornment>
-
-                                                        }}
-
-                                                    />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <TextFieldFormsy
-                                                    className=""
-                                                    type="text"
-                                                    name="phonep"
-                                                    id="phonep"
-                                                    value={form.acheteur.phone}
-                                                    label="Téléphone"
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                        endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">local_phone</Icon></InputAdornment>
-                                                    }}
-                                                    fullWidth
-                                                />
-
-                                            </Grid>
-
-                                        </Grid>
-                                        <Divider />
-                                        <Grid container spacing={3} className="mb-5">
-
-                                            <Grid item xs={12} sm={8}>
-                                                <div className="flex">
-
-                                                    <TextFieldFormsy
-                                                        className="mt-20"
-                                                        label="Raison sociale"
-                                                        id="societe"
-                                                        name="societe"
-                                                        value={form.acheteur.societe}
-                                                        fullWidth
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                        }}
-                                                    />
-                                                </div>
-
-
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <div className="flex">
-                                                    <TextFieldFormsy
-                                                        className="mt-20"
-                                                        name="fix"
-                                                        value={form.acheteur.fix}
-                                                        label="Fixe"
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                            endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">local_phone</Icon></InputAdornment>
-                                                        }}
-                                                        fullWidth
-                                                    />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} sm={8}>
-
-
-                                                <TextFieldFormsy
-                                                    id="secteur"
-                                                    className=""
-                                                    name="secteur"
-                                                    label="Secteur"
-                                                    value={form.acheteur.secteur ? form.acheteur.secteur.name : ''}
-                                                    fullWidth
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                />
-
-
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <div className="flex">
-                                                    <TextFieldFormsy
-                                                        id="website"
-                                                        className=""
-                                                        type="text"
-                                                        name="website"
-                                                        value={form.acheteur.website}
-                                                        label="Site Web"
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                            endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">language</Icon></InputAdornment>
-                                                        }}
-                                                        fullWidth
-                                                    />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} sm={8}>
-                                                <div className="flex">
-                                                    {
-                                                        form.acheteur.ice ?
-                                                            <TextFieldFormsy
-                                                                className=""
-                                                                type="text"
-                                                                name="ice"
-                                                                id="ice"
-                                                                value={form.acheteur.ice}
-                                                                label="ICE"
-                                                                fullWidth
-                                                                InputProps={{
-                                                                    readOnly: true,
-                                                                }}
-                                                            />
-                                                            :
-                                                            ''
-                                                    }
-
-                                                </div>
-
-                                            </Grid>
-
-
-                                        </Grid>
-                                        <Divider />
-
-
-                                        <Grid container spacing={3} className="mb-5">
-
-                                            <Grid item xs={12} sm={8}>
-                                                <div className="flex">
-
-                                                    <TextFieldFormsy
-                                                        className="mt-20"
-                                                        type="text"
-                                                        name="adresse1"
-                                                        id="adresse1"
-                                                        value={form.acheteur.adresse1}
-                                                        label="Adresse 1"
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                            endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">location_on</Icon></InputAdornment>
-                                                        }}
-                                                        fullWidth
-
-                                                    />
-                                                </div>
-
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <TextFieldFormsy
-                                                    className="mt-20"
-                                                    type="text"
-                                                    name="pays"
-                                                    id="pays"
-                                                    value={form.acheteur.pays ? form.acheteur.pays.name : ''}
-                                                    label="Pays"
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                    fullWidth
-                                                />
-
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <div className="flex">
-                                                    <TextFieldFormsy
-                                                        className=""
-                                                        type="text"
-                                                        name="adresse2"
-                                                        value={form.acheteur.adresse2}
-                                                        label="Adresse 2"
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                            endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">location_on</Icon></InputAdornment>
-                                                        }}
-                                                        fullWidth
-
-                                                    />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <div className="flex">
-                                                    <TextFieldFormsy
-                                                        className=""
-                                                        name="codepostal"
-                                                        value={String(form.acheteur.codepostal)}
-                                                        label="Code Postal"
-                                                        fullWidth
-                                                        InputProps={{
-                                                            readOnly: true,
-                                                        }}
-
-                                                    />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} sm={4}>
-                                                <TextFieldFormsy
-                                                    className=""
-                                                    type="text"
-                                                    name="ville"
-                                                    id="ville"
-                                                    value={form.acheteur.ville ? form.acheteur.ville.name : ''}
-                                                    label="Ville"
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                    fullWidth
-                                                />
-
-                                            </Grid>
-
-                                        </Grid>
-                                        <Divider />
-
-                                        <Grid container spacing={3}>
-                                            <Grid item xs={12} sm={12}>
-
-                                                <TextFieldFormsy
-                                                    className="mb-5 mt-20  w-full"
-                                                    type="text"
-                                                    name="description"
-                                                    value={form.acheteur.description}
-                                                    label="Présentation"
-                                                    multiline
-                                                    rows="8"
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-
-                                                />
-
-                                            </Grid>
-
-                                        </Grid>
-                                    </Formsy>
-                                )
-                                }
-                                {tabValue === 3 && (
-                                    <div className="w-full flex flex-col">
-
-                                        <FuseAnimate animation="transition.slideUpIn" delay={300}>
-                                            <ReactTable
-                                                className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                                                data={form.diffusionsdemandes}
-                                                columns={[
-                                                    {
-                                                        Header: "Code frs",
-                                                        className: "font-bold",
-                                                        id: "codeClient",
-                                                        accessor: f => f.fournisseur.codeClient
-                                                    },
-                                                    {
-                                                        Header: "Société",
-                                                        className: "font-bold",
-                                                        id: "fournisseur",
-                                                        accessor: f => <Link target="_blank" to={'/users/fournisseurs/' + f.fournisseur.id}> {f.fournisseur.societe}</Link>,
-                                                    },
-                                                    {
-                                                        Header: "NOM & Prénom",
-                                                        id: "fz",
-                                                        accessor: f => f.fournisseur.firstName + ' ' + f.fournisseur.lastName,
-                                                    },
-                                                    {
-                                                        Header: "Téléphone",
-                                                        id: "fs",
-                                                        accessor: f => f.fournisseur.phone,
-                                                    },
-                                                    {
-                                                        Header: "Email",
-                                                        id: "fe",
-                                                        accessor: f => f.fournisseur.email,
-                                                    },
-                                                    {
-                                                        Header: "Date de diffusion",
-                                                        id: "dateDiffusion",
-                                                        accessor: d => moment(d.dateDiffusion).format('DD/MM/YYYY HH:mm'),
-                                                    },
-                                                ]}
-                                                defaultPageSize={10}
-                                                ofText='sur'
-                                            />
-                                        </FuseAnimate>
-
-
-
-
-                                    </div>
-                                )}
-                                {tabValue === 4 && (
-                                    <div className="w-full flex flex-col">
-                                        {
-                                            <div>
-
-
-                                                <div className="flex flex-1 items-center justify-between mb-10">
-                                                    <Typography variant="h6" className={clsx("mb-8 ml-2", classes.titre)}>
-                                                        Fournisseurs participants ( {demande.fournisseurs.length} )
-                                                    </Typography>
-
-                                                    <div>
-                                                        {
-                                                            demande.data && demande.data.statut === 3 ?
-                                                                <Chip className={classes.chip2} label={'Adjugée par : ' + (demande.data.fournisseurGagne ? demande.data.fournisseurGagne.societe : "Fournisseur hors site")} />
-                                                                :
-                                                                <Chip className={classes.chipOrange} label='En cours' />
-                                                        }
-
                                                     </div>
+                                                )}
+                                                <Button
+                                                    className="w-full whitespace-no-wrap bg-white text-blue-darker font-bold py-12 rounded mt-8"
+                                                    variant="contained"
+                                                    type="submit"
+                                                    disabled={!isFormValid || demande.loading || !categories.length}
+                                                >
+                                                    {demande.loading ? <CircularProgress size={22} color="secondary" /> : 'Enregistrer'}
+                                                </Button>
+                                            </div>
+                                        </Paper>
 
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* ── TAB 1 : DOCUMENTS ── */}
+                            {tabValue === 1 && (
+                                <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                    <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
+                                        <Icon className="text-blue mr-8 text-20">cloud_upload</Icon>
+                                        Documents Source de l'Acheteur
+                                    </div>
+                                    <div className="p-16 sm:p-24">
+                                        <Typography className="text-gray-dark mb-16">Fichiers techniques et appels d'offres originaux.</Typography>
+                                        <div className="flex flex-wrap -mx-8">
+                                        {form.attachements?.length < 5 && (
+                                            <div className="px-8 mb-16">
+                                                <label htmlFor="button-file" className="w-128 h-128 border-2 border-dashed border-gray-light rounded flex flex-col items-center justify-center cursor-pointer hover:bg-gray-lightest transition-colors">
+                                                    <input accept="application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" id="button-file" type="file" onChange={handleUploadChange} />
+                                                    <Icon className="text-32 text-gray mb-8">add_circle_outline</Icon>
+                                                    <Typography variant="caption" className="font-bold text-gray uppercase tracking-wide">Ajouter</Typography>
+                                                </label>
+                                            </div>
+                                        )}
+                                        {form.attachements?.map(media => (
+                                            <div key={media.id} className="px-8 mb-16">
+                                                <div className="w-128 h-128 rounded relative border border-gray-lighter overflow-hidden bg-gray-lightest group shadow-sm hover:shadow transition-shadow">
+                                                    <IconButton size="small" className="absolute top-0 right-0 z-10 m-4 bg-white hover:bg-red hover:text-white transition-colors" 
+                                                        style={{ padding: 4 }}
+                                                        onClick={() => dispatch(Actions.deleteMedia(media))}>
+                                                        <Icon className="text-16">delete</Icon>
+                                                    </IconButton>
+                                                    <div className="w-full h-full flex items-center justify-center cursor-pointer"
+                                                        onClick={() => window.open(URL_SITE + '/attachement/demandeAchat/' + media.url, '_blank')}>
+                                                        {media.type.startsWith('image')
+                                                            ? <img className="object-cover w-full h-full" src={URL_SITE + '/attachement/demandeAchat/' + media.url} alt="media" />
+                                                            : <div className="text-center p-8">
+                                                                <Icon className="text-40 text-gray block mb-4 mx-auto">insert_drive_file</Icon>
+                                                                <Typography variant="caption" className="font-bold text-gray-dark truncate block max-w-full px-4">{media.name || 'Document'}</Typography>
+                                                              </div>
+                                                        }
+                                                    </div>
                                                 </div>
-                                                <ReactTable
-                                                    className="-striped -highlight h-full sm:rounded-16 overflow-hidden"
-                                                    data={demande.fournisseurs}
+                                            </div>
+                                        ))}
+                                        </div>
+                                    </div>
+                                </Paper>
+                            )}
 
-                                                    columns={[
-
-
-                                                        {
-                                                            Header: "Code frs",
-                                                            className: "font-bold",
-                                                            id: "codeClient",
-                                                            accessor: f => f.fournisseur.codeClient
-                                                        },
-                                                        {
-                                                            Header: "Société",
-                                                            className: "font-bold",
-                                                            id: "fournisseur",
-                                                            accessor: f => <Link target="_blank" to={'/users/fournisseurs/' + f.fournisseur.id}> {f.fournisseur.societe}</Link>,
-                                                        },
-                                                        {
-                                                            Header: "NOM & Prénom",
-                                                            id: "fz",
-                                                            accessor: f => f.fournisseur.firstName + ' ' + f.fournisseur.lastName,
-                                                        },
-                                                        {
-                                                            Header: "Téléphone",
-                                                            id: "fs",
-                                                            accessor: f => f.fournisseur.phone,
-                                                        },
-                                                        {
-                                                            Header: "Email",
-                                                            id: "fe",
-                                                            accessor: f => f.fournisseur.email,
-                                                        },
-                                                        {
-                                                            Header: "Date",
-                                                            id: "dateDiffusion",
-                                                            accessor: d => moment(d.created).format('DD/MM/YYYY HH:mm'),
-                                                        },
-
-
-                                                    ]}
-                                                    defaultPageSize={demande.fournisseurs.length < 10 ? demande.fournisseurs.length : 10}
-                                                    ofText='sur'
-                                                />
+                            {/* ── TAB 2 : ACHETEUR (confidentiel) ── */}
+                            {tabValue === 2 && acheteur && (
+                                <div className="max-w-4xl mx-auto">
+                                    <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                        <div className="p-16 border-b border-gray-lighter flex items-center text-green-darker font-bold uppercase text-13">
+                                            <Icon className="text-green mr-8 text-20">person</Icon>
+                                            Contact Privé — Acheteur
+                                        </div>
+                                        <div className="p-16 sm:p-24 flex flex-col sm:flex-row flex-wrap -mx-8">
+                                            <div className="w-full sm:w-1/3 px-8 mb-16 sm:mb-0">
+                                                <TextField label="Nom complet" value={`${acheteur.user?.first_name || acheteur.first_name || ''} ${acheteur.user?.last_name || acheteur.last_name || ''}`.trim()} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-1/3 px-8 mb-16 sm:mb-0">
+                                                <TextField label="Adresse Email" value={acheteur.user?.email || acheteur.email || ''} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-1/3 px-8">
+                                                <TextField label="N° Téléphone" value={acheteur.user?.phone || acheteur.phone || ''} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                            </div>
+                                        </div>
+                                    </Paper>
+                                    <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                        <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
+                                            <Icon className="text-blue mr-8 text-20">business</Icon>
+                                            Données de l'Entreprise
+                                        </div>
+                                        <div className="p-16 sm:p-24 flex flex-col sm:flex-row flex-wrap -mx-8 mt-8">
+                                            <div className="w-full sm:w-1/2 px-8 mb-20">
+                                                <TextField label="Société" value={acheteur.societe || acheteur.nom_entreprise || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-1/4 px-8 mb-20">
+                                                <TextField label="ICE / Id Fiscal" value={acheteur.ice || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-1/4 px-8 mb-20">
+                                                <TextField label="Secteur" value={acheteur.secteur?.name || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
                                             </div>
 
+                                            <div className="w-full sm:w-1/3 px-8 mb-20">
+                                                <TextField label="Téléphone Fixe" value={acheteur.fix || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-2/3 px-8 mb-20">
+                                                <TextField label="Site Web" value={acheteur.website || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                            
+                                            <div className="w-full sm:w-1/2 px-8 mb-20">
+                                                <TextField label="Adresse 1" value={acheteur.user?.adresse1 || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-1/2 px-8 mb-20">
+                                                <TextField label="Adresse 2" value={acheteur.user?.adresse2 || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
 
-                                        }
+                                            <div className="w-full sm:w-1/3 px-8 mb-20">
+                                                <TextField label="Pays" value={acheteur.pays?.name || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-1/3 px-8 mb-20">
+                                                <TextField label="Ville" value={acheteur.ville?.name || acheteur.autre_ville || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                            <div className="w-full sm:w-1/3 px-8 mb-20">
+                                                <TextField label="Code Postal" value={acheteur.user?.codepostal || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
 
+                                            <div className="w-full px-8">
+                                                <TextField label="Présentation" value={acheteur.description || 'Aucune description fournie.'} fullWidth multiline minRows={3} variant="outlined" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            </div>
+                                        </div>
+                                    </Paper>
+                                </div>
+                            )}
+
+                            {/* ── TAB 3 & 4 : DIFFUSION / PARTICIPANTS ── */}
+                            {(tabValue === 3 || tabValue === 4) && (
+                                <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
+                                    <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
+                                        <Icon className="text-blue mr-8 text-20">{tabValue === 3 ? 'send' : 'groups'}</Icon>
+                                        {tabValue === 3 ? 'Historique de Diffusion' : 'Réponses Fournisseurs'}
                                     </div>
-                                )}
+                                    <div className="p-16">
+                                    <ReactTable
+                                        data={tabValue === 3 ? form.diffusionsdemandes : demande.fournisseurs}
+                                        columns={[
+                                            { Header: "Société", id: "societe", accessor: f => f.fournisseur?.societe || 'N/C', className: "font-700" },
+                                            { Header: "Contact", id: "contact", accessor: f => `${f.fournisseur?.firstName || ''} ${f.fournisseur?.lastName || ''}` },
+                                            { Header: "Email", id: "email", accessor: f => f.fournisseur?.email || '' },
+                                            { Header: "Date", id: "date", accessor: d => moment(d.dateDiffusion || d.created).format('DD/MM/YYYY HH:mm'), className: "font-700 text-blue-dark" }
+                                        ]}
+                                        defaultPageSize={10}
+                                        className="-striped -highlight"
+                                        style={{ border: 'none' }}
+                                    />
+                                    </div>
+                                </Paper>
+                            )}
 
-
-                            </div>
-                        )
-                        : ''
+                        </Formsy>
+                    </div>
                 }
                 innerScroll
             />
             <SuggestionDialog />
         </>
-    )
+    );
 }
 
 export default withReducer('demandesAdminApp', reducer)(Demande);

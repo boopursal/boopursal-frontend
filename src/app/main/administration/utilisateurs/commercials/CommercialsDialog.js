@@ -182,7 +182,7 @@ function CommercialsDialog(props) {
               src={
                 form.avatar
                   ? URL_SITE + form.avatar.url
-                  : "assets/images/avatars/images.png"
+                  : "/assets/images/avatars/images.png"
               }
             />
           )}
@@ -201,7 +201,7 @@ function CommercialsDialog(props) {
                   src={
                     form.parent1.avatar
                       ? URL_SITE + form.parent1.avatar.url
-                      : "assets/images/avatars/images.png"
+                      : "/assets/images/avatars/images.png"
                   }
                 />
               }

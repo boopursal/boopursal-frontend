@@ -9,11 +9,12 @@ export const produitConfigs = {
     auth    : authRoles.admin,
     routes  : [
         {
-            path     : '/products/:produitId/',
+            path     : '/products/:produitId',
             component: React.lazy(() => import('./produit/Produit'))
         },
         {
             path     : '/products',
+            exact    : true,
             component: React.lazy(() => import('./produits/Produits'))
         }
     ]

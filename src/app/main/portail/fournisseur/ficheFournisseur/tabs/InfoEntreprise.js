@@ -121,7 +121,7 @@ function InfoEntreprise(props) {
                         <Paper className={classes.productCard} elevation={0}>
                           <div className={classes.productImgWrapper}>
                             <img
-                              src={item.featuredImageId ? URL_SITE + item.featuredImageId.url : "assets/images/ecommerce/product-placeholder.jpg"}
+                              src={item.featuredImageId ? URL_SITE + item.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
                               alt={item.titre}
                               className="max-h-full max-w-full object-contain"
                             />

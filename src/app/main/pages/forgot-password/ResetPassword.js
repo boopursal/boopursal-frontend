@@ -94,7 +94,7 @@ function ResetPassword(props) {
             <div className="flex flex-col flex-grow-0 items-center text-white p-16 text-center md:p-128 md:items-start md:flex-shrink-0 md:flex-1 md:text-left">
 
                 <FuseAnimate animation="transition.expandIn">
-                    <img className="w-128 mb-32" src="assets/images/logos/icon.png" alt="logo" />
+                    <img className="w-128 mb-32" src="/assets/images/logos/icon.png" alt="logo" />
                 </FuseAnimate>
 
                 <FuseAnimate animation="transition.slideUpIn" delay={300}>

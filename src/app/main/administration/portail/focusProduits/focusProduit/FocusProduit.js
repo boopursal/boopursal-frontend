@@ -120,10 +120,13 @@ function FocusProduit(props) {
               <div className="flex items-center max-w-full">
                 <div className="flex flex-col min-w-0">
                   <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                    <Typography className="text-16 sm:text-20 truncate">
-                      {form.produit ? form.produit.titre : "Mettre à jour"}
+                    <Typography className="text-16 sm:text-20 truncate font-700">
+                      Configuration de l'Emplacement #{form.id}
                     </Typography>
                   </FuseAnimate>
+                  <Typography variant="caption" style={{ color: '#64748B' }}>
+                    Produit actuellement assigné : {form.produit ? form.produit.titre : "Vide"}
+                  </Typography>
                 </div>
               </div>
             </div>
@@ -137,82 +140,63 @@ function FocusProduit(props) {
                 <Formsy>
                   <Grid
                     container
-                    spacing={2}
-                    className="items-center justify-center"
+                    spacing={3}
+                    className="items-center bg-white p-24 rounded-2xl shadow-sm mb-24"
+                    style={{ background: 'linear-gradient(to right, rgba(255,255,255,1), rgba(248,250,252,1))' }}
                   >
-                    <Grid item sm={4}>
+                    <Grid item sm={6} xs={12}>
                       <SelectReactFormsy
                         id="fournisseur"
                         name="fournisseur"
                         value={fournisseur}
-                        placeholder="Sélectionner un fournisseur"
+                        placeholder="Rechercher / Sélectionner un fournisseur"
                         textFieldProps={{
-                          label: "Fournisseurs",
-                          InputLabelProps: {
-                            shrink: true,
-                          },
+                          label: "Fournisseur",
+                          InputLabelProps: { shrink: true },
                           variant: "outlined",
                         }}
-                        className="mt-8"
                         options={produit.fournisseurs}
                         onChange={(value) => {
                           setFournisseur(value);
-                          dispatch(
-                            Actions.GetAllCategorieByFournisseur(value.value)
-                          );
-                          setCategorie("");
+                          setCategorie(null);
+                          if (value) {
+                            dispatch(Actions.GetAllCategorieByFournisseur(value.value));
+                            dispatch(Actions.GetProductsByCategorieByFournisseur(value.value, null));
+                          }
                         }}
                       />
                     </Grid>
-                    <Grid item sm={4}>
+                    <Grid item sm={6} xs={12}>
                       <SelectReactFormsy
                         id="categorie"
                         name="categorie"
                         value={categorie}
-                        placeholder="Sélectionner un catégorie"
+                        placeholder="Filtrer optionnellement par catégorie"
                         textFieldProps={{
-                          label: "Catégories",
-                          InputLabelProps: {
-                            shrink: true,
-                          },
+                          label: "Catégorie (Optionnel)",
+                          InputLabelProps: { shrink: true },
                           variant: "outlined",
                         }}
-                        className="mt-8"
                         options={produit.categories}
+                        disabled={!fournisseur || (produit.categories && produit.categories.length === 0)}
                         onChange={(value) => {
                           setCategorie(value);
+                          if (fournisseur && value) {
+                            dispatch(Actions.GetProductsByCategorieByFournisseur(fournisseur.value, value.value));
+                          } else if (fournisseur && !value) {
+                            dispatch(Actions.GetProductsByCategorieByFournisseur(fournisseur.value, null));
+                          }
                         }}
                       />
                     </Grid>
-                    <Grid item sm={4}>
-                      <Button
-                        size="large"
-                        className="mt-8"
-                        variant="contained"
-                        disabled={!fournisseur || !categorie}
-                        onClick={() => {
-                          dispatch(
-                            Actions.GetProductsByCategorieByFournisseur(
-                              fournisseur.value,
-                              categorie.value
-                            )
-                          );
-                        }}
-                        color="primary"
-                      >
-                        Rechercher
-                      </Button>
-                    </Grid>
                   </Grid>
                 </Formsy>
-                <Divider className="mb-16 mt-16" />
                 {produit.loadingProducts ? (
                   <ContentLoader
                     viewBox="0 0 1360 900"
                     height={900}
                     width={1360}
                     speed={2}
-                    {...props}
                   >
                     <rect
                       x="30"
@@ -364,126 +348,81 @@ function FocusProduit(props) {
                     {produit.products &&
                       produit.products.map((item, index) => (
                         <Grid item sm={3} xs={6} key={index}>
-                          <Card className={classes.card}>
+                          <Card 
+                            className="flex flex-col h-full rounded-2xl transition-all duration-300"
+                            style={{ 
+                              boxShadow: produit.data.produit && produit.data.produit.id === item.id ? '0 10px 40px -10px rgba(60,80,224,0.3)' : '0 4px 20px -2px rgba(0,0,0,0.05)',
+                              border: produit.data.produit && produit.data.produit.id === item.id ? '2px solid #3C50E0' : '2px solid transparent'
+                            }}
+                          >
                             <CardMedia
                               className={classes.media}
                               image={
                                 item.featuredImageId
                                   ? URL_SITE + item.featuredImageId.url
-                                  : "assets/images/ecommerce/product-placeholder.jpg"
+                                  : "/assets/images/ecommerce/product-placeholder.jpg"
                               }
                               title={item.titre}
                             />
-                            <CardContent>
+                            <CardContent className="flex-1">
                               <Typography
                                 gutterBottom
-                                variant="h5"
-                                component="h5"
+                                variant="h6"
+                                className="font-700 text-15 leading-tight"
                               >
                                 {_.capitalize(
                                   _.truncate(item.titre, {
-                                    length: 18,
+                                    length: 40,
                                   })
                                 )}
                               </Typography>
                               <Typography
                                 variant="caption"
-                                color="textSecondary"
+                                className="text-12 font-500 text-slate-500 mb-8 block"
                               >
-                                Réf.{item.reference}
+                                Réf. {item.reference}
                               </Typography>
                               <Typography
                                 variant="body2"
                                 color="textSecondary"
                                 component="p"
-                                className="mb-16 mt-8"
+                                className="mb-16 mt-8 leading-relaxed"
                               >
                                 {_.capitalize(
                                   _.truncate(item.description, {
-                                    length: 150,
+                                    length: 100,
                                   })
                                 )}
                               </Typography>
-                              {item.images.length > 0 ? (
-                                <Chip
-                                  icon={
-                                    <Icon className="text-16 mr-0">image</Icon>
-                                  }
-                                  label={item.images.length}
-                                  classes={{
-                                    root: "h-24",
-                                    label: "pl-4 pr-6 py-4 text-11",
-                                    deleteIcon: "w-16 ml-0",
-                                    ...props.classes,
-                                  }}
-                                  variant="outlined"
-                                  className="mr-4"
-                                />
-                              ) : (
-                                ""
-                              )}
-                              {item.videos ? (
-                                <Chip
-                                  icon={
-                                    <Icon className="text-16 mr-0">
-                                      videocam
-                                    </Icon>
-                                  }
-                                  label="1"
-                                  classes={{
-                                    root: "h-24",
-                                    label: "pl-4 pr-6 py-4 text-11",
-                                    deleteIcon: "w-16 ml-0",
-                                    ...props.classes,
-                                  }}
-                                  variant="outlined"
-                                  className="mr-4"
-                                />
-                              ) : (
-                                ""
-                              )}
-
-                              {item.ficheTechnique ? (
-                                <Chip
-                                  icon={
-                                    <Icon className="text-16 mr-0">
-                                      picture_as_pdf
-                                    </Icon>
-                                  }
-                                  label="1 fiche technique"
-                                  classes={{
-                                    root: "h-24",
-                                    label: "pl-4 pr-6 py-4 text-11",
-                                    deleteIcon: "w-16 ml-0",
-                                    ...props.classes,
-                                  }}
-                                  variant="outlined"
-                                  className="mr-4"
-                                />
-                              ) : (
-                                ""
-                              )}
+                              <div className="flex flex-wrap gap-4 mt-auto">
+                                {item.images.length > 0 && (
+                                  <Chip
+                                    icon={<Icon className="text-16 mr-0">image</Icon>}
+                                    label={item.images.length}
+                                    classes={{ root: "h-24 bg-slate-100", label: "px-8 text-11 font-600 text-slate-600" }}
+                                  />
+                                )}
+                                {item.videos && (
+                                  <Chip
+                                    icon={<Icon className="text-16 mr-0">videocam</Icon>}
+                                    label="1"
+                                    classes={{ root: "h-24 bg-slate-100", label: "px-8 text-11 font-600 text-slate-600" }}
+                                  />
+                                )}
+                              </div>
                             </CardContent>
-                            <CardActions className="flex justify-center">
+                            <CardActions className="flex justify-center p-16 pt-0 bg-transparent">
                               {produit.data.produit &&
                               produit.data.produit.id === item.id ? (
                                 <Chip
-                                  icon={
-                                    <Icon className="text-16 mr-0">done</Icon>
-                                  }
-                                  label="Selectionné"
-                                  classes={{
-                                    root: "h-24",
-                                    label: "pl-4 pr-6 py-4 text-11",
-                                    deleteIcon: "w-16 ml-0",
-                                    ...props.classes,
-                                  }}
-                                  color="secondary"
-                                  className="mr-4"
+                                  icon={<Icon className="text-16">check_circle</Icon>}
+                                  label="Assigné au slot"
+                                  className="w-full h-36 font-600 text-13"
+                                  style={{ backgroundColor: '#10B981', color: 'white' }}
                                 />
                               ) : (
                                 <Button
-                                  size="small"
+                                  className="w-full h-36 rounded-xl font-600 transition-colors shadow-none hover:shadow-md"
                                   variant="contained"
                                   onClick={() => {
                                     dispatch(
@@ -493,9 +432,9 @@ function FocusProduit(props) {
                                       )
                                     );
                                   }}
-                                  color="primary"
+                                  style={{ backgroundColor: '#F1F5F9', color: '#3C50E0' }}
                                 >
-                                  Sélectionner
+                                  Mettre en Focus
                                 </Button>
                               )}
                             </CardActions>
