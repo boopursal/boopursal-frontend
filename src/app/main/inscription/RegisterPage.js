@@ -11,8 +11,12 @@ import { Helmet } from "react-helmet";
 const useStyles = makeStyles(theme => ({
     root: {
         background: '#ffffff',
-        minHeight: '100%',
-        display: 'block',
+        minHeight: '100vh',
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
         position: 'relative',
         overflowX: 'hidden',
         padding: theme.spacing(8, 4),
@@ -31,6 +35,7 @@ const useStyles = makeStyles(theme => ({
         zIndex: 10,
         width: '100%',
         maxWidth: 720,
+        boxSizing: 'border-box',
         margin: '0 auto',
         display: 'block',
         borderRadius: 32,
@@ -39,6 +44,7 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid rgba(226, 232, 240, 0.6)',
         boxShadow: '0 50px 100px -20px rgba(0, 0, 0, 0.05)',
         padding: theme.spacing(8),
+        overflow: 'hidden',
         [theme.breakpoints.down('sm')]: {
             padding: theme.spacing(3, 2),
             borderRadius: 24,
