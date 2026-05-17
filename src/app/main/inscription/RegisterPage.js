@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
         overflowX: 'hidden',
         padding: theme.spacing(8, 4),
         [theme.breakpoints.down('sm')]: {
-            padding: theme.spacing(4, 2),
+            padding: theme.spacing(2, 1),
         }
     },
     backgroundArt: {
@@ -39,8 +39,9 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid rgba(226, 232, 240, 0.6)',
         boxShadow: '0 50px 100px -20px rgba(0, 0, 0, 0.05)',
         padding: theme.spacing(8),
-        [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing(4),
+        [theme.breakpoints.down('sm')]: {
+            padding: theme.spacing(3, 2),
+            borderRadius: 24,
         }
     },
     logo: {
@@ -58,6 +59,9 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'center',
         marginBottom: 12,
         letterSpacing: '-0.02em',
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '1.75rem',
+        }
     },
     subtitle: {
         fontFamily: 'Muli, Roboto, "Helvetica", Arial, sans-serif',
@@ -67,6 +71,10 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'center',
         lineHeight: 1.5,
         marginBottom: 48,
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '0.85rem',
+            marginBottom: 32,
+        }
     },
     tabs: {
         marginBottom: 40,
@@ -74,6 +82,11 @@ const useStyles = makeStyles(theme => ({
         borderRadius: 16,
         padding: 6,
         minHeight: 52,
+        [theme.breakpoints.down('sm')]: {
+            padding: 4,
+            minHeight: 44,
+            marginBottom: 24,
+        },
         '& .MuiTabs-indicator': {
             height: '100%',
             borderRadius: 12,
@@ -89,6 +102,12 @@ const useStyles = makeStyles(theme => ({
         minHeight: 40,
         color: '#64748b',
         zIndex: 1,
+        padding: '6px 12px',
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '0.75rem',
+            minHeight: 36,
+            padding: '4px 8px',
+        },
         transition: 'all 0.2s',
         '&.Mui-selected': {
             color: '#0f172a',
