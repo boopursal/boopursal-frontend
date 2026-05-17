@@ -60,26 +60,27 @@ const useStyles = makeStyles((theme) => ({
   navLink: {
     fontSize: "1.4rem",
     fontWeight: 700,
-    color: "var(--portal-nav-link)",
+    color: "#1e293b", // Slate 800 - Very dark for high visibility
     textDecoration: "none",
-    padding: "14px 22px",
-    borderRadius: "14px",
+    padding: "10px 18px",
+    borderRadius: "12px",
     transition: "all 0.2s ease",
     whiteSpace: "nowrap",
     "&:hover": {
-      color: "var(--portal-primary)",
-      background: "transparent", // Clean hover
+      color: "#0f172a", // Slate 900
+      background: "rgba(15, 23, 42, 0.04)", // Light gray hover background
     },
     "&.active": {
       color: "var(--portal-primary)",
-      background: "transparent", // Clean active
+      fontWeight: 800,
+      background: "transparent",
       position: 'relative',
       "&:after": {
         content: '""',
         position: 'absolute',
         bottom: 0,
-        left: '20%',
-        right: '25%',
+        left: '15%',
+        right: '15%',
         height: '3px',
         background: 'var(--portal-primary)',
         borderRadius: '5px'
