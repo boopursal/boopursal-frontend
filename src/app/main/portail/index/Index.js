@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     background: "var(--portal-bg)",
     color: "var(--portal-text)",
     fontFamily: "'Inter', sans-serif",
+    overflowX: "hidden",
   },
 
   // ===== HERO =====
@@ -444,7 +445,7 @@ function Index(props) {
       <section className={classes.heroSection}>
         <div style={{
           position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)',
-          width: '800px', height: '600px',
+          width: '100%', maxWidth: '800px', height: '600px',
           background: 'radial-gradient(circle, rgba(255, 90, 90, 0.07) 0%, transparent 70%)',
           zIndex: -1, pointerEvents: 'none'
         }} />
