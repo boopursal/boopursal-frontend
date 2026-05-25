@@ -5,17 +5,15 @@ import {
     Radio, MenuItem, ListItemText, Paper
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import { red } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/styles';
 import {
     FuseAnimate, FusePageCarded, URL_SITE,
     TextFieldFormsy, DatePickerFormsy, CheckboxFormsy,
-    RadioGroupFormsy, SelectReactFormsy, FuseChipSelect
+    RadioGroupFormsy, SelectReactFormsy
 } from '@fuse';
 import AsyncSelect from 'react-select/lib/Async';
 import agent from 'agent';
 import { useForm } from '@fuse/hooks';
-import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import _ from '@lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,47 +24,82 @@ import Formsy from 'formsy-react';
 import moment from 'moment';
 import green from '@material-ui/core/colors/green';
 import ReactTable from "react-table";
-import Autosuggest from 'react-autosuggest';
-import Highlighter from "react-highlight-words";
 import SuggestionDialog from './SuggestionDialog';
 
 const useStyles = makeStyles(theme => ({
-    headerRoot: {
-        background: 'linear-gradient(135deg, #1a2744 0%, #2c3e6b 100%)',
-        minHeight: 200,
+    pageHeader: {
+        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important',
+        color: '#ffffff !important',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08) !important',
+        boxShadow: 'none !important',
     },
-    card: {
-        background: '#fff',
+    backButton: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        background: 'rgba(255, 255, 255, 0.06)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '8px',
+        padding: '6px 12px',
+        color: 'rgba(255, 255, 255, 0.8)',
+        textDecoration: 'none',
+        fontWeight: 700,
+        fontSize: 12,
+        letterSpacing: '0.5px',
+        textTransform: 'uppercase',
+        marginBottom: 12,
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        '&:hover': {
+            background: 'rgba(255, 255, 255, 0.12)',
+            color: '#ffffff',
+            borderColor: 'rgba(255, 255, 255, 0.25)',
+        },
+        '& .MuiIcon-root': {
+            marginRight: 6,
+            fontSize: 18,
+        }
+    },
+    premiumCard: {
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
         borderRadius: 16,
-        border: '1px solid #f0f0f0',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-        padding: 32,
+        border: '1px solid rgba(226, 232, 240, 0.8)',
+        boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -3px rgba(0, 0, 0, 0.02)',
+        padding: '24px',
         marginBottom: 24,
+        transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: '0 12px 30px -4px rgba(0, 0, 0, 0.08), 0 4px 15px -5px rgba(0, 0, 0, 0.03)',
+            borderColor: 'rgba(60, 80, 224, 0.25)',
+        }
     },
     cardHeader: {
         display: 'flex',
         alignItems: 'center',
         marginBottom: 20,
         paddingBottom: 16,
-        borderBottom: '1px solid #f5f5f5',
-        fontWeight: 900,
+        borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
+        fontWeight: 800,
         fontSize: 13,
-        letterSpacing: 1,
-        color: '#1a2744',
+        letterSpacing: '0.5px',
+        color: '#1e293b',
         textTransform: 'uppercase',
     },
     cardIcon: {
-        width: 36,
-        height: 36,
-        borderRadius: 10,
+        width: 32,
+        height: 32,
+        borderRadius: 8,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 14,
+        marginRight: 12,
         fontWeight: 'bold',
+        backgroundColor: 'rgba(60, 80, 224, 0.1)',
+        color: '#3c50e0',
     },
     sidebar: {
-        width: 320,
+        width: 400,
         flexShrink: 0,
         marginLeft: 32,
         '@media (max-width: 1279px)': {
@@ -82,41 +115,168 @@ const useStyles = makeStyles(theme => ({
     },
     auditCard: {
         borderRadius: 16,
-        marginBottom: 20,
+        marginBottom: 24,
         padding: 24,
+        border: '1px solid rgba(226, 232, 240, 0.8)',
+        boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+        transition: 'transform 0.3s ease',
+        '&:hover': {
+            transform: 'translateY(-2px)',
+        }
     },
     auditAlert: {
         display: 'flex',
         alignItems: 'flex-start',
-        background: 'rgba(255,255,255,0.85)',
+        background: 'rgba(255, 255, 255, 0.9)',
         borderRadius: 12,
-        padding: '10px 14px',
-        marginBottom: 8,
-        border: '1px solid rgba(255,255,255,0.5)',
+        padding: '12px 16px',
+        marginBottom: 10,
+        border: '1px solid rgba(255, 255, 255, 0.6)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)',
+        transition: 'transform 0.2s ease',
+        '&:hover': {
+            transform: 'translateX(4px)',
+        }
     },
     statusBadge: {
         display: 'inline-flex',
         alignItems: 'center',
-        padding: '3px 12px',
-        borderRadius: 20,
-        fontSize: 11,
-        fontWeight: 900,
+        padding: '4px 12px',
+        borderRadius: 9999,
+        fontSize: 12,
+        fontWeight: 700,
         textTransform: 'uppercase',
-        letterSpacing: 1,
+        letterSpacing: '0.5px',
+    },
+    statusValidated: {
+        background: 'rgba(16, 185, 129, 0.12) !important',
+        color: '#10b981 !important',
+        border: '1px solid rgba(16, 185, 129, 0.2) !important',
+        boxShadow: '0 0 12px rgba(16, 185, 129, 0.1) !important',
+    },
+    statusRejected: {
+        background: 'rgba(239, 68, 68, 0.12) !important',
+        color: '#ef4444 !important',
+        border: '1px solid rgba(239, 68, 68, 0.2) !important',
+        boxShadow: '0 0 12px rgba(239, 68, 68, 0.1) !important',
+    },
+    statusPending: {
+        background: 'rgba(245, 158, 11, 0.12) !important',
+        color: '#f59e0b !important',
+        border: '1px solid rgba(245, 158, 11, 0.2) !important',
+        boxShadow: '0 0 12px rgba(245, 158, 11, 0.1) !important',
     },
     decisionCard: {
-        background: 'linear-gradient(135deg, #2779BD 0%, #1C3D5A 100%)',
-        borderRadius: 16,
-        padding: 28,
-        color: '#fff',
-        marginBottom: 20,
-    },
-    couvertureCard: {
-        background: '#1a2744',
+        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
         borderRadius: 16,
         padding: 24,
         color: '#fff',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05)',
         marginBottom: 20,
+        position: 'relative',
+        overflow: 'hidden',
+        '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '2px',
+            background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899)',
+        }
+    },
+    decisionOption: {
+        display: 'flex',
+        alignItems: 'center',
+        background: 'rgba(255, 255, 255, 0.03)',
+        border: '1px solid rgba(255, 255, 255, 0.05)',
+        borderRadius: 12,
+        padding: '10px 14px',
+        marginBottom: 12,
+        transition: 'all 0.2s ease',
+        cursor: 'pointer',
+        '&:hover': {
+            background: 'rgba(255, 255, 255, 0.07)',
+            borderColor: 'rgba(255, 255, 255, 0.15)',
+        }
+    },
+    decisionOptionActiveGreen: {
+        background: 'rgba(16, 185, 129, 0.1)',
+        borderColor: 'rgba(16, 185, 129, 0.3)',
+        boxShadow: '0 0 15px rgba(16, 185, 129, 0.15)',
+    },
+    decisionOptionActiveRed: {
+        background: 'rgba(239, 68, 68, 0.1)',
+        borderColor: 'rgba(239, 68, 68, 0.3)',
+        boxShadow: '0 0 15px rgba(239, 68, 68, 0.15)',
+    },
+    submitBtn: {
+        background: 'linear-gradient(135deg, #3C50E0 0%, #5165f6 100%) !important',
+        color: '#ffffff !important',
+        borderRadius: '12px !important',
+        padding: '12px 24px !important',
+        fontWeight: 700,
+        fontSize: '13px',
+        letterSpacing: '0.5px',
+        textTransform: 'none !important',
+        boxShadow: '0 4px 14px rgba(60, 80, 224, 0.25) !important',
+        transition: 'all 0.3s ease !important',
+        '&:hover': {
+            boxShadow: '0 6px 20px rgba(60, 80, 224, 0.4) !important',
+            transform: 'translateY(-1px)',
+        },
+        '&:disabled': {
+            background: 'rgba(255, 255, 255, 0.12) !important',
+            color: 'rgba(255, 255, 255, 0.3) !important',
+            boxShadow: 'none !important',
+        }
+    },
+    optionRadio: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '8px 12px',
+        borderRadius: 8,
+        marginBottom: 6,
+        transition: 'background 0.2s ease',
+        '&:hover': {
+            background: 'rgba(60, 80, 224, 0.04)',
+        }
+    },
+    alertEmailBox: {
+        background: 'rgba(60, 80, 224, 0.05)',
+        border: '1px solid rgba(60, 80, 224, 0.15)',
+        borderRadius: 12,
+        padding: 12,
+        marginTop: 16,
+        transition: 'all 0.2s ease',
+        '&:hover': {
+            background: 'rgba(60, 80, 224, 0.08)',
+            borderColor: 'rgba(60, 80, 224, 0.25)',
+        }
+    },
+    tabRoot: {
+        minHeight: 64,
+        textTransform: 'none',
+        fontWeight: 700,
+        fontSize: 14,
+        fontFamily: "'Outfit', sans-serif",
+        '&:hover': {
+            color: '#3c50e0',
+            opacity: 1,
+        },
+    },
+    tabSelected: {
+        color: '#3c50e0',
+    },
+    tabsRoot: {
+        borderBottom: '1px solid #e2e8f0',
+        background: '#ffffff',
+    },
+    tabsIndicator: {
+        backgroundColor: '#3c50e0',
+        height: 3,
+        borderRadius: '3px 3px 0 0',
     },
     budgetBox: {
         background: '#1a2744',
@@ -150,24 +310,18 @@ const useStyles = makeStyles(theme => ({
         marginRight: 8,
         border: '1px solid rgba(52,144,220,0.25)',
     },
-    backLink: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        color: 'rgba(255,255,255,0.6)',
-        textDecoration: 'none',
-        fontWeight: 700,
-        fontSize: 12,
-        letterSpacing: 1,
-        textTransform: 'uppercase',
-        marginBottom: 20,
-        '&:hover': { color: '#fff' },
-    },
     suggestionChip: {
-        margin: '4px 6px 4px 0',
-        background: '#fff',
-        border: '1px solid #e0e0e0',
-        fontWeight: 700,
+        background: '#ffffff',
+        border: '1px solid rgba(226, 232, 240, 0.8)',
+        fontWeight: 600,
+        fontSize: 12,
         borderRadius: 8,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
+        transition: 'all 0.2s ease',
+        '&:hover': {
+            borderColor: 'rgba(60, 80, 224, 0.2)',
+            boxShadow: '0 2px 6px rgba(60, 80, 224, 0.05)',
+        }
     },
     optionRow: {
         border: '1px solid #f0f0f0',
@@ -190,28 +344,11 @@ const useStyles = makeStyles(theme => ({
 
 moment.defaultFormat = "DD/MM/YYYY HH:mm";
 
-function renderSuggestion(suggestion, { query, isHighlighted }) {
-    return (
-        <MenuItem selected={isHighlighted} component="div" dense>
-            <ListItemText primary={
-                <Highlighter highlightClassName="YourHighlightClass" searchWords={[query]} autoEscape textToHighlight={suggestion.name} />
-            } />
-        </MenuItem>
-    );
-}
 
-function renderInputComponent(inputProps) {
-    const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-    return (
-        <TextField fullWidth InputProps={{ inputRef: node => { ref(node); inputRef(node); } }} {...other} />
-    );
-}
 
 function Demande(props) {
     const classes = useStyles(props);
-    const suggestionsNode = useRef(null);
-    const popperNode = useRef(null);
-    const searchCategories = useSelector(({ demandesAdminApp }) => demandesAdminApp.searchCategories);
+
     const [categories, setCategories] = React.useState([]);
     const [suggestions, setSuggestions] = React.useState([]);
     const dispatch = useDispatch();
@@ -219,7 +356,7 @@ function Demande(props) {
 
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef(null);
-    const { form, handleChange, setForm } = useForm();
+    const { form, setForm } = useForm();
 
     const [tabValue, setTabValue] = useState(0);
     const [sousSecteurs] = useState(null);
@@ -277,12 +414,7 @@ function Demande(props) {
         }
     }, [demande.produit, categories, suggestions]);
 
-    function handleSuggestionsFetchRequested({ value, reason }) {
-        if (reason === 'input-changed') {
-            value && value.trim().length > 1 && dispatch(Actions.loadSuggestions(value.trim()));
-        }
-    }
-    function handleSuggestionsClearRequested() {}
+
 
     function handleUploadChange(e) {
         const file = e.target.files[0];
@@ -347,7 +479,6 @@ function Demande(props) {
 
     const acheteur = form.acheteur || demande.data?.acheteur;
     const statusLabel = form.statut === 1 ? 'Validée' : form.statut === 2 ? 'Rejetée' : 'En attente';
-    const statusColor = form.statut === 1 ? '#1F9D55' : form.statut === 2 ? '#CC1F1A' : '#DE751F';
     const report = demande.data?.validationReport;
 
     return (
@@ -355,38 +486,44 @@ function Demande(props) {
             <FusePageCarded
                 classes={{
                     toolbar: 'p-0',
-                    header: 'min-h-72 h-72 sm:h-136 sm:min-h-136 bg-blue-darkest text-white',
+                    header: clsx(classes.pageHeader, 'min-h-72 h-72 sm:h-136 sm:min-h-136'),
                     contentWrapper: 'p-0',
                     content: 'flex flex-col flex-1 relative',
                 }}
                 header={
-                    <div className="flex flex-1 w-full items-center justify-between px-24 py-16">
+                    <div className="flex flex-1 w-full items-center justify-between px-16 sm:px-24 py-16">
                         <div className="flex flex-col items-start min-w-0">
                             <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                                <Typography className="normal-case flex items-center sm:mb-12 cursor-pointer font-bold" onClick={() => props.history.push('/demandes_admin')}>
-                                    <Icon className="mr-4 text-20">arrow_back</Icon>
+                                <span className={classes.backButton} onClick={() => props.history.push('/demandes_admin')}>
+                                    <Icon>arrow_back</Icon>
                                     Retour à la liste
-                                </Typography>
+                                </span>
                             </FuseAnimate>
-                            <div className="flex items-center min-w-0">
+                            <div className="flex items-center min-w-0 mt-8 sm:mt-12">
                                 <FuseAnimate animation="transition.expandIn" delay={300}>
-                                    <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg flex items-center justify-center mr-16" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                                        <Icon className="text-32 text-blue-light">assignment</Icon>
+                                    <div className="w-40 h-40 sm:w-56 sm:h-56 rounded-xl flex items-center justify-center mr-12 sm:mr-16" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                                        <Icon className="text-24 sm:text-28 text-blue-light">assignment</Icon>
                                     </div>
                                 </FuseAnimate>
                                 <div className="flex flex-col min-w-0">
                                     <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                                        <Typography variant="h5" className="truncate font-bold">
+                                        <Typography variant="h6" className="text-16 sm:text-20 truncate font-extrabold tracking-tight">
                                             {form.titre || 'Nouvelle Demande'}
                                         </Typography>
                                     </FuseAnimate>
                                     <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                                        <Typography variant="caption" className="flex items-center mt-4">
+                                        <div className="flex flex-wrap items-center mt-4 gap-8">
                                             {form.reference && (
-                                                <span className="font-bold mr-8 tracking-wide">#{form.reference}</span>
+                                                <span className={classes.refBadge}>#{form.reference}</span>
                                             )}
-                                            {statusLabel && <span className="font-bold" style={{ color: statusColor }}>• {statusLabel}</span>}
-                                        </Typography>
+                                            <span className={clsx(classes.statusBadge, 
+                                                form.statut === 1 ? classes.statusValidated : 
+                                                form.statut === 2 ? classes.statusRejected : 
+                                                classes.statusPending
+                                            )}>
+                                                {statusLabel}
+                                            </span>
+                                        </div>
                                     </FuseAnimate>
                                 </div>
                             </div>
@@ -397,7 +534,7 @@ function Demande(props) {
                     demande.loading ? (
                         <div className="w-full"><LinearProgress color="secondary" /></div>
                     ) : (
-                        <div style={{ borderBottom: '1px solid #f0f0f0', background: '#fff', paddingLeft: 16 }}>
+                        <div className={classes.tabsRoot}>
                             <Tabs
                                 value={(() => {
                                     const t = [0, 1, 2];
@@ -413,13 +550,13 @@ function Demande(props) {
                                     setTabValue(t[n]);
                                 }}
                                 variant="scrollable"
-                                classes={{ root: 'min-h-72', indicator: 'bg-blue h-4' }}
+                                classes={{ root: 'min-h-64', indicator: classes.tabsIndicator }}
                             >
-                                <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>assignment</Icon>Général</span>} />
-                                <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>attach_file</Icon>Documents {form?.attachements?.length > 0 && <span style={{ marginLeft: 8, background: '#E3342F', color: '#fff', borderRadius: 12, padding: '2px 8px', fontSize: 11 }}>{form.attachements.length}</span>}</span>} />
-                                <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>person</Icon>Acheteur</span>} />
-                                {form?.diffusionsdemandes?.length > 0 && <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>send</Icon>Diffusion</span>} />}
-                                {demande?.fournisseurs?.length > 0 && !form.isAnonyme && <Tab className="min-h-72 font-700 text-14" label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>people</Icon>Participants</span>} />}
+                                <Tab classes={{ root: classes.tabRoot, selected: classes.tabSelected }} label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>assignment</Icon>Général</span>} />
+                                <Tab classes={{ root: classes.tabRoot, selected: classes.tabSelected }} label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>attach_file</Icon>Documents {form?.attachements?.length > 0 && <span style={{ marginLeft: 8, background: '#E3342F', color: '#fff', borderRadius: 12, padding: '2px 8px', fontSize: 11 }}>{form.attachements.length}</span>}</span>} />
+                                <Tab classes={{ root: classes.tabRoot, selected: classes.tabSelected }} label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>person</Icon>Acheteur</span>} />
+                                {form?.diffusionsdemandes?.length > 0 && <Tab classes={{ root: classes.tabRoot, selected: classes.tabSelected }} label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>send</Icon>Diffusion</span>} />}
+                                {demande?.fournisseurs?.length > 0 && !form.isAnonyme && <Tab classes={{ root: classes.tabRoot, selected: classes.tabSelected }} label={<span style={{ display: 'flex', alignItems: 'center' }}><Icon style={{ marginRight: 8, fontSize: 18 }}>people</Icon>Participants</span>} />}
                             </Tabs>
                         </div>
                     )
@@ -430,40 +567,44 @@ function Demande(props) {
 
                             {/* ── TAB 0 : GÉNÉRAL ── */}
                             {tabValue === 0 && (
-                                <div className="flex flex-col xl:flex-row xl:items-start xl:justify-center w-full">
+                                <div className={classes.twoColLayout}>
 
                                     {/* COLONNE GAUCHE (Formulaire Principal) */}
-                                    <div className="flex-1 min-w-0 pr-0 xl:pr-24">
+                                    <div className={classes.mainCol}>
 
                                         {/* Identification */}
-                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
-                                                <Icon className="text-blue mr-8 text-20">edit</Icon>
+                                        <Paper className={classes.premiumCard}>
+                                            <div className={classes.cardHeader}>
+                                                <div className={classes.cardIcon}>
+                                                    <Icon>edit</Icon>
+                                                </div>
                                                 Identification du besoin
                                             </div>
-                                            <div className="p-16 sm:p-24 flex flex-col sm:flex-row flex-wrap -mx-8">
-                                                <div className="w-full sm:w-1/2 px-8 mb-16 sm:mb-0">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
+                                                <div>
                                                     <TextFieldFormsy name="titre" label="Objet de la demande *" value={form.titre} variant="outlined" required fullWidth />
                                                 </div>
-                                                <div className="w-full sm:w-1/2 px-8">
+                                                <div>
                                                     <TextFieldFormsy name="reference" label="Référence interne" value={form.reference} variant="outlined" disabled fullWidth />
                                                 </div>
-                                                <div className="w-full sm:w-1/2 px-8 mt-16">
+                                                <div>
                                                     <TextFieldFormsy name="budget" label="Budget estimatif (MAD)" value={form.budget !== undefined && form.budget !== null ? String(form.budget) : ''} type="number" variant="outlined" fullWidth className="font-bold text-lg" />
                                                 </div>
-                                                <div className="w-full sm:w-1/2 px-8 mt-16">
+                                                <div>
                                                     <DatePickerFormsy name="dateExpiration" value={form.dateExpiration} label="Fin de validité" format="DD/MM/YYYY" variant="outlined" fullWidth />
                                                 </div>
                                             </div>
                                         </Paper>
 
                                         {/* Description */}
-                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
-                                                <Icon className="text-purple mr-8 text-20">description</Icon>
+                                        <Paper className={classes.premiumCard}>
+                                            <div className={classes.cardHeader}>
+                                                <div className={classes.cardIcon} style={{ color: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)' }}>
+                                                    <Icon>description</Icon>
+                                                </div>
                                                 Cahier des charges
                                             </div>
-                                            <div className="p-16 sm:p-24">
+                                            <div className="flex flex-col gap-16">
                                                 <TextFieldFormsy name="description" label="Spécifications techniques détaillées *" value={form.description} multiline rows={6} variant="outlined" required fullWidth />
                                                 
                                                 {form.autre_categories && (
@@ -475,13 +616,15 @@ function Demande(props) {
                                         </Paper>
 
                                         {/* Catégories */}
-                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
-                                                <Icon className="text-orange mr-8 text-20">layers</Icon>
+                                        <Paper className={classes.premiumCard}>
+                                            <div className={classes.cardHeader}>
+                                                <div className={classes.cardIcon} style={{ color: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
+                                                    <Icon>layers</Icon>
+                                                </div>
                                                 Classification partenaires
                                             </div>
-                                            <div className="p-16 sm:p-24">
-                                                <Typography variant="body2" className="font-bold text-gray-dark block mb-8">Secteurs d'activités cibles *</Typography>
+                                            <div className="flex flex-col gap-16">
+                                                <Typography variant="body2" className="font-bold text-gray-dark block mb-4">Secteurs d'activités cibles *</Typography>
                                                 <AsyncSelect
                                                     cacheOptions
                                                     defaultOptions={categories.map(c => ({ value: c.id, label: c.name, '@id': c['@id'] }))}
@@ -496,19 +639,44 @@ function Demande(props) {
                                                         control: (base) => ({
                                                             ...base,
                                                             minHeight: 48,
-                                                            borderColor: '#e2e8f0',
-                                                            '&:hover': { borderColor: '#cbd5e1' }
+                                                            borderColor: '#cbd5e1',
+                                                            borderRadius: 12,
+                                                            paddingLeft: 4,
+                                                            boxShadow: 'none',
+                                                            '&:hover': { borderColor: '#3c50e0' }
+                                                        }),
+                                                        multiValue: (base) => ({
+                                                            ...base,
+                                                            backgroundColor: 'rgba(60, 80, 224, 0.08)',
+                                                            color: '#3c50e0',
+                                                            borderRadius: 8,
+                                                            fontWeight: 600,
+                                                        }),
+                                                        multiValueLabel: (base) => ({
+                                                            ...base,
+                                                            color: '#3c50e0',
+                                                            paddingLeft: 8,
+                                                            paddingRight: 8,
+                                                        }),
+                                                        multiValueRemove: (base) => ({
+                                                            ...base,
+                                                            color: '#3c50e0',
+                                                            borderRadius: '0 8px 8px 0',
+                                                            '&:hover': {
+                                                                backgroundColor: 'rgba(60, 80, 224, 0.15)',
+                                                                color: '#3c50e0',
+                                                            }
                                                         })
                                                     }}
                                                 />
                                                 {suggestions.length > 0 && (
-                                                    <div className="mt-16 p-12 bg-gray-lightest border border-gray-lighter rounded-md">
-                                                        <Typography variant="caption" className="font-bold text-gray-dark mb-8 block uppercase tracking-wide">
+                                                    <div className="mt-16 p-16 bg-slate-50 border border-slate-100 rounded-xl">
+                                                        <Typography variant="caption" className="font-bold text-slate-500 mb-12 block uppercase tracking-wider">
                                                             Suggestions de l'acheteur
                                                         </Typography>
-                                                        <div className="flex flex-wrap">
+                                                        <div className="flex flex-wrap gap-8">
                                                             {suggestions.map((item, i) => (
-                                                                <Chip key={i} label={item} onDelete={() => handleRemoveSuggestion(item)} size="small" className="mr-8 mb-4 bg-white border border-gray-light font-bold" />
+                                                                <Chip key={i} label={item} onDelete={() => handleRemoveSuggestion(item)} size="small" className={classes.suggestionChip} />
                                                             ))}
                                                         </div>
                                                     </div>
@@ -519,72 +687,103 @@ function Demande(props) {
                                     </div>
 
                                     {/* COLONNE DROITE — SIDEBAR */}
-                                    <div className="w-full xl:w-320 flex-shrink-0 mt-24 xl:mt-0">
+                                    <div className={classes.sidebar}>
 
                                         {/* Audit IA */}
                                         {report && (
-                                            <Paper className="mb-24 rounded-lg shadow-sm border" style={{
-                                                background: report.score >= 80 ? '#E3FCEC' : report.score >= 60 ? '#FFF9C2' : '#FCEBEA',
-                                                borderColor: report.score >= 80 ? '#51D88A' : report.score >= 60 ? '#F2D024' : '#EF5753',
+                                            <div className={classes.auditCard} style={{
+                                                background: report.score >= 80 ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' : report.score >= 60 ? 'linear-gradient(135deg, #fef9c3 0%, #fef08a 100%)' : 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
+                                                borderColor: report.score >= 80 ? '#bbf7d0' : report.score >= 60 ? '#fef08a' : '#fecaca',
                                             }}>
-                                                <div className="p-16 pb-8 border-b border-transparent flex justify-between items-center text-gray-darkest font-extrabold uppercase text-13">
-                                                    <span className="flex items-center"><Icon className="mr-8 text-20">verified_user</Icon> Analyse IA</span>
-                                                    <span className="text-20 font-black">{report.score}%</span>
+                                                <div className="flex justify-between items-center text-slate-800 font-extrabold uppercase text-13 mb-16 pb-8 border-b border-black/5">
+                                                    <span className="flex items-center"><Icon className="mr-8 text-20 text-slate-700">verified_user</Icon> Analyse IA</span>
+                                                    <span className="text-20 font-black text-slate-900">{report.score}%</span>
                                                 </div>
-                                                <div className="px-16 pb-16">
-                                                    <LinearProgress variant="determinate" value={report.score} style={{ height: 6, borderRadius: 3, marginBottom: 16, background: 'rgba(0,0,0,0.1)' }} />
+                                                <div>
+                                                    <LinearProgress variant="determinate" value={report.score} style={{ height: 6, borderRadius: 3, marginBottom: 16, background: 'rgba(0,0,0,0.06)' }} />
                                                     {report.alerts.map((alert, idx) => (
-                                                        <div key={idx} className="flex items-start bg-white bg-opacity-75 rounded p-8 mb-8 border border-white border-opacity-50">
-                                                            <Icon className={`text-18 mr-8 mt-2 flex-shrink-0 ${alert.type === 'CRITICAL' ? 'text-red' : 'text-orange'}`}>
+                                                        <div key={idx} className={classes.auditAlert}>
+                                                            <Icon className={`text-18 mr-12 mt-2 flex-shrink-0 ${alert.type === 'CRITICAL' ? 'text-red' : 'text-orange'}`}>
                                                                 {alert.type === 'CRITICAL' ? 'report' : 'warning_amber'}
                                                             </Icon>
-                                                            <div>
-                                                                <Typography variant="body2" className="font-bold text-gray-darkest leading-tight">{alert.message}</Typography>
-                                                                <Typography variant="caption" className="font-bold text-gray-dark uppercase tracking-tight">{alert.detail}</Typography>
+                                                            <div className="min-w-0">
+                                                                <Typography variant="body2" className="font-bold text-slate-800 leading-tight mb-2">{alert.message}</Typography>
+                                                                <Typography variant="caption" className="font-semibold text-slate-500 uppercase tracking-tight">{alert.detail}</Typography>
                                                             </div>
                                                         </div>
                                                     ))}
                                                 </div>
-                                            </Paper>
+                                            </div>
                                         )}
 
                                         {/* Paramètres & Diffusion */}
-                                        <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                            <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
-                                                <Icon className="text-blue mr-8 text-20">settings</Icon>
+                                        <Paper className={classes.premiumCard} style={{ padding: 20 }}>
+                                            <div className={classes.cardHeader} style={{ marginBottom: 16, paddingBottom: 12 }}>
+                                                <div className={classes.cardIcon} style={{ color: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
+                                                    <Icon>settings</Icon>
+                                                </div>
                                                 Paramètres & Options
                                             </div>
-                                            <div className="p-16">
-                                                <div className="mb-16 border-b border-gray-lighter pb-12"><CheckboxFormsy name="isPublic" value={!!form.isPublic} label={<span className="font-bold text-14">Publié sur le portail</span>} /></div>
-                                                <div className="mb-16 border-b border-gray-lighter pb-12"><CheckboxFormsy name="isAnonyme" value={!!form.isAnonyme} label={<span className="font-bold text-14">Client masqué</span>} /></div>
-                                                <div className="p-12 mt-12 bg-blue-lightest border border-blue-lighter rounded-lg"><CheckboxFormsy name="sendEmail" value={!!form.sendEmail} label={<span className="font-bold text-14 text-blue-darker">Alerter les Partenaires par e-mail</span>} /></div>
+                                            <div>
+                                                <div className={classes.optionRow}>
+                                                    <CheckboxFormsy name="isPublic" value={!!form.isPublic} label={<span className="font-bold text-14 text-slate-700">Publié sur le portail</span>} />
+                                                </div>
+                                                <div className={classes.optionRow}>
+                                                    <CheckboxFormsy name="isAnonyme" value={!!form.isAnonyme} label={<span className="font-bold text-14 text-slate-700">Client masqué</span>} />
+                                                </div>
+                                                <div className={classes.alertEmailBox}>
+                                                    <CheckboxFormsy name="sendEmail" value={!!form.sendEmail} label={<span className="font-bold text-14 text-blue-darker">Alerter les Partenaires par e-mail</span>} />
+                                                </div>
                                                 
-                                                <div className="mt-20 pt-16 border-t border-gray-lighter">
-                                                    <Typography variant="caption" className="font-bold text-gray flex items-center uppercase mb-12"><Icon className="text-16 mr-4">public</Icon> Couverture Géographique</Typography>
-                                                    <RadioGroupFormsy name="localisation" onChange={handleRadioLocalisation} className="flex-col">
-                                                        <FormControlLabel value="2" checked={form.localisation === 2} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13">Locale (Maroc)</span>} />
-                                                        <FormControlLabel value="3" checked={form.localisation === 3} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13">Internationale</span>} />
-                                                        <FormControlLabel value="1" checked={form.localisation === 1} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13">Global (Les deux)</span>} />
+                                                <div className="mt-24 pt-16 border-t border-slate-100">
+                                                    <Typography variant="caption" className="font-bold text-slate-400 flex items-center uppercase mb-12 tracking-wider">
+                                                        <Icon className="text-16 mr-6 text-slate-400">public</Icon> Couverture Géographique
+                                                    </Typography>
+                                                    <RadioGroupFormsy name="localisation" onChange={handleRadioLocalisation} className="flex flex-col gap-4">
+                                                        <FormControlLabel value="2" checked={form.localisation === 2} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Locale (Maroc)</span>} />
+                                                        <FormControlLabel value="3" checked={form.localisation === 3} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Internationale</span>} />
+                                                        <FormControlLabel value="1" checked={form.localisation === 1} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Global (Les deux)</span>} />
                                                     </RadioGroupFormsy>
                                                 </div>
                                             </div>
                                         </Paper>
 
                                         {/* Décision Admin */}
-                                        <Paper className="rounded-lg shadow-sm bg-blue-darkest border border-blue-darkest text-white">
-                                            <div className="p-16 border-b border-transparent flex items-center text-blue-light font-extrabold uppercase text-13">
-                                                <Icon className="mr-8 text-20">gavel</Icon>
+                                        <div className={classes.decisionCard}>
+                                            <div className="flex items-center text-blue-light font-extrabold uppercase text-13 mb-20">
+                                                <Icon className="mr-8 text-20 text-blue-400">gavel</Icon>
                                                 Décision Modérateur
                                             </div>
-                                            <div className="p-16 pt-0">
-                                                <div className="bg-white bg-opacity-10 rounded p-8 mb-16">
-                                                    <RadioGroupFormsy name="statut" onChange={handleRadioChange} className="flex-col">
-                                                        <FormControlLabel value="1" checked={form.statut === 1} control={<Radio size="small" style={{ color: '#51D88A' }} />} label={<span className="font-bold text-13 text-green-light">Approuver & Diffuser</span>} />
-                                                        <FormControlLabel value="2" checked={form.statut === 2} control={<Radio size="small" style={{ color: '#F9ACAA' }} />} label={<span className="font-bold text-13 text-red-lighter">Rejeter la demande</span>} />
-                                                    </RadioGroupFormsy>
+                                            <div>
+                                                <div 
+                                                    className={clsx(classes.decisionOption, form.statut === 1 && classes.decisionOptionActiveGreen)}
+                                                    onClick={() => handleRadioChange({ target: { value: '1' } })}
+                                                >
+                                                    <Radio 
+                                                        size="small" 
+                                                        checked={form.statut === 1} 
+                                                        value="1" 
+                                                        onChange={handleRadioChange}
+                                                        style={{ color: '#10b981', padding: 4 }} 
+                                                    />
+                                                    <span className="font-bold text-13 text-emerald-400 ml-4">Approuver & Diffuser</span>
                                                 </div>
+                                                <div 
+                                                    className={clsx(classes.decisionOption, form.statut === 2 && classes.decisionOptionActiveRed)}
+                                                    onClick={() => handleRadioChange({ target: { value: '2' } })}
+                                                >
+                                                    <Radio 
+                                                        size="small" 
+                                                        checked={form.statut === 2} 
+                                                        value="2" 
+                                                        onChange={handleRadioChange}
+                                                        style={{ color: '#ef4444', padding: 4 }} 
+                                                    />
+                                                    <span className="font-bold text-13 text-rose-400 ml-4">Rejeter la demande</span>
+                                                </div>
+                                                
                                                 {form.statut === 2 && demande.motifs && (
-                                                    <div className="mb-16">
+                                                    <div className="mb-16 mt-8">
                                                         <SelectReactFormsy
                                                             id="motifRejet"
                                                             name="motifRejet"
@@ -594,14 +793,14 @@ function Demande(props) {
                                                                 label: 'Raison du rejet',
                                                                 variant: 'outlined',
                                                                 InputLabelProps: { shrink: true, style: { color: 'rgba(255,255,255,0.7)' } },
-                                                                style: { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: 4 }
+                                                                style: { backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: 8 }
                                                             }}
                                                             onChange={val => setMotif(val)}
                                                         />
                                                     </div>
                                                 )}
                                                 <Button
-                                                    className="w-full whitespace-no-wrap bg-white text-blue-darker font-bold py-12 rounded mt-8"
+                                                    className={clsx(classes.submitBtn, "w-full mt-12")}
                                                     variant="contained"
                                                     type="submit"
                                                     disabled={!isFormValid || demande.loading || !categories.length}
@@ -609,7 +808,7 @@ function Demande(props) {
                                                     {demande.loading ? <CircularProgress size={22} color="secondary" /> : 'Enregistrer'}
                                                 </Button>
                                             </div>
-                                        </Paper>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -617,44 +816,46 @@ function Demande(props) {
 
                             {/* ── TAB 1 : DOCUMENTS ── */}
                             {tabValue === 1 && (
-                                <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                    <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
-                                        <Icon className="text-blue mr-8 text-20">cloud_upload</Icon>
+                                <Paper className={classes.premiumCard}>
+                                    <div className={classes.cardHeader}>
+                                        <div className={classes.cardIcon} style={{ color: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
+                                            <Icon>cloud_upload</Icon>
+                                        </div>
                                         Documents Source de l'Acheteur
                                     </div>
-                                    <div className="p-16 sm:p-24">
-                                        <Typography className="text-gray-dark mb-16">Fichiers techniques et appels d'offres originaux.</Typography>
-                                        <div className="flex flex-wrap -mx-8">
-                                        {form.attachements?.length < 5 && (
-                                            <div className="px-8 mb-16">
-                                                <label htmlFor="button-file" className="w-128 h-128 border-2 border-dashed border-gray-light rounded flex flex-col items-center justify-center cursor-pointer hover:bg-gray-lightest transition-colors">
-                                                    <input accept="application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" id="button-file" type="file" onChange={handleUploadChange} />
-                                                    <Icon className="text-32 text-gray mb-8">add_circle_outline</Icon>
-                                                    <Typography variant="caption" className="font-bold text-gray uppercase tracking-wide">Ajouter</Typography>
-                                                </label>
-                                            </div>
-                                        )}
-                                        {form.attachements?.map(media => (
-                                            <div key={media.id} className="px-8 mb-16">
-                                                <div className="w-128 h-128 rounded relative border border-gray-lighter overflow-hidden bg-gray-lightest group shadow-sm hover:shadow transition-shadow">
-                                                    <IconButton size="small" className="absolute top-0 right-0 z-10 m-4 bg-white hover:bg-red hover:text-white transition-colors" 
-                                                        style={{ padding: 4 }}
-                                                        onClick={() => dispatch(Actions.deleteMedia(media))}>
-                                                        <Icon className="text-16">delete</Icon>
-                                                    </IconButton>
-                                                    <div className="w-full h-full flex items-center justify-center cursor-pointer"
-                                                        onClick={() => window.open(URL_SITE + '/attachement/demandeAchat/' + media.url, '_blank')}>
-                                                        {media.type.startsWith('image')
-                                                            ? <img className="object-cover w-full h-full" src={URL_SITE + '/attachement/demandeAchat/' + media.url} alt="media" />
-                                                            : <div className="text-center p-8">
-                                                                <Icon className="text-40 text-gray block mb-4 mx-auto">insert_drive_file</Icon>
-                                                                <Typography variant="caption" className="font-bold text-gray-dark truncate block max-w-full px-4">{media.name || 'Document'}</Typography>
-                                                              </div>
-                                                        }
+                                    <div>
+                                        <Typography className="text-slate-500 mb-20 text-14">Fichiers techniques et appels d'offres originaux.</Typography>
+                                        <div className="flex flex-wrap gap-16">
+                                            {form.attachements?.length < 5 && (
+                                                <div className="mb-8">
+                                                    <label htmlFor="button-file" className="w-128 h-128 border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 hover:border-blue transition-all duration-200">
+                                                        <input accept="application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" id="button-file" type="file" onChange={handleUploadChange} />
+                                                        <Icon className="text-32 text-slate-400 mb-8">add_circle_outline</Icon>
+                                                        <Typography variant="caption" className="font-bold text-slate-500 uppercase tracking-wider">Ajouter</Typography>
+                                                    </label>
+                                                </div>
+                                            )}
+                                            {form.attachements?.map(media => (
+                                                <div key={media.id} className="mb-8">
+                                                    <div className="w-128 h-128 rounded-xl relative border border-slate-100 overflow-hidden bg-slate-50 group shadow-sm hover:shadow-md transition-all duration-200">
+                                                        <IconButton size="small" className="absolute top-0 right-0 z-10 m-6 bg-white/80 backdrop-blur hover:bg-rose-500 hover:text-white transition-colors" 
+                                                            style={{ padding: 4 }}
+                                                            onClick={() => dispatch(Actions.deleteMedia(media))}>
+                                                            <Icon className="text-16">delete</Icon>
+                                                        </IconButton>
+                                                        <div className="w-full h-full flex items-center justify-center cursor-pointer"
+                                                            onClick={() => window.open(URL_SITE + '/attachement/demandeAchat/' + media.url, '_blank')}>
+                                                            {media.type?.startsWith('image')
+                                                                ? <img className="object-cover w-full h-full" src={URL_SITE + '/attachement/demandeAchat/' + media.url} alt="media" />
+                                                                : <div className="text-center p-12">
+                                                                    <Icon className="text-40 text-slate-400 block mb-6 mx-auto">insert_drive_file</Icon>
+                                                                    <Typography variant="caption" className="font-bold text-slate-600 truncate block max-w-full px-4">{media.name || 'Document'}</Typography>
+                                                                  </div>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
                                         </div>
                                     </div>
                                 </Paper>
@@ -662,66 +863,70 @@ function Demande(props) {
 
                             {/* ── TAB 2 : ACHETEUR (confidentiel) ── */}
                             {tabValue === 2 && acheteur && (
-                                <div className="max-w-4xl mx-auto">
-                                    <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                        <div className="p-16 border-b border-gray-lighter flex items-center text-green-darker font-bold uppercase text-13">
-                                            <Icon className="text-green mr-8 text-20">person</Icon>
+                                <div className="max-w-4xl mx-auto space-y-24">
+                                    <Paper className={classes.premiumCard}>
+                                        <div className={classes.cardHeader} style={{ color: '#10b981', borderBottomColor: 'rgba(16, 185, 129, 0.15)' }}>
+                                            <div className={classes.cardIcon} style={{ color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' }}>
+                                                <Icon>person</Icon>
+                                            </div>
                                             Contact Privé — Acheteur
                                         </div>
-                                        <div className="p-16 sm:p-24 flex flex-col sm:flex-row flex-wrap -mx-8">
-                                            <div className="w-full sm:w-1/3 px-8 mb-16 sm:mb-0">
-                                                <TextField label="Nom complet" value={`${acheteur.user?.first_name || acheteur.first_name || ''} ${acheteur.user?.last_name || acheteur.last_name || ''}`.trim()} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-24">
+                                            <div>
+                                                <TextField label="Nom complet" value={`${acheteur.user?.first_name || acheteur.first_name || ''} ${acheteur.user?.last_name || acheteur.last_name || ''}`.trim()} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">person</Icon> }} />
                                             </div>
-                                            <div className="w-full sm:w-1/3 px-8 mb-16 sm:mb-0">
-                                                <TextField label="Adresse Email" value={acheteur.user?.email || acheteur.email || ''} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                            <div>
+                                                <TextField label="Adresse Email" value={acheteur.user?.email || acheteur.email || ''} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">email</Icon> }} />
                                             </div>
-                                            <div className="w-full sm:w-1/3 px-8">
-                                                <TextField label="N° Téléphone" value={acheteur.user?.phone || acheteur.phone || ''} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                            <div>
+                                                <TextField label="N° Téléphone" value={acheteur.user?.phone || acheteur.phone || ''} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">phone</Icon> }} />
                                             </div>
                                         </div>
                                     </Paper>
-                                    <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                        <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
-                                            <Icon className="text-blue mr-8 text-20">business</Icon>
+                                    <Paper className={classes.premiumCard}>
+                                        <div className={classes.cardHeader}>
+                                            <div className={classes.cardIcon}>
+                                                <Icon>business</Icon>
+                                            </div>
                                             Données de l'Entreprise
                                         </div>
-                                        <div className="p-16 sm:p-24 flex flex-col sm:flex-row flex-wrap -mx-8 mt-8">
-                                            <div className="w-full sm:w-1/2 px-8 mb-20">
-                                                <TextField label="Société" value={acheteur.societe || acheteur.nom_entreprise || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 md:gap-24">
+                                            <div className="md:col-span-2">
+                                                <TextField label="Société" value={acheteur.societe || acheteur.nom_entreprise || ''} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">business</Icon> }} />
                                             </div>
-                                            <div className="w-full sm:w-1/4 px-8 mb-20">
-                                                <TextField label="ICE / Id Fiscal" value={acheteur.ice || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            <div>
+                                                <TextField label="ICE / Id Fiscal" value={acheteur.ice || 'N/C'} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">vpn_key</Icon> }} />
                                             </div>
-                                            <div className="w-full sm:w-1/4 px-8 mb-20">
-                                                <TextField label="Secteur" value={acheteur.secteur?.name || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            <div>
+                                                <TextField label="Secteur" value={acheteur.secteur?.name || 'N/C'} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">category</Icon> }} />
                                             </div>
 
-                                            <div className="w-full sm:w-1/3 px-8 mb-20">
-                                                <TextField label="Téléphone Fixe" value={acheteur.fix || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            <div>
+                                                <TextField label="Téléphone Fixe" value={acheteur.fix || 'N/C'} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">settings_phone</Icon> }} />
                                             </div>
-                                            <div className="w-full sm:w-2/3 px-8 mb-20">
-                                                <TextField label="Site Web" value={acheteur.website || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            <div className="md:col-span-3">
+                                                <TextField label="Site Web" value={acheteur.website || 'N/C'} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">language</Icon> }} />
                                             </div>
                                             
-                                            <div className="w-full sm:w-1/2 px-8 mb-20">
-                                                <TextField label="Adresse 1" value={acheteur.user?.adresse1 || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            <div className="md:col-span-2">
+                                                <TextField label="Adresse 1" value={acheteur.user?.adresse1 || 'N/C'} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">location_on</Icon> }} />
                                             </div>
-                                            <div className="w-full sm:w-1/2 px-8 mb-20">
-                                                <TextField label="Adresse 2" value={acheteur.user?.adresse2 || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
-                                            </div>
-
-                                            <div className="w-full sm:w-1/3 px-8 mb-20">
-                                                <TextField label="Pays" value={acheteur.pays?.name || 'N/C'} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
-                                            </div>
-                                            <div className="w-full sm:w-1/3 px-8 mb-20">
-                                                <TextField label="Ville" value={acheteur.ville?.name || acheteur.autre_ville || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
-                                            </div>
-                                            <div className="w-full sm:w-1/3 px-8 mb-20">
-                                                <TextField label="Code Postal" value={acheteur.user?.codepostal || ''} fullWidth variant="outlined" size="small" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            <div className="md:col-span-2">
+                                                <TextField label="Adresse 2" value={acheteur.user?.adresse2 || ''} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">location_on</Icon> }} />
                                             </div>
 
-                                            <div className="w-full px-8">
-                                                <TextField label="Présentation" value={acheteur.description || 'Aucune description fournie.'} fullWidth multiline minRows={3} variant="outlined" InputProps={{ readOnly: true }} InputLabelProps={{ shrink: true }} />
+                                            <div>
+                                                <TextField label="Pays" value={acheteur.pays?.name || 'N/C'} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">flag</Icon> }} />
+                                            </div>
+                                            <div>
+                                                <TextField label="Ville" value={acheteur.ville?.name || acheteur.autre_ville || ''} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">location_city</Icon> }} />
+                                            </div>
+                                            <div className="md:col-span-2">
+                                                <TextField label="Code Postal" value={acheteur.user?.codepostal || ''} fullWidth variant="outlined" InputProps={{ readOnly: true, startAdornment: <Icon className="mr-8 text-slate-400">mail_outline</Icon> }} />
+                                            </div>
+
+                                            <div className="md:col-span-4">
+                                                <TextField label="Présentation" value={acheteur.description || 'Aucune description fournie.'} fullWidth multiline rows={3} variant="outlined" InputProps={{ readOnly: true }} />
                                             </div>
                                         </div>
                                     </Paper>
@@ -730,24 +935,26 @@ function Demande(props) {
 
                             {/* ── TAB 3 & 4 : DIFFUSION / PARTICIPANTS ── */}
                             {(tabValue === 3 || tabValue === 4) && (
-                                <Paper className="mb-24 rounded-lg shadow-sm border border-gray-lighter">
-                                    <div className="p-16 border-b border-gray-lighter flex items-center text-blue-darker font-bold uppercase text-13">
-                                        <Icon className="text-blue mr-8 text-20">{tabValue === 3 ? 'send' : 'groups'}</Icon>
+                                <Paper className={classes.premiumCard}>
+                                    <div className={classes.cardHeader}>
+                                        <div className={classes.cardIcon} style={{ color: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
+                                            <Icon>{tabValue === 3 ? 'send' : 'groups'}</Icon>
+                                        </div>
                                         {tabValue === 3 ? 'Historique de Diffusion' : 'Réponses Fournisseurs'}
                                     </div>
-                                    <div className="p-16">
-                                    <ReactTable
-                                        data={tabValue === 3 ? form.diffusionsdemandes : demande.fournisseurs}
-                                        columns={[
-                                            { Header: "Société", id: "societe", accessor: f => f.fournisseur?.societe || 'N/C', className: "font-700" },
-                                            { Header: "Contact", id: "contact", accessor: f => `${f.fournisseur?.firstName || ''} ${f.fournisseur?.lastName || ''}` },
-                                            { Header: "Email", id: "email", accessor: f => f.fournisseur?.email || '' },
-                                            { Header: "Date", id: "date", accessor: d => moment(d.dateDiffusion || d.created).format('DD/MM/YYYY HH:mm'), className: "font-700 text-blue-dark" }
-                                        ]}
-                                        defaultPageSize={10}
-                                        className="-striped -highlight"
-                                        style={{ border: 'none' }}
-                                    />
+                                    <div className="overflow-x-auto">
+                                        <ReactTable
+                                            data={tabValue === 3 ? form.diffusionsdemandes : demande.fournisseurs}
+                                            columns={[
+                                                { Header: "Société", id: "societe", accessor: f => f.fournisseur?.societe || 'N/C', className: "font-bold text-slate-800" },
+                                                { Header: "Contact", id: "contact", accessor: f => `${f.fournisseur?.firstName || ''} ${f.fournisseur?.lastName || ''}` },
+                                                { Header: "Email", id: "email", accessor: f => f.fournisseur?.email || '' },
+                                                { Header: "Date", id: "date", accessor: d => moment(d.dateDiffusion || d.created).format('DD/MM/YYYY HH:mm'), className: "font-bold text-blue-600" }
+                                            ]}
+                                            defaultPageSize={10}
+                                            className="-striped -highlight"
+                                            style={{ border: 'none' }}
+                                        />
                                     </div>
                                 </Paper>
                             )}
