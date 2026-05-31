@@ -379,7 +379,7 @@ function DemandesTable(props) {
                         Cell: row => (
                             <div className="flex items-center">
                                 {
-                                    row.original.statut !== 1 && row.original.diffusionsdemandes.length === 0 ?
+                                    row.original.statut !== 1 && (row.original.diffusionsdemandes || []).length === 0 ?
                                         <Tooltip title="Supprimer" >
                                             <IconButton className="text-red text-20"
                                                 onClick={(ev) => {
