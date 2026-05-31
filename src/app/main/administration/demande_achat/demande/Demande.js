@@ -465,8 +465,9 @@ function Demande(props) {
         setSuggestions(_.reject(suggestions, s => s === item));
     }
 
-    function handleSubmit() {
-        dispatch(Actions.putDemande(form, sousSecteurs, suggestions, motif, form.id, props.history, categories));
+    function handleSubmit(model) {
+        const mergedForm = { ...form, ...model };
+        dispatch(Actions.putDemande(mergedForm, sousSecteurs, suggestions, motif, form.id, props.history, categories));
     }
 
     if (!form) {
@@ -478,8 +479,9 @@ function Demande(props) {
     }
 
     const acheteur = form.acheteur || demande.data?.acheteur;
-    const statusLabel = form.statut === 1 ? 'Validée' : form.statut === 2 ? 'Rejetée' : 'En attente';
     const report = demande.data?.validationReport;
+    const isAutoValidated = form.statut === 1 && report?.autoValidatedByAI;
+    const statusLabel = isAutoValidated ? '⚡ Auto-validée par IA' : (form.statut === 1 ? 'Validée' : form.statut === 2 ? 'Rejetée' : 'En attente');
 
     return (
         <>
@@ -517,6 +519,7 @@ function Demande(props) {
                                                 <span className={classes.refBadge}>#{form.reference}</span>
                                             )}
                                             <span className={clsx(classes.statusBadge, 
+                                                isAutoValidated ? '!bg-purple-100 !text-purple-700 !border-purple-300' :
                                                 form.statut === 1 ? classes.statusValidated : 
                                                 form.statut === 2 ? classes.statusRejected : 
                                                 classes.statusPending
