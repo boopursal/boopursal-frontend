@@ -133,7 +133,7 @@ function AcheteurDetails(props) {
                       />
                     ) : (
                       <Avatar className="w-32 sm:w-48 mr-8 sm:mr-16 rounded">
-                        {acheteur.data.firstName[0]}
+                        {(acheteur.data.firstName && acheteur.data.firstName[0]) || 'A'}
                       </Avatar>
                     )}
                   </FuseAnimate>
@@ -221,11 +221,7 @@ function AcheteurDetails(props) {
                             type="text"
                             name="fullname"
                             value={
-                              acheteur.data.civilite +
-                              " " +
-                              acheteur.data.firstName +
-                              " " +
-                              acheteur.data.lastName
+                              `${acheteur.data.civilite || ''} ${acheteur.data.firstName || ''} ${acheteur.data.lastName || ''}`.trim()
                             }
                             label="Nom complet"
                             InputProps={{
