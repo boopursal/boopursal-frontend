@@ -403,7 +403,12 @@ function Demande(props) {
             if (demande.data.categories) setCategories(demande.data.categories.map(item => item));
             if (demande.data.motifRejet) setMotif({ value: demande.data.motifRejet['@id'], label: demande.data.motifRejet.name });
             if (demande.data.autreCategories) setSuggestions(_.split(demande.data.autreCategories, ','));
-            setForm({ ...demande.data });
+            setForm({ 
+                ...demande.data,
+                isPublic: demande.data.is_public,
+                isAnonyme: demande.data.is_anonyme,
+                sendEmail: demande.data.is_alerted,
+            });
         }
     }, [form, demande.data, setForm]);
 
@@ -743,9 +748,9 @@ function Demande(props) {
                                                         <Icon className="text-16 mr-6 text-slate-400">public</Icon> Couverture Géographique
                                                     </Typography>
                                                     <RadioGroupFormsy name="localisation" onChange={handleRadioLocalisation} className="flex flex-col gap-4">
-                                                        <FormControlLabel value="2" checked={form.localisation === 2} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Locale (Maroc)</span>} />
-                                                        <FormControlLabel value="3" checked={form.localisation === 3} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Internationale</span>} />
-                                                        <FormControlLabel value="1" checked={form.localisation === 1} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Global (Les deux)</span>} />
+                                                        <FormControlLabel value="2" checked={parseInt(form.localisation) === 2} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Locale (Maroc)</span>} />
+                                                        <FormControlLabel value="3" checked={parseInt(form.localisation) === 3} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Internationale</span>} />
+                                                        <FormControlLabel value="1" checked={parseInt(form.localisation) === 1} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Global (Les deux)</span>} />
                                                     </RadioGroupFormsy>
                                                 </div>
                                             </div>
