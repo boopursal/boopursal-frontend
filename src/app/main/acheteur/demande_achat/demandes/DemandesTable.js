@@ -239,34 +239,62 @@ function DemandesTable(props) {
                         filterable: true,
                         accessor: "localisation",
                         Cell: row => {
-                            const localisation = row.original.localisation;
-                    
-                            if (localisation === "Tout le monde") {
-                                return <span>Tous les pays</span>;  // Affiche "Tous les pays" si localisation est "Tout le monde"
+                            let localisation = row.original.localisation;
+                            
+                            // Si localisation est un tableau (ou un string qu'on split), on gère l'affichage
+                            if (typeof localisation === 'string' && localisation.includes(',')) {
+                                localisation = localisation.split(',');
+                            }
+
+                            if (localisation === "Tout le monde" || (Array.isArray(localisation) && localisation.includes("Tout le monde"))) {
+                                return <span>Tous les pays</span>;
                             }
                     
-                            if (localisation === "2") {
-                                return <span>Locale</span>;  // Affiche "Locale" si localisation est 2
+                            if (localisation === "2" || localisation === 2 || (Array.isArray(localisation) && localisation.includes("2"))) {
+                                return <span>Locale</span>;
                             }
                     
                             if (!localisation) {
-                                return <span>Zone Internationale</span>;  // Affiche "Zone Internationale" si localisation est vide
+                                return <span>Zone Internationale</span>;
                             }
                     
-                            // Si localisation contient des codes pays, afficher les drapeaux
-                            return localisation ? (
-                                <div className="flex items-center">
-                                    {localisation.split(",").map((code, index) => (
+                            // Si localisation est un tableau (codes pays), ou une string unique (zone/pays)
+                            if (Array.isArray(localisation)) {
+                                return (
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {localisation.map((code, index) => (
+                                            code.length === 2 ? (
+                                                <img
+                                                    key={code || index}
+                                                    src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
+                                                    alt={code}
+                                                    title={code}
+                                                    style={{ width: "20px", height: "15px", borderRadius: "2px" }}
+                                                />
+                                            ) : (
+                                                <span key={code || index}>{code}</span>
+                                            )
+                                        ))}
+                                    </div>
+                                );
+                            }
+                            
+                            // Si c'est une string unique qui n'est pas "2" ou "Tout le monde" (ex: "EU", "FR")
+                            if (typeof localisation === "string") {
+                                if (localisation.length === 2) {
+                                    return (
                                         <img
-                                            key={code}
-                                            src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
-                                            alt={code}
-                                            className="mr-2 last:mr-0"
+                                            src={`https://flagcdn.com/w40/${localisation.toLowerCase()}.png`}
+                                            alt={localisation}
+                                            title={localisation}
                                             style={{ width: "20px", height: "15px", borderRadius: "2px" }}
                                         />
-                                    ))}
-                                </div>
-                            ) : "Non spécifié"; // Affiche "Non spécifié" si aucune localisation n'est définie
+                                    );
+                                }
+                                return <span>{localisation}</span>;
+                            }
+                            
+                            return <span>Zone Internationale</span>;
                         }
                     }
                     
@@ -286,11 +314,11 @@ function DemandesTable(props) {
                             (
                                 <>
                                     {
+                                        row.original.budget ? 
                                         parseFloat(row.original.budget).toLocaleString(
-                                            'fr', // leave undefined to use the browser's locale,
-                                            // or use a string like 'en-US' to override it.
+                                            'fr', 
                                             { minimumFractionDigits: 2 }
-                                        )
+                                        ) : '-'
                                     }
                                     &ensp;
                                     {
@@ -303,9 +331,9 @@ function DemandesTable(props) {
                     {
                         Header: "Publiée",
                         filterable: true,
-                        accessor: "isPublic",
+                        accessor: "is_public",
                         Cell: row =>
-                            row.original.isPublic ?
+                            row.original.is_public ?
                                 (
                                     <Tooltip title="Publiée">
                                         <IconButton className="text-green text-20" onClick={(ev) => {

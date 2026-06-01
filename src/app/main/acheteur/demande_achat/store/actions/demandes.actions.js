@@ -91,7 +91,7 @@ export function removeDemande(demande, parametres, id) {
 
 export function PublishDemande(demande, active, parametres, id) {
 
-    let Updatedemande = { isPublic: active }
+    let Updatedemande = { isPublic: active, is_public: active }
     return (dispatch) => {
 
 
