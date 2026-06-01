@@ -408,9 +408,44 @@ function Demande(props) {
                 isPublic: demande.data.is_public,
                 isAnonyme: demande.data.is_anonyme,
                 sendEmail: demande.data.is_alerted,
+                localisation: demande.data.localisation
+                  ? (typeof demande.data.localisation === 'string'
+                    ? demande.data.localisation.split(",")
+                    : [demande.data.localisation])
+                  : []
             });
         }
     }, [form, demande.data, setForm]);
+
+    const zones = [
+        { name: "Union Européenne", code: "EU" },
+        { name: "ALENA (Canada, USA, Mexique)", code: "NAFTA" },
+        { name: "ASEAN (Asie du Sud-Est)", code: "ASEAN" },
+        { name: "MERCOSUR (Amérique du Sud)", code: "MERCOSUR" },
+        { name: "Union Africaine", code: "UA" },
+        { name: "Océanie", code: "OCE" },
+    ];
+
+    const getZoneName = (codeOrName) => {
+        const found = zones.find(z => z.code === codeOrName || z.name === codeOrName);
+        return found ? found.name : codeOrName;
+    };
+
+    const isLocale = !form || !form.localisation || form.localisation === 2 || form.localisation === "2" || 
+                     (Array.isArray(form.localisation) && (form.localisation.length === 0 || form.localisation.includes("2") || form.localisation.includes(2)));
+
+    const isInternationale = form && (
+        form.localisation === 3 || form.localisation === "3" ||
+        (Array.isArray(form.localisation) && form.localisation.length > 0 && (
+            form.localisation.includes("Tout le monde") ||
+            form.localisation.some(code => typeof code === "string" && code.length === 2 && !zones.some(z => z.code === code))
+        ))
+    );
+
+    const isZone = form && (
+        form.localisation === 4 || form.localisation === "4" ||
+        (Array.isArray(form.localisation) && form.localisation.length === 1 && zones.some(z => z.code === form.localisation[0]))
+    );
 
     useEffect(() => {
         if (demande.produit) {
@@ -748,9 +783,39 @@ function Demande(props) {
                                                         <Icon className="text-16 mr-6 text-slate-400">public</Icon> Couverture Géographique
                                                     </Typography>
                                                     <RadioGroupFormsy name="localisation" onChange={handleRadioLocalisation} className="flex flex-col gap-4">
-                                                        <FormControlLabel value="2" checked={parseInt(form.localisation) === 2} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Locale (Maroc)</span>} />
-                                                        <FormControlLabel value="3" checked={parseInt(form.localisation) === 3} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Internationale</span>} />
-                                                        <FormControlLabel value="1" checked={parseInt(form.localisation) === 1} control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Global (Les deux)</span>} />
+                                                        <FormControlLabel value="2" checked={isLocale} disabled control={<Radio size="small" color="primary" />} label={<span className="font-bold text-13 text-slate-700">Locale</span>} />
+                                                        
+                                                        <FormControlLabel value="3" checked={isInternationale} disabled control={<Radio size="small" color="primary" />} label={
+                                                            <span className="font-bold text-13 text-slate-700">
+                                                                Internationale
+                                                                {Array.isArray(form.localisation) && form.localisation.some(code => typeof code === "string" && code.length === 2 && !zones.some(z => z.code === code)) && (
+                                                                    <>
+                                                                        {" ("}
+                                                                        {form.localisation
+                                                                            .filter(code => typeof code === "string" && code.length === 2 && !zones.some(z => z.code === code))
+                                                                            .map((countryCode, index) => (
+                                                                                <span key={countryCode || index} style={{ display: "inline-flex", alignItems: "center", gap: "4px", marginRight: "6px" }}>
+                                                                                    <img src={`https://flagcdn.com/w20/${countryCode.toLowerCase()}.png`} alt={countryCode} style={{ width: "16px", height: "11px", borderRadius: "2px" }} />
+                                                                                    {countryCode}
+                                                                                </span>
+                                                                            ))}
+                                                                        {")"}
+                                                                    </>
+                                                                )}
+                                                                {Array.isArray(form.localisation) && form.localisation.includes("Tout le monde") && (
+                                                                    <span> (Tout le monde)</span>
+                                                                )}
+                                                            </span>
+                                                        } />
+                                                        
+                                                        <FormControlLabel value="4" checked={isZone} disabled control={<Radio size="small" color="primary" />} label={
+                                                            <span className="font-bold text-13 text-slate-700">
+                                                                Zone
+                                                                {isZone && Array.isArray(form.localisation) && form.localisation[0] && (
+                                                                    <span> - {getZoneName(form.localisation[0])}</span>
+                                                                )}
+                                                            </span>
+                                                        } />
                                                     </RadioGroupFormsy>
                                                 </div>
                                             </div>
