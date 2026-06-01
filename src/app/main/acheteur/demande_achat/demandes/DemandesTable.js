@@ -227,12 +227,14 @@ function DemandesTable(props) {
                         Header: "Activités",
                         filterable: true,
                         accessor: "categories.name",
-                        Cell: row =>
-                            _.truncate(_.join(_.map(row.original.categories, 'name'), ', '), {
+                        Cell: row => {
+                            const cats = row.original.categories || [];
+                            const names = cats.map(c => typeof c === 'string' ? 'Catégorie ' + c.split('/').pop() : c.name).filter(Boolean);
+                            return _.truncate(names.join(', '), {
                                 'length': 15,
                                 'separator': ' '
-                            })
-
+                            });
+                        }
                     },
                     {
                         Header: "Diffuser à l'échelle",
@@ -241,7 +243,6 @@ function DemandesTable(props) {
                         Cell: row => {
                             let localisation = row.original.localisation;
                             
-                            // Si localisation est un tableau (ou un string qu'on split), on gère l'affichage
                             if (typeof localisation === 'string' && localisation.includes(',')) {
                                 localisation = localisation.split(',');
                             }
@@ -258,40 +259,35 @@ function DemandesTable(props) {
                                 return <span>Zone Internationale</span>;
                             }
                     
-                            // Si localisation est un tableau (codes pays), ou une string unique (zone/pays)
                             if (Array.isArray(localisation)) {
                                 return (
                                     <div className="flex flex-wrap items-center gap-2">
-                                        {localisation.map((code, index) => (
-                                            code.length === 2 ? (
-                                                <img
-                                                    key={code || index}
-                                                    src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
-                                                    alt={code}
-                                                    title={code}
-                                                    style={{ width: "20px", height: "15px", borderRadius: "2px" }}
-                                                />
+                                        {localisation.map((code, index) => {
+                                            const trimmedCode = typeof code === 'string' ? code.trim() : code;
+                                            return trimmedCode.length === 2 ? (
+                                                <span key={trimmedCode || index} className="flex items-center gap-1">
+                                                    <img src={`https://flagcdn.com/w40/${trimmedCode.toLowerCase()}.png`} alt={trimmedCode} title={trimmedCode} style={{ width: "20px", height: "15px", borderRadius: "2px" }} />
+                                                    <span className="text-12 font-semibold">{trimmedCode}</span>
+                                                </span>
                                             ) : (
-                                                <span key={code || index}>{code}</span>
-                                            )
-                                        ))}
+                                                <span key={trimmedCode || index}>{trimmedCode}</span>
+                                            );
+                                        })}
                                     </div>
                                 );
                             }
                             
-                            // Si c'est une string unique qui n'est pas "2" ou "Tout le monde" (ex: "EU", "FR")
                             if (typeof localisation === "string") {
-                                if (localisation.length === 2) {
+                                const trimmedLoc = localisation.trim();
+                                if (trimmedLoc.length === 2) {
                                     return (
-                                        <img
-                                            src={`https://flagcdn.com/w40/${localisation.toLowerCase()}.png`}
-                                            alt={localisation}
-                                            title={localisation}
-                                            style={{ width: "20px", height: "15px", borderRadius: "2px" }}
-                                        />
+                                        <span className="flex items-center gap-1">
+                                            <img src={`https://flagcdn.com/w40/${trimmedLoc.toLowerCase()}.png`} alt={trimmedLoc} title={trimmedLoc} style={{ width: "20px", height: "15px", borderRadius: "2px" }} />
+                                            <span className="text-12 font-semibold">{trimmedLoc}</span>
+                                        </span>
                                     );
                                 }
-                                return <span>{localisation}</span>;
+                                return <span>{trimmedLoc}</span>;
                             }
                             
                             return <span>Zone Internationale</span>;
@@ -310,22 +306,17 @@ function DemandesTable(props) {
                         Header: "Budget",
                         filterable: true,
                         accessor: "budget",
-                        Cell: row =>
-                            (
+                        Cell: row => {
+                            let budget = row.original.budget;
+                            let parsedBudget = parseFloat(budget);
+                            return (budget !== null && budget !== undefined && budget !== "" && !isNaN(parsedBudget)) ? (
                                 <>
-                                    {
-                                        row.original.budget ? 
-                                        parseFloat(row.original.budget).toLocaleString(
-                                            'fr', 
-                                            { minimumFractionDigits: 2 }
-                                        ) : '-'
-                                    }
+                                    {parsedBudget.toLocaleString('fr', { minimumFractionDigits: 2 })}
                                     &ensp;
-                                    {
-                                        row.original.currency && row.original.currency.name
-                                    }
+                                    {row.original.currency && row.original.currency.name}
                                 </>
-                            )
+                            ) : '-';
+                        }
 
                     },
                     {
