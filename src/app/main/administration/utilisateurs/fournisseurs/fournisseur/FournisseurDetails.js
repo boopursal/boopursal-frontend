@@ -112,45 +112,59 @@ function FournisseurDetails(props) {
                 header: "min-h-72 h-72 sm:h-136 sm:min-h-136"
             }}
             header={
-                !fournisseur.requestFournisseur ? fournisseur.data && (
-                    <div className="flex flex-1 w-full items-center justify-between">
-
-                        <div className="flex flex-col items-start max-w-full">
-                            <FuseAnimate animation="transition.slideRightIn" delay={300}>
-                                <Typography className="normal-case flex items-center sm:mb-12" component={Link} role="button" to="/users/fournisseurs" color="inherit">
-                                    <Icon className="mr-4 text-20">arrow_back</Icon>
-                                    Retour
-                                </Typography>
-                            </FuseAnimate>
-                            <div className="flex items-center max-w-full">
-                                <FuseAnimate animation="transition.expandIn" delay={300}>
-                                    {fournisseur.data.avatar ?
-                                        (
-                                            <Avatar className="w-32 sm:w-48 mr-8 sm:mr-16 rounded" alt="user photo" src={URL_SITE + fournisseur.data.avatar.url} />
-                                        )
-                                        :
-                                        (
-                                            <Avatar className="w-32 sm:w-48 mr-8 sm:mr-16 rounded">
-                                                {fournisseur.data.firstName[0]}
-                                            </Avatar>
-                                        )
-                                    }
+                !fournisseur.requestFournisseur ? (
+                    fournisseur.data ? (
+                        <div className="flex flex-1 w-full items-center justify-between">
+                            <div className="flex flex-col items-start max-w-full">
+                                <FuseAnimate animation="transition.slideRightIn" delay={300}>
+                                    <Typography className="normal-case flex items-center sm:mb-12" component={Link} role="button" to="/users/fournisseurs" color="inherit">
+                                        <Icon className="mr-4 text-20">arrow_back</Icon>
+                                        Retour
+                                    </Typography>
                                 </FuseAnimate>
-                                <div className="flex flex-col min-w-0">
-                                    <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                                        <Typography className="text-16 sm:text-20 truncate">
-                                            {fournisseur.data.firstName && fournisseur.data.lastName ? fournisseur.data.firstName + ' ' + fournisseur.data.lastName : 'NOM & Prénom'}
-                                        </Typography>
+                                <div className="flex items-center max-w-full">
+                                    <FuseAnimate animation="transition.expandIn" delay={300}>
+                                        {fournisseur.data.avatar ?
+                                            (
+                                                <Avatar className="w-32 sm:w-48 mr-8 sm:mr-16 rounded" alt="user photo" src={URL_SITE + fournisseur.data.avatar.url} />
+                                            )
+                                            :
+                                            (
+                                                <Avatar className="w-32 sm:w-48 mr-8 sm:mr-16 rounded">
+                                                    {(fournisseur.data.firstName && fournisseur.data.firstName[0]) || 'F'}
+                                                </Avatar>
+                                            )
+                                        }
                                     </FuseAnimate>
-                                    <FuseAnimate animation="transition.slideLeftIn" delay={300}>
-                                        <Typography variant="caption">{fournisseur.data.societe ? fournisseur.data.societe : 'Société'} {fournisseur.data.email ? ' | ' + fournisseur.data.email : ''}</Typography>
-                                    </FuseAnimate>
+                                    <div className="flex flex-col min-w-0">
+                                        <FuseAnimate animation="transition.slideLeftIn" delay={300}>
+                                            <Typography className="text-16 sm:text-20 truncate">
+                                                {fournisseur.data.firstName && fournisseur.data.lastName ? fournisseur.data.firstName + ' ' + fournisseur.data.lastName : 'NOM & Prénom'}
+                                            </Typography>
+                                        </FuseAnimate>
+                                        <FuseAnimate animation="transition.slideLeftIn" delay={300}>
+                                            <Typography variant="caption">{fournisseur.data.societe ? fournisseur.data.societe : 'Société'} {fournisseur.data.email ? ' | ' + fournisseur.data.email : ''}</Typography>
+                                        </FuseAnimate>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ) :
+                    ) : (
+                        <div className="flex flex-1 w-full items-center justify-between p-24">
+                            <div className="flex flex-col items-start">
+                                <Typography variant="h5" color="textSecondary">
+                                    Fournisseur introuvable
+                                </Typography>
+                                <Typography className="normal-case flex items-center mt-12 cursor-pointer" component={Link} to="/users/fournisseurs" color="secondary">
+                                    <Icon className="mr-4 text-20">arrow_back</Icon>
+                                    Retour à la liste
+                                </Typography>
+                            </div>
+                        </div>
+                    )
+                ) : (
                     <LinearProgress color="secondary" />
+                )
             }
             contentToolbar={
                 !fournisseur.requestFournisseur ?

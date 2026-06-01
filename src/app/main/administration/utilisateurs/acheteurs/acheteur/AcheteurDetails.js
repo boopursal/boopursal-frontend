@@ -108,7 +108,7 @@ function AcheteurDetails(props) {
       }}
       header={
         !acheteur.requestAcheteur ? (
-          acheteur.data && (
+          acheteur.data ? (
             <div className="flex flex-1 w-full items-center justify-between">
               <div className="flex flex-col items-start max-w-full">
                 <FuseAnimate animation="transition.slideRightIn" delay={300}>
@@ -159,9 +159,28 @@ function AcheteurDetails(props) {
                 </div>
               </div>
             </div>
+          ) : (
+            <div className="flex flex-1 w-full items-center justify-between p-24">
+              <div className="flex flex-col items-start">
+                <Typography variant="h5" color="textSecondary">
+                  Acheteur introuvable
+                </Typography>
+                <Typography
+                  className="normal-case flex items-center mt-12 cursor-pointer"
+                  component={Link}
+                  to="/users/acheteurs"
+                  color="secondary"
+                >
+                  <Icon className="mr-4 text-20">arrow_back</Icon>
+                  Retour à la liste
+                </Typography>
+              </div>
+            </div>
           )
         ) : (
-          <LinearProgress color="secondary" />
+          <div className={classes.root}>
+            <LinearProgress color="secondary" />
+          </div>
         )
       }
       contentToolbar={
