@@ -1682,7 +1682,6 @@ function Demande(props) {
                             }
                           />
                         </RadioGroupFormsy>
-                      </Grid>
 
                         {/* Popup pour sélectionner les pays */}
                         <Dialog open={openDialog} onClose={handleCloseDialog}>
@@ -1697,7 +1696,7 @@ function Demande(props) {
                                   fullWidth
                                   label="Rechercher un pays..."
                                   variant="outlined"
-                                  onChange={(e) => setSearchTerm(e.target.value)} // Mise à jour du terme de recherche
+                                  onChange={(e) => setSearchTerm(e.target.value)}
                                 />
 
                                 <FormControlLabel
