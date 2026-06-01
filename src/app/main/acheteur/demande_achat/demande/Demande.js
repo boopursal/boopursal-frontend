@@ -484,7 +484,15 @@ function Demande(props) {
     );
   }
   function handleRadioChange(e) {
-    setForm(_.set({ ...form }, "localisation", parseInt(e.target.value)));
+    const value = parseInt(e.target.value, 10);
+    if (value === 2) {
+      setForm(_.set({ ...form }, "localisation", 2));
+      setFormData(prev => ({ ...prev, localisation: 2, countries: [], zone: null }));
+    } else if (value === 3) {
+      openLocalisationDialog(3);
+    } else if (value === 4) {
+      openLocalisationDialog(4);
+    }
   }
 
   function handleAddSuggestion() {
@@ -518,15 +526,34 @@ function Demande(props) {
   const handleSubmit = (vider = false) => {
     const params = props.match.params;
     const { demandeId } = params;
-    // Assure-toi que form.countries est bien mis à jour avant la soumission
+
+    let serializedLocalisation = "";
+    if (isLocale) {
+      serializedLocalisation = "2";
+    } else if (isInternationale) {
+      if (Array.isArray(form.localisation)) {
+        if (form.localisation.includes("Tout le monde")) {
+          serializedLocalisation = "Tout le monde";
+        } else {
+          serializedLocalisation = form.localisation.join(",");
+        }
+      } else if (typeof form.localisation === 'string') {
+        serializedLocalisation = form.localisation;
+      }
+    } else if (isZone) {
+      if (Array.isArray(form.localisation) && form.localisation[0]) {
+        serializedLocalisation = form.localisation[0];
+      } else if (typeof form.localisation === 'string') {
+        serializedLocalisation = form.localisation;
+      }
+    }
+
     const updatedForm = {
       ...form,
-      localisation: Array.isArray(form.localisation) ? form.localisation : formData.localisation || []
-
+      localisation: serializedLocalisation
     };
 
     console.log("📋 Formulaire avant soumission :", updatedForm);
-    console.log("🌍 Pays sélectionnés avant soumission :", updatedForm.countries);
 
     // Soumission de la demande
     if (demandeId === "new") {
@@ -583,6 +610,82 @@ function Demande(props) {
     { name: "Union Africaine", code: "UA", continent: "Afrique" },
     { name: "Océanie", code: "OCE", continent: "Océanie" },
   ];
+
+  const isLocale = !form || !form.localisation || form.localisation === 2 || form.localisation === "2" || 
+                    (Array.isArray(form.localisation) && (form.localisation.length === 0 || form.localisation.includes("2") || form.localisation.includes(2)));
+
+  const isInternationale = form && (
+    form.localisation === 3 || form.localisation === "3" ||
+    (Array.isArray(form.localisation) && form.localisation.length > 0 && (
+      form.localisation.includes("Tout le monde") ||
+      form.localisation.some(code => typeof code === "string" && code.length === 2 && !zones.some(z => z.code === code))
+    ))
+  );
+
+  const isZone = form && (
+    form.localisation === 4 || form.localisation === "4" ||
+    (Array.isArray(form.localisation) && form.localisation.length === 1 && zones.some(z => z.code === form.localisation[0]))
+  );
+
+  const findCountryByCode = (code) => {
+    for (const continent of countries) {
+      const found = continent.countries.find(c => c.code === code);
+      if (found) return found;
+    }
+    return null;
+  };
+
+  const getZoneName = (codeOrName) => {
+    const found = zones.find(z => z.code === codeOrName || z.name === codeOrName);
+    return found ? found.name : codeOrName;
+  };
+
+  const openLocalisationDialog = (type) => {
+    setFormData(prev => ({ ...prev, localisation: type }));
+    
+    if (type === 3) {
+      if (Array.isArray(form.localisation)) {
+        if (form.localisation.includes("Tout le monde")) {
+          setSelectAllCountries(true);
+          setSelectedCountries([]);
+        } else {
+          setSelectAllCountries(false);
+          const loadedCountries = [];
+          form.localisation.forEach(code => {
+            const found = findCountryByCode(code);
+            if (found) loadedCountries.push(found);
+          });
+          setSelectedCountries(loadedCountries);
+        }
+      } else if (typeof form.localisation === 'string') {
+        if (form.localisation === "Tout le monde") {
+          setSelectAllCountries(true);
+          setSelectedCountries([]);
+        } else {
+          setSelectAllCountries(false);
+          const codes = form.localisation.split(",");
+          const loadedCountries = [];
+          codes.forEach(code => {
+            const found = findCountryByCode(code);
+            if (found) loadedCountries.push(found);
+          });
+          setSelectedCountries(loadedCountries);
+        }
+      } else {
+        setSelectAllCountries(false);
+        setSelectedCountries([]);
+      }
+    } else if (type === 4) {
+      if (Array.isArray(form.localisation) && form.localisation.length === 1 && zones.some(z => z.code === form.localisation[0])) {
+        setSelectedZone(form.localisation[0]);
+      } else if (typeof form.localisation === 'string' && zones.some(z => z.code === form.localisation)) {
+        setSelectedZone(form.localisation);
+      } else {
+        setSelectedZone(null);
+      }
+    }
+    setOpenDialog(true);
+  };
 
   const countries = [
     {
@@ -778,71 +881,6 @@ function Demande(props) {
   // Ouvrir/Fermer la popup
   const handleCloseDialog = () => {
     setOpenDialog(false);
-
-    let localisationData = "";
-    let updatedCountries = selectedCountries.map(c => c.code); // Extraire les codes pays
-
-    if (formData.localisation === 3) { // Internationale
-      if (selectAllCountries) {
-        localisationData = "Tout le monde";
-        updatedCountries = []; // Vider les pays sélectionnés
-      } else {
-        localisationData = updatedCountries.join(",");
-      }
-    } else if (formData.localisation === 4) { // Zone
-      localisationData = selectedZone;
-    }
-
-    setFormData((prevData) => {
-      const updatedForm = {
-        ...prevData,
-        localisation: localisationData,
-        countries: updatedCountries, // Mettre à jour les pays sélectionnés
-      };
-
-      console.log("📌 Localisation mise à jour :", updatedForm.localisation);
-      console.log("🌍 Pays mis à jour dans formData :", updatedForm.countries);
-
-      return updatedForm;
-    });
-  };
-
-
-
-
-
-  // Gestion du changement de radio
-  const handleLocalisationChange = (event) => {
-    const value = parseInt(event.target.value, 10);
-    setFormData((prevForm) => {
-      const updatedForm = {
-        ...prevForm,
-        localisation: value,
-        countries: value === 3 ? selectedCountries : [], // Si internationale, utiliser les pays sélectionnés
-        zone: value === 4 ? selectedZone : null,
-      };
-      if (value === 3 || value === 4) setOpenDialog(true); // Ouvre le popup pour sélectionner pays/zones
-      return updatedForm;
-    });
-  };
-  const handleLocaleChange = (event) => {
-    // Récupérer la valeur de l'événement (pour "Locale", ce sera 2)
-    const value = parseInt(event.target.value, 10);
-
-    // Mettre à jour l'état en fonction de la valeur
-    setFormData((prevForm) => {
-      const updatedForm = {
-        ...prevForm,
-        localisation: String(value), // Assignation de la valeur locale
-        countries: [], // Si c'est "Locale", vider les pays
-        zone: null, // "Locale" n'a pas de zone spécifique
-      };
-
-      // Si localisation est "Locale", pas besoin de dialogue pour pays/zone
-      setOpenDialog(false);
-
-      return updatedForm;
-    });
   };
 
   // Charger formData depuis localStorage lors du montage du composant
@@ -892,7 +930,22 @@ function Demande(props) {
 
   // Valider la sélection et fermer la popup
   const handleValidateSelection = () => {
-    handleCloseDialog();
+    setOpenDialog(false);
+
+    if (formData.localisation === 3) {
+      if (selectAllCountries) {
+        setForm(_.set({ ...form }, "localisation", ["Tout le monde"]));
+      } else {
+        const countryCodes = selectedCountries.map(c => c.code);
+        setForm(_.set({ ...form }, "localisation", countryCodes));
+      }
+    } else if (formData.localisation === 4) {
+      if (selectedZone) {
+        setForm(_.set({ ...form }, "localisation", [selectedZone]));
+      } else {
+        setForm(_.set({ ...form }, "localisation", 2));
+      }
+    }
   };
 
 
@@ -1563,16 +1616,14 @@ function Demande(props) {
                         <RadioGroupFormsy
                           className="inline"
                           name="statutLocalisation"
-                          label="Diffuser à l'échelle"
                           onChange={handleRadioChange}
-                          value={String(form.localisation || "0")}
+                          value={isLocale ? "2" : (isInternationale ? "3" : (isZone ? "4" : "0"))}
                         >
                           {/* Option Locale */}
                           <FormControlLabel
                             value="2"
                             disabled={form.statut === 1}
-                            checked={form.localisation === 2} // Si la localisation est égale à 2, cochez l'option Locale
-                            onChange={handleLocaleChange}
+                            checked={isLocale}
                             control={<Radio />}
                             label="Locale"
                           />
@@ -1581,22 +1632,21 @@ function Demande(props) {
                           <FormControlLabel
                             value="3"
                             disabled={form.statut === 1}
-                            checked={form.localisation === 3}  // Si la localisation est un tableau et inclut 3, cochez l'option Internationale
-                            onChange={handleLocalisationChange}
+                            checked={isInternationale}
                             control={<Radio />}
                             label={
                               <span>
                                 Internationale
                                 {Array.isArray(form.localisation) &&
-                                  form.localisation.some(code => typeof code === "string") && (
+                                  form.localisation.some(code => typeof code === "string" && code.length === 2 && !zones.some(z => z.code === code)) && (
                                     <>
                                       {" ("}
                                       {form.localisation
-                                        .filter(code => typeof code === "string" && code.length === 2 && !/^\d+$/.test(code))
+                                        .filter(code => typeof code === "string" && code.length === 2 && !zones.some(z => z.code === code))
                                         .map((countryCode, index) => (
                                           <span
                                             key={countryCode || index}
-                                            style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                                            style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginRight: "8px" }}
                                           >
                                             <img
                                               src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
@@ -1609,6 +1659,9 @@ function Demande(props) {
                                       {")"}
                                     </>
                                   )}
+                                {Array.isArray(form.localisation) && form.localisation.includes("Tout le monde") && (
+                                  <span> (Tout le monde)</span>
+                                )}
                               </span>
                             }
                           />
@@ -1617,38 +1670,19 @@ function Demande(props) {
                           <FormControlLabel
                             value="4"
                             disabled={form.statut === 1}
-                            checked={form.localisation === 4} // Si la localisation est égale à 4, cochez l'option Zone
-                            onChange={handleLocalisationChange}
+                            checked={isZone}
                             control={<Radio />}
                             label={
                               <span>
                                 Zone
-                                {form.localisation === 4 && form.zone && (
-                                  <span> - {form.zone}</span> // Affiche le texte de la zone (ex: "Union Européenne")
+                                {isZone && Array.isArray(form.localisation) && form.localisation[0] && (
+                                  <span> - {getZoneName(form.localisation[0])}</span>
                                 )}
                               </span>
                             }
                           />
                         </RadioGroupFormsy>
-
-
-                        {/* Sélection de l'échelle */}
-
-                        {/* <RadioGroup name="statut" value={selectedRadio} onChange={handleLocalisationChange}>
-   
-    <FormControlLabel 
-      value="3" 
-      disabled={form.statut === 1} 
-      checked={form.localisation === 3}
-      control={<Radio />} 
-      label={
-        <span>
-          Internationale {selectedCountries.length > 0 && `(${selectedCountries.join(", ")})`}
-        </span>
-      } 
-    />
-  
-  </RadioGroup> */}
+                      </Grid>
 
                         {/* Popup pour sélectionner les pays */}
                         <Dialog open={openDialog} onClose={handleCloseDialog}>
