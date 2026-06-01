@@ -377,13 +377,28 @@ function Demande(props) {
         ...demande.data,
         localisation: demande.data.localisation
           ? (typeof demande.data.localisation === 'string'
-            ? demande.data.localisation.split(",") // Si c'est une chaîne, la convertir en tableau
-            : [demande.data.localisation]) // Sinon, conserver la valeur dans un tableau
-          : [] // Si localisation est null ou undefined, mettre un tableau vide
+            ? demande.data.localisation.split(",")
+            : [demande.data.localisation])
+          : []
       });
     }
   }, [demande.data, setForm]);
 
+  // États pour la gestion de la localisation (dialog pays/zones)
+  const [selectedCountries, setSelectedCountries] = useState([]);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [selectAllCountries, setSelectAllCountries] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [formData, setFormData] = useState({ statut: 0, localisation: null, countries: [], zone: null });
+
+  // Charger formData depuis localStorage lors du montage du composant
+  useEffect(() => {
+    const savedFormData = localStorage.getItem("formData");
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+  }, []);
 
   function handleCheckBoxChange(e, name) {
     setForm(_.set({ ...form }, name, e.target.checked));
@@ -588,19 +603,7 @@ function Demande(props) {
     };
   };
 
-  // ⚡ Initialisation des données
-  useEffect(() => {
-    console.log("Données de demande initialisées:", demande);
 
-  }, [demande]); // ⚡ L'effet se déclenche uniquement lorsque `demande` change
-
-
-  const [selectedCountries, setSelectedCountries] = useState([]);
-  const [selectedZone, setSelectedZone] = useState(null);
-  const [selectAllCountries, setSelectAllCountries] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [formData, setFormData] = useState({ statut: 0, localisation: null, countries: [], zone: null });
 
   const zones = [
     { name: "Union Européenne", code: "EU", continent: "Europe" },
@@ -878,18 +881,9 @@ function Demande(props) {
 
 
   // Ouvrir/Fermer la popup
-  // Ouvrir/Fermer la popup
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-
-  // Charger formData depuis localStorage lors du montage du composant
-  useEffect(() => {
-    const savedFormData = localStorage.getItem("formData");
-    if (savedFormData) {
-      setFormData(JSON.parse(savedFormData));
-    }
-  }, []);
 
   // Sélectionner/Désélectionner un pays
   const handleCountryCheck = (country) => {
