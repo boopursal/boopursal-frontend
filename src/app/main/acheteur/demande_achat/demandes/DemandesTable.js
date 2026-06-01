@@ -143,8 +143,7 @@ function DemandesTable(props) {
                 }}
                 getTheadProps={(state, rowInfo, column) => {
                     return {
-                        className: "h-64 font-bold",
-
+                        className: "h-48 font-bold bg-slate-800 text-white shadow-md rounded-t-lg",
                     }
                 }}
 
