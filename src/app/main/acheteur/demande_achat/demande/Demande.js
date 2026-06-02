@@ -1982,7 +1982,7 @@ function Demande(props) {
                           )}
                           key={media.id}
                           onClick={() =>
-                            window.open(URL_SITE + media.url, "_blank")
+                            window.open(media.url?.startsWith('http') ? media.url : URL_SITE + media.url, "_blank")
                           }
                         >
                           <Tooltip title="Supprimer">
@@ -1999,7 +1999,7 @@ function Demande(props) {
                           {_.split(media.type, "/", 1)[0] === "image" ? (
                             <img
                               className="max-w-none w-auto h-full"
-                              src={URL_SITE + media.url}
+                              src={media.url?.startsWith('http') ? media.url : URL_SITE + media.url}
                               alt="demande"
                             />
                           ) : (
