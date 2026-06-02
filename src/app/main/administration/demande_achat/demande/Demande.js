@@ -917,9 +917,9 @@ function Demande(props) {
                                                             <Icon className="text-16">delete</Icon>
                                                         </IconButton>
                                                         <div className="w-full h-full flex items-center justify-center cursor-pointer"
-                                                            onClick={() => window.open(URL_SITE + '/attachement/demandeAchat/' + media.url, '_blank')}>
+                                                            onClick={() => window.open(media.url?.startsWith('http') ? media.url : (URL_SITE + '/attachement/demandeAchat/' + media.url), '_blank')}>
                                                             {media.type?.startsWith('image')
-                                                                ? <img className="object-cover w-full h-full" src={URL_SITE + '/attachement/demandeAchat/' + media.url} alt="media" />
+                                                                ? <img className="object-cover w-full h-full" src={media.url?.startsWith('http') ? media.url : (URL_SITE + '/attachement/demandeAchat/' + media.url)} alt="media" />
                                                                 : <div className="text-center p-12">
                                                                     <Icon className="text-40 text-slate-400 block mb-6 mx-auto">insert_drive_file</Icon>
                                                                     <Typography variant="caption" className="font-bold text-slate-600 truncate block max-w-full px-4">{media.name || 'Document'}</Typography>
