@@ -388,6 +388,19 @@ function Packs(props) {
                         />
                       </ListItem>
                     </List>
+                    <div className="p-16">
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className="w-full"
+                        onClick={() => {
+                          const offre = commande.offres?.find(o => o.name === 'Pack Classic');
+                          if (offre) handleSelectOffre(offre);
+                        }}
+                      >
+                        S'abonner
+                      </Button>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} container>
@@ -568,6 +581,19 @@ function Packs(props) {
                         />
                       </ListItem>
                     </List>
+                    <div className="p-16">
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className="w-full"
+                        onClick={() => {
+                          const offre = commande.offres?.find(o => o.name === 'Pack Business');
+                          if (offre) handleSelectOffre(offre);
+                        }}
+                      >
+                        S'abonner
+                      </Button>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} container>
@@ -753,6 +779,19 @@ function Packs(props) {
                         />
                       </ListItem>
                     </List>
+                    <div className="p-16">
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className="w-full"
+                        onClick={() => {
+                          const offre = commande.offres?.find(o => o.name === 'Pack Gold');
+                          if (offre) handleSelectOffre(offre);
+                        }}
+                      >
+                        S'abonner
+                      </Button>
+                    </div>
                   </Grid>
                 </Grid>
                 {
