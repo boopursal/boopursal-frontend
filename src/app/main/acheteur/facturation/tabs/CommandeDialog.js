@@ -307,13 +307,7 @@ function CommandeDialog(props) {
           <Button
             variant="contained"
             color="primary"
-            disabled={
-              commande.loading ||
-              (!selectedPack.sousSecteurs.length &&
-                !selectedPack.suggestions.length) ||
-              !selectedPack.mode ||
-              !selectedPack.offre
-            }
+            disabled={commande.loading}
             onClick={handleSubmit}
           >
             {commande.loading && (
@@ -370,8 +364,6 @@ function CommandeDialog(props) {
             color="primary"
             disabled={
               commande.loading ||
-              (!selectedPack.sousSecteurs.length &&
-                !selectedPack.suggestions.length) ||
               !selectedPack.mode ||
               !selectedPack.offre
             }
@@ -541,7 +533,6 @@ function CommandeDialog(props) {
 
   function handleSubmit() {
     if (
-      (!selectedPack.sousSecteurs.length && !selectedPack.suggestions.length) ||
       !selectedPack.mode ||
       !selectedPack.offre
     ) {
@@ -564,15 +555,13 @@ function CommandeDialog(props) {
   return (
     <div>
       <Dialog
-        fullWidth={true}
-        maxWidth="md"
-        classes={{ paperScrollPaper: classes.dialogPaper }}
+        classes={{
+          paper: "m-24 rounded-8",
+        }}
         {...commandeDialog.props}
-        disableBackdropClick={true}
-        disableEscapeKeyDown={true}
         onClose={closeComposeDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        fullWidth
+        maxWidth="md"
       >
         <DialogTitle
           onClose={closeComposeDialog}

@@ -98,7 +98,7 @@ function Recapitulatif(props) {
               <TableCell colSpan={2}>Total</TableCell>
               <TableCell align="right">{`${financial(
                 invoiceSubtotal
-              )} $`}</TableCell>
+              )} ${selected.currency === 'MAD' ? 'MAD' : '€'}`}</TableCell>
             </TableRow>
           )}
         </TableBody>
