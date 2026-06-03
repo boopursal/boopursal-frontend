@@ -1359,8 +1359,8 @@ function Commande(props) {
                             name="pays"
                             id="pays"
                             value={
-                              commande.data.fournisseur?.pays
-                                ? commande.data.fournisseur?.pays.name
+                              commande.data.fournisseur?.pays?.name
+                                ? commande.data.fournisseur?.pays?.name
                                 : ""
                             }
                             label="Pays"
@@ -1415,8 +1415,8 @@ function Commande(props) {
                             name="ville"
                             id="ville"
                             value={
-                              commande.data.fournisseur?.ville
-                                ? commande.data.fournisseur?.ville.name
+                              commande.data.fournisseur?.ville?.name
+                                ? commande.data.fournisseur?.ville?.name
                                 : ""
                             }
                             label="Ville"
