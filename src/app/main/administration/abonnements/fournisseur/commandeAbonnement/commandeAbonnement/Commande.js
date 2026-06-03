@@ -208,7 +208,7 @@ function Commande(props) {
         setDuree(commande.data.duree);
 
         if (commande.data.offre) {
-          if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
+          if (commande.data.currency === LOCAL_CURRENCY) {
             let ht = commande.data.offre.prixMad * commande.data.duree.name;
             setPrixht(ht);
 
@@ -259,7 +259,7 @@ function Commande(props) {
 
   function handleChangeDuree(item) {
     setDuree(item);
-    if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
+    if (commande.data.currency === LOCAL_CURRENCY) {
       let ht = offre.prixMad * item.name;
       setPrixht(ht);
 
@@ -317,7 +317,7 @@ function Commande(props) {
   function handleChangeDiscount(value) {
     setDiscount(value);
 
-    if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
+    if (commande.data.currency === LOCAL_CURRENCY) {
       let ht = offre.prixMad * duree.name;
       setPrixht(ht);
 
@@ -380,7 +380,7 @@ function Commande(props) {
     if (sousSecteurs.length > 0) {
       setSousSecteurs(_.slice(sousSecteurs, 0, item.nbActivite));
     }
-    if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
+    if (commande.data.currency === LOCAL_CURRENCY) {
       let ht = item.prixMad * duree.name;
       setPrixht(ht);
 
@@ -664,8 +664,7 @@ function Commande(props) {
                                         />
                                       }
                                       label={
-                                        commande.data.fournisseur?.currency
-                                          .name === LOCAL_CURRENCY
+                                        commande.data.currency === LOCAL_CURRENCY
                                           ? parseFloat(
                                               item.prixMad
                                             ).toLocaleString(
