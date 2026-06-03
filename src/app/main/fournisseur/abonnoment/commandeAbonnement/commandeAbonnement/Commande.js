@@ -205,7 +205,7 @@ function Commande(props) {
             if (commande.data.duree) {
                 setDuree(commande.data.duree);
                 if (commande.data.offre) {
-                    if (commande.data.fournisseur.currency.name === LOCAL_CURRENCY) {
+                    if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
                         let ht = commande.data.offre.prixMad * commande.data.duree.name;
                         setPrixht(ht)
 

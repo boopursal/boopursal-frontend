@@ -208,7 +208,7 @@ function Commande(props) {
         setDuree(commande.data.duree);
 
         if (commande.data.offre) {
-          if (commande.data.fournisseur.currency.name === LOCAL_CURRENCY) {
+          if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
             let ht = commande.data.offre.prixMad * commande.data.duree.name;
             setPrixht(ht);
 
@@ -259,7 +259,7 @@ function Commande(props) {
 
   function handleChangeDuree(item) {
     setDuree(item);
-    if (commande.data.fournisseur.currency.name === LOCAL_CURRENCY) {
+    if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
       let ht = offre.prixMad * item.name;
       setPrixht(ht);
 
@@ -317,7 +317,7 @@ function Commande(props) {
   function handleChangeDiscount(value) {
     setDiscount(value);
 
-    if (commande.data.fournisseur.currency.name === LOCAL_CURRENCY) {
+    if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
       let ht = offre.prixMad * duree.name;
       setPrixht(ht);
 
@@ -380,7 +380,7 @@ function Commande(props) {
     if (sousSecteurs.length > 0) {
       setSousSecteurs(_.slice(sousSecteurs, 0, item.nbActivite));
     }
-    if (commande.data.fournisseur.currency.name === LOCAL_CURRENCY) {
+    if (commande.data.fournisseur?.currency?.name === LOCAL_CURRENCY) {
       let ht = item.prixMad * duree.name;
       setPrixht(ht);
 
@@ -520,7 +520,7 @@ function Commande(props) {
                           {commande.data.reference
                             ? commande.data.reference +
                               ", Fournisseur : " +
-                              commande.data.fournisseur.societe
+                              commande.data.fournisseur?.societe
                             : ""}
                         </div>
                       </FuseAnimate>
@@ -664,7 +664,7 @@ function Commande(props) {
                                         />
                                       }
                                       label={
-                                        commande.data.fournisseur.currency
+                                        commande.data.fournisseur?.currency
                                           .name === LOCAL_CURRENCY
                                           ? parseFloat(
                                               item.prixMad
@@ -748,7 +748,7 @@ function Commande(props) {
                                   >
                                     <strong>{offre ? offre.name : ""}</strong>
                                     <br />
-                                    {commande.data.fournisseur.currency.name ===
+                                    {commande.data.fournisseur?.currency?.name ===
                                     LOCAL_CURRENCY
                                       ? parseFloat(
                                           offre.prixMad
@@ -1163,11 +1163,11 @@ function Commande(props) {
                               type="text"
                               name="fullname"
                               value={
-                                commande.data.fournisseur.civilite +
+                                commande.data.fournisseur?.civilite +
                                 " " +
-                                commande.data.fournisseur.firstName +
+                                commande.data.fournisseur?.firstName +
                                 " " +
-                                commande.data.fournisseur.lastName
+                                commande.data.fournisseur?.lastName
                               }
                               label="Nom complet"
                               InputProps={{
@@ -1182,7 +1182,7 @@ function Commande(props) {
                             <TextFieldFormsy
                               className=""
                               name="email"
-                              value={commande.data.fournisseur.email}
+                              value={commande.data.fournisseur?.email}
                               label="Email"
                               fullWidth
                               InputProps={{
@@ -1204,7 +1204,7 @@ function Commande(props) {
                             type="text"
                             name="phonep"
                             id="phonep"
-                            value={commande.data.fournisseur.phone}
+                            value={commande.data.fournisseur?.phone}
                             label="Téléphone"
                             InputProps={{
                               readOnly: true,
@@ -1229,7 +1229,7 @@ function Commande(props) {
                               label="Raison sociale"
                               id="societe"
                               name="societe"
-                              value={commande.data.fournisseur.societe}
+                              value={commande.data.fournisseur?.societe}
                               fullWidth
                               InputProps={{
                                 readOnly: true,
@@ -1242,7 +1242,7 @@ function Commande(props) {
                             <TextFieldFormsy
                               className="mt-20"
                               name="fix"
-                              value={commande.data.fournisseur.fix}
+                              value={commande.data.fournisseur?.fix}
                               label="Fixe"
                               InputProps={{
                                 readOnly: true,
@@ -1265,10 +1265,10 @@ function Commande(props) {
                             name="secteur"
                             label="Activité"
                             value={
-                              commande.data.fournisseur.categories
+                              commande.data.fournisseur?.categories
                                 ? _.join(
                                     _.map(
-                                      commande.data.fournisseur.categories,
+                                      commande.data.fournisseur?.categories,
                                       "name"
                                     ),
                                     ", "
@@ -1290,7 +1290,7 @@ function Commande(props) {
                               className=""
                               type="text"
                               name="website"
-                              value={commande.data.fournisseur.website}
+                              value={commande.data.fournisseur?.website}
                               label="Site Web"
                               InputProps={{
                                 readOnly: true,
@@ -1308,13 +1308,13 @@ function Commande(props) {
                         </Grid>
                         <Grid item xs={12} sm={8}>
                           <div className="flex">
-                            {commande.data.fournisseur.ice ? (
+                            {commande.data.fournisseur?.ice ? (
                               <TextFieldFormsy
                                 className=""
                                 type="text"
                                 name="ice"
                                 id="ice"
-                                value={commande.data.fournisseur.ice}
+                                value={commande.data.fournisseur?.ice}
                                 label="ICE"
                                 fullWidth
                                 InputProps={{
@@ -1337,7 +1337,7 @@ function Commande(props) {
                               type="text"
                               name="adresse1"
                               id="adresse1"
-                              value={commande.data.fournisseur.adresse1}
+                              value={commande.data.fournisseur?.adresse1}
                               label="Adresse 1"
                               InputProps={{
                                 readOnly: true,
@@ -1360,8 +1360,8 @@ function Commande(props) {
                             name="pays"
                             id="pays"
                             value={
-                              commande.data.fournisseur.pays
-                                ? commande.data.fournisseur.pays.name
+                              commande.data.fournisseur?.pays
+                                ? commande.data.fournisseur?.pays.name
                                 : ""
                             }
                             label="Pays"
@@ -1377,7 +1377,7 @@ function Commande(props) {
                               className=""
                               type="text"
                               name="adresse2"
-                              value={commande.data.fournisseur.adresse2}
+                              value={commande.data.fournisseur?.adresse2}
                               label="Adresse 2"
                               InputProps={{
                                 readOnly: true,
@@ -1399,7 +1399,7 @@ function Commande(props) {
                               className=""
                               name="codepostal"
                               value={String(
-                                commande.data.fournisseur.codepostal
+                                commande.data.fournisseur?.codepostal
                               )}
                               label="Code Postal"
                               fullWidth
@@ -1416,8 +1416,8 @@ function Commande(props) {
                             name="ville"
                             id="ville"
                             value={
-                              commande.data.fournisseur.ville
-                                ? commande.data.fournisseur.ville.name
+                              commande.data.fournisseur?.ville
+                                ? commande.data.fournisseur?.ville.name
                                 : ""
                             }
                             label="Ville"
@@ -1436,7 +1436,7 @@ function Commande(props) {
                             className="mb-5 mt-20  w-full"
                             type="text"
                             name="description"
-                            value={commande.data.fournisseur.description}
+                            value={commande.data.fournisseur?.description}
                             label="Présentation"
                             multiline
                             rows="8"
