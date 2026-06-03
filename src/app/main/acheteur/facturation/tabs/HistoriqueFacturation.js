@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from "react-helmet";
 import { FuseAnimate } from '@fuse';
-import { Typography, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip } from '@material-ui/core';
+import { Typography, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, Chip } from '@material-ui/core';
 import moment from 'moment';
 import 'moment/locale/fr';
 import { makeStyles } from '@material-ui/styles';
@@ -79,7 +79,7 @@ function HistoriqueFacturation() {
                         <Typography variant="h6" className="uppercase mb-16">
                             Historique des commandes
                         </Typography>
-                        <TableContainer component={Paper}>
+                        <Paper className="w-full overflow-x-auto">
                             <Table aria-label="historique facturation">
                                 <TableHead>
                                     <TableRow>
@@ -130,7 +130,7 @@ function HistoriqueFacturation() {
                                     )}
                                 </TableBody>
                             </Table>
-                        </TableContainer>
+                        </Paper>
                     </Grid>
                 </Grid>
             </FuseAnimate>
