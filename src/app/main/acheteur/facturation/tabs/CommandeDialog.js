@@ -137,9 +137,9 @@ function CommandeDialog(props) {
     }
     console.log("fff");
     if (commandeDialog.type === "new") {
-      setActiveStep(4);
+      setActiveStep(3);
     } else {
-      setActiveStep(5);
+      setActiveStep(4);
     }
     return () => {
       dispatch(Actions.cleanUp());
