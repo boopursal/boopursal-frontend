@@ -82,6 +82,7 @@ export function RenewAbonnementCommande(data) {
         }),
         mode: data.mode,
         duree: data.duree['@id'],
+        currency: data.currency,
         suggestions: data.suggestions
     }
     const request = agent.post('/api/demande_abonnements', postData);
@@ -128,6 +129,7 @@ export function updateCommande(data) {
         }),
         mode: data.mode,
         duree: data.duree['@id'],
+        currency: data.currency,
         suggestions: data.suggestions
     }
     const request = agent.put(data['@id'], putData);
@@ -172,6 +174,7 @@ export function saveCommande(data) {
         }),
         mode: data.mode,
         duree: data.duree['@id'],
+        currency: data.currency,
         suggestions: data.suggestions
     }
     const request = agent.post('/api/demande_abonnements', postData);
