@@ -747,7 +747,7 @@ function Commande(props) {
                                   >
                                     <strong>{offre ? offre.name : ""}</strong>
                                     <br />
-                                    {commande.data.fournisseur?.currency?.name ===
+                                    {commande.data.currency ===
                                     LOCAL_CURRENCY
                                       ? parseFloat(
                                           offre.prixMad
