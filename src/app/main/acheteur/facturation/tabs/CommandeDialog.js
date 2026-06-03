@@ -270,7 +270,7 @@ function CommandeDialog(props) {
     switch (step) {
       case 0:
         return (
-          <Button variant="contained" color="primary" onClick={handleNext}>
+          <Button variant="contained" color="primary" disabled={!selectedPack.duree} onClick={handleNext}>
             {" "}
             Suivant
           </Button>

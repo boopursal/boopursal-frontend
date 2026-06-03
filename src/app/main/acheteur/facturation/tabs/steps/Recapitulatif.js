@@ -25,7 +25,7 @@ function Recapitulatif(props) {
   }
 
   const invoiceMonthPrice = handleGetMontantPerMonth(selected.duree);
-  const invoiceSubtotal = invoiceMonthPrice * selected.duree.name;
+  const invoiceSubtotal = invoiceMonthPrice * (selected.duree?.name || 0);
   const invoiceTaxes = TAX_RATE * invoiceSubtotal;
   const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
@@ -49,9 +49,9 @@ function Recapitulatif(props) {
         <TableBody>
           <TableRow>
             <TableCell>{selected.offre.name}</TableCell>
-            <TableCell align="right">{`${selected.duree.name} mois`}</TableCell>
+            <TableCell align="right">{`${selected.duree?.name || 0} mois`}</TableCell>
             <TableCell align="right">
-              {selected.duree.remise ? (
+              {selected.duree?.remise ? (
                 <span className="line-through text-xs text-red">
                   {selected.currency === LOCAL_CURRENCY
                     ? financial(selected.offre.prixMad)
