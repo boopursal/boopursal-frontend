@@ -328,14 +328,15 @@ function SupplierOnboarding(props) {
                             </Typography>
                             <div className="flex flex-wrap gap-8">
                                 {produitsSuggestion.map(p => (
-                                    <Chip 
-                                        key={p.id} 
-                                        label={p.name} 
-                                        onDelete={() => handleDeleteProduit(p.id)}
-                                        className="bg-white shadow-sm"
-                                        color="primary"
-                                        variant="outlined"
-                                    />
+                                    <div key={p.id || p['@id']} className="flex items-center bg-white border border-blue-500 rounded-full px-12 py-4 shadow-sm m-4">
+                                        <Typography className="text-blue-700 font-500 text-13">{p.name || 'Produit sans nom'}</Typography>
+                                        <Icon 
+                                            className="text-16 ml-8 text-blue-500 cursor-pointer hover:text-red-500" 
+                                            onClick={() => handleDeleteProduit(p.id)}
+                                        >
+                                            cancel
+                                        </Icon>
+                                    </div>
                                 ))}
                                 {produitsSuggestion.length === 0 && (
                                     <Typography className="text-gray-400 italic py-8">Aucun produit sélectionné pour le moment.</Typography>
