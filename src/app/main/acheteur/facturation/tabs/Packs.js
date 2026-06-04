@@ -237,7 +237,7 @@ function Packs(props) {
                     </div>
                     <div className="flex justify-center mt-12 text-black">
                       <span className=" uppercase text-10 sm:text-12 md:text-14 lg:text-15">
-                        {currency === 0 ? LOCAL_CURRENCY : "€"}
+                        {currency === LOCAL_CURRENCY ? LOCAL_CURRENCY : "€"}
                       </span>
                       <span className=" uppercase font-extrabold text-32">
                         00<span className="text-10">,00</span>
@@ -420,13 +420,13 @@ function Packs(props) {
                     </div>
                     <div className="flex justify-center mt-12 text-black">
                       <span className=" uppercase text-10 sm:text-12 md:text-14 lg:text-15">
-                        {currency === 0 ? LOCAL_CURRENCY : "€"}
+                        {currency === LOCAL_CURRENCY ? LOCAL_CURRENCY : "€"}
                       </span>
                       <span className=" uppercase font-extrabold text-32">
-                        {currency === 0 ? "375" : "38"}
+                        {currency === LOCAL_CURRENCY ? "375" : "38"}
                         <span className="text-10">
                           ,00 / mois
-                          {currency === 0 && " HT"}
+                          {currency === LOCAL_CURRENCY && " HT"}
                         </span>
                       </span>
                     </div>
@@ -614,13 +614,13 @@ function Packs(props) {
                     </div>
                     <div className="flex justify-center mt-12 text-black">
                       <span className=" uppercase text-10 sm:text-12 md:text-14 lg:text-15">
-                        {currency === 0 ? LOCAL_CURRENCY : "€"}
+                        {currency === LOCAL_CURRENCY ? LOCAL_CURRENCY : "€"}
                       </span>
                       <span className=" uppercase font-extrabold text-32">
-                        {currency === 0 ? "500" : "50"}
+                        {currency === LOCAL_CURRENCY ? "500" : "50"}
                         <span className="text-10">
                           ,00 / mois
-                          {currency === 0 && " HT"}
+                          {currency === LOCAL_CURRENCY && " HT"}
                         </span>
                       </span>
                     </div>
