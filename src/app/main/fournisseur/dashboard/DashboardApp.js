@@ -11,6 +11,7 @@ import Widget3 from './widgets/Widget3';
 import Widget4 from './widgets/Widget4';
 import Widget5 from './widgets/Widget5';
 import Widget6 from './widgets/Widget6';
+import MonAbonnement from '../billing/tabs/MonAbonnement';
 import ContentLoader from 'react-content-loader';
 import { Helmet } from "react-helmet";
 import moment from 'moment';
@@ -244,7 +245,7 @@ function DashboardApp(props) {
                                 {activeTab === 2 && (
                                     <div className={classes.emptySpace}>
                                         <Typography variant="h5" style={{ fontWeight: 900, color: '#0f172a', marginBottom: 24 }}>Mon Abonnement Pro</Typography>
-                                        <Widget5 />
+                                        <MonAbonnement />
                                     </div>
                                 )}
                             </div>

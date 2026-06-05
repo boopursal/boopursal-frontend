@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import withReducer from 'app/store/withReducer';
 import reducer from './store/reducers';
 import MonAbonnement from './tabs/MonAbonnement';
+import HistoriqueFacturation from './tabs/HistoriqueFacturation';
 import Packs from './tabs/Packs';
 import { useDispatch, useSelector } from 'react-redux';
 import CommandeDialog from './tabs/CommandeDialog';
@@ -104,6 +105,9 @@ function BillingApp(props) {
                     <div className="p-12">
                         {tabValue === 0 && (
                             <MonAbonnement />
+                        )}
+                        {tabValue === 1 && (
+                            <HistoriqueFacturation />
                         )}
                         {tabValue === 2 && (
                             <Packs currency={user.data ? user.data.currency : LOCAL_CURRENCY} />
