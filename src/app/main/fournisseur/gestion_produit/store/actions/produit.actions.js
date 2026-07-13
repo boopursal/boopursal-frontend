@@ -224,10 +224,7 @@ export function saveProduit(data, secteur, sousSecteur, categorie, abonnee) {
             })
         }
         ).catch((error) => {
-            dispatch({
-                type: SAVE_ERROR,
-                payload: FuseUtils.parseApiErrors(error)
-            });
+            const errPayload = FuseUtils.parseApiErrors(error); console.error('ERREUR SERVEUR !!!', errPayload.Erreur || errPayload); dispatch({ type: SAVE_ERROR, payload: errPayload }); dispatch(showMessage({ message: errPayload.Erreur || 'Erreur inconnue', variant: 'error', autoHideDuration: 10000 }));
         });
     }
 
@@ -264,10 +261,7 @@ export function putProduit(data, url, secteur, sousSecteur, categorie) {
             })
         }
         ).catch((error) => {
-            dispatch({
-                type: SAVE_ERROR,
-                payload: FuseUtils.parseApiErrors(error)
-            });
+            const errPayload = FuseUtils.parseApiErrors(error); console.error('ERREUR SERVEUR !!!', errPayload.Erreur || errPayload); dispatch({ type: SAVE_ERROR, payload: errPayload }); dispatch(showMessage({ message: errPayload.Erreur || 'Erreur inconnue', variant: 'error', autoHideDuration: 10000 }));
         });
     }
 
@@ -459,3 +453,6 @@ export function cleanDeleteImage() {
         type: CLEAN_DELETE_IMAGE,
     });
 }
+
+
+

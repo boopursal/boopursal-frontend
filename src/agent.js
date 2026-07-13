@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// Utilisation de l'adresse de production STABLE du Backend ou locale
-const URL_BACKEND = window.location.hostname === 'localhost' ? "http://localhost:3002" : "https://boopursal-backend.vercel.app";
+// Utilisation de la variable d'environnement configurée sur Vercel/Netlify
+const URL_BACKEND = window.location.hostname === 'localhost' 
+    ? "http://localhost:3002" 
+    : (process.env.REACT_APP_API_URL || "https://boopursal-backend.vercel.app");
 
 console.log('🚀 SYSTEME : Forçage de l\'Agent API sur : ' + URL_BACKEND);
 

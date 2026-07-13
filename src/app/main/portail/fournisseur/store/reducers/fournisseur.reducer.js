@@ -167,7 +167,7 @@ const fournisseurReducer = function (state = initialState, action) {
                 return {
                     ...state,
                     loadingsPhone: false,
-                    phone: action.payload,
+                    phone: state.data ? state.data.phone : null,
                     showPhone: true
 
                 };
