@@ -192,7 +192,7 @@ export function getProduit(params) {
 
 }
 
-export function saveProduit(data, secteur, sousSecteur, categorie, abonnee) {
+export function saveProduit(data, secteur, sousSecteur, categorie, abonnee, userId) {
 
     const postData = {
         ...data,
@@ -200,6 +200,7 @@ export function saveProduit(data, secteur, sousSecteur, categorie, abonnee) {
         secteur: secteur && secteur.value,
         sousSecteurs: sousSecteur && sousSecteur.value,
         categorie: categorie && categorie.value,
+        fournisseur: userId,
         images: data.images && _.map(data.images, function (value, key) {
             return value['@id'];
         }),
@@ -230,7 +231,7 @@ export function saveProduit(data, secteur, sousSecteur, categorie, abonnee) {
 
 }
 
-export function putProduit(data, url, secteur, sousSecteur, categorie) {
+export function putProduit(data, url, secteur, sousSecteur, categorie, userId) {
 
     const putData = {
         ...data,
@@ -238,6 +239,7 @@ export function putProduit(data, url, secteur, sousSecteur, categorie) {
         secteur: secteur && secteur.value,
         sousSecteurs: sousSecteur && sousSecteur.value,
         categorie: categorie && categorie.value,
+        fournisseur: userId,
         images: data.images && _.map(data.images, function (value, key) {
             return value['@id'];
         }),

@@ -525,11 +525,11 @@ function Produit(props) {
 
     if (produitId === "new") {
       dispatch(
-        Actions.saveProduit(form, secteur, sousSecteur, categorie, abonnee)
+        Actions.saveProduit(form, secteur, sousSecteur, categorie, abonnee, user.id)
       );
     } else {
       dispatch(
-        Actions.putProduit(form, form.id, secteur, sousSecteur, categorie)
+        Actions.putProduit(form, form.id, secteur, sousSecteur, categorie, user.id)
       );
     }
   }
