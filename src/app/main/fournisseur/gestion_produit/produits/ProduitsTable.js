@@ -197,7 +197,7 @@ function ProduitsTable(props) {
                         filterable: false,
                         Cell: row => (
                             <div className="flex items-center">
-                                {row.original.images.length}
+                                {row.original.images ? row.original.images.length : 0}
                             </div>
                         ),
 
