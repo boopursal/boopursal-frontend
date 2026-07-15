@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     transition: "all 0.4s ease",
   },
   allSectorsCard: {
-    background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
+    background: "linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%)",
     border: "none",
     "& $contentOverlay": {
       height: "100%",
@@ -99,19 +99,20 @@ const useStyles = makeStyles((theme) => ({
       width: "80px",
       height: "80px",
       borderRadius: "24px",
-      background: "rgba(255, 255, 255, 0.15)",
+      background: "rgba(255, 255, 255, 0.1)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       marginBottom: "24px",
       backdropFilter: "blur(20px)",
-      border: "1px solid rgba(255, 255, 255, 0.2)",
+      border: "1px solid rgba(255, 255, 255, 0.15)",
     },
     "&:hover": {
-      boxShadow: "0 40px 80px rgba(255, 90, 90, 0.3)",
+      boxShadow: "0 40px 80px rgba(30, 41, 59, 0.5)",
+      transform: "translateY(-12px) scale(1.02)",
       "& $iconWrapper": {
         transform: "rotate(10deg) scale(1.1)",
-        background: "rgba(255, 255, 255, 0.25)",
+        background: "rgba(255, 255, 255, 0.2)",
       }
     }
   },
@@ -182,11 +183,11 @@ function Categories(props) {
                 <div className={classes.iconWrapper}>
                   <Icon style={{ fontSize: 40, color: "#fff" }}>rocket_launch</Icon>
                 </div>
-                <Typography className={classes.categoryText} style={{ textAlign: "center" }}>
-                   Intelligence Totale
+                <Typography className={classes.categoryText} style={{ textAlign: "center", color: "#fff" }}>
+                   Explorer Tout
                 </Typography>
-                <Typography style={{ color: "rgba(255,255,255,0.8)", fontSize: "0.9rem", fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Voir tous les secteurs
+                <Typography style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                  Tous les secteurs →
                 </Typography>
               </div>
             </Link>

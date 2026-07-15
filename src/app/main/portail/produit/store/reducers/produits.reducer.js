@@ -13,7 +13,7 @@ const initialState = {
     totalItems: null,
     pageCount: null,
     parametres: {
-        itemsPerPage: 10,
+        itemsPerPage: 12,
         page: 1,
         filter: {
             id: 'created-desc',

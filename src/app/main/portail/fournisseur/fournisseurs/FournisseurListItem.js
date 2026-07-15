@@ -166,8 +166,15 @@ function FournisseurListItem(props) {
   const { classes } = props;
 
   const scrollToTop = () => {
-    const el = document.querySelector(".st");
-    if (el) el.scrollTop = 0;
+    // Try the Fuse layout scroll container first
+    const stEl = document.querySelector(".st");
+    if (stEl) {
+      stEl.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    // Also scroll the window and body as fallback
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+    document.body.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handlePageChange = (newPage) => {
