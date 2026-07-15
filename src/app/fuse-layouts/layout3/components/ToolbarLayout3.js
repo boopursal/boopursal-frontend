@@ -174,6 +174,12 @@ function ToolbarLayout3(props) {
                 Produits
               </Link>
               <Link
+                to="/entreprises"
+                className={clsx(classes.navLink, path.startsWith("/entreprise") && "active")}
+              >
+                Entreprises
+              </Link>
+              <Link
                 to="/tarifs/plans"
                 className={clsx(classes.navLink, path === "/tarifs/plans" && "active")}
               >
@@ -184,12 +190,6 @@ function ToolbarLayout3(props) {
                 className={clsx(classes.navLink, path === "/actualites" && "active")}
               >
                 Actualités
-              </Link>
-              <Link
-                to="/faq"
-                className={clsx(classes.navLink, path === "/faq" && "active")}
-              >
-                Centre d'aide
               </Link>
             </div>
           </Hidden>
@@ -227,9 +227,9 @@ function ToolbarLayout3(props) {
               { label: "Accueil", to: "/" },
               { label: "Secteurs", to: "/annuaire-entreprises" },
               { label: "Produits", to: "/vente-produits" },
+              { label: "Entreprises", to: "/entreprises" },
               { label: "Tarifs", to: "/tarifs/plans" },
               { label: "Actualités", to: "/actualites" },
-              { label: "Centre d'aide", to: "/faq" },
             ].map((link) => (
               <ListItem
                 button
