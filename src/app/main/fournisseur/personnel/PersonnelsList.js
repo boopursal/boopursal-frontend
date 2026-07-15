@@ -160,7 +160,7 @@ function PersonnelsList(props) {
                                   onClick={() =>
                                     dispatch(Actions.closeDialog())
                                   }
-                                  color="primary"
+                                  color="default" variant="contained"
                                 >
                                   Non
                                 </Button>
@@ -174,7 +174,7 @@ function PersonnelsList(props) {
                                     );
                                     dispatch(Actions.closeDialog());
                                   }}
-                                  color="primary"
+                                  color="secondary" variant="contained"
                                   autoFocus
                                 >
                                   Oui

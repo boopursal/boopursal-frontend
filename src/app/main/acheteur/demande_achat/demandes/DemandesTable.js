@@ -412,7 +412,7 @@ function DemandesTable(props) {
                                                                     </DialogContentText>
                                                                 </DialogContent>
                                                                 <DialogActions>
-                                                                    <Button variant="outlined" onClick={() => dispatch(Actions.closeDialog())} color="primary">
+                                                                    <Button variant="outlined" onClick={() => dispatch(Actions.closeDialog())} color="default" variant="contained">
                                                                         Non
                                                                     </Button>
                                                                     <Button

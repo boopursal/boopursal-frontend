@@ -140,7 +140,7 @@ function CommandesList(props) {
                                                         </DialogContentText>
                                                     </DialogContent>
                                                     <DialogActions>
-                                                        <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
+                                                        <Button onClick={() => dispatch(Actions.closeDialog())} color="default" variant="contained">
                                                             Non
                                                     </Button>
                                                         {
@@ -149,14 +149,14 @@ function CommandesList(props) {
                                                                     onClick={(ev) => {
                                                                         dispatch(Actions.removeCommande(row.original, user.id));
                                                                         dispatch(Actions.closeDialog())
-                                                                    }} color="primary"
+                                                                    }} color="secondary" variant="contained"
                                                                     autoFocus>
                                                                     Oui
                                                                 </Button>
                                                                 :
                                                                 <Button
                                                                     disabled
-                                                                    color="primary"
+                                                                    color="secondary" variant="contained"
                                                                     autoFocus>
                                                                     Oui
                                                                 </Button>

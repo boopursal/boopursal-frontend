@@ -135,7 +135,7 @@ function FaqCategoriesDialog(props) {
                     <DialogActions className="justify-between pl-16">
                         <Button
                             variant="contained"
-                            color="primary"
+                            color="default" variant="contained"
                             type="submit"
                             disabled={!isFormValid}
                         >
@@ -146,7 +146,7 @@ function FaqCategoriesDialog(props) {
                         <DialogActions className="justify-between pl-16">
                             <Button
                                 variant="contained"
-                                color="primary"
+                                color="secondary" variant="contained"
                                 type="submit"
                                 disabled={!isFormValid}
                             >
@@ -167,7 +167,7 @@ function FaqCategoriesDialog(props) {
                                                     Non
                                             </Button>
 
-                                                <Button onClick={handleRemove} color="primary" autoFocus>
+                                                <Button onClick={handleRemove} color="secondary" variant="contained" autoFocus>
                                                     Oui
                                                 </Button>
                                             </DialogActions>

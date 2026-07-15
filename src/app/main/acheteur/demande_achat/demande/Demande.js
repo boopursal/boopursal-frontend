@@ -1034,7 +1034,7 @@ function Demande(props) {
                                         onClick={() =>
                                           dispatch(Actions.closeDialog())
                                         }
-                                        color="primary"
+                                        color="default" variant="contained"
                                       >
                                         Non
                                       </Button>
@@ -1103,7 +1103,7 @@ function Demande(props) {
                                         onClick={() =>
                                           dispatch(Actions.closeDialog())
                                         }
-                                        color="primary"
+                                        color="default" variant="contained"
                                       >
                                         Non
                                       </Button>
@@ -1881,10 +1881,10 @@ function Demande(props) {
                             </DialogContentText>
                           </DialogContent>
                           <DialogActions>
-                            <Button onClick={() => setOpenSaveDialog(false)} color="primary">
+                            <Button onClick={() => setOpenSaveDialog(false)} color="default" variant="contained">
                               Non
                             </Button>
-                            <Button onClick={handleSave} color="primary" autoFocus>
+                            <Button onClick={handleSave} color="secondary" variant="contained" autoFocus>
                               Oui
                             </Button>
                           </DialogActions>
@@ -1904,10 +1904,10 @@ function Demande(props) {
                             </DialogContentText>
                           </DialogContent>
                           <DialogActions>
-                            <Button onClick={() => setOpenSendDialog(false)} color="primary">
+                            <Button onClick={() => setOpenSendDialog(false)} color="default" variant="contained">
                               Non
                             </Button>
-                            <Button onClick={handleSend} color="primary" autoFocus>
+                            <Button onClick={handleSend} color="secondary" variant="contained" autoFocus>
                               Oui
                             </Button>
                           </DialogActions>
@@ -2134,7 +2134,7 @@ function Demande(props) {
                                           onClick={() =>
                                             dispatch(Actions.closeDialog())
                                           }
-                                          color="primary"
+                                          color="default" variant="contained"
                                         >
                                           Non
                                         </Button>
@@ -2235,7 +2235,7 @@ function Demande(props) {
                                                       Actions.closeDialog()
                                                     )
                                                   }
-                                                  color="primary"
+                                                  color="default" variant="contained"
                                                 >
                                                   Non
                                                 </Button>

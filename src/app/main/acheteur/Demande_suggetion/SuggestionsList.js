@@ -141,7 +141,7 @@ function SuggestionsList(props) {
                                 </DialogContentText>
                               </DialogContent>
                               <DialogActions>
-                                <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
+                                <Button onClick={() => dispatch(Actions.closeDialog())} color="default" variant="contained">
                                   Non
                                 </Button>
                                 <Button
@@ -149,7 +149,7 @@ function SuggestionsList(props) {
                                     dispatch(Actions.removeSuggestion(row.original, user.id));
                                     dispatch(Actions.closeDialog());
                                   }}
-                                  color="primary"
+                                  color="secondary" variant="contained"
                                   autoFocus
                                 >
                                   Oui

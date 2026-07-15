@@ -616,12 +616,12 @@ useEffect(() => {
 
                 {BlackListesDialog.type === 'new' ? (
                     <DialogActions className="pl-16">
-                        <Button onClick={() => dispatch(Actions.closeNewBlackListesDialog())} color="primary">
+                        <Button onClick={() => dispatch(Actions.closeNewBlackListesDialog())} color="default" variant="contained">
                             Annuler
                         </Button>
                         <Button
                             variant="contained"
-                            color="primary"
+                            color="secondary" variant="contained"
                             type="submit"
                             disabled={!isFormValid || loading}
                         >
@@ -657,7 +657,7 @@ useEffect(() => {
                                                 <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
                                                     Non
                                                 </Button>
-                                                <Button onClick={handleRemove} color="primary" autoFocus>
+                                                <Button onClick={handleRemove} color="secondary" variant="contained" autoFocus>
                                                     Oui
                                                 </Button>
 

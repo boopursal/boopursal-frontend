@@ -135,7 +135,7 @@ function ChildTable(props) {
                                 <div className="flex items-center">
 
                                     <Tooltip title="Ajouter comme un acheteur / Master" >
-                                        <Button size="small" variant="contained" color="primary"
+                                        <Button size="small" variant="contained" color="default" variant="contained"
                                             disabled={loadingEdit}
                                             onClick={(ev) => {
                                                 ev.stopPropagation();
@@ -149,7 +149,7 @@ function ChildTable(props) {
                                                                 </DialogContentText>
                                                             </DialogContent>
                                                             <DialogActions>
-                                                                <Button onClick={() => dispatch(Actions.closeDialog())} variant="outlined" color="primary">
+                                                                <Button onClick={() => dispatch(Actions.closeDialog())} variant="outlined" color="secondary" variant="contained">
                                                                     Annuler
                                                                 </Button>
                                                                 <Button

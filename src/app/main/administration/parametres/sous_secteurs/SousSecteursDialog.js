@@ -227,7 +227,7 @@ function SousSecteursDialog(props) {
                     <DialogActions className="justify-between pl-16">
                         <Button
                             variant="contained"
-                            color="primary"
+                            color="default" variant="contained"
                             type="submit"
                             disabled={!isFormValid}
                         >
@@ -238,7 +238,7 @@ function SousSecteursDialog(props) {
                         <DialogActions className="justify-between pl-16">
                             <Button
                                 variant="contained"
-                                color="primary"
+                                color="secondary" variant="contained"
                                 type="submit"
                                 disabled={!isFormValid}
                             >
@@ -266,13 +266,13 @@ function SousSecteursDialog(props) {
                                                 {
                                                     (Object.keys(_.pullAllBy(form.fournisseurs, [{ 'del': true }], 'del')).length === 0 /*&& Object.keys(_.pullAllBy(form.acheteurs, [{ 'del': true }], 'del')).length === 0*/) ?
                                                         <Button
-                                                            onClick={handleRemove} color="primary" autoFocus>
+                                                            onClick={handleRemove} color="secondary" variant="contained" autoFocus>
                                                             Oui
                                                 </Button>
                                                         :
                                                         <Button
                                                             disabled
-                                                            color="primary" autoFocus>
+                                                            color="secondary" variant="contained" autoFocus>
                                                             Oui
                                                 </Button>
                                                 }

@@ -148,7 +148,7 @@ function SecteursDialog(props) {
                     <DialogActions className="justify-between pl-16">
                         <Button
                             variant="contained"
-                            color="primary"
+                            color="default" variant="contained"
                             type="submit"
                             disabled={!isFormValid}
                         >
@@ -159,7 +159,7 @@ function SecteursDialog(props) {
                         <DialogActions className="justify-between pl-16">
                             <Button
                                 variant="contained"
-                                color="primary"
+                                color="secondary" variant="contained"
                                 type="submit"
                                 disabled={!isFormValid}
                             >
@@ -187,11 +187,11 @@ function SecteursDialog(props) {
 
                                                 {
                                                     Object.keys(_.pullAllBy(form.sousSecteurs, [{ 'del': true }], 'del')).length === 0 ?
-                                                        <Button onClick={handleRemove} color="primary" autoFocus>
+                                                        <Button onClick={handleRemove} color="secondary" variant="contained" autoFocus>
                                                             Oui
                                                         </Button>
                                                         :
-                                                        <Button disabled color="primary" autoFocus>
+                                                        <Button disabled color="secondary" variant="contained" autoFocus>
                                                             Oui
                                                         </Button>
                                                 }

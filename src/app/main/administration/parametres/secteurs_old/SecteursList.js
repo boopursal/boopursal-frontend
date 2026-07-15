@@ -189,7 +189,7 @@ function SecteursList(props)
                                                     </DialogContentText>
                                                 </DialogContent>
                                                 <DialogActions>
-                                                    <Button onClick={()=> dispatch(Actions.closeDialog())} color="primary">
+                                                    <Button onClick={()=> dispatch(Actions.closeDialog())} color="default" variant="contained">
                                                         Non
                                                     </Button>
                                                     {
@@ -199,14 +199,14 @@ function SecteursList(props)
                                                                     dispatch(Actions.removeSecteur(row.original));
                                                                     dispatch(Actions.closeDialog())
                                                                 }} 
-                                                        color="primary" 
+                                                        color="secondary" variant="contained" 
                                                         autoFocus>
                                                             Oui
                                                         </Button>
                                                         :
                                                         <Button 
                                                         disabled
-                                                        color="primary" 
+                                                        color="secondary" variant="contained" 
                                                         autoFocus>
                                                             Oui
                                                         </Button>

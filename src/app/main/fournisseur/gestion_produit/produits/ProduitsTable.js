@@ -259,7 +259,7 @@ function ProduitsTable(props) {
                                                             </DialogContentText>
                                                         </DialogContent>
                                                         <DialogActions>
-                                                            <Button onClick={() => dispatch(Actions.closeDialog())} color="primary">
+                                                            <Button onClick={() => dispatch(Actions.closeDialog())} color="default" variant="contained">
                                                                 Non
                                                             </Button>
                                                             <Button
@@ -267,7 +267,7 @@ function ProduitsTable(props) {
                                                                     dispatch(Actions.removeProduit(row.original, parametres, user))
                                                                     dispatch(Actions.closeDialog())
                                                                 }}
-                                                                color="primary"
+                                                                color="secondary" variant="contained"
                                                                 autoFocus>
                                                                 Oui
                                                             </Button>

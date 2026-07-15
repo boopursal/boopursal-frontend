@@ -471,7 +471,7 @@ function ZonesDialog(props) {
           <DialogActions className="justify-between pl-16">
             <Button
               variant="contained"
-              color="primary"
+              color="default" variant="contained"
               type="submit"
               disabled={!isFormValid || zones.loading || imageReqInProgress}
             >
@@ -483,7 +483,7 @@ function ZonesDialog(props) {
           <DialogActions className="justify-between pl-16">
             <Button
               variant="contained"
-              color="primary"
+              color="secondary" variant="contained"
               type="submit"
               disabled={!isFormValid || zones.loading || imageReqInProgress}
             >
@@ -513,7 +513,7 @@ function ZonesDialog(props) {
                           </Button>
                           <Button
                             onClick={handleRemove}
-                            color="primary"
+                            color="secondary" variant="contained"
                             autoFocus
                           >
                             Oui

@@ -918,7 +918,7 @@ function Produit(props) {
                                         <Button
                                           variant="contained"
                                           onClick={() => dispatch(Actions.closeDialog())}
-                                          color="primary"
+                                          color="default" variant="contained"
                                         >
                                           Non
                                         </Button>
@@ -927,7 +927,7 @@ function Produit(props) {
                                             dispatch(Actions.deleteMedia(media));
                                             dispatch(Actions.closeDialog());
                                           }}
-                                          color="primary"
+                                          color="secondary" variant="contained"
                                           autoFocus
                                         >
                                           Oui
