@@ -1241,7 +1241,7 @@ function Produit(props) {
                       key={form.ficheTechnique.id}
                       onClick={() =>
                         window.open(
-                          URL_SITE + form.ficheTechnique.url,
+                          getImageUrl(form.ficheTechnique.url),
                           "_blank"
                         )
                       }
@@ -1260,7 +1260,7 @@ function Produit(props) {
                       {_.split(form.ficheTechnique, "/", 1)[0] === "image" ? (
                         <img
                           className="max-w-none w-auto h-full"
-                          src={URL_SITE + form.ficheTechnique.url}
+                          src={getImageUrl(form.ficheTechnique.url)}
                           alt="fiche"
                         />
                       ) : (
