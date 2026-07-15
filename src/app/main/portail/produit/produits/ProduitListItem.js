@@ -42,31 +42,31 @@ const styles = (theme) => ({
   productCard: {
     display: 'flex',
     flexDirection: 'column',
-    borderRadius: 20,
+    borderRadius: 24,
     overflow: 'hidden',
     backgroundColor: 'white',
-    border: '1px solid #f1f5f9',
-    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    border: '1px solid rgba(226, 232, 240, 0.6)',
+    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     position: 'relative',
     height: '100%',
+    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02)',
     '&:hover': {
-      transform: 'translateY(-10px)',
-      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.12)',
-      borderColor: theme.palette.primary.light,
+      transform: 'translateY(-8px)',
+      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.08), 0 0 0 2px rgba(255, 90, 90, 0.1)',
       '& $imageOverlay': {
         opacity: 1
       },
       '& $img': {
-        transform: 'scale(1.05)'
+        transform: 'scale(1.08)'
       }
     }
   },
   imageWrapper: {
     position: 'relative',
     paddingTop: '100%', // Square ratio
-    backgroundColor: '#fff',
+    background: 'radial-gradient(circle, #ffffff 0%, #f8fafc 100%)',
     overflow: 'hidden',
-    borderBottom: '1px solid #f1f5f9'
+    borderBottom: '1px solid rgba(226, 232, 240, 0.6)'
   },
   img: {
     position: 'absolute',
@@ -84,28 +84,29 @@ const styles = (theme) => ({
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.03)',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    backdropFilter: 'blur(2px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0,
-    transition: 'opacity 0.3s ease',
+    transition: 'opacity 0.4s ease',
     zIndex: 5
   },
   badge: {
     position: 'absolute',
     top: 16,
-    right: 16,
+    left: 16,
     zIndex: 10,
-    backgroundColor: '#10b981', // Emerald green for a premium look
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Emerald gradient
     color: 'white',
-    padding: '4px 12px',
-    borderRadius: 30,
-    fontSize: '0.7rem',
+    padding: '6px 14px',
+    borderRadius: 8,
+    fontSize: '0.75rem',
     fontWeight: 800,
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
+    boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
   },
   content: {
     padding: '24px',
@@ -113,23 +114,23 @@ const styles = (theme) => ({
     flexDirection: 'column',
     flexGrow: 1,
     [theme.breakpoints.down('sm')]: {
-      padding: '16px',
+      padding: '20px',
     }
   },
   category: {
     fontSize: '0.75rem',
-    fontWeight: 600,
-    color: theme.palette.primary.main,
+    fontWeight: 700,
+    color: '#64748b',
     textTransform: 'uppercase',
-    letterSpacing: '0.05em',
+    letterSpacing: '0.08em',
     marginBottom: 8
   },
   title: {
-    fontSize: '1.125rem',
+    fontSize: '1.15rem',
     fontWeight: 800,
-    color: '#1e293b',
+    color: '#0f172a',
     textDecoration: 'none',
-    marginBottom: 12,
+    marginBottom: 16,
     lineHeight: 1.4,
     height: '2.8em',
     overflow: 'hidden',
@@ -138,8 +139,8 @@ const styles = (theme) => ({
     '-webkit-box-orient': 'vertical',
     transition: 'color 0.2s',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1rem',
-      marginBottom: 8,
+      fontSize: '1.05rem',
+      marginBottom: 12,
     },
     '&:hover': {
       color: theme.palette.primary.main
@@ -147,30 +148,35 @@ const styles = (theme) => ({
   },
   priceRow: {
     display: 'flex',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 'auto'
+    marginTop: 'auto',
+    paddingTop: '20px',
+    borderTop: '1px dashed #e2e8f0'
   },
   price: {
     fontSize: '1.5rem',
     fontWeight: 900,
-    color: '#0f172a',
+    color: theme.palette.primary.main,
     letterSpacing: '-0.02em',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.25rem',
+      fontSize: '1.35rem',
     }
   },
   quoteBtn: {
-    minWidth: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#f1f5f9',
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    backgroundColor: '#f8fafc',
     color: '#475569',
-    transition: 'all 0.2s',
+    border: '1px solid #e2e8f0',
+    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     '&:hover': {
       backgroundColor: theme.palette.primary.main,
+      borderColor: theme.palette.primary.main,
       color: 'white',
-      transform: 'rotate(-5deg) scale(1.1)'
+      transform: 'translateY(-4px) rotate(-5deg)',
+      boxShadow: '0 10px 20px -5px rgba(255, 90, 90, 0.4)'
     }
   },
   paginationContainer: {
@@ -297,15 +303,15 @@ function ProduitListItem(props) {
                   {produit.titre}
                 </Link>
 
-                <div className="flex items-center text-slate-400 text-xs font-medium mb-20 bg-slate-50 w-fit px-8 py-4 rounded-4">
-                  REF: {produit.reference}
+                <div className="flex items-center text-slate-500 text-xs font-semibold mb-20 bg-slate-50 w-fit px-10 py-6 rounded-8 border border-slate-100">
+                  <span className="text-slate-400 mr-4">REF:</span> {produit.reference || 'N/A'}
                 </div>
 
                 <div className={classes.priceRow}>
                   <div className={classes.price}>
-                    {produit.pu
-                      ? parseFloat(produit.pu).toLocaleString(undefined, { minimumFractionDigits: 0 }) + " " + (produit.currency ? produit.currency.name : "MAD")
-                      : <span className="text-sm font-bold text-slate-400">PRIX SUR DEVIS</span>
+                    {produit.pu && parseFloat(produit.pu) > 0
+                      ? parseFloat(produit.pu).toLocaleString(undefined, { minimumFractionDigits: 0 }) + " " + (produit.currency ? (produit.currency.name || produit.currency) : "MAD")
+                      : <span className="text-sm font-bold bg-slate-100 text-slate-600 px-12 py-6 rounded-full inline-block" style={{ fontSize: '0.85rem' }}>PRIX SUR DEVIS</span>
                     }
                   </div>
 
