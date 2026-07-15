@@ -231,10 +231,16 @@ function SelectReactFormsy(props) {
         const valArray = Array.isArray(props.getValue()) ? props.getValue() : [];
         value = _.filter(options, opt => valArray.some(v => v === opt.value || v.value === opt.value));
     } else {
-        // First try formsy internal value, then fall back to props.value (for pre-population on edit)
         const formsyVal = props.getValue();
+        let foundOption;
+        
         if (formsyVal) {
-            value = _.find(options, { value: formsyVal });
+            const valToMatch = typeof formsyVal === 'object' && formsyVal.value !== undefined ? formsyVal.value : (typeof formsyVal === 'object' && formsyVal['@id'] ? formsyVal['@id'] : formsyVal);
+            foundOption = _.find(options, { value: valToMatch });
+        }
+
+        if (foundOption) {
+            value = foundOption;
         } else if (props.value && props.value.value) {
             // props.value is already {value, label} format from parent state
             value = props.value;
