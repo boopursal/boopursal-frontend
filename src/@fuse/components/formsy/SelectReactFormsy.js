@@ -231,7 +231,16 @@ function SelectReactFormsy(props) {
         const valArray = Array.isArray(props.getValue()) ? props.getValue() : [];
         value = _.filter(options, opt => valArray.some(v => v === opt.value || v.value === opt.value));
     } else {
-        value = _.find(options, { value: props.getValue() });
+        // First try formsy internal value, then fall back to props.value (for pre-population on edit)
+        const formsyVal = props.getValue();
+        if (formsyVal) {
+            value = _.find(options, { value: formsyVal });
+        } else if (props.value && props.value.value) {
+            // props.value is already {value, label} format from parent state
+            value = props.value;
+        } else {
+            value = null;
+        }
     }
 
     // An error message is returned only if the component is invalid

@@ -1167,7 +1167,7 @@ function Produit(props) {
                       </Tooltip>
                       <img
                         className="max-w-none w-auto h-full"
-                        src={URL_SITE + media.url}
+                        src={getImageUrl(media.url)}
                         alt="produit"
                       />
                     </div>
