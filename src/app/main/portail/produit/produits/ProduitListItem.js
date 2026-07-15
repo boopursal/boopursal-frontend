@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { FuseAnimateGroup } from "@fuse";
-import { URL_SITE } from "@fuse/Constants";
+import { URL_SITE, getImageUrl } from "@fuse/Constants";
 import _ from "@lodash";
 import { Link } from "react-router-dom";
 import { Icon, IconButton, Select, Button, Tooltip } from "@material-ui/core";
@@ -267,7 +267,7 @@ function ProduitListItem(props) {
                   <img
                     className={classes.img}
                     alt={produit.titre}
-                    src={URL_SITE + "/images/produits/" + produit.featuredImageId.url}
+                    src={getImageUrl(produit.featuredImageId.url)}
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                 ) : (

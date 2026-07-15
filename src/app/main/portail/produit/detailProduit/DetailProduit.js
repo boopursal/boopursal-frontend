@@ -27,7 +27,7 @@ import { InlineShareButtons } from "sharethis-reactjs";
 import _ from "@lodash";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import { URL_SITE } from "@fuse/Constants";
+import { URL_SITE, getImageUrl } from "@fuse/Constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -264,7 +264,7 @@ function DetailProduit(props) {
 
   useEffect(() => {
     if (produit.data?.images) {
-      setImages(produit.data.images.map((item) => URL_SITE + "/images/produits/" + item.url));
+      setImages(produit.data.images.map((item) => getImageUrl(item.url)));
     }
   }, [produit.data]);
 
@@ -375,7 +375,7 @@ function DetailProduit(props) {
             className={classes.supplierBadge}
           >
             <Avatar
-              src={data.fournisseur?.avatar?.url ? URL_SITE + "/images/avatar/" + data.fournisseur.avatar.url : ""}
+              src={data.fournisseur?.avatar?.url ? getImageUrl(data.fournisseur.avatar.url) : ""}
               variant="rounded"
               className={classes.supplierAvatar}
             >

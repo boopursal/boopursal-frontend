@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Chip, Tooltip, IconButton, Icon, TextField, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
-import { FuseAnimate,URL_SITE,FuseUtils } from '@fuse';
+import { FuseAnimate,URL_SITE,FuseUtils, getImageUrl } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import * as Actions from '../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -130,7 +130,7 @@ function ProduitsTable(props) {
                             <div className="flex items-center relative ">
                                 {
                                     row.original.featuredImageId ? (
-                                        <img className={clsx("w-full block rounded")} src={URL_SITE + row.original.featuredImageId.url} alt={row.original.reference} />
+                                        <img className={clsx("w-full block rounded")} src={getImageUrl(row.original.featuredImageId.url)} alt={row.original.reference} />
                                     ) : (
                                             <img className={clsx("w-full block rounded")} src="/assets/images/ecommerce/product-image-placeholder.png" alt={row.original.reference} />
                                         )

@@ -18,7 +18,7 @@ import {
 import { red, orange } from "@material-ui/core/colors";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import { FuseAnimate, FusePageCarded, TextFieldFormsy } from "@fuse";
-import { URL_SITE } from "@fuse/Constants";
+import { URL_SITE, getImageUrl } from "@fuse/Constants";
 import { useForm } from "@fuse/hooks";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
@@ -274,7 +274,7 @@ function Produit(props) {
         }
       }
       if (produit.data.images) {
-        setImages(produit.data.images.map((item) => URL_SITE + item.url));
+        setImages(produit.data.images.map((item) => getImageUrl(item.url)));
       }
 
       if (produit.data.sousSecteurs) {
@@ -354,7 +354,7 @@ function Produit(props) {
     if (produit.image) {
       setForm(_.set({ ...form }, "images", [produit.image, ...form.images]));
       if (produit.data.images) {
-        setImages([...images, URL_SITE + produit.image.url]);
+        setImages([...images, getImageUrl(produit.image.url)]);
       }
       setCountFreeImages(countFreeImages + 1);
     }
@@ -376,7 +376,7 @@ function Produit(props) {
         );
         setImages(
           _.reject(images, function (i) {
-            return i === URL_SITE + produit.image_deleted.url;
+            return i === getImageUrl(produit.image_deleted.url);
           })
         );
         setCountFreeImages(countFreeImages - 1);
@@ -735,7 +735,7 @@ function Produit(props) {
                   {form.images.length > 0 && form.featuredImageId ? (
                     <img
                       className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
-                      src={URL_SITE + form.featuredImageId.url}
+                      src={getImageUrl(form.featuredImageId.url)}
                       alt={form.reference}
                     />
                   ) : (
