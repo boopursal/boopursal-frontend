@@ -17,8 +17,87 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        background: 'linear-gradient(to right, ' + theme.palette.primary.dark + ' 0%, ' + darken(theme.palette.primary.dark, 0.5) + ' 100%)',
-        color: theme.palette.primary.contrastText
+        background: '#ffffff',
+        minHeight: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: theme.spacing(8, 4),
+        [theme.breakpoints.down('sm')]: {
+            padding: theme.spacing(4, 2),
+        },
+        fontFamily: 'Muli, Roboto, "Helvetica", Arial, sans-serif',
+        position: 'relative',
+        overflow: 'hidden'
+    },
+    backgroundArt: {
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        zIndex: 1,
+        background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)',
+    },
+    megaCard: {
+        position: 'relative',
+        zIndex: 10,
+        width: '100%',
+        maxWidth: 500,
+        backgroundColor: '#ffffff',
+        borderRadius: 40,
+        boxShadow: '0 40px 80px -20px rgba(0, 0, 0, 0.08)',
+        overflow: 'hidden',
+        display: 'flex',
+        border: '1px solid #e2e8f0',
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'column',
+            borderRadius: 24,
+            maxWidth: 480
+        }
+    },
+    loginPane: {
+        flex: 1,
+        padding: theme.spacing(8),
+        [theme.breakpoints.down('md')]: {
+            padding: theme.spacing(6),
+        },
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(4),
+        }
+    },
+    logo: {
+        height: 60,
+        width: 'auto',
+        marginBottom: 32,
+    },
+    title: {
+        fontFamily: 'Muli, Roboto, "Helvetica", Arial, sans-serif',
+        fontSize: '2rem',
+        fontWeight: 900,
+        color: '#0f172a',
+        marginBottom: 8,
+        letterSpacing: '-0.04em',
+    },
+    subtitle: {
+        fontFamily: 'Muli, Roboto, "Helvetica", Arial, sans-serif',
+        fontSize: '0.925rem',
+        fontWeight: 400,
+        color: '#64748b',
+        lineHeight: 1.5,
+        marginBottom: 48,
+    },
+    footerLink: {
+        fontFamily: 'Muli, Roboto, "Helvetica", Arial, sans-serif',
+        fontSize: '0.75rem',
+        fontWeight: 800,
+        color: '#94a3b8',
+        textDecoration: 'none',
+        display: 'inline-flex',
+        alignItems: 'center',
+        marginTop: 32,
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em',
+        '&:hover': {
+            color: '#64748b'
+        }
     },
     buttonProgress: {
         position: 'absolute',
@@ -27,6 +106,14 @@ const useStyles = makeStyles(theme => ({
         marginTop: -12,
         marginLeft: -12,
     },
+    submitBtn: {
+        padding: '12px 24px',
+        borderRadius: 12,
+        fontWeight: 800,
+        fontSize: '1rem',
+        textTransform: 'none',
+        boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.25)',
+    }
 }));
 
 function ResetPassword(props) {
@@ -85,38 +172,22 @@ function ResetPassword(props) {
     }
 
     return (
-        <div className={clsx(classes.root, "flex flex-col flex-auto flex-shrink-0 p-24 md:flex-row md:p-0")}>
-
+        <div className={classes.root}>
             <Helmet>
-                <title>Réinitialiser votre mot de passe | Les Achats Industriels</title>
+                <title>Réinitialiser votre mot de passe | Boopursal</title>
                 <meta name="description" content="Modifier ou réinitialiser votre mot de passe" />
             </Helmet>
-            <div className="flex flex-col flex-grow-0 items-center text-white p-16 text-center md:p-128 md:items-start md:flex-shrink-0 md:flex-1 md:text-left">
 
-                <FuseAnimate animation="transition.expandIn">
-                    <img className="w-128 mb-32" src="/assets/images/logos/icon.png" alt="logo" />
-                </FuseAnimate>
+            <div className={classes.backgroundArt} />
 
-                <FuseAnimate animation="transition.slideUpIn" delay={300}>
-                    <Typography variant="h3" color="inherit" className="font-light">
-                        LES ACHATS INDUSTRIELS
-                    </Typography>
-                </FuseAnimate>
-
-                <FuseAnimate delay={400}>
-                    <Typography variant="subtitle1" color="inherit" className="max-w-512 mt-16">
-                        LA PLACE DE MARCHE B TO B N° 1 AU MAROC, DES ACHETEURS ET FOURNISSEURS AVERTIS.
-                    </Typography>
-                </FuseAnimate>
-            </div>
-
-            <FuseAnimate animation={{ translateX: [0, '100%'] }}>
-
-                <Card className="w-full max-w-400 mx-auto m-16 md:m-0" square>
-
-                    <CardContent className="flex flex-col items-center justify-center p-32 md:p-48 md:pt-128 ">
-
-                        <Typography variant="h6" className="md:w-full mb-32 text-center">RÉINITIALISER VOTRE MOT DE PASSE</Typography>
+            <FuseAnimate animation="transition.slideUpIn" delay={100}>
+                <div className={classes.megaCard}>
+                    <div className={classes.loginPane}>
+                        <img className={classes.logo} src="/assets/images/logos/icon.png" alt="Boopursal" />
+                        <Typography className={classes.title}>Nouveau mot de passe</Typography>
+                        <Typography className={classes.subtitle}>
+                            Veuillez définir votre nouveau mot de passe pour accéder à votre compte.
+                        </Typography>
 
                         <Formsy
                             onValidSubmit={handleSubmit}
@@ -129,7 +200,7 @@ function ResetPassword(props) {
                                 className="mb-16"
                                 name="password"
                                 type={values.showPassword ? 'text' : 'password'}
-                                label="Mot de passe"
+                                label="Nouveau mot de passe"
                                 validations={{
                                     minLength: 6,
                                     matchRegexp: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{6,}/
@@ -154,7 +225,7 @@ function ResetPassword(props) {
                             />
 
                             <TextFieldFormsy
-                                className="mb-16"
+                                className="mb-24"
                                 type={values.showPassword ? 'text' : 'password'}
                                 name="confirmpassword"
                                 label="Confirmer le mot de passe"
@@ -176,32 +247,29 @@ function ResetPassword(props) {
                                 variant="outlined"
                                 required
                             />
+                            
                             <Button
                                 type="submit"
                                 variant="contained"
                                 name="submit"
                                 color="primary"
-                                className="w-full mx-auto mt-16 normal-case"
-                                aria-label="LOG IN"
+                                className={clsx(classes.submitBtn, "w-full")}
+                                aria-label="RÉINITIALISER"
                                 disabled={!isFormValid || resetpassword.loading}
-                                value="legacy"
                             >
-                                RÉINITIALISER
+                                Enregistrer le mot de passe
                                 {resetpassword.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
                             </Button>
-
                         </Formsy>
-                        <div className="flex flex-col items-center justify-center pt-32">
 
-                            <Link className="font-medium text-blue" to="/login">Revenir à la page de connexion</Link>
-                            <Link className="font-medium mt-8 flex items-end text-blue" to="/"><Icon className="mr-4">home</Icon> <span>Accueil</span></Link>
+                        <div className="flex items-center justify-between mt-16">
+                            <Link to="/login" className={classes.footerLink}>
+                                <Icon className="text-16 mr-8">keyboard_backspace</Icon>
+                                Retour à la connexion
+                            </Link>
                         </div>
-
-                        <div className="flex flex-col items-center justify-center pt-32 pb-24">
-                        </div>
-
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </FuseAnimate>
         </div>
     );
