@@ -10,6 +10,25 @@ import { Link } from "react-router-dom";
 import { Icon, IconButton, Select, Button, Tooltip, Chip } from "@material-ui/core";
 import * as Actions from "../store/actions";
 
+const stringToColor = (string) => {
+  if (!string) return '#94a3b8';
+  let hash = 0;
+  for (let i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let color = '#';
+  for (let i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  return color;
+};
+
+const getInitials = (name) => {
+  if (!name) return '?';
+  return name.charAt(0).toUpperCase();
+};
+
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -209,12 +228,29 @@ function FournisseurListItem(props) {
               className={classes.imageWrapper}
             >
               <div className={classes.badge}>Fournisseur</div>
-              <img
-                className={classes.logoScale}
-                alt={fournisseur.societe}
-                src={fournisseur.avatar ? URL_SITE + "/images/avatar/" + fournisseur.avatar.url : "/assets/images/ecommerce/product-placeholder.jpg"}
-                onError={(e) => { e.target.src = "/assets/images/ecommerce/product-placeholder.jpg" }}
-              />
+              {fournisseur.avatar ? (
+                <img
+                  className={classes.logoScale}
+                  alt={fournisseur.societe}
+                  src={URL_SITE + "/images/avatar/" + fournisseur.avatar.url}
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              ) : (
+                <div 
+                  className={classes.logoScale} 
+                  style={{
+                    backgroundColor: stringToColor(fournisseur.societe),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '3.5rem',
+                    fontWeight: 800
+                  }}
+                >
+                  {getInitials(fournisseur.societe)}
+                </div>
+              )}
             </Link>
 
             <div className={classes.content}>

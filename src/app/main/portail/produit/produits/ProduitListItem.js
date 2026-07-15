@@ -10,6 +10,25 @@ import { Icon, IconButton, Select, Button, Tooltip } from "@material-ui/core";
 import * as Actions from "../store/actions";
 import clsx from 'clsx';
 
+const stringToColor = (string) => {
+  if (!string) return '#94a3b8';
+  let hash = 0;
+  for (let i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let color = '#';
+  for (let i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  return color;
+};
+
+const getInitials = (name) => {
+  if (!name) return '?';
+  return name.charAt(0).toUpperCase();
+};
+
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -238,12 +257,30 @@ function ProduitListItem(props) {
                 className={classes.imageWrapper}
               >
                 <div className={classes.badge}>Premium</div>
-                <img
-                  className={classes.img}
-                  alt={produit.titre}
-                  src={produit.featuredImageId ? URL_SITE + "/images/produits/" + produit.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
-                  onError={(e) => { e.target.src = "/assets/images/ecommerce/product-placeholder.jpg" }}
-                />
+                {produit.featuredImageId ? (
+                  <img
+                    className={classes.img}
+                    alt={produit.titre}
+                    src={URL_SITE + "/images/produits/" + produit.featuredImageId.url}
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                ) : (
+                  <div 
+                    className={classes.img} 
+                    style={{
+                      backgroundColor: stringToColor(produit.titre),
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontSize: '4rem',
+                      fontWeight: 800,
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                    {getInitials(produit.titre)}
+                  </div>
+                )}
                 <div className={classes.imageOverlay}>
                   <Icon className="text-white text-48 drop-shadow-lg">visibility</Icon>
                 </div>
