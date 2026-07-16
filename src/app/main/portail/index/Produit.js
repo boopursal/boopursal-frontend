@@ -11,7 +11,7 @@ import {
   Icon
 } from "@material-ui/core";
 import _ from "@lodash";
-import { URL_SITE } from "@fuse/Constants";
+import { URL_SITE, getImageUrl } from "@fuse/Constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -146,7 +146,7 @@ export default function Produit(props) {
   if (!produit) return null;
 
   const imageUrl = produit.featuredImageId
-    ? URL_SITE + "/images/produits/" + produit.featuredImageId.url
+    ? getImageUrl(produit.featuredImageId.url, '/images/produits/')
     : "/assets/images/ecommerce/product-placeholder.jpg";
 
   return (

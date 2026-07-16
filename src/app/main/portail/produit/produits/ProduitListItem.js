@@ -267,7 +267,7 @@ function ProduitListItem(props) {
                   <img
                     className={classes.img}
                     alt={produit.titre}
-                    src={getImageUrl(produit.featuredImageId.url)}
+                    src={getImageUrl(produit.featuredImageId.url, '/images/produits/')}
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                 ) : (

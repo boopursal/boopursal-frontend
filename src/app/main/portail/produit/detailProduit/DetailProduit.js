@@ -264,7 +264,7 @@ function DetailProduit(props) {
 
   useEffect(() => {
     if (produit.data?.images) {
-      setImages(produit.data.images.map((item) => getImageUrl(item.url)));
+      setImages(produit.data.images.map((item) => getImageUrl(item.url, '/images/produits/')));
     }
   }, [produit.data]);
 
@@ -375,7 +375,7 @@ function DetailProduit(props) {
             className={classes.supplierBadge}
           >
             <Avatar
-              src={data.fournisseur?.avatar?.url ? getImageUrl(data.fournisseur.avatar.url) : ""}
+              src={data.fournisseur?.avatar?.url ? getImageUrl(data.fournisseur.avatar.url, '/images/avatar/') : ""}
               variant="rounded"
               className={classes.supplierAvatar}
             >
