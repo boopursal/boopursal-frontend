@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import { useDispatch, useSelector } from "react-redux";
 import { FuseAnimateGroup } from "@fuse";
-import { URL_SITE } from "@fuse/Constants";
+import { URL_SITE, getImageUrl } from "@fuse/Constants";
 import _ from "@lodash";
 import { Link } from "react-router-dom";
 import { Chip, Icon, IconButton, Select, CircularProgress, Button } from "@material-ui/core";
@@ -109,7 +109,7 @@ function ProduitListItem(props) {
                       <img
                         className={classes.img}
                         alt={produit.titre}
-                        src={produit.featuredImageId ? URL_SITE + produit.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
+                        src={produit.featuredImageId ? getImageUrl(produit.featuredImageId.url, '/images/produits/') : "/assets/images/ecommerce/product-placeholder.jpg"}
                       />
                     </div>
                   </Link>
