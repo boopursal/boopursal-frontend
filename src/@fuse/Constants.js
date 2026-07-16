@@ -1,3 +1,4 @@
+// v2.1 - image URLs corrected
 export const URL_SITE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
     ? "http://localhost:3002/" 
     : (process.env.REACT_APP_API_URL || "https://boopursal-backend.vercel.app/");
