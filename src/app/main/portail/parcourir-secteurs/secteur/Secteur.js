@@ -196,7 +196,9 @@ function Secteur(props) {
                 backgroundImage:
                   activites.secteur &&
                   activites.secteur.image &&
-                  "url(" + URL_SITE + "/images/secteur/" + activites.secteur.image.url + ")",
+                  (activites.secteur.image.url.startsWith("http")
+                    ? "url(" + activites.secteur.image.url + ")"
+                    : "url(" + URL_SITE + "/images/secteur/" + activites.secteur.image.url + ")"),
               }}
             >
               <div className={clsx(classes.divTitle)}>

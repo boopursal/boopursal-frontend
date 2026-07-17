@@ -99,7 +99,9 @@ export default function CardSecteur(props) {
           className={classes.media}
           image={
             secteur.url
-              ? URL_SITE + "/images/secteur/" + secteur.url
+              ? secteur.url.startsWith("http")
+                ? secteur.url
+                : URL_SITE + "/images/secteur/" + secteur.url
               : defaultImage
           }
           title={secteur.name}
