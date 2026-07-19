@@ -2,6 +2,7 @@ import React from 'react';
 
 
 export const InscriptionConfig = {
+    auth: [], // Accessible uniquement aux visiteurs non connectés (guest)
     settings: {
         layout: {
             style: 'layout1',

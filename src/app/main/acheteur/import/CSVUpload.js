@@ -97,9 +97,31 @@ const CSVUpload = () => {
             })
                 .then(response => {
                     if (response.data && response.data.data) {
-                        setImportedFournisseurs(response.data.data);
                         loadImportedFournisseurs();
-                        alert('Fichier CSV importé avec succès !');
+                        
+                        const results = response.data.data;
+                        const created = results.filter(r => r.status === 'created').length;
+                        const exists = results.filter(r => r.status === 'exists').length;
+                        const errors = results.filter(r => r.status === 'error').length;
+                        const invited = sendInvite ? results.filter(r => r.status === 'created' && r.email).length : 0;
+
+                        let msg = '';
+                        if (created > 0) {
+                            msg += `✅ ${created} nouveau(x) fournisseur(s) importé(s).\n`;
+                        }
+                        if (exists > 0) {
+                            msg += `ℹ️ ${exists} fournisseur(s) déjà présent(s) dans votre liste (ignoré(s)).\n`;
+                        }
+                        if (invited > 0) {
+                            msg += `📧 ${invited} email(s) d'invitation envoyé(s) aux nouveaux fournisseurs.`;
+                        }
+                        if (errors > 0) {
+                            msg += `\n⚠️ ${errors} erreur(s) lors de l'import.`;
+                        }
+                        if (!msg) {
+                            msg = 'Aucun fournisseur importé.';
+                        }
+                        alert(msg);
                     } else {
                         alert('Aucun fournisseur importé.');
                     }
