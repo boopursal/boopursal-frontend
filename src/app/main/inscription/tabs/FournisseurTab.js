@@ -66,7 +66,8 @@ function FournisseurTab(props) {
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef(null);
 
-  const urlParams = new URLSearchParams(window.location.search);
+  const searchStr = (props.location && props.location.search) ? props.location.search : window.location.search;
+  const urlParams = new URLSearchParams(searchStr);
   const initialEmail = urlParams.get('email') || '';
   const initialNom = urlParams.get('nom') || '';
 
@@ -110,6 +111,22 @@ function FournisseurTab(props) {
       dispatch(authActions.cleanUpErrors());
     };
   }, [dispatch, register.error]);
+
+  useEffect(() => {
+    // Si on a des paramètres dans l'URL, on force le formulaire à se pré-remplir
+    if (formRef.current && (initialEmail || initialNom)) {
+      setTimeout(() => {
+        if (formRef.current) {
+          formRef.current.reset({
+            civilite: "M.",
+            email: initialEmail,
+            lastName: initialNom,
+            societe: initialNom
+          });
+        }
+      }, 100);
+    }
+  }, [initialEmail, initialNom]);
 
   function disableButton() {
     setIsFormValid(false);
