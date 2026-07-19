@@ -7,6 +7,7 @@ const CSVUpload = () => {
     const [file, setFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const [csvData, setCsvData] = useState(null);
+    const [sendInvite, setSendInvite] = useState(false);
 
     const [importedFournisseurs, setImportedFournisseurs] = useState([]);
     const [activeTab, setActiveTab] = useState('import'); // Onglet actif
@@ -88,7 +89,7 @@ const CSVUpload = () => {
             agent.request({
                 method: 'POST',
                 url: '/api/fournisseurs/import',
-                data: { csvContent },
+                data: { csvContent, sendInvite },
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
@@ -283,10 +284,31 @@ Mme;Martin;Marie;456 avenue Test;;0987654321;marie.martin@example.com;FerAcier M
                                         </>
                                     )}
                                 </button>
-
-
                             </div>
-                            <div className="flex items-center bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 mt-2 rounded">
+
+                            {/* Checkbox pour l'invitation automatique */}
+                            <div className="mt-4 px-2">
+                                <label className="flex items-center space-x-3 cursor-pointer group">
+                                    <div className="relative flex items-center justify-center">
+                                        <input 
+                                            type="checkbox" 
+                                            className="w-5 h-5 border-gray-300 rounded text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            checked={sendInvite}
+                                            onChange={(e) => setSendInvite(e.target.checked)}
+                                        />
+                                    </div>
+                                    <span className="text-gray-700 font-medium group-hover:text-blue-700 transition-colors">
+                                        Envoyer automatiquement un email d'invitation aux fournisseurs après l'import
+                                    </span>
+                                </label>
+                                {sendInvite && (
+                                    <p className="mt-2 text-sm text-blue-600 italic px-8">
+                                        Un email sera envoyé avec un lien personnalisé pour créer leur compte Boopursal.
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="flex items-center bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 mt-4 rounded">
                                 <span className="text-xl mr-2" role="img" aria-label="warning">⚠️</span>
                                 <span><strong> Avant importation, merci de bien vérifier que votre fichier ne contient pas de doublons.</strong></span>
                             </div>
