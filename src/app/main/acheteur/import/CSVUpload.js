@@ -64,66 +64,61 @@ const CSVUpload = () => {
     };
 
     const onFileUpload = () => {
-        // Vérification du token JWT
         const accessToken = jwtService.getAccessToken();
-        console.log('Token JWT:', accessToken); // Affiche le token JWT dans la console
+        console.log('Token JWT:', accessToken);
 
         if (!accessToken) {
             alert('Veuillez vous connecter pour utiliser cette fonctionnalité');
-            window.location.href = '/login'; // Redirige vers la page de connexion si aucun token
+            window.location.href = '/login';
             return;
         }
 
-        // Vérification que le fichier a bien été sélectionné
         if (!file) {
             alert('Veuillez sélectionner un fichier CSV avant de télécharger.');
             return;
         }
 
-        setIsUploading(true); // Indiquer que l'upload est en cours
+        setIsUploading(true);
 
-        const formData = new FormData();
-        formData.append('file', file); // Ajoute le fichier dans FormData
+        // Lire le fichier comme texte et envoyer en JSON (compatible Vercel serverless)
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const csvContent = e.target.result;
 
-        // Envoi de la requête POST pour importer le fichier
-        agent.request({
-            method: 'POST',
-            url: '/api/fournisseurs/import', // L'URL de l'API d'import
-            data: formData,
-            headers: {
-                'Authorization': `Bearer ${accessToken}`, // Ajout du token JWT dans l'en-tête Authorization
-                'Content-Type': 'multipart/form-data' // Type de contenu pour l'upload de fichier
-            }
-        })
-            .then(response => {
-                // Vérification de la réponse
-                if (response.data && response.data.data) {
-                    // Met à jour l'état des fournisseurs importés
-                    setImportedFournisseurs(response.data.data);
-                    alert('Fichier CSV importé avec succès !');
-                } else {
-                    alert('Aucun fournisseur importé.'); // Si aucun fournisseur n'est importé
+            agent.request({
+                method: 'POST',
+                url: '/api/fournisseurs/import',
+                data: { csvContent },
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => {
-                // Gestion des erreurs
-                console.error('Erreur lors de l\'importation:', error);
-
-                // Si l'erreur est due à l'authentification (par exemple, token expiré), rediriger vers la page de connexion
-                if (error.response && error.response.status === 401) {
-                    alert('Session expirée ou non authentifiée. Veuillez vous reconnecter.');
-                    window.location.href = '/login'; // Redirige vers la page de connexion si le token est expiré
-                } else if (error.response && error.response.data && error.response.data.error) {
-                    // Afficher l'erreur reçue du serveur (si disponible)
-                    alert(`Erreur: ${error.response.data.error}`);
-                } else {
-                    // Si une autre erreur se produit, afficher un message générique
-                    alert('Erreur lors de l\'importation, veuillez réessayer plus tard.');
-                }
-            })
-            .finally(() => {
-                setIsUploading(false); // Désactive l'état de téléchargement
-            });
+                .then(response => {
+                    if (response.data && response.data.data) {
+                        setImportedFournisseurs(response.data.data);
+                        loadImportedFournisseurs();
+                        alert('Fichier CSV importé avec succès !');
+                    } else {
+                        alert('Aucun fournisseur importé.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de l\'importation:', error);
+                    if (error.response && error.response.status === 401) {
+                        alert('Session expirée ou non authentifiée. Veuillez vous reconnecter.');
+                        window.location.href = '/login';
+                    } else if (error.response && error.response.data && error.response.data.error) {
+                        alert(`Erreur: ${error.response.data.error}`);
+                    } else {
+                        alert('Erreur lors de l\'importation, veuillez réessayer plus tard.');
+                    }
+                })
+                .finally(() => {
+                    setIsUploading(false);
+                });
+        };
+        reader.readAsText(file);
     };
 
 
