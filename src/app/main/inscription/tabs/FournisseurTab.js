@@ -65,6 +65,11 @@ function FournisseurTab(props) {
 
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef(null);
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialEmail = urlParams.get('email') || '';
+  const initialNom = urlParams.get('nom') || '';
+
   const [values, setValues] = useState({
     showPassword: false,
   });
@@ -186,6 +191,7 @@ Afin de recevoir le maximum d'alertes, veuillez choisir le maximum de produits p
               type="text"
               name="lastName"
               label="Nom"
+              value={initialNom}
               validations={{
                 maxLength: 100,
                 minLength: 2,
@@ -243,6 +249,7 @@ Afin de recevoir le maximum d'alertes, veuillez choisir le maximum de produits p
               type="text"
               name="societe"
               label="Raison sociale"
+              value={initialNom}
               validations={{
                 matchRegexp: /^[a-z]|([a-z][0-9])|([0-9][a-z])|([a-z][0-9][a-z])+$/i,
                 minLength: 2,
@@ -278,6 +285,7 @@ Afin de recevoir le maximum d'alertes, veuillez choisir le maximum de produits p
               type="text"
               name="email"
               label="Email"
+              value={initialEmail}
               validations="isEmail"
               validationErrors={{
                 isEmail: "Veuillez saisir un e-mail valide",
