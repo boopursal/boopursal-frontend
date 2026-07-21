@@ -1,18 +1,17 @@
 import React from "react";
-import { Grid, Typography, Icon } from "@material-ui/core";
+import { Typography, Icon } from "@material-ui/core";
 import { URL_SITE } from "@fuse";
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { FuseAnimateGroup } from "@fuse";
 
-// Palette de dégradés professionnels pour les secteurs sans photo
 const SECTOR_GRADIENTS = [
-  "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
   "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
-  "linear-gradient(135deg, #2b5876 0%, #4e4376 100%)",
   "linear-gradient(135deg, #141e30 0%, #243b55 100%)",
-  "linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%)",
+  "linear-gradient(135deg, #2b5876 0%, #4e4376 100%)",
+  "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+  "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)",
 ];
 
 function getSectorGradient(name) {
@@ -41,41 +40,96 @@ function getSectorIcon(name) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  gridContainer: {
+  "@keyframes shine": {
+    "0%": { left: "-100%" },
+    "100%": { left: "100%" }
+  },
+  "@keyframes pulseDot": {
+    "0%": { opacity: 1, transform: "scale(1)" },
+    "50%": { opacity: 0.4, transform: "scale(0.8)" },
+    "100%": { opacity: 1, transform: "scale(1)" }
+  },
+  "@keyframes gradientMove": {
+    "0%": { backgroundPosition: "0% 50%" },
+    "50%": { backgroundPosition: "100% 50%" },
+    "100%": { backgroundPosition: "0% 50%" }
+  },
+  container: {
     maxWidth: "1400px",
     margin: "0 auto",
     padding: "0 24px",
   },
-  categoryCard: {
+  bentoGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "24px",
+    [theme.breakpoints.up("sm")]: {
+      gridTemplateColumns: "repeat(2, 1fr)",
+      gridAutoRows: "280px",
+    },
+    [theme.breakpoints.up("md")]: {
+      gridTemplateColumns: "repeat(4, 1fr)",
+      gridTemplateRows: "repeat(3, 280px)",
+    }
+  },
+  bentoItem: {
     position: "relative",
+    borderRadius: "28px",
+    overflow: "hidden",
+    textDecoration: "none",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-end",
-    height: "340px",
-    borderRadius: "20px",
-    overflow: "hidden",
-    textDecoration: "none",
     background: "var(--portal-surface)",
+    transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
     border: "1px solid rgba(128,128,128,0.15)",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
-    transition: "all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
     "&:hover": {
-      transform: "translateY(-10px)",
-      boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
-      borderColor: "rgba(255, 255, 255, 0.3)",
+      transform: "translateY(-8px) scale(1.01)",
+      boxShadow: "0 25px 50px rgba(0,0,0,0.2)",
+      borderColor: "rgba(255, 255, 255, 0.4)",
       "& $bgImage": {
-        transform: "scale(1.1)",
-      },
-      "& $overlayGradient": {
-        opacity: 0.85,
+        transform: "scale(1.1) rotate(1deg)",
       },
       "& $exploreBtn": {
         opacity: 1,
-        transform: "translateX(5px)",
+        transform: "translateX(0)",
       },
-      "& $sectorBadge": {
-        background: "rgba(255,255,255,0.25)",
+      "& $overlayGradient": {
+        opacity: 0.9,
+      },
+      "&::after": {
+        animation: "$shine 1.2s ease",
       }
+    },
+    // Shine effect
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: "-100%",
+      width: "50%",
+      height: "100%",
+      background: "linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%)",
+      transform: "skewX(-25deg)",
+      zIndex: 4,
+    }
+  },
+  // Specific grid sizing for medium and up
+  item0: {
+    [theme.breakpoints.down("xs")]: { height: "300px" },
+    [theme.breakpoints.up("md")]: {
+      gridColumn: "span 2",
+      gridRow: "span 2",
+      "& $categoryText": {
+        fontSize: "2.8rem", // Larger text for the featured card
+      }
+    }
+  },
+  itemAll: {
+    [theme.breakpoints.down("xs")]: { height: "250px" },
+    [theme.breakpoints.up("md")]: {
+      gridColumn: "span 2",
     }
   },
   bgImage: {
@@ -94,10 +148,10 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     width: "100%",
     height: "100%",
-    background: "linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.4) 50%, transparent 100%)",
+    background: "linear-gradient(to top, rgba(10, 15, 30, 0.95) 0%, rgba(10, 15, 30, 0.3) 60%, transparent 100%)",
     zIndex: 2,
     transition: "opacity 0.5s ease",
-    opacity: 0.7,
+    opacity: 0.75,
   },
   gradientFallback: {
     position: "absolute",
@@ -119,110 +173,130 @@ const useStyles = makeStyles((theme) => ({
   contentWrapper: {
     position: "relative",
     zIndex: 3,
-    padding: "28px",
+    padding: "32px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-end",
   },
   categoryText: {
     color: "#ffffff",
-    fontSize: "1.3rem",
-    fontWeight: 800,
+    fontSize: "1.4rem",
+    fontWeight: 900,
     letterSpacing: "-0.5px",
-    lineHeight: 1.3,
-    marginBottom: "12px",
-    textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+    lineHeight: 1.2,
+    marginBottom: "16px",
+    textShadow: "0 4px 15px rgba(0,0,0,0.6)",
   },
   exploreBtn: {
     display: "inline-flex",
     alignItems: "center",
-    color: "#60a5fa", // Nice modern blue
+    color: "#38bdf8", // Sky blue
     fontSize: "0.85rem",
-    fontWeight: 700,
+    fontWeight: 800,
     textTransform: "uppercase",
-    letterSpacing: "1.5px",
+    letterSpacing: "2px",
     opacity: 0,
-    transform: "translateX(-15px)",
-    transition: "all 0.4s ease",
+    transform: "translateX(-20px)",
+    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
     "& .MuiIcon-root": {
-      fontSize: "1.2rem",
+      fontSize: "1.3rem",
       marginLeft: "8px",
     }
   },
   sectorBadge: {
     position: "absolute",
-    top: "20px",
-    left: "20px",
+    top: "24px",
+    left: "24px",
     zIndex: 3,
-    background: "rgba(255, 255, 255, 0.15)",
-    backdropFilter: "blur(8px)",
-    WebkitBackdropFilter: "blur(8px)",
-    padding: "6px 12px",
-    borderRadius: "8px",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
+    background: "rgba(10, 10, 10, 0.4)",
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+    padding: "8px 16px",
+    borderRadius: "30px",
+    border: "1px solid rgba(255, 255, 255, 0.15)",
     color: "#ffffff",
     fontSize: "0.65rem",
-    fontWeight: 700,
-    letterSpacing: "1px",
+    fontWeight: 800,
+    letterSpacing: "1.5px",
     textTransform: "uppercase",
-    transition: "background 0.3s ease",
-  },
-  allSectorsCard: {
-    background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)",
-    border: "none",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    gap: "8px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+    "&::before": {
+      content: '""',
+      width: "8px",
+      height: "8px",
+      borderRadius: "50%",
+      background: "#10b981",
+      boxShadow: "0 0 10px #10b981",
+      animation: "$pulseDot 2s infinite",
+    }
+  },
+  allSectorsCard: {
+    background: "linear-gradient(270deg, #1e1b4b, #312e81, #4338ca, #3b82f6, #1e1b4b)",
+    backgroundSize: "400% 400%",
+    animation: "$gradientMove 15s ease infinite",
+    border: "none",
     "& $contentWrapper": {
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
+      alignItems: "flex-start",
+      justifyContent: "flex-end",
       height: "100%",
+    },
+    [theme.breakpoints.up("md")]: {
+      "& $contentWrapper": {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+      },
+      "& $iconWrapper": {
+        marginBottom: 0,
+        marginRight: "24px",
+      }
     },
     "&:hover": {
       "& $iconWrapper": {
-        transform: "scale(1.15) rotate(10deg)",
-        background: "rgba(255, 255, 255, 0.3)",
-        boxShadow: "0 0 30px rgba(255,255,255,0.4)",
+        transform: "scale(1.1) rotate(180deg)",
+        background: "rgba(255, 255, 255, 0.25)",
+        boxShadow: "0 0 40px rgba(255,255,255,0.3)",
       },
       "& $exploreBtnAll": {
-        transform: "translateX(5px)",
+        transform: "translateX(10px)",
       }
     }
   },
   iconWrapper: {
-    width: "72px",
-    height: "72px",
-    borderRadius: "20px",
-    background: "rgba(255, 255, 255, 0.2)",
+    width: "80px",
+    height: "80px",
+    borderRadius: "24px",
+    background: "rgba(255, 255, 255, 0.15)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: "24px",
-    transition: "all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)",
-    backdropFilter: "blur(10px)",
+    transition: "all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)",
+    backdropFilter: "blur(15px)",
     border: "1px solid rgba(255, 255, 255, 0.3)",
-    boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
+    boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
   },
   exploreBtnAll: {
-    display: "flex",
+    display: "inline-flex",
     alignItems: "center",
     color: "#ffffff",
-    fontSize: "0.85rem",
-    fontWeight: 700,
+    fontSize: "0.9rem",
+    fontWeight: 800,
     marginTop: "16px",
     textTransform: "uppercase",
     letterSpacing: "1.5px",
     transition: "all 0.4s ease",
     "& .MuiIcon-root": {
-      marginLeft: "8px",
-      fontSize: "1.2rem",
+      marginLeft: "10px",
+      fontSize: "1.4rem",
     }
   }
 }));
 
-function Categories(props) {
-  const { categories } = props;
+function Categories({ categories }) {
   const classes = useStyles();
 
   if (!Array.isArray(categories) || categories.length === 0) {
@@ -232,76 +306,84 @@ function Categories(props) {
   const displayedCategories = categories.slice(0, 7);
 
   return (
-    <div className={classes.gridContainer}>
+    <div className={classes.container}>
       <FuseAnimateGroup
         enter={{
           animation: "transition.slideUpIn",
           stagger: 80,
         }}
       >
-        <Grid container spacing={4}>
+        <div className={classes.bentoGrid}>
           {displayedCategories.map((cat, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Link to={`/vente-produits/${cat.slug}`} className={classes.categoryCard}>
-                <div className={classes.sectorBadge}>Secteur Actif</div>
-                {cat.url ? (
-                  <img
-                    className={classes.bgImage}
-                    alt={cat.name}
-                    src={
-                      cat.url.startsWith("http")
-                        ? cat.url
-                        : URL_SITE + "/images/secteur/" + cat.url
-                    }
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling && (e.target.nextSibling.style.display = 'flex');
-                    }}
-                  />
-                ) : null}
-                
-                {/* Fallback gradient si pas d'image */}
-                <div
-                  className={classes.gradientFallback}
-                  style={{
-                    background: getSectorGradient(cat.name),
-                    display: cat.url ? 'none' : 'flex',
+            <Link 
+              to={`/vente-produits/${cat.slug}`} 
+              className={clsx(classes.bentoItem, index === 0 && classes.item0)} 
+              key={index}
+            >
+              <div className={classes.sectorBadge}>Secteur Actif</div>
+              
+              {cat.url ? (
+                <img
+                  className={classes.bgImage}
+                  alt={cat.name}
+                  src={
+                    cat.url.startsWith("http")
+                      ? cat.url
+                      : URL_SITE + "/images/secteur/" + cat.url
+                  }
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling && (e.target.nextSibling.style.display = 'flex');
                   }}
-                >
-                  <Icon className={classes.gradientIcon}>{getSectorIcon(cat.name)}</Icon>
-                </div>
+                />
+              ) : null}
+              
+              <div
+                className={classes.gradientFallback}
+                style={{
+                  background: getSectorGradient(cat.name),
+                  display: cat.url ? 'none' : 'flex',
+                }}
+              >
+                <Icon className={classes.gradientIcon}>{getSectorIcon(cat.name)}</Icon>
+              </div>
 
-                {/* Overlay sombre pour la lisibilité */}
-                <div className={classes.overlayGradient} />
+              <div className={classes.overlayGradient} />
 
-                <div className={classes.contentWrapper}>
-                  <Typography className={classes.categoryText}>
-                    {cat.name}
-                  </Typography>
-                  <div className={classes.exploreBtn}>
-                    Découvrir <Icon>arrow_forward</Icon>
-                  </div>
-                </div>
-              </Link>
-            </Grid>
-          ))}
-
-          <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Link to={`/annuaire-entreprises`} className={clsx(classes.categoryCard, classes.allSectorsCard)}>
               <div className={classes.contentWrapper}>
-                <div className={classes.iconWrapper}>
-                  <Icon style={{ fontSize: 36, color: "#fff" }}>apps</Icon>
-                </div>
-                <Typography className={classes.categoryText} style={{ textAlign: "center", marginBottom: 0 }}>
-                   Explorer Tout
+                <Typography className={classes.categoryText}>
+                  {cat.name}
                 </Typography>
-                <div className={classes.exploreBtnAll}>
-                  Tous les secteurs <Icon>arrow_forward</Icon>
+                <div className={classes.exploreBtn}>
+                  Découvrir <Icon>east</Icon>
                 </div>
               </div>
             </Link>
-          </Grid>
-        </Grid>
+          ))}
+
+          {/* Last Card: Explorer Tout */}
+          <Link 
+            to={`/annuaire-entreprises`} 
+            className={clsx(classes.bentoItem, classes.itemAll, classes.allSectorsCard)}
+          >
+            <div className={classes.contentWrapper}>
+              <div>
+                <div className={classes.iconWrapper}>
+                  <Icon style={{ fontSize: 40, color: "#fff" }}>widgets</Icon>
+                </div>
+                <Typography className={classes.categoryText} style={{ marginBottom: 4 }}>
+                   Explorer Tout
+                </Typography>
+                <Typography style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", fontWeight: 600 }}>
+                  Accéder à l'annuaire complet
+                </Typography>
+              </div>
+              <div className={classes.exploreBtnAll}>
+                Tous les secteurs <Icon>east</Icon>
+              </div>
+            </div>
+          </Link>
+        </div>
       </FuseAnimateGroup>
     </div>
   );
