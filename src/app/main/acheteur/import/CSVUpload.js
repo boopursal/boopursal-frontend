@@ -103,7 +103,7 @@ const CSVUpload = () => {
                         const created = results.filter(r => r.status === 'created').length;
                         const exists = results.filter(r => r.status === 'exists').length;
                         const errors = results.filter(r => r.status === 'error').length;
-                        const invited = sendInvite ? results.filter(r => r.status === 'created' && r.email).length : 0;
+                        const invited = sendInvite ? results.filter(r => (r.status === 'created' || r.status === 'exists') && r.email).length : 0;
 
                         let msg = '';
                         if (created > 0) {
