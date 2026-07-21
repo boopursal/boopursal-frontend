@@ -491,8 +491,8 @@ function Index(props) {
         <Container maxWidth="xl">
           <a href="https://www.3findustrie.com" target="_blank" rel="noopener noreferrer" style={{ display: 'block', maxWidth: '1200px', margin: '0 auto', overflow: 'hidden', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', transition: 'transform 0.3s ease' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
             <img 
-              src="/assets/images/ad_banner_premium_blue.png" 
-              alt="Publicité Exemple" 
+              src="/assets/images/banner_3f_industrie.png" 
+              alt="Publicité 3F Industrie" 
               style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} 
             />
           </a>
