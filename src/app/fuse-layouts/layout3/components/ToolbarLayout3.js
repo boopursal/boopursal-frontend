@@ -8,7 +8,6 @@ import LogoPortail from "app/fuse-layouts/shared-components/LogoPortail";
 import { useSelector } from "react-redux";
 import UserMenu from "app/fuse-layouts/shared-components/UserMenu";
 import history from "@history";
-import Search from "../../../main/portail/Search/Search";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -86,11 +85,6 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '5px'
       }
     }
-  },
-  searchWrapper: {
-    width: "100%",
-    maxWidth: 320,
-    marginRight: "24px",
   },
   userMenuWrapper: {
     display: "flex",
@@ -195,13 +189,6 @@ function ToolbarLayout3(props) {
           </Hidden>
 
           <div className={classes.userMenuWrapper}>
-            {!isHome && (
-              <div className={classes.searchWrapper}>
-                <Hidden xsDown>
-                  <Search variant="basic" />
-                </Hidden>
-              </div>
-            )}
             <Hidden smDown>
               <UserMenu />
             </Hidden>
