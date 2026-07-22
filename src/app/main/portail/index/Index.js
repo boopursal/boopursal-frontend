@@ -685,8 +685,8 @@ function Index(props) {
             <Grid container spacing={3} justifyContent="center">
               <Hidden mdDown>
                 <Grid item lg={2}>
-                  <div style={{ height: '100%', minHeight: '600px', background: 'rgba(0,0,0,0.03)', borderRadius: '16px', border: '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>
-                    Espace Publicitaire
+                  <div style={{ height: '100%', minHeight: '600px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+                    <img src="/assets/images/ad_pro.png" alt="Publicité" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 </Grid>
               </Hidden>
@@ -742,8 +742,8 @@ function Index(props) {
               </Grid>
               <Hidden mdDown>
                 <Grid item lg={2}>
-                  <div style={{ height: '100%', minHeight: '600px', background: 'rgba(0,0,0,0.03)', borderRadius: '16px', border: '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>
-                    Espace Publicitaire
+                  <div style={{ height: '100%', minHeight: '600px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+                    <img src="/assets/images/ad_network.png" alt="Publicité" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 </Grid>
               </Hidden>
