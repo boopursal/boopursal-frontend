@@ -62,19 +62,19 @@ const useStyles = makeStyles((theme) => ({
   bentoGrid: {
     display: "grid",
     gridTemplateColumns: "1fr",
-    gap: "24px",
+    gap: "20px",
     [theme.breakpoints.up("sm")]: {
       gridTemplateColumns: "repeat(2, 1fr)",
-      gridAutoRows: "280px",
+      gridAutoRows: "220px",
     },
     [theme.breakpoints.up("md")]: {
       gridTemplateColumns: "repeat(4, 1fr)",
-      gridTemplateRows: "repeat(3, 280px)",
+      gridAutoRows: "220px",
     }
   },
   bentoItem: {
     position: "relative",
-    borderRadius: "28px",
+    borderRadius: "24px",
     overflow: "hidden",
     textDecoration: "none",
     display: "flex",
@@ -83,13 +83,13 @@ const useStyles = makeStyles((theme) => ({
     background: "var(--portal-surface)",
     transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
     border: "1px solid rgba(128,128,128,0.15)",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
     "&:hover": {
-      transform: "translateY(-8px) scale(1.01)",
-      boxShadow: "0 25px 50px rgba(0,0,0,0.2)",
-      borderColor: "rgba(255, 255, 255, 0.4)",
+      transform: "translateY(-6px) scale(1.01)",
+      boxShadow: "0 18px 40px rgba(0,0,0,0.12)",
+      borderColor: "rgba(255, 255, 255, 0.3)",
       "& $bgImage": {
-        transform: "scale(1.1) rotate(1deg)",
+        transform: "scale(1.08) rotate(1deg)",
       },
       "& $exploreBtn": {
         opacity: 1,
@@ -117,17 +117,21 @@ const useStyles = makeStyles((theme) => ({
   },
   // Specific grid sizing for medium and up
   item0: {
-    [theme.breakpoints.down("xs")]: { height: "300px" },
+    [theme.breakpoints.down("xs")]: { height: "260px" },
+    [theme.breakpoints.up("sm")]: {
+      gridColumn: "span 2",
+      gridRow: "span 2",
+    },
     [theme.breakpoints.up("md")]: {
       gridColumn: "span 2",
       gridRow: "span 2",
       "& $categoryText": {
-        fontSize: "2.8rem", // Larger text for the featured card
+        fontSize: "2.2rem", // Adjusted from 2.8rem
       }
     }
   },
   itemAll: {
-    [theme.breakpoints.down("xs")]: { height: "250px" },
+    [theme.breakpoints.down("xs")]: { height: "200px" },
     [theme.breakpoints.up("md")]: {
       gridColumn: "span 2",
     }
