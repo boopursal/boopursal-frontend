@@ -3,7 +3,7 @@ import { Typography, Icon } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import { FuseAnimateGroup } from "@fuse";
+import { FuseAnimateGroup, URL_SITE } from "@fuse";
 
 function getSectorIcon(name) {
   if (!name) return 'business';
@@ -45,12 +45,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    background: "rgba(30, 41, 59, 0.4)", // Dark surface matching sectionDark
-    backdropFilter: "blur(12px)",
-    WebkitBackdropFilter: "blur(12px)",
+    background: "rgba(30, 41, 59, 0.4)", // Fallback Dark surface
     border: "1px solid rgba(255, 255, 255, 0.08)",
     borderRadius: "16px",
-    padding: "28px 24px",
     textDecoration: "none",
     color: "#ffffff",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -58,12 +55,17 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     height: "170px",
     "&:hover": {
-      background: "rgba(30, 41, 59, 0.9)",
       borderColor: "rgba(56, 189, 248, 0.4)", // Sky blue accent
       transform: "translateY(-4px)",
       boxShadow: "0 12px 30px rgba(0, 0, 0, 0.3)",
+      "& $bgImage": {
+        transform: "scale(1.1)",
+      },
+      "& $overlay": {
+        background: "linear-gradient(to top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.5))",
+      },
       "& $iconBox": {
-        background: "rgba(56, 189, 248, 0.15)",
+        background: "rgba(56, 189, 248, 0.25)",
         color: "#38bdf8",
         transform: "scale(1.1)",
       },
@@ -73,18 +75,48 @@ const useStyles = makeStyles((theme) => ({
       }
     }
   },
+  bgImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+    zIndex: 1,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "linear-gradient(to top, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.6))",
+    zIndex: 2,
+    transition: "background 0.3s ease",
+  },
+  contentWrapper: {
+    position: "relative",
+    zIndex: 3,
+    padding: "24px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "100%",
+  },
   iconBox: {
-    width: "48px",
-    height: "48px",
+    width: "44px",
+    height: "44px",
     borderRadius: "12px",
-    background: "rgba(255, 255, 255, 0.05)",
+    background: "rgba(255, 255, 255, 0.15)",
+    backdropFilter: "blur(4px)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "rgba(255, 255, 255, 0.7)",
+    color: "rgba(255, 255, 255, 0.9)",
     transition: "all 0.3s ease",
     "& .MuiIcon-root": {
-      fontSize: "24px",
+      fontSize: "22px",
     }
   },
   categoryTitle: {
@@ -92,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
     marginTop: "16px",
     lineHeight: 1.3,
-    color: "#f8fafc",
+    color: "#ffffff",
     display: "-webkit-box",
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
@@ -105,9 +137,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "auto",
   },
   exploreText: {
-    fontSize: "0.8rem",
+    fontSize: "0.75rem",
     fontWeight: 600,
-    color: "#94a3b8",
+    color: "#cbd5e1",
     textTransform: "uppercase",
     letterSpacing: "1px",
     display: "flex",
@@ -194,16 +226,34 @@ function Categories({ categories }) {
               className={classes.categoryCard} 
               key={index}
             >
-              <div className={classes.iconBox}>
-                <Icon>{getSectorIcon(cat.name)}</Icon>
-              </div>
-              <Typography className={classes.categoryTitle}>
-                {cat.name}
-              </Typography>
-              <div className={classes.cardFooter}>
-                <span className={classes.exploreText}>
-                  Découvrir <Icon className={classes.arrowIcon}>arrow_forward</Icon>
-                </span>
+              {cat.url && (
+                <img
+                  className={classes.bgImage}
+                  alt={cat.name}
+                  src={
+                    cat.url.startsWith("http")
+                      ? cat.url
+                      : URL_SITE + "/images/secteur/" + cat.url
+                  }
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              )}
+              <div className={classes.overlay} />
+
+              <div className={classes.contentWrapper}>
+                <div className={classes.iconBox}>
+                  <Icon>{getSectorIcon(cat.name)}</Icon>
+                </div>
+                <Typography className={classes.categoryTitle}>
+                  {cat.name}
+                </Typography>
+                <div className={classes.cardFooter}>
+                  <span className={classes.exploreText}>
+                    Découvrir <Icon className={classes.arrowIcon}>arrow_forward</Icon>
+                  </span>
+                </div>
               </div>
             </Link>
           ))}
@@ -213,16 +263,18 @@ function Categories({ categories }) {
             to={`/annuaire-entreprises`} 
             className={clsx(classes.categoryCard, classes.allSectorsCard)}
           >
-            <div className={classes.iconBoxAll}>
-              <Icon>apps</Icon>
-            </div>
-            <Typography className={classes.allSectorsTitle}>
-               Tous les secteurs
-            </Typography>
-            <div className={classes.cardFooter}>
-              <span className={classes.exploreText} style={{ color: "rgba(255,255,255,0.9)" }}>
-                Annuaire Complet <Icon className={classes.arrowIconAll}>arrow_forward</Icon>
-              </span>
+            <div className={classes.contentWrapper} style={{ zIndex: 4 }}>
+              <div className={classes.iconBoxAll}>
+                <Icon>apps</Icon>
+              </div>
+              <Typography className={classes.allSectorsTitle}>
+                 Tous les secteurs
+              </Typography>
+              <div className={classes.cardFooter}>
+                <span className={classes.exploreText} style={{ color: "rgba(255,255,255,0.9)" }}>
+                  Annuaire Complet <Icon className={classes.arrowIconAll}>arrow_forward</Icon>
+                </span>
+              </div>
             </div>
           </Link>
         </div>
