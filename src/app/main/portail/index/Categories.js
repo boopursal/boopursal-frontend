@@ -48,13 +48,14 @@ const useStyles = makeStyles((theme) => ({
     background: "rgba(30, 41, 59, 0.4)", // Fallback Dark surface
     border: "1px solid rgba(255, 255, 255, 0.08)",
     borderRadius: "16px",
-    textDecoration: "none",
+    textDecoration: "none !important",
     color: "#ffffff",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     position: "relative",
     overflow: "hidden",
     height: "170px",
     "&:hover": {
+      textDecoration: "none !important",
       borderColor: "rgba(56, 189, 248, 0.4)", // Sky blue accent
       transform: "translateY(-4px)",
       boxShadow: "0 12px 30px rgba(0, 0, 0, 0.3)",
@@ -243,9 +244,6 @@ function Categories({ categories }) {
               <div className={classes.overlay} />
 
               <div className={classes.contentWrapper}>
-                <div className={classes.iconBox}>
-                  <Icon>{getSectorIcon(cat.name)}</Icon>
-                </div>
                 <Typography className={classes.categoryTitle}>
                   {cat.name}
                 </Typography>
