@@ -233,81 +233,120 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     lineHeight: 1.6,
   },
-  demandCardPremium: {
-    background: "#ffffff",
-    borderRadius: "16px",
-    padding: "24px",
-    border: "1px solid #e5e7eb",
-    transition: "all 0.3s ease",
-    position: "relative",
+  demandListItem: {
     display: "flex",
-    flexDirection: "column",
-    height: "100%",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+    alignItems: "center",
+    background: "#ffffff",
+    borderRadius: "20px",
+    padding: "24px 32px",
+    border: "1px solid #e2e8f0",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.02)",
+    textDecoration: "none",
+    color: "inherit",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      gap: "20px",
+      padding: "24px",
+    },
     "&:hover": {
-      transform: "translateY(-4px)",
-      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-      borderColor: "#d1d5db",
+      borderColor: "rgba(255, 90, 90, 0.4)",
+      boxShadow: "0 15px 35px rgba(255, 90, 90, 0.08)",
+      transform: "translateX(8px)",
       "& $viewMoreButtonPremium": {
-         color: "#ef4444",
-         transform: "translateX(4px)",
+         background: "#ff5a5a",
+         color: "#ffffff",
       }
     },
   },
-  demandCardHeader: {
+  demandListLeft: {
+    flex: "0 0 220px",
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "16px",
+    flexDirection: "column",
+    gap: "12px",
+    borderRight: "1px solid #e2e8f0",
+    paddingRight: "24px",
+    [theme.breakpoints.down("sm")]: {
+      flex: "none",
+      borderRight: "none",
+      borderBottom: "1px solid #e2e8f0",
+      paddingRight: 0,
+      paddingBottom: "16px",
+      width: "100%",
+    }
+  },
+  demandListMiddle: {
+    flex: "1",
+    padding: "0 32px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0",
+    }
+  },
+  demandListRight: {
+    flex: "0 0 160px",
+    display: "flex",
+    justifyContent: "flex-end",
+    [theme.breakpoints.down("sm")]: {
+      flex: "none",
+      width: "100%",
+      justifyContent: "flex-start",
+    }
   },
   demandRefPremium: {
-    color: "#6b7280",
+    color: "#ff5a5a",
     fontSize: "0.85rem",
+    fontWeight: 800,
+    background: "rgba(255, 90, 90, 0.1)",
+    padding: "6px 12px",
+    borderRadius: "8px",
+    display: "inline-block",
+    width: "fit-content",
+  },
+  demandDateBadge: {
+    color: "#64748b",
+    fontSize: "0.8rem",
     fontWeight: 600,
-    letterSpacing: "0.5px",
     display: "flex",
     alignItems: "center",
     gap: "6px",
   },
-  demandDateBadge: {
-    background: "#f3f4f6",
-    color: "#4b5563",
-    padding: "4px 10px",
-    borderRadius: "8px",
-    fontSize: "0.75rem",
-    fontWeight: 600,
-    display: "flex",
-    alignItems: "center",
-    gap: "4px",
-  },
   demandTitlePremium: {
-    fontSize: "1.1rem",
-    fontWeight: 700,
-    color: "#111827",
-    marginBottom: "12px",
-    lineHeight: 1.4,
+    fontSize: "1.25rem",
+    fontWeight: 800,
+    color: "#0f172a",
+    marginBottom: "8px",
   },
   demandDescriptionPremium: {
-    color: "#6b7280",
-    fontSize: "0.9rem",
+    color: "#475569",
+    fontSize: "0.95rem",
     lineHeight: 1.5,
-    marginBottom: "24px",
-    flexGrow: 1,
-  },
-  demandFooter: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: "16px",
-    borderTop: "1px solid #f3f4f6",
+    margin: 0,
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
   },
   viewMoreButtonPremium: {
-    color: "#9ca3af",
-    fontWeight: 600,
-    fontSize: "0.85rem",
-    display: "flex",
+    background: "#f1f5f9",
+    color: "#475569",
+    fontWeight: 700,
+    fontSize: "0.9rem",
+    padding: "12px 24px",
+    borderRadius: "12px",
+    display: "inline-flex",
     alignItems: "center",
+    gap: "8px",
     transition: "all 0.3s ease",
+    border: "none",
+    cursor: "pointer",
+  },
+  demandesListWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    maxWidth: "1100px",
+    margin: "0 auto",
   },
 
   // ===== PRODUITS (Slider) =====
@@ -603,13 +642,12 @@ function Index(props) {
             <div style={{ width: '100%', height: '200px' }}>
               <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
                 style={{ width: '100%', height: 'auto', opacity: 0.2 }}>
-                <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
-                <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
-                <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
+                <rect x="0" y="0" rx="16" ry="16" width="1200" height="80" />
+                <rect x="0" y="100" rx="16" ry="16" width="1200" height="80" />
               </ContentLoader>
             </div>
           ) : (
-            <div className={classes.demandesGrid}>
+            <div className={classes.demandesListWrapper}>
               {portail.data && portail.data.slice(0, 6).map((item, index) => {
                 const countryMapping = {
                   "États-Unis": "us", Allemagne: "de", France: "fr",
@@ -619,40 +657,39 @@ function Index(props) {
 
                 return (
                   <FuseAnimate animation="transition.slideUpIn" delay={100 * index} key={index}>
-                    <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
-                      <div className={classes.demandCardPremium}>
-                        <div className={classes.demandCardHeader}>
-                            <span className={classes.demandRefPremium}>
-                               <Icon style={{ fontSize: '16px', color: '#9ca3af' }}>receipt_long</Icon>
-                               RFQ-{item.reference}
-                            </span>
-                            <div className={classes.demandDateBadge}>
-                              <Icon style={{ fontSize: '14px' }}>timer</Icon>
-                              {moment(item.dateExpiration).format('DD/MM/YYYY')}
-                            </div>
+                    <Link to={`/demandes-achat/${item.id}-${item.slug}`} className={classes.demandListItem}>
+                      
+                      <div className={classes.demandListLeft}>
+                        <span className={classes.demandRefPremium}>
+                          RFQ-{item.reference}
+                        </span>
+                        <div className={classes.demandDateBadge}>
+                          <Icon style={{ fontSize: '16px' }}>timer</Icon>
+                          Exp: {moment(item.dateExpiration).format('DD/MM/YYYY')}
                         </div>
-                        
-                        <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
-                        <p className={classes.demandDescriptionPremium}>
-                          {item.description.length > 120 ? item.description.slice(0, 120) + '…' : item.description}
-                        </p>
-
-                        <div className={classes.demandFooter}>
-                          <div className="flex items-center gap-8" style={{ color: '#4b5563' }}>
-                            {code ? (
-                                <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '24px', height: '24px', objectFit: 'cover', borderRadius: '50%', border: '1px solid #e5e7eb' }} />
-                            ) : (
-                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                   <Icon style={{ fontSize: '14px', color: '#9ca3af' }}>place</Icon>
-                                </div>
-                            )}
-                            <span className="font-600 text-13">{item.ville}, {item.pays}</span>
-                          </div>
-                          <div className={classes.viewMoreButtonPremium}>
-                              Voir plus <Icon style={{ fontSize: '18px', marginLeft: '2px' }}>chevron_right</Icon>
-                          </div>
+                        <div className="flex items-center gap-8" style={{ color: '#4b5563', fontSize: '0.85rem', fontWeight: 600, marginTop: '4px' }}>
+                          {code ? (
+                              <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '20px', borderRadius: '3px', border: '1px solid #e5e7eb' }} />
+                          ) : (
+                              <Icon style={{ fontSize: '16px', color: '#9ca3af' }}>place</Icon>
+                          )}
+                          <span>{item.ville}, {item.pays}</span>
                         </div>
                       </div>
+
+                      <div className={classes.demandListMiddle}>
+                        <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
+                        <p className={classes.demandDescriptionPremium}>
+                          {item.description}
+                        </p>
+                      </div>
+
+                      <div className={classes.demandListRight}>
+                        <div className={classes.viewMoreButtonPremium}>
+                          Voir l'offre <Icon style={{ fontSize: '18px' }}>arrow_forward</Icon>
+                        </div>
+                      </div>
+
                     </Link>
                   </FuseAnimate>
                 );
