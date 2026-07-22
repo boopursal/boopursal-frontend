@@ -682,8 +682,17 @@ function Index(props) {
               </ContentLoader>
             </div>
           ) : (
-            <div className={classes.demandesListWrapper}>
-              {portail.data && portail.data.slice(0, 6).map((item, index) => {
+            <Grid container spacing={3} justifyContent="center">
+              <Hidden mdDown>
+                <Grid item lg={2}>
+                  <div style={{ height: '100%', minHeight: '600px', background: 'rgba(0,0,0,0.03)', borderRadius: '16px', border: '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>
+                    Espace Publicitaire
+                  </div>
+                </Grid>
+              </Hidden>
+              <Grid item xs={12} lg={8}>
+                <div className={classes.demandesListWrapper} style={{ maxWidth: '100%' }}>
+                  {portail.data && portail.data.slice(0, 6).map((item, index) => {
                 const countryMapping = {
                   "États-Unis": "us", Allemagne: "de", France: "fr",
                   Maroc: "ma", Espagne: "es", Italie: "it", "Royaume-Uni": "gb",
@@ -702,7 +711,7 @@ function Index(props) {
                           <Icon style={{ fontSize: '16px' }}>timer</Icon>
                           Exp: {moment(item.dateExpiration).format('DD/MM/YYYY')}
                         </div>
-                        <div className="flex items-center gap-8" style={{ color: '#4b5563', fontSize: '0.85rem', fontWeight: 600, marginTop: '4px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#4b5563', fontSize: '0.85rem', fontWeight: 600, marginTop: '4px' }}>
                           {code ? (
                               <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '20px', borderRadius: '3px', border: '1px solid #e5e7eb' }} />
                           ) : (
@@ -729,7 +738,16 @@ function Index(props) {
                   </FuseAnimate>
                 );
               })}
-            </div>
+                </div>
+              </Grid>
+              <Hidden mdDown>
+                <Grid item lg={2}>
+                  <div style={{ height: '100%', minHeight: '600px', background: 'rgba(0,0,0,0.03)', borderRadius: '16px', border: '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>
+                    Espace Publicitaire
+                  </div>
+                </Grid>
+              </Hidden>
+            </Grid>
           )}
 
           <Box className="text-center mt-64">
