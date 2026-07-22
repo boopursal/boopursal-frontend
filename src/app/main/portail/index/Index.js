@@ -188,46 +188,46 @@ const useStyles = makeStyles((theme) => ({
 
   // ===== DEMANDES PREMIUM LIGHT =====
   sectionDeepDark: {
-    padding: "100px 20px",
+    padding: "80px 20px",
     position: "relative",
-    background: "linear-gradient(180deg, #ffffff 0%, #f4f7f9 100%)",
-    color: "var(--portal-text)",
+    background: "#f9fafb", // Very light, neutral grey
+    color: "#111827",
     overflow: "hidden",
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      top: "0",
-      left: "0",
-      width: "100%",
-      height: "100%",
-      background: "radial-gradient(circle at 80% 20%, rgba(255, 90, 90, 0.04) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.04) 0%, transparent 40%)",
-      pointerEvents: "none",
-    }
   },
   sectionTitleLight: {
-    fontSize: "clamp(2rem, 5vw, 3.2rem)",
+    fontSize: "clamp(2rem, 5vw, 3rem)",
     fontWeight: 900,
-    color: "#0f172a",
+    color: "#111827",
     textAlign: "center",
-    marginBottom: "20px",
-    letterSpacing: "-0.04em",
+    marginBottom: "16px",
+    letterSpacing: "-0.03em",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "16px",
-    "& span": {
-       display: "inline-block",
-       width: "12px",
-       height: "12px",
-       borderRadius: "50%",
-       background: "#ff5a5a",
-       boxShadow: "0 0 12px rgba(255, 90, 90, 0.6)",
-       animation: "$pulseRed 2s infinite",
-    }
+    gap: "12px",
+  },
+  liveIndicator: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    background: "rgba(239, 68, 68, 0.1)",
+    color: "#ef4444",
+    padding: "6px 14px",
+    borderRadius: "100px",
+    fontWeight: 700,
+    fontSize: "0.8rem",
+    marginBottom: "20px",
+  },
+  liveDot: {
+    width: "8px",
+    height: "8px",
+    background: "#ef4444",
+    borderRadius: "50%",
+    animation: "$pulseRed 2s infinite",
   },
   sectionSubtitleLight: {
     fontSize: "clamp(1rem, 2vw, 1.15rem)",
-    color: "#64748b",
+    color: "#6b7280",
     textAlign: "center",
     maxWidth: "750px",
     margin: "0 auto",
@@ -235,67 +235,76 @@ const useStyles = makeStyles((theme) => ({
   },
   demandCardPremium: {
     background: "#ffffff",
-    borderRadius: "24px",
-    padding: "32px",
-    border: "1px solid rgba(226, 232, 240, 0.8)",
-    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.03)",
+    borderRadius: "16px",
+    padding: "24px",
+    border: "1px solid #e5e7eb",
+    transition: "all 0.3s ease",
     position: "relative",
-    overflow: "hidden",
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    "&::before": {
-       content: '""',
-       position: "absolute",
-       top: 0,
-       left: 0,
-       width: "100%",
-       height: "4px",
-       background: "linear-gradient(90deg, #ff5a5a 0%, #ff8a8a 100%)",
-       opacity: 0,
-       transition: "opacity 0.4s ease",
-    },
+    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
     "&:hover": {
-      transform: "translateY(-6px)",
-      boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-      borderColor: "rgba(255, 90, 90, 0.2)",
-      "&::before": {
-         opacity: 1,
-      },
+      transform: "translateY(-4px)",
+      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+      borderColor: "#d1d5db",
       "& $viewMoreButtonPremium": {
-         color: "#ff5a5a",
+         color: "#ef4444",
          transform: "translateX(4px)",
       }
     },
   },
-  demandTitlePremium: {
-    fontSize: "1.3rem",
-    fontWeight: 800,
-    color: "#0f172a",
+  demandCardHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: "16px",
-    lineHeight: 1.4,
   },
   demandRefPremium: {
-    background: "rgba(255, 90, 90, 0.08)",
-    color: "#e11d48",
-    padding: "6px 12px",
+    color: "#6b7280",
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    letterSpacing: "0.5px",
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+  },
+  demandDateBadge: {
+    background: "#f3f4f6",
+    color: "#4b5563",
+    padding: "4px 10px",
     borderRadius: "8px",
     fontSize: "0.75rem",
+    fontWeight: 600,
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+  },
+  demandTitlePremium: {
+    fontSize: "1.1rem",
     fontWeight: 700,
-    display: "inline-block",
+    color: "#111827",
+    marginBottom: "12px",
+    lineHeight: 1.4,
   },
   demandDescriptionPremium: {
-    color: "#475569",
-    fontSize: "0.95rem",
-    lineHeight: 1.6,
+    color: "#6b7280",
+    fontSize: "0.9rem",
+    lineHeight: 1.5,
     marginBottom: "24px",
     flexGrow: 1,
   },
+  demandFooter: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: "16px",
+    borderTop: "1px solid #f3f4f6",
+  },
   viewMoreButtonPremium: {
-    color: "#94a3b8",
-    fontWeight: 700,
-    fontSize: "0.9rem",
+    color: "#9ca3af",
+    fontWeight: 600,
+    fontSize: "0.85rem",
     display: "flex",
     alignItems: "center",
     transition: "all 0.3s ease",
@@ -578,18 +587,14 @@ function Index(props) {
       <section className={classes.sectionDeepDark}>
         <Container maxWidth="xl">
           <div className="flex flex-col items-center justify-center text-center mb-64">
-            <span style={{ 
-                background: 'rgba(255, 90, 90, 0.1)', color: '#ff5a5a', padding: '8px 16px', 
-                borderRadius: '100px', fontWeight: 800, fontSize: '0.85rem', marginBottom: '16px',
-                display: 'inline-flex', alignItems: 'center', gap: '8px' 
-            }}>
-                <span style={{ width: '8px', height: '8px', background: '#ff5a5a', borderRadius: '50%', animation: 'pulseRed 2s infinite' }} />
+            <span className={classes.liveIndicator}>
+                <span className={classes.liveDot} />
                 EN TEMPS RÉEL
             </span>
-            <h2 className={classes.sectionTitleLight} style={{ marginBottom: '16px' }}>
+            <h2 className={classes.sectionTitleLight}>
               Dernières demandes de devis
             </h2>
-            <p className={classes.sectionSubtitleLight} style={{ margin: 0 }}>
+            <p className={classes.sectionSubtitleLight}>
               Découvrez les besoins de nos acheteurs certifiés et proposez vos meilleures offres.
             </p>
           </div>
@@ -616,10 +621,13 @@ function Index(props) {
                   <FuseAnimate animation="transition.slideUpIn" delay={100 * index} key={index}>
                     <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
                       <div className={classes.demandCardPremium}>
-                        <div className="flex justify-between items-start mb-16">
-                            <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
-                            <div style={{ background: '#f8fafc', padding: '6px 12px', borderRadius: '12px', color: '#64748b', fontSize: '0.8rem', fontWeight: 600 }}>
-                              <Icon style={{ fontSize: '14px', verticalAlign: 'middle', marginRight: '4px' }}>timer</Icon>
+                        <div className={classes.demandCardHeader}>
+                            <span className={classes.demandRefPremium}>
+                               <Icon style={{ fontSize: '16px', color: '#9ca3af' }}>receipt_long</Icon>
+                               RFQ-{item.reference}
+                            </span>
+                            <div className={classes.demandDateBadge}>
+                              <Icon style={{ fontSize: '14px' }}>timer</Icon>
                               {moment(item.dateExpiration).format('DD/MM/YYYY')}
                             </div>
                         </div>
@@ -629,13 +637,19 @@ function Index(props) {
                           {item.description.length > 120 ? item.description.slice(0, 120) + '…' : item.description}
                         </p>
 
-                        <div className="flex items-center justify-between mt-auto pt-24" style={{ borderTop: '1px solid #f1f5f9' }}>
-                          <div className="flex items-center gap-8" style={{ color: '#475569' }}>
-                            {code && <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '20px', borderRadius: '2px' }} />}
+                        <div className={classes.demandFooter}>
+                          <div className="flex items-center gap-8" style={{ color: '#4b5563' }}>
+                            {code ? (
+                                <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '24px', height: '24px', objectFit: 'cover', borderRadius: '50%', border: '1px solid #e5e7eb' }} />
+                            ) : (
+                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                   <Icon style={{ fontSize: '14px', color: '#9ca3af' }}>place</Icon>
+                                </div>
+                            )}
                             <span className="font-600 text-13">{item.ville}, {item.pays}</span>
                           </div>
                           <div className={classes.viewMoreButtonPremium}>
-                              Voir plus <Icon style={{ fontSize: '16px', marginLeft: '4px', verticalAlign: 'middle' }}>arrow_forward</Icon>
+                              Voir plus <Icon style={{ fontSize: '18px', marginLeft: '2px' }}>chevron_right</Icon>
                           </div>
                         </div>
                       </div>
