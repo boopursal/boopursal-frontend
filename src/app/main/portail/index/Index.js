@@ -186,28 +186,28 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
-  // ===== DEMANDES PREMIUM =====
+  // ===== DEMANDES PREMIUM LIGHT =====
   sectionDeepDark: {
     padding: "100px 20px",
     position: "relative",
-    background: "#0a0e17", // Very dark navy/black
-    color: "#ffffff",
+    background: "linear-gradient(180deg, #ffffff 0%, #f4f7f9 100%)",
+    color: "var(--portal-text)",
     overflow: "hidden",
     "&::before": {
       content: '""',
       position: "absolute",
-      top: "-50%",
+      top: "0",
       left: "0",
       width: "100%",
-      height: "200%",
-      background: "radial-gradient(ellipse at 50% 0%, rgba(255, 90, 90, 0.08) 0%, transparent 60%)",
+      height: "100%",
+      background: "radial-gradient(circle at 80% 20%, rgba(255, 90, 90, 0.04) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.04) 0%, transparent 40%)",
       pointerEvents: "none",
     }
   },
   sectionTitleLight: {
     fontSize: "clamp(2rem, 5vw, 3.2rem)",
     fontWeight: 900,
-    color: "#ffffff",
+    color: "#0f172a",
     textAlign: "center",
     marginBottom: "20px",
     letterSpacing: "-0.04em",
@@ -217,17 +217,17 @@ const useStyles = makeStyles((theme) => ({
     gap: "16px",
     "& span": {
        display: "inline-block",
-       width: "14px",
-       height: "14px",
+       width: "12px",
+       height: "12px",
        borderRadius: "50%",
        background: "#ff5a5a",
-       boxShadow: "0 0 16px #ff5a5a",
+       boxShadow: "0 0 12px rgba(255, 90, 90, 0.6)",
        animation: "$pulseRed 2s infinite",
     }
   },
   sectionSubtitleLight: {
     fontSize: "clamp(1rem, 2vw, 1.15rem)",
-    color: "rgba(255,255,255,0.6)",
+    color: "#64748b",
     textAlign: "center",
     marginBottom: "56px",
     maxWidth: "750px",
@@ -235,19 +235,18 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.6,
   },
   demandCardPremium: {
-    background: "rgba(255, 255, 255, 0.02)",
-    backdropFilter: "blur(20px)",
+    background: "#ffffff",
     borderRadius: "24px",
     padding: "36px",
-    border: "1px solid rgba(255, 255, 255, 0.05)",
-    transition: "all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)",
-    boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+    border: "1px solid rgba(226, 232, 240, 0.8)",
+    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02)",
     position: "relative",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    "&::before": {
+    "&::after": {
        content: '""',
        position: "absolute",
        top: 0,
@@ -255,17 +254,15 @@ const useStyles = makeStyles((theme) => ({
        width: "100%",
        height: "4px",
        background: "linear-gradient(90deg, #ff5a5a 0%, #ff8a8a 100%)",
-       transform: "scaleX(0)",
-       transformOrigin: "left",
-       transition: "transform 0.5s ease",
+       opacity: 0,
+       transition: "opacity 0.4s ease",
     },
     "&:hover": {
       transform: "translateY(-10px)",
-      borderColor: "rgba(255, 90, 90, 0.3)",
-      boxShadow: "0 20px 50px rgba(255, 90, 90, 0.15)",
-      background: "rgba(255, 255, 255, 0.04)",
-      "&::before": {
-         transform: "scaleX(1)",
+      borderColor: "rgba(255, 90, 90, 0.2)",
+      boxShadow: "0 25px 50px rgba(0,0,0,0.08), 0 10px 20px rgba(255,90,90,0.05)",
+      "&::after": {
+         opacity: 1,
       },
       "& $viewMoreButtonPremium": {
          background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
@@ -278,24 +275,24 @@ const useStyles = makeStyles((theme) => ({
   demandTitlePremium: {
     fontSize: "1.4rem",
     fontWeight: 800,
-    color: "#ffffff",
+    color: "#0f172a",
     marginBottom: "16px",
     lineHeight: 1.4,
   },
   demandRefPremium: {
-    background: "rgba(255, 90, 90, 0.1)",
-    color: "#ff8a8a",
+    background: "rgba(255, 90, 90, 0.08)",
+    color: "#e11d48",
     padding: "6px 14px",
     borderRadius: "100px",
     fontSize: "0.75rem",
     fontWeight: 700,
     marginBottom: "20px",
     display: "inline-block",
-    border: "1px solid rgba(255, 90, 90, 0.2)",
+    border: "1px solid rgba(255, 90, 90, 0.15)",
     alignSelf: "flex-start",
   },
   demandDescriptionPremium: {
-    color: "rgba(255,255,255,0.5)",
+    color: "#475569",
     fontSize: "1rem",
     lineHeight: 1.7,
     marginBottom: "32px",
@@ -310,7 +307,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.9rem",
     border: "1px solid rgba(255, 90, 90, 0.3)",
     cursor: "pointer",
-    transition: "all 0.4s ease",
+    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
     marginTop: "auto",
     width: "fit-content",
   },
@@ -601,7 +598,7 @@ function Index(props) {
           <Grid container spacing={4}>
             {portail.loading ? (
               <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
-                style={{ width: '100%', height: 'auto', opacity: 0.1 }}>
+                style={{ width: '100%', height: 'auto', opacity: 0.2 }}>
                 <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
                 <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
                 <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
@@ -626,14 +623,14 @@ function Index(props) {
                           </p>
                           <div className="flex items-center justify-between flex-wrap gap-16 mt-auto">
                             <div className="flex flex-col gap-4">
-                              <div className="flex items-center gap-8" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                              <div className="flex items-center gap-8" style={{ color: '#475569' }}>
                                 {code && (
                                   <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays}
                                     style={{ width: '20px', height: '15px', borderRadius: '3px' }} />
                                 )}
                                 <span className="font-600 text-12">{item.ville}, {item.pays}</span>
                               </div>
-                              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>
+                              <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
                                 Expire le {moment(item.dateExpiration).format('DD/MM/YYYY')}
                               </div>
                             </div>
@@ -652,10 +649,12 @@ function Index(props) {
             <Link to="/demandes-achats" style={{ textDecoration: 'none' }}>
               <Button variant="outlined" size="large" style={{
                 borderRadius: '16px', padding: '16px 48px',
-                borderColor: 'rgba(255,255,255,0.2)', color: '#ffffff',
+                borderColor: 'rgba(0,0,0,0.1)', color: '#0f172a',
                 fontWeight: 800, textTransform: 'none', fontSize: '1.1rem',
-                backdropFilter: 'blur(10px)', transition: 'all 0.3s ease'
-              }} onMouseOver={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#000000'; }} onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#ffffff'; }}>
+                backgroundColor: '#ffffff',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                transition: 'all 0.3s ease'
+              }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }}>
                 Toutes les demandes
               </Button>
             </Link>
