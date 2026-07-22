@@ -229,24 +229,23 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "clamp(1rem, 2vw, 1.15rem)",
     color: "#64748b",
     textAlign: "center",
-    marginBottom: "56px",
     maxWidth: "750px",
-    margin: "0 auto 56px",
+    margin: "0 auto",
     lineHeight: 1.6,
   },
   demandCardPremium: {
     background: "#ffffff",
     borderRadius: "24px",
-    padding: "36px",
+    padding: "32px",
     border: "1px solid rgba(226, 232, 240, 0.8)",
-    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02)",
+    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.03)",
     position: "relative",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    "&::after": {
+    "&::before": {
        content: '""',
        position: "absolute",
        top: 0,
@@ -258,22 +257,20 @@ const useStyles = makeStyles((theme) => ({
        transition: "opacity 0.4s ease",
     },
     "&:hover": {
-      transform: "translateY(-10px)",
+      transform: "translateY(-6px)",
+      boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
       borderColor: "rgba(255, 90, 90, 0.2)",
-      boxShadow: "0 25px 50px rgba(0,0,0,0.08), 0 10px 20px rgba(255,90,90,0.05)",
-      "&::after": {
+      "&::before": {
          opacity: 1,
       },
       "& $viewMoreButtonPremium": {
-         background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
-         color: "#ffffff",
-         borderColor: "transparent",
-         transform: "translateX(5px)",
+         color: "#ff5a5a",
+         transform: "translateX(4px)",
       }
     },
   },
   demandTitlePremium: {
-    fontSize: "1.4rem",
+    fontSize: "1.3rem",
     fontWeight: 800,
     color: "#0f172a",
     marginBottom: "16px",
@@ -282,48 +279,26 @@ const useStyles = makeStyles((theme) => ({
   demandRefPremium: {
     background: "rgba(255, 90, 90, 0.08)",
     color: "#e11d48",
-    padding: "6px 14px",
-    borderRadius: "100px",
+    padding: "6px 12px",
+    borderRadius: "8px",
     fontSize: "0.75rem",
     fontWeight: 700,
-    marginBottom: "20px",
     display: "inline-block",
-    border: "1px solid rgba(255, 90, 90, 0.15)",
-    alignSelf: "flex-start",
   },
   demandDescriptionPremium: {
     color: "#475569",
-    fontSize: "1rem",
-    lineHeight: 1.7,
-    marginBottom: "32px",
+    fontSize: "0.95rem",
+    lineHeight: 1.6,
+    marginBottom: "24px",
     flexGrow: 1,
   },
   viewMoreButtonPremium: {
-    padding: "12px 28px",
-    background: "transparent",
-    color: "#ff5a5a",
-    borderRadius: "12px",
-    fontWeight: 800,
+    color: "#94a3b8",
+    fontWeight: 700,
     fontSize: "0.9rem",
-    border: "1px solid rgba(255, 90, 90, 0.3)",
-    cursor: "pointer",
-    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-    marginTop: "auto",
-    width: "fit-content",
-  },
-  demandesGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "32px",
-    width: "100%",
-    [theme.breakpoints.down("md")]: {
-      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-      gap: "24px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      gridTemplateColumns: "1fr",
-      gap: "16px",
-    },
+    display: "flex",
+    alignItems: "center",
+    transition: "all 0.3s ease",
   },
 
   // ===== PRODUITS (Slider) =====
@@ -602,25 +577,37 @@ function Index(props) {
 
       <section className={classes.sectionDeepDark}>
         <Container maxWidth="xl">
-          <h2 className={classes.sectionTitleLight}>
-            <span /> Dernières demandes de devis
-          </h2>
-          <p className={classes.sectionSubtitleLight}>
-            Découvrez en temps réel les besoins de nos acheteurs certifiés et proposez vos meilleures offres.
-          </p>
+          <div className="flex flex-col items-center justify-center text-center mb-64">
+            <span style={{ 
+                background: 'rgba(255, 90, 90, 0.1)', color: '#ff5a5a', padding: '8px 16px', 
+                borderRadius: '100px', fontWeight: 800, fontSize: '0.85rem', marginBottom: '16px',
+                display: 'inline-flex', alignItems: 'center', gap: '8px' 
+            }}>
+                <span style={{ width: '8px', height: '8px', background: '#ff5a5a', borderRadius: '50%', animation: 'pulseRed 2s infinite' }} />
+                EN TEMPS RÉEL
+            </span>
+            <h2 className={classes.sectionTitleLight} style={{ marginBottom: '16px' }}>
+              Dernières demandes de devis
+            </h2>
+            <p className={classes.sectionSubtitleLight} style={{ margin: 0 }}>
+              Découvrez les besoins de nos acheteurs certifiés et proposez vos meilleures offres.
+            </p>
+          </div>
 
-          {portail.loading ? (
-            <div style={{ width: '100%', height: '200px' }}>
-              <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
-                style={{ width: '100%', height: 'auto', opacity: 0.2 }}>
-                <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
-                <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
-                <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
-              </ContentLoader>
-            </div>
-          ) : (
-            <FuseAnimateGroup enter={{ animation: 'transition.slideUpBigIn' }} className={classes.demandesGrid}>
-              {portail.data && portail.data.slice(0, 6).map((item, index) => {
+          <Grid container spacing={4} alignItems="stretch">
+            {portail.loading ? (
+              <Grid item xs={12}>
+                <div style={{ width: '100%', height: '200px' }}>
+                  <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
+                    style={{ width: '100%', height: 'auto', opacity: 0.2 }}>
+                    <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
+                    <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
+                    <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
+                  </ContentLoader>
+                </div>
+              </Grid>
+            ) : (
+              portail.data && portail.data.slice(0, 6).map((item, index) => {
                 const countryMapping = {
                   "États-Unis": "us", Allemagne: "de", France: "fr",
                   Maroc: "ma", Espagne: "es", Italie: "it", "Royaume-Uni": "gb",
@@ -628,36 +615,40 @@ function Index(props) {
                 const code = countryMapping[item.pays] || null;
 
                 return (
-                  <div key={index}>
-                    <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
-                      <div className={classes.demandCardPremium}>
-                        <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
-                        <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
-                        <p className={classes.demandDescriptionPremium}>
-                          {item.description.length > 130 ? item.description.slice(0, 130) + '…' : item.description}
-                        </p>
-                        <div className="flex items-center justify-between flex-wrap gap-16 mt-auto">
-                          <div className="flex flex-col gap-4">
+                  <Grid item xs={12} md={6} lg={4} key={index} style={{ display: 'flex' }}>
+                    <FuseAnimate animation="transition.slideUpIn" delay={100 * index} style={{ width: '100%' }}>
+                      <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', width: '100%' }}>
+                        <div className={classes.demandCardPremium}>
+                          <div className="flex justify-between items-start mb-16">
+                              <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
+                              <div style={{ background: '#f8fafc', padding: '6px 12px', borderRadius: '12px', color: '#64748b', fontSize: '0.8rem', fontWeight: 600 }}>
+                                <Icon style={{ fontSize: '14px', verticalAlign: 'middle', marginRight: '4px' }}>timer</Icon>
+                                {moment(item.dateExpiration).format('DD/MM/YYYY')}
+                              </div>
+                          </div>
+                          
+                          <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
+                          <p className={classes.demandDescriptionPremium}>
+                            {item.description.length > 120 ? item.description.slice(0, 120) + '…' : item.description}
+                          </p>
+
+                          <div className="flex items-center justify-between mt-auto pt-24" style={{ borderTop: '1px solid #f1f5f9' }}>
                             <div className="flex items-center gap-8" style={{ color: '#475569' }}>
-                              {code && (
-                                <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays}
-                                  style={{ width: '20px', height: '15px', borderRadius: '3px' }} />
-                              )}
-                              <span className="font-600 text-12">{item.ville}, {item.pays}</span>
+                              {code && <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '20px', borderRadius: '2px' }} />}
+                              <span className="font-600 text-13">{item.ville}, {item.pays}</span>
                             </div>
-                            <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-                              Expire le {moment(item.dateExpiration).format('DD/MM/YYYY')}
+                            <div className={classes.viewMoreButtonPremium}>
+                                Voir plus <Icon style={{ fontSize: '16px', marginLeft: '4px', verticalAlign: 'middle' }}>arrow_forward</Icon>
                             </div>
                           </div>
-                          <button className={classes.viewMoreButtonPremium}>Voir plus →</button>
                         </div>
-                      </div>
-                    </Link>
-                  </div>
+                      </Link>
+                    </FuseAnimate>
+                  </Grid>
                 );
-              })}
-            </FuseAnimateGroup>
-          )}
+              })
+            )}
+          </Grid>
 
           <Box className="text-center mt-64">
             <Link to="/demandes-achats" style={{ textDecoration: 'none' }}>
