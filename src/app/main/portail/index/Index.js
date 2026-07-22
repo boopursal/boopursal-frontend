@@ -189,58 +189,103 @@ const useStyles = makeStyles((theme) => ({
   // ===== DEMANDES =====
   demandCard: {
     background: "var(--portal-surface)",
-    borderRadius: "28px",
+    borderRadius: "24px",
     padding: "36px",
     marginBottom: "24px",
-    border: "1px solid var(--portal-border)",
-    transition: "all 0.4s ease",
-    boxShadow: "var(--portal-card-shadow)",
+    border: "1px solid rgba(128,128,128,0.15)",
+    transition: "all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
+    position: "relative",
+    overflow: "hidden",
+    display: "block",
+    "&::before": {
+       content: '""',
+       position: "absolute",
+       top: 0,
+       left: "-100%",
+       width: "100%",
+       height: "100%",
+       background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
+       transition: "all 0.7s ease",
+       zIndex: 1,
+       pointerEvents: "none",
+    },
     "&:hover": {
-      transform: "translateY(-6px)",
-      borderColor: "var(--portal-primary)",
-      boxShadow: "0 15px 30px rgba(255, 90, 90, 0.12)",
+      transform: "translateY(-8px) scale(1.01)",
+      borderColor: "rgba(255, 90, 90, 0.4)",
+      boxShadow: "0 20px 40px rgba(255, 90, 90, 0.12)",
+      "&::before": {
+         left: "100%",
+      },
+      "& $viewMoreButton": {
+         boxShadow: "0 10px 25px rgba(255, 90, 90, 0.4)",
+         transform: "translateX(5px)",
+      }
     },
   },
 
   demandTitle: {
-    fontSize: "1.4rem",
-    fontWeight: 800,
+    fontSize: "1.5rem",
+    fontWeight: 900,
     color: "var(--portal-text)",
-    marginBottom: "12px",
+    marginBottom: "14px",
+    lineHeight: 1.3,
+    letterSpacing: "-0.5px",
+    position: "relative",
+    zIndex: 2,
   },
 
   demandRef: {
-    background: "rgba(255, 90, 90, 0.1)",
+    background: "rgba(255, 90, 90, 0.08)",
     color: "#ff5a5a",
-    padding: "5px 14px",
-    borderRadius: "100px",
+    padding: "6px 16px",
+    borderRadius: "30px",
     fontSize: "0.75rem",
-    fontWeight: 700,
-    marginBottom: "14px",
-    display: "inline-block",
+    fontWeight: 800,
+    letterSpacing: "1.5px",
+    marginBottom: "20px",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    border: "1px solid rgba(255, 90, 90, 0.2)",
+    position: "relative",
+    zIndex: 2,
+    "&::before": {
+       content: '""',
+       width: "6px",
+       height: "6px",
+       borderRadius: "50%",
+       background: "#ff5a5a",
+       boxShadow: "0 0 10px #ff5a5a",
+       animation: "$pulseRed 2s infinite",
+    }
   },
 
   demandDescription: {
     color: "var(--portal-muted)",
-    fontSize: "1rem",
+    fontSize: "1.05rem",
     lineHeight: 1.7,
-    marginBottom: "20px",
+    marginBottom: "28px",
+    position: "relative",
+    zIndex: 2,
   },
 
   viewMoreButton: {
+    display: "inline-flex",
+    alignItems: "center",
     padding: "12px 28px",
     background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
     color: "#ffffff",
     borderRadius: "14px",
     fontWeight: 800,
     fontSize: "0.9rem",
+    letterSpacing: "0.5px",
     border: "none",
     cursor: "pointer",
     boxShadow: "0 8px 20px rgba(255, 90, 90, 0.25)",
-    transition: "all 0.3s ease",
-    "&:hover": {
-      transform: "scale(1.05)",
-    }
+    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+    position: "relative",
+    zIndex: 2,
   },
 
   // ===== PRODUITS (Slider) =====
@@ -341,22 +386,29 @@ const useStyles = makeStyles((theme) => ({
   },
   bannerSide: {
     height: "100%",
-    borderRadius: "24px",
+    borderRadius: "28px",
     overflow: "hidden",
-    border: "1px solid var(--portal-border)",
+    border: "1px solid rgba(128,128,128,0.15)",
     background: "var(--portal-surface)",
     padding: "0",
+    position: "relative",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
     "& img": {
         width: "100%",
         height: "100%",
         objectFit: "cover",
         opacity: 0.85,
-        transition: "all 0.4s ease",
+        transition: "transform 10s ease",
     },
     "&:hover img": {
-        transform: "scale(1.05)",
+        transform: "scale(1.15)",
         opacity: 1,
     }
+  },
+  "@keyframes pulseRed": {
+    "0%": { opacity: 1, transform: "scale(1)" },
+    "50%": { opacity: 0.4, transform: "scale(0.8)" },
+    "100%": { opacity: 1, transform: "scale(1)" }
   }
 }));
 
