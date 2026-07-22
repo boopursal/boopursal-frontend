@@ -594,20 +594,18 @@ function Index(props) {
             </p>
           </div>
 
-          <Grid container spacing={4} alignItems="stretch">
-            {portail.loading ? (
-              <Grid item xs={12}>
-                <div style={{ width: '100%', height: '200px' }}>
-                  <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
-                    style={{ width: '100%', height: 'auto', opacity: 0.2 }}>
-                    <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
-                    <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
-                    <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
-                  </ContentLoader>
-                </div>
-              </Grid>
-            ) : (
-              portail.data && portail.data.slice(0, 6).map((item, index) => {
+          {portail.loading ? (
+            <div style={{ width: '100%', height: '200px' }}>
+              <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
+                style={{ width: '100%', height: 'auto', opacity: 0.2 }}>
+                <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
+                <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
+                <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
+              </ContentLoader>
+            </div>
+          ) : (
+            <div className={classes.demandesGrid}>
+              {portail.data && portail.data.slice(0, 6).map((item, index) => {
                 const countryMapping = {
                   "États-Unis": "us", Allemagne: "de", France: "fr",
                   Maroc: "ma", Espagne: "es", Italie: "it", "Royaume-Uni": "gb",
@@ -615,40 +613,38 @@ function Index(props) {
                 const code = countryMapping[item.pays] || null;
 
                 return (
-                  <Grid item xs={12} md={6} lg={4} key={index} style={{ display: 'flex' }}>
-                    <FuseAnimate animation="transition.slideUpIn" delay={100 * index} style={{ width: '100%' }}>
-                      <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', width: '100%' }}>
-                        <div className={classes.demandCardPremium}>
-                          <div className="flex justify-between items-start mb-16">
-                              <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
-                              <div style={{ background: '#f8fafc', padding: '6px 12px', borderRadius: '12px', color: '#64748b', fontSize: '0.8rem', fontWeight: 600 }}>
-                                <Icon style={{ fontSize: '14px', verticalAlign: 'middle', marginRight: '4px' }}>timer</Icon>
-                                {moment(item.dateExpiration).format('DD/MM/YYYY')}
-                              </div>
-                          </div>
-                          
-                          <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
-                          <p className={classes.demandDescriptionPremium}>
-                            {item.description.length > 120 ? item.description.slice(0, 120) + '…' : item.description}
-                          </p>
+                  <FuseAnimate animation="transition.slideUpIn" delay={100 * index} key={index}>
+                    <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
+                      <div className={classes.demandCardPremium}>
+                        <div className="flex justify-between items-start mb-16">
+                            <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
+                            <div style={{ background: '#f8fafc', padding: '6px 12px', borderRadius: '12px', color: '#64748b', fontSize: '0.8rem', fontWeight: 600 }}>
+                              <Icon style={{ fontSize: '14px', verticalAlign: 'middle', marginRight: '4px' }}>timer</Icon>
+                              {moment(item.dateExpiration).format('DD/MM/YYYY')}
+                            </div>
+                        </div>
+                        
+                        <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
+                        <p className={classes.demandDescriptionPremium}>
+                          {item.description.length > 120 ? item.description.slice(0, 120) + '…' : item.description}
+                        </p>
 
-                          <div className="flex items-center justify-between mt-auto pt-24" style={{ borderTop: '1px solid #f1f5f9' }}>
-                            <div className="flex items-center gap-8" style={{ color: '#475569' }}>
-                              {code && <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '20px', borderRadius: '2px' }} />}
-                              <span className="font-600 text-13">{item.ville}, {item.pays}</span>
-                            </div>
-                            <div className={classes.viewMoreButtonPremium}>
-                                Voir plus <Icon style={{ fontSize: '16px', marginLeft: '4px', verticalAlign: 'middle' }}>arrow_forward</Icon>
-                            </div>
+                        <div className="flex items-center justify-between mt-auto pt-24" style={{ borderTop: '1px solid #f1f5f9' }}>
+                          <div className="flex items-center gap-8" style={{ color: '#475569' }}>
+                            {code && <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays} style={{ width: '20px', borderRadius: '2px' }} />}
+                            <span className="font-600 text-13">{item.ville}, {item.pays}</span>
+                          </div>
+                          <div className={classes.viewMoreButtonPremium}>
+                              Voir plus <Icon style={{ fontSize: '16px', marginLeft: '4px', verticalAlign: 'middle' }}>arrow_forward</Icon>
                           </div>
                         </div>
-                      </Link>
-                    </FuseAnimate>
-                  </Grid>
+                      </div>
+                    </Link>
+                  </FuseAnimate>
                 );
-              })
-            )}
-          </Grid>
+              })}
+            </div>
+          )}
 
           <Box className="text-center mt-64">
             <Link to="/demandes-achats" style={{ textDecoration: 'none' }}>
