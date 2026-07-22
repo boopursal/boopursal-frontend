@@ -242,7 +242,7 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #eef2f6",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
-    textDecoration: "none",
+    textDecoration: "none !important",
     color: "inherit",
     position: "relative",
     overflow: "hidden",
@@ -263,6 +263,7 @@ const useStyles = makeStyles((theme) => ({
        transition: "background 0.3s ease",
     },
     "&:hover": {
+      textDecoration: "none !important",
       borderColor: "#e2e8f0",
       boxShadow: "0 12px 24px rgba(0, 0, 0, 0.08)",
       transform: "translateY(-4px)",
