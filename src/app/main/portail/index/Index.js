@@ -186,106 +186,133 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
-  // ===== DEMANDES =====
-  demandCard: {
-    background: "var(--portal-surface)",
+  // ===== DEMANDES PREMIUM =====
+  sectionDeepDark: {
+    padding: "100px 20px",
+    position: "relative",
+    background: "#0a0e17", // Very dark navy/black
+    color: "#ffffff",
+    overflow: "hidden",
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      top: "-50%",
+      left: "0",
+      width: "100%",
+      height: "200%",
+      background: "radial-gradient(ellipse at 50% 0%, rgba(255, 90, 90, 0.08) 0%, transparent 60%)",
+      pointerEvents: "none",
+    }
+  },
+  sectionTitleLight: {
+    fontSize: "clamp(2rem, 5vw, 3.2rem)",
+    fontWeight: 900,
+    color: "#ffffff",
+    textAlign: "center",
+    marginBottom: "20px",
+    letterSpacing: "-0.04em",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "16px",
+    "& span": {
+       display: "inline-block",
+       width: "14px",
+       height: "14px",
+       borderRadius: "50%",
+       background: "#ff5a5a",
+       boxShadow: "0 0 16px #ff5a5a",
+       animation: "$pulseRed 2s infinite",
+    }
+  },
+  sectionSubtitleLight: {
+    fontSize: "clamp(1rem, 2vw, 1.15rem)",
+    color: "rgba(255,255,255,0.6)",
+    textAlign: "center",
+    marginBottom: "56px",
+    maxWidth: "750px",
+    margin: "0 auto 56px",
+    lineHeight: 1.6,
+  },
+  demandCardPremium: {
+    background: "rgba(255, 255, 255, 0.02)",
+    backdropFilter: "blur(20px)",
     borderRadius: "24px",
     padding: "36px",
-    marginBottom: "24px",
-    border: "1px solid rgba(128,128,128,0.15)",
+    border: "1px solid rgba(255, 255, 255, 0.05)",
     transition: "all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
+    boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
     position: "relative",
     overflow: "hidden",
-    display: "block",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
     "&::before": {
        content: '""',
        position: "absolute",
        top: 0,
-       left: "-100%",
+       left: 0,
        width: "100%",
-       height: "100%",
-       background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
-       transition: "all 0.7s ease",
-       zIndex: 1,
-       pointerEvents: "none",
+       height: "4px",
+       background: "linear-gradient(90deg, #ff5a5a 0%, #ff8a8a 100%)",
+       transform: "scaleX(0)",
+       transformOrigin: "left",
+       transition: "transform 0.5s ease",
     },
     "&:hover": {
-      transform: "translateY(-8px) scale(1.01)",
-      borderColor: "rgba(255, 90, 90, 0.4)",
-      boxShadow: "0 20px 40px rgba(255, 90, 90, 0.12)",
+      transform: "translateY(-10px)",
+      borderColor: "rgba(255, 90, 90, 0.3)",
+      boxShadow: "0 20px 50px rgba(255, 90, 90, 0.15)",
+      background: "rgba(255, 255, 255, 0.04)",
       "&::before": {
-         left: "100%",
+         transform: "scaleX(1)",
       },
-      "& $viewMoreButton": {
-         boxShadow: "0 10px 25px rgba(255, 90, 90, 0.4)",
+      "& $viewMoreButtonPremium": {
+         background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
+         color: "#ffffff",
+         borderColor: "transparent",
          transform: "translateX(5px)",
       }
     },
   },
-
-  demandTitle: {
-    fontSize: "1.5rem",
-    fontWeight: 900,
-    color: "var(--portal-text)",
-    marginBottom: "14px",
-    lineHeight: 1.3,
-    letterSpacing: "-0.5px",
-    position: "relative",
-    zIndex: 2,
-  },
-
-  demandRef: {
-    background: "rgba(255, 90, 90, 0.08)",
-    color: "#ff5a5a",
-    padding: "6px 16px",
-    borderRadius: "30px",
-    fontSize: "0.75rem",
+  demandTitlePremium: {
+    fontSize: "1.4rem",
     fontWeight: 800,
-    letterSpacing: "1.5px",
-    marginBottom: "20px",
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "8px",
-    border: "1px solid rgba(255, 90, 90, 0.2)",
-    position: "relative",
-    zIndex: 2,
-    "&::before": {
-       content: '""',
-       width: "6px",
-       height: "6px",
-       borderRadius: "50%",
-       background: "#ff5a5a",
-       boxShadow: "0 0 10px #ff5a5a",
-       animation: "$pulseRed 2s infinite",
-    }
-  },
-
-  demandDescription: {
-    color: "var(--portal-muted)",
-    fontSize: "1.05rem",
-    lineHeight: 1.7,
-    marginBottom: "28px",
-    position: "relative",
-    zIndex: 2,
-  },
-
-  viewMoreButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    padding: "12px 28px",
-    background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
     color: "#ffffff",
-    borderRadius: "14px",
+    marginBottom: "16px",
+    lineHeight: 1.4,
+  },
+  demandRefPremium: {
+    background: "rgba(255, 90, 90, 0.1)",
+    color: "#ff8a8a",
+    padding: "6px 14px",
+    borderRadius: "100px",
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    marginBottom: "20px",
+    display: "inline-block",
+    border: "1px solid rgba(255, 90, 90, 0.2)",
+    alignSelf: "flex-start",
+  },
+  demandDescriptionPremium: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: "1rem",
+    lineHeight: 1.7,
+    marginBottom: "32px",
+    flexGrow: 1,
+  },
+  viewMoreButtonPremium: {
+    padding: "12px 28px",
+    background: "transparent",
+    color: "#ff5a5a",
+    borderRadius: "12px",
     fontWeight: 800,
     fontSize: "0.9rem",
-    letterSpacing: "0.5px",
-    border: "none",
+    border: "1px solid rgba(255, 90, 90, 0.3)",
     cursor: "pointer",
-    boxShadow: "0 8px 20px rgba(255, 90, 90, 0.25)",
-    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-    position: "relative",
-    zIndex: 2,
+    transition: "all 0.4s ease",
+    marginTop: "auto",
+    width: "fit-content",
   },
 
   // ===== PRODUITS (Slider) =====
@@ -562,85 +589,73 @@ function Index(props) {
         </Container>
       </section>
 
-      <section className={classes.sectionDark}>
+      <section className={classes.sectionDeepDark}>
         <Container maxWidth="xl">
-          <h2 className={classes.sectionTitle}>Dernières demandes de devis</h2>
-          <p className={classes.sectionSubtitle}>
-            Réponsez aux demandes et développez votre portefeuille clients
+          <h2 className={classes.sectionTitleLight}>
+            <span /> Dernières demandes de devis
+          </h2>
+          <p className={classes.sectionSubtitleLight}>
+            Découvrez en temps réel les besoins de nos acheteurs certifiés et proposez vos meilleures offres.
           </p>
 
-          <Grid container spacing={3}>
-            {/* Left Banner */}
-            <Hidden mdDown>
-              <Grid item lg={2}>
-                <div className={classes.bannerSide} style={{ height: '700px' }}>
-                  <img src="/assets/images/ad_network.png" alt="Networking" />
-                </div>
-              </Grid>
-            </Hidden>
+          <Grid container spacing={4}>
+            {portail.loading ? (
+              <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
+                style={{ width: '100%', height: 'auto', opacity: 0.1 }}>
+                <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
+                <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
+                <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
+              </ContentLoader>
+            ) : (
+              <FuseAnimateGroup enter={{ animation: 'transition.slideUpBigIn' }} style={{ width: '100%', display: 'flex', flexWrap: 'wrap', margin: '-16px' }}>
+                {portail.data && portail.data.slice(0, 6).map((item, index) => {
+                  const countryMapping = {
+                    "États-Unis": "us", Allemagne: "de", France: "fr",
+                    Maroc: "ma", Espagne: "es", Italie: "it", "Royaume-Uni": "gb",
+                  };
+                  const code = countryMapping[item.pays] || null;
 
-            {/* Center Content */}
-            <Grid item xs={12} lg={8}>
-              {portail.loading ? (
-                <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
-                  style={{ width: '100%', height: 'auto', opacity: 0.5 }}>
-                  <rect x="0" y="0" rx="16" ry="16" width="1200" height="180" />
-                </ContentLoader>
-              ) : (
-                <FuseAnimateGroup enter={{ animation: 'transition.slideUpBigIn' }}>
-                  {portail.data && portail.data.slice(0, 6).map((item, index) => {
-                    const countryMapping = {
-                      "États-Unis": "us", Allemagne: "de", France: "fr",
-                      Maroc: "ma", Espagne: "es", Italie: "it", "Royaume-Uni": "gb",
-                    };
-                    const code = countryMapping[item.pays] || null;
-
-                    return (
-                      <Link key={index} to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none' }}>
-                        <div className={classes.demandCard}>
-                          <span className={classes.demandRef}>RFQ-{item.reference}</span>
-                          <h3 className={classes.demandTitle}>{item.titre}</h3>
-                          <p className={classes.demandDescription}>
-                            {item.description.length > 150 ? item.description.slice(0, 150) + '…' : item.description}
+                  return (
+                    <Grid item xs={12} md={6} lg={4} key={index} style={{ padding: '16px' }}>
+                      <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
+                        <div className={classes.demandCardPremium}>
+                          <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
+                          <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
+                          <p className={classes.demandDescriptionPremium}>
+                            {item.description.length > 130 ? item.description.slice(0, 130) + '…' : item.description}
                           </p>
-                          <div className="flex items-center justify-between flex-wrap gap-16">
-                            <div className="flex items-center gap-10" style={{ color: 'var(--portal-muted)' }}>
-                              {code && (
-                                <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays}
-                                  style={{ width: '20px', height: '15px', borderRadius: '3px' }} />
-                              )}
-                              <span className="font-600">{item.ville}, {item.pays}</span>
+                          <div className="flex items-center justify-between flex-wrap gap-16 mt-auto">
+                            <div className="flex flex-col gap-4">
+                              <div className="flex items-center gap-8" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                                {code && (
+                                  <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays}
+                                    style={{ width: '20px', height: '15px', borderRadius: '3px' }} />
+                                )}
+                                <span className="font-600 text-12">{item.ville}, {item.pays}</span>
+                              </div>
+                              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>
+                                Expire le {moment(item.dateExpiration).format('DD/MM/YYYY')}
+                              </div>
                             </div>
-                            <div style={{ color: 'var(--portal-muted)', fontSize: '0.9rem' }}>
-                              Expire le {moment(item.dateExpiration).format('DD/MM/YYYY')}
-                            </div>
-                            <button className={classes.viewMoreButton}>Voir plus →</button>
+                            <button className={classes.viewMoreButtonPremium}>Voir plus →</button>
                           </div>
                         </div>
                       </Link>
-                    );
-                  })}
-                </FuseAnimateGroup>
-              )}
-            </Grid>
-
-            {/* Right Banner */}
-            <Hidden mdDown>
-              <Grid item lg={2}>
-                <div className={classes.bannerSide} style={{ height: '700px' }}>
-                  <img src="/assets/images/ad_pro.png" alt="Pro" />
-                </div>
-              </Grid>
-            </Hidden>
+                    </Grid>
+                  );
+                })}
+              </FuseAnimateGroup>
+            )}
           </Grid>
 
-          <Box className="text-center mt-40">
+          <Box className="text-center mt-64">
             <Link to="/demandes-achats" style={{ textDecoration: 'none' }}>
               <Button variant="outlined" size="large" style={{
-                borderRadius: '16px', padding: '14px 40px',
-                borderColor: 'var(--portal-border)', color: 'var(--portal-text)',
-                fontWeight: 800, textTransform: 'none', fontSize: '1.1rem'
-              }}>
+                borderRadius: '16px', padding: '16px 48px',
+                borderColor: 'rgba(255,255,255,0.2)', color: '#ffffff',
+                fontWeight: 800, textTransform: 'none', fontSize: '1.1rem',
+                backdropFilter: 'blur(10px)', transition: 'all 0.3s ease'
+              }} onMouseOver={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#000000'; }} onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#ffffff'; }}>
                 Toutes les demandes
               </Button>
             </Link>
