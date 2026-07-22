@@ -311,6 +311,20 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "auto",
     width: "fit-content",
   },
+  demandesGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "32px",
+    width: "100%",
+    [theme.breakpoints.down("md")]: {
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: "24px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      gridTemplateColumns: "1fr",
+      gap: "16px",
+    },
+  },
 
   // ===== PRODUITS (Slider) =====
   produitsSection: {
@@ -595,55 +609,55 @@ function Index(props) {
             Découvrez en temps réel les besoins de nos acheteurs certifiés et proposez vos meilleures offres.
           </p>
 
-          <Grid container spacing={4}>
-            {portail.loading ? (
+          {portail.loading ? (
+            <div style={{ width: '100%', height: '200px' }}>
               <ContentLoader speed={2} width={1200} height={200} viewBox="0 0 1200 200"
                 style={{ width: '100%', height: 'auto', opacity: 0.2 }}>
                 <rect x="0" y="0" rx="16" ry="16" width="380" height="180" />
                 <rect x="400" y="0" rx="16" ry="16" width="380" height="180" />
                 <rect x="800" y="0" rx="16" ry="16" width="380" height="180" />
               </ContentLoader>
-            ) : (
-              <FuseAnimateGroup enter={{ animation: 'transition.slideUpBigIn' }} style={{ width: '100%', display: 'flex', flexWrap: 'wrap', margin: '-16px' }}>
-                {portail.data && portail.data.slice(0, 6).map((item, index) => {
-                  const countryMapping = {
-                    "États-Unis": "us", Allemagne: "de", France: "fr",
-                    Maroc: "ma", Espagne: "es", Italie: "it", "Royaume-Uni": "gb",
-                  };
-                  const code = countryMapping[item.pays] || null;
+            </div>
+          ) : (
+            <FuseAnimateGroup enter={{ animation: 'transition.slideUpBigIn' }} className={classes.demandesGrid}>
+              {portail.data && portail.data.slice(0, 6).map((item, index) => {
+                const countryMapping = {
+                  "États-Unis": "us", Allemagne: "de", France: "fr",
+                  Maroc: "ma", Espagne: "es", Italie: "it", "Royaume-Uni": "gb",
+                };
+                const code = countryMapping[item.pays] || null;
 
-                  return (
-                    <Grid item xs={12} md={6} lg={4} key={index} style={{ padding: '16px' }}>
-                      <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
-                        <div className={classes.demandCardPremium}>
-                          <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
-                          <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
-                          <p className={classes.demandDescriptionPremium}>
-                            {item.description.length > 130 ? item.description.slice(0, 130) + '…' : item.description}
-                          </p>
-                          <div className="flex items-center justify-between flex-wrap gap-16 mt-auto">
-                            <div className="flex flex-col gap-4">
-                              <div className="flex items-center gap-8" style={{ color: '#475569' }}>
-                                {code && (
-                                  <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays}
-                                    style={{ width: '20px', height: '15px', borderRadius: '3px' }} />
-                                )}
-                                <span className="font-600 text-12">{item.ville}, {item.pays}</span>
-                              </div>
-                              <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-                                Expire le {moment(item.dateExpiration).format('DD/MM/YYYY')}
-                              </div>
+                return (
+                  <div key={index}>
+                    <Link to={`/demandes-achat/${item.id}-${item.slug}`} style={{ textDecoration: 'none', height: '100%', display: 'block' }}>
+                      <div className={classes.demandCardPremium}>
+                        <span className={classes.demandRefPremium}>RFQ-{item.reference}</span>
+                        <h3 className={classes.demandTitlePremium}>{item.titre}</h3>
+                        <p className={classes.demandDescriptionPremium}>
+                          {item.description.length > 130 ? item.description.slice(0, 130) + '…' : item.description}
+                        </p>
+                        <div className="flex items-center justify-between flex-wrap gap-16 mt-auto">
+                          <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-8" style={{ color: '#475569' }}>
+                              {code && (
+                                <img src={`https://flagcdn.com/w20/${code}.png`} alt={item.pays}
+                                  style={{ width: '20px', height: '15px', borderRadius: '3px' }} />
+                              )}
+                              <span className="font-600 text-12">{item.ville}, {item.pays}</span>
                             </div>
-                            <button className={classes.viewMoreButtonPremium}>Voir plus →</button>
+                            <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+                              Expire le {moment(item.dateExpiration).format('DD/MM/YYYY')}
+                            </div>
                           </div>
+                          <button className={classes.viewMoreButtonPremium}>Voir plus →</button>
                         </div>
-                      </Link>
-                    </Grid>
-                  );
-                })}
-              </FuseAnimateGroup>
-            )}
-          </Grid>
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })}
+            </FuseAnimateGroup>
+          )}
 
           <Box className="text-center mt-64">
             <Link to="/demandes-achats" style={{ textDecoration: 'none' }}>
