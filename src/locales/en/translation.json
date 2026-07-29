@@ -560,30 +560,6 @@
     "termsLink": "Terms of Use",
     "legalPrivacy": "Privacy Policy"
   },
-  "onboarding": {
-    "company_id": "Company Identification",
-    "select_country": "Select a country",
-    "country_origin": "Country of origin",
-    "company_name": "Company Name",
-    "fiscal_id": "Tax ID / Trade Register",
-    "select_city": "Select a city",
-    "city": "City",
-    "headquarters": "Headquarters Address",
-    "pro_phone": "Professional Phone",
-    "billing_currency": "Billing Currency",
-    "website": "Website (Optional)",
-    "description": "Company Presentation"
-  },
-  "profile": {
-    "company_info": "Company Info",
-    "products": "Products",
-    "user_info": "User Info",
-    "photo": "Photo",
-    "password": "Password",
-    "address1": "Address 1",
-    "address2": "Address 2",
-    "postal_code": "Postal Code"
-  },
   "demandes": {
     "header": {
       "title": "Your purchase requests",

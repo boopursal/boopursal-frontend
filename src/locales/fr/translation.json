@@ -1136,28 +1136,5 @@
     "termsLink": "Conditions d'utilisation",
     "legalPrivacy": "Politique de protection des données"
   },
-  "onboarding": {
-    "company_id": "Identification de l'entreprise",
-    "select_country": "Sélectionner un pays",
-    "country_origin": "Pays d'origine",
-    "company_name": "Raison sociale",
-    "fiscal_id": "Identifiant fiscal / Registre de commerce",
-    "select_city": "Sélectionner une ville",
-    "city": "Ville",
-    "headquarters": "Adresse du siège",
-    "pro_phone": "Téléphone professionnel",
-    "billing_currency": "Devise de facturation",
-    "website": "Site Internet (Optionnel)",
-    "description": "Présentation de votre activité"
-  },
-  "profile": {
-    "company_info": "Infos société",
-    "products": "Produits",
-    "user_info": "Infos utilisateur",
-    "photo": "Photo",
-    "password": "Mot de passe",
-    "address1": "Adresse 1",
-    "address2": "Adresse 2",
-    "postal_code": "Code Postal"
-  }
+
 }

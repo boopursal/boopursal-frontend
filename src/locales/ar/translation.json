@@ -560,30 +560,6 @@
     "termsLink": "شروط الاستخدام",
     "legalPrivacy": "سياسة حماية البيانات"
   },
-  "onboarding": {
-    "company_id": "هوية الشركة",
-    "select_country": "اختر البلد",
-    "country_origin": "بلد المنشأ",
-    "company_name": "اسم الشركة",
-    "fiscal_id": "المعرف الضريبي / السجل التجاري",
-    "select_city": "اختر المدينة",
-    "city": "المدينة",
-    "headquarters": "عنوان المقر",
-    "pro_phone": "الهاتف المهني",
-    "billing_currency": "عملة الفواتير",
-    "website": "الموقع الإلكتروني (اختياري)",
-    "description": "تقديم شركتك"
-  },
-  "profile": {
-    "company_info": "معلومات الشركة",
-    "products": "المنتجات",
-    "user_info": "معلومات المستخدم",
-    "photo": "صورة",
-    "password": "كلمة المرور",
-    "address1": "العنوان 1",
-    "address2": "العنوان 2",
-    "postal_code": "الرمز البريدي"
-  },
   "demandes": {
     "header": {
       "title": "طلبات الشراء الخاصة بك",
