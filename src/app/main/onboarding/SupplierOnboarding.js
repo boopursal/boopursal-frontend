@@ -71,7 +71,6 @@ function SupplierOnboarding(props) {
     const [idConfig, setIdConfig] = useState(null); // Config identifiant selon le pays
     const [iceValue, setIceValue] = useState('');
     const [iceData, setIceData] = useState(null);
-    const formsyRef = useRef(null);
 
     const handleIceSuccess = (data) => {
         setIceData(data);
