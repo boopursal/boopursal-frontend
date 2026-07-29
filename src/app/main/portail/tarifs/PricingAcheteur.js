@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -144,47 +145,48 @@ const useStyles = makeStyles((theme) => ({
 
 const PricingAcheteur = (props) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const plans = [
     {
-      name: "Standard",
+      name: t('tarifs.plan_standard_name', 'Standard'),
       price: 0,
-      subtitle: "Solution gratuite pour vos achats ponctuels",
+      subtitle: t('tarifs.plan_buyer_standard_subtitle', 'Solution gratuite pour vos achats ponctuels'),
       features: [
-        { lab: "Publication de RFQ", val: "Illimité" },
-        { lab: "Réception de devis qualifiés", val: "Illimité" },
-        { lab: "Fiches & Catalogues Fournisseurs", val: "✔" },
-        { lab: "Compte 100% anonyme", val: "✔" },
-        { lab: "Sous-comptes équipe", val: "✗" },
+        { lab: t('tarifs.f_rfq', 'Publication de RFQ'), val: "Illimité" },
+        { lab: t('tarifs.f_quotes', 'Réception de devis qualifiés'), val: "Illimité" },
+        { lab: t('tarifs.f_supplier_catalog', 'Fiches & Catalogues Fournisseurs'), val: "\u2714" },
+        { lab: t('tarifs.f_anonymous', 'Compte 100% anonyme'), val: "\u2714" },
+        { lab: t('tarifs.f_subaccounts', 'équipe'), val: "\u2717" },
       ],
-      cta: "Démarrez maintenant"
+      cta: t('tarifs.plan_buyer_standard_cta', 'Démarrez maintenant')
     },
     {
-      name: "Acheteur Pro",
+      name: t('tarifs.plan_buyer_pro_name', 'Acheteur Pro'),
       price: 38,
-      subtitle: "Idéal pour les services achats stratégiques",
+      subtitle: t('tarifs.plan_buyer_pro_subtitle', 'Idéal pour les services achats stratégiques'),
       popular: true,
       features: [
-        { lab: "Appels d'offres illimités", val: "✔" },
-        { lab: "Sous-comptes collaboratifs", val: "Inclus" },
-        { lab: "Gestion de Blackliste fournisseurs", val: "✔" },
-        { lab: "Suivi des diffusions RFQ", val: "✔" },
-        { lab: "Support prioritaire dédié", val: "✔" },
+        { lab: t('tarifs.f_unlimited_rfq', "Appels d'offres illimités"), val: "\u2714" },
+        { lab: t('tarifs.f_collab', 'Sous-comptes collaboratifs'), val: "Inclus" },
+        { lab: t('tarifs.f_blacklist', 'Gestion de Blackliste fournisseurs'), val: "\u2714" },
+        { lab: t('tarifs.f_rfq_tracking', 'Suivi des diffusions RFQ'), val: "\u2714" },
+        { lab: t('tarifs.f_priority', 'Support prioritaire dédié'), val: "\u2714" },
       ],
-      cta: "S'abonner maintenant"
+      cta: t('tarifs.plan_buyer_pro_cta', "S'abonner maintenant")
     },
     {
-      name: "Pro Plus",
+      name: t('tarifs.plan_buyer_proplus_name', 'Pro Plus'),
       price: 50,
-      subtitle: "Accompagnement VIP complet pour experts",
+      subtitle: t('tarifs.plan_buyer_proplus_subtitle', 'Accompagnement VIP complet pour experts'),
       features: [
-        { lab: "Toutes les fonctions PRO", val: "✔" },
-        { lab: "Critères sélection Fournisseurs", val: "Premium" },
-        { lab: "Analyse comparative avancée", val: "✔" },
-        { lab: "Volume achats illimité", val: "✔" },
-        { lab: "Support VIP 24/7", val: "Dédié" },
+        { lab: t('tarifs.f_all_pro', 'Toutes les fonctions PRO'), val: "\u2714" },
+        { lab: t('tarifs.f_criteria', 'Critères sélection Fournisseurs'), val: "Premium" },
+        { lab: t('tarifs.f_analysis', 'Analyse comparative avancée'), val: "\u2714" },
+        { lab: t('tarifs.f_unlimited_volume', 'Volume achats illimité'), val: "\u2714" },
+        { lab: t('tarifs.f_vip_24_7', 'Support VIP 24/7'), val: "Dédié" },
       ],
-      cta: "Passer au Pro Plus"
+      cta: t('tarifs.plan_buyer_proplus_cta', 'Passer au Pro Plus')
     },
   ];
 
@@ -201,7 +203,7 @@ const PricingAcheteur = (props) => {
         {plans.map((p, i) => (
           <Grid item xs={12} md={4} key={i}>
             <Paper className={clsx(classes.card, p.popular && classes.highlightedCard)} elevation={0}>
-              {p.popular && <div className={classes.ribbon}>Recommandé</div>}
+              {p.popular && <div className={classes.ribbon}>{t('tarifs.recommended', 'Recommandé')}</div>}
 
               <div className={classes.cardHeader}>
                 <Typography className={classes.planName}>{p.name}</Typography>
@@ -209,10 +211,10 @@ const PricingAcheteur = (props) => {
                 <Typography className={classes.subtitle}>{p.subtitle}</Typography>
 
                 <div className={classes.priceBox}>
-                  <span className={classes.priceLabel}>à partir de</span>
+                  <span className={classes.priceLabel}>{t('tarifs.from_price', 'à partir de')}</span>
                   <div className="flex items-baseline justify-center">
                     <span className={classes.priceValue}>{getPrice(p.price)}</span>
-                    <span className="text-red-700 font-900 ml-4 text-16">{curr}/mois</span>
+                    <span className="text-red-700 font-900 ml-4 text-16">{curr}{t('tarifs.per_month', '/mois')}</span>
                   </div>
                 </div>
               </div>
@@ -238,7 +240,7 @@ const PricingAcheteur = (props) => {
               </div>
 
               <Typography className="text-center pb-24 text-12 text-amber-800 font-bold cursor-pointer hover:underline">
-                Voir toutes les spécificités acheteurs
+                {t('tarifs.see_buyer_features', 'Voir toutes les spécificités acheteurs')}
               </Typography>
             </Paper>
           </Grid>

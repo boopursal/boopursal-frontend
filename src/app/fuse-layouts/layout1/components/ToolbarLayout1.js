@@ -4,6 +4,7 @@ import { makeStyles, ThemeProvider } from '@material-ui/styles';
 import { FuseSearch } from '@fuse';
 import NavbarMobileToggleButton from 'app/fuse-layouts/shared-components/NavbarMobileToggleButton';
 import UserMenu from 'app/fuse-layouts/shared-components/UserMenu';
+import LanguageSwitcher from 'app/fuse-layouts/shared-components/LanguageSwitcher';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
@@ -73,10 +74,7 @@ function ToolbarLayout1(props) {
     const classes = useStyles(props);
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
     
-    const isAuthPage = window.location.pathname.startsWith("/login") || window.location.pathname.startsWith("/register");
-    if (isAuthPage) {
-        return null;
-    }
+    const isAuthPage = window.location.pathname.startsWith("/login") || window.location.pathname.startsWith("/register") || window.location.pathname.startsWith("/forgot-password");
 
     return (
         <ThemeProvider theme={toolbarTheme}>
@@ -112,6 +110,7 @@ function ToolbarLayout1(props) {
                     </Hidden>
 
                     <div className="flex items-center">
+                        <LanguageSwitcher />
                         <UserMenu />
                     </div>
                 </Toolbar>

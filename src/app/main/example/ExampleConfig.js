@@ -7,7 +7,7 @@ export const ExampleConfig = {
             config: {}
         }
     },
-    auth    : authRoles.registe,
+    auth    : null,
     routes  : [
         {
             path     : '/example',

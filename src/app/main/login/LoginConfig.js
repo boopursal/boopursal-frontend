@@ -4,7 +4,7 @@ import {authRoles} from 'app/auth';
 export const LoginConfig = {
     settings: {
         layout: {
-            style: 'layout1',
+            style: 'layout3',
             config: {
                 mode: 'fullwidth',
                 scroll: 'content',
@@ -12,10 +12,10 @@ export const LoginConfig = {
                     display: false
                 },
                 toolbar       : {
-                    display: false
+                    display: true
                 },
                 footer        : {
-                    display: false
+                    display: true
                 },
                 leftSidePanel : {
                     display: false

@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from "react-helmet";
 import Formsy from 'formsy-react';
 import { useDispatch, useSelector } from 'react-redux';
+import LanguageSwitcher from 'app/fuse-layouts/shared-components/LanguageSwitcher';
 import * as Actions from './store/actions';
 import reducer from './store/reducers';
 import withReducer from 'app/store/withReducer';

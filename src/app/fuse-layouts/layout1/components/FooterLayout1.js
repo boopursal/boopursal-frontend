@@ -4,9 +4,11 @@ import { ThemeProvider } from '@material-ui/styles';
 import { useSelector } from 'react-redux';
 //import MobileApp from 'app/fuse-layouts/shared-components/MobileApp';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 function FooterLayout1(props) {
     const footerTheme = useSelector(({ fuse }) => fuse.settings.footerTheme);
+    const { t } = useTranslation();
 
     return (
         <ThemeProvider theme={footerTheme}>
@@ -15,7 +17,7 @@ function FooterLayout1(props) {
 
                     <div className="flex flex-1">
                         <Typography variant="caption">
-                            Copyright © {moment().format('YYYY')} 7e-Sky, Tous les droits sont réservés.
+                            Copyright © {moment().format('YYYY')} 7e-Sky, {t('footer.copyright', 'Tous les droits sont réservés.')}
                     </Typography>
                     </div>
 

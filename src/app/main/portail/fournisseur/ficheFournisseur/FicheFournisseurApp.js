@@ -12,6 +12,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import { Link } from 'react-router-dom';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import _ from '@lodash';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -111,6 +112,7 @@ const useStyles = makeStyles(theme => ({
 function FicheFournisseurApp(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const data = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.data);
     const parametres = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.parametres);
     const { id, tab } = props.match.params;
@@ -142,13 +144,13 @@ function FicheFournisseurApp(props) {
                                 className={classes.backBtn}
                                 onClick={() => props.history.goBack()}
                             >
-                                <Icon className="mr-8 text-18">arrow_back</Icon> Retour
+                                <Icon className="mr-8 text-18">arrow_back</Icon> {t('common.back', 'Retour')}
                             </Button>
 
                             {data && (
                                 <Breadcrumbs separator={<NavigateNextIcon fontSize="small" className="text-white opacity-40" />} className={classes.breadcrumbs}>
-                                    <Link to="/" className="flex items-center opacity-80"><HomeIcon style={{ fontSize: 14 }} className="mr-4" /> Accueil</Link>
-                                    <Link to="/entreprises" className="opacity-80">Entreprises</Link>
+                                    <Link to="/" className="flex items-center opacity-80"><HomeIcon style={{ fontSize: 14 }} className="mr-4" /> {t('common.home', 'Accueil')}</Link>
+                                    <Link to="/entreprises" className="opacity-80">{t('portail.companies', 'Entreprises')}</Link>
                                     <Typography className="font-bold text-white text-12">{data.societe}</Typography>
                                 </Breadcrumbs>
                             )}
@@ -156,12 +158,12 @@ function FicheFournisseurApp(props) {
 
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-16">
                             <Typography variant="h4" className="font-900 text-white tracking-tight">
-                                {data ? data.societe : 'Chargement...'}
+                                {data ? data.societe : t('common.loading', 'Chargement...')}
                             </Typography>
 
                             <div className={classes.switchContainer}>
-                                <Button onClick={() => props.history.push('/vente-produits')} className={clsx(classes.switchBtn, "inactive")}>Produits</Button>
-                                <Button className={clsx(classes.switchBtn, "active")}>Entreprises</Button>
+                                <Button onClick={() => props.history.push('/vente-produits')} className={clsx(classes.switchBtn, "inactive")}>{t('common.products', 'Produits')}</Button>
+                                <Button className={clsx(classes.switchBtn, "active")}>{t('portail.companies', 'Entreprises')}</Button>
                             </div>
                         </div>
                     </div>

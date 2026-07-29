@@ -4,6 +4,8 @@ import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { FuseAnimateGroup, URL_SITE } from "@fuse";
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../utils/translationHelper';
 
 function getSectorIcon(name) {
   if (!name) return 'business';
@@ -204,6 +206,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Categories({ categories }) {
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
 
   if (!Array.isArray(categories) || categories.length === 0) {
     return null;
@@ -245,11 +248,11 @@ function Categories({ categories }) {
 
               <div className={classes.contentWrapper}>
                 <Typography className={classes.categoryTitle}>
-                  {cat.name}
+                  {getTranslatedField(cat, 'name', i18n.language)}
                 </Typography>
                 <div className={classes.cardFooter}>
                   <span className={classes.exploreText}>
-                    Découvrir <Icon className={classes.arrowIcon}>arrow_forward</Icon>
+                    {t('common.discover', 'Découvrir')} <Icon className={classes.arrowIcon}>arrow_forward</Icon>
                   </span>
                 </div>
               </div>
@@ -266,11 +269,11 @@ function Categories({ categories }) {
                 <Icon>apps</Icon>
               </div>
               <Typography className={classes.allSectorsTitle}>
-                 Tous les secteurs
+                 {t('categories.all_sectors', 'Tous les secteurs')}
               </Typography>
               <div className={classes.cardFooter}>
                 <span className={classes.exploreText} style={{ color: "rgba(255,255,255,0.9)" }}>
-                  Annuaire Complet <Icon className={classes.arrowIconAll}>arrow_forward</Icon>
+                  {t('categories.full_directory', 'Annuaire Complet')} <Icon className={classes.arrowIconAll}>arrow_forward</Icon>
                 </span>
               </div>
             </div>

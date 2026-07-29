@@ -3,15 +3,16 @@ import React from 'react';
 export const ForgotPasswordPageConfig = {
     settings: {
         layout: {
+            style: 'layout3',
             config: {
                 navbar        : {
                     display: false
                 },
                 toolbar       : {
-                    display: false
+                    display: true
                 },
                 footer        : {
-                    display: false
+                    display: true
                 },
                 leftSidePanel : {
                     display: false

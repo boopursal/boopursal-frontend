@@ -14,6 +14,7 @@ import ContentList from './ContentList';
 import _ from '@lodash';
 import { Helmet } from "react-helmet";
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -128,6 +129,7 @@ function useQuery(location) {
 
 function ProduitsApp(props) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const query = useQuery(props.location);
     const params = props.match.params;
@@ -182,7 +184,7 @@ function ProduitsApp(props) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
                 <LinearProgress className="w-full max-w-xs rounded-full h-4" color="primary" />
-                <Typography className="mt-16 text-slate-500 font-semibold animate-pulse">Chargement des produits...</Typography>
+                <Typography className="mt-16 text-slate-500 font-semibold animate-pulse">{t('portail.loading_products', 'Chargement des produits...')}</Typography>
             </div>
         );
     }
@@ -197,31 +199,31 @@ function ProduitsApp(props) {
                 <div className={classes.container}>
                     <div className={classes.headerContent}>
                         <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
-                            <Link to="/" className="flex items-center"><HomeIcon className="text-16 mr-4" /> Accueil</Link>
-                            <Link to="/vente-produits">Produits</Link>
+                            <Link to="/" className="flex items-center"><HomeIcon className="text-16 mr-4" /> {t('portail.home', 'Accueil')}</Link>
+                            <Link to="/vente-produits">{t('common.products', 'Produits')}</Link>
                             {secteur && <Typography color="inherit" className="font-bold text-white">{getBreadcrumbTitle()}</Typography>}
                         </Breadcrumbs>
 
                         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-24">
                             <div className="flex-1">
                                 <Typography className={classes.mainTitle}>
-                                    Produits {getBreadcrumbTitle() && <span>{getBreadcrumbTitle()}</span>}
+                                    {t('common.products', 'Produits')} {getBreadcrumbTitle() && <span>{getBreadcrumbTitle()}</span>}
                                     {q && <span className="text-yellow-400"> #{q}</span>}
                                 </Typography>
                                 {pays && (
                                     <div className="flex items-center mt-8 text-blue-100 font-medium">
                                         <Icon className="text-18 mr-4">location_on</Icon>
-                                        Localisation: {_.capitalize(pays)} {ville && `, ${_.capitalize(ville)}`}
+                                        {t('portail.location', 'Localisation')}: {_.capitalize(pays)} {ville && `, ${_.capitalize(ville)}`}
                                     </div>
                                 )}
                             </div>
 
                             <div className={classes.switchContainer}>
                                 <Button className={clsx(classes.switchBtn, "active")}>
-                                    Produits
+                                    {t('common.products', 'Produits')}
                                 </Button>
                                 <Button onClick={handleUrlEntreprises} className={clsx(classes.switchBtn, "inactive")}>
-                                    Entreprises
+                                    {t('portail.companies', 'Entreprises')}
                                 </Button>
                             </div>
                         </div>
@@ -236,17 +238,16 @@ function ProduitsApp(props) {
                             <div className="w-120 h-120 bg-slate-50 rounded-full flex items-center justify-center mb-24">
                                 <Icon className="text-64 text-slate-300">inventory_off</Icon>
                             </div>
-                            <Typography variant="h4" className="mb-16 font-900 text-slate-800">Aucun produit trouvé</Typography>
+                            <Typography variant="h4" className="mb-16 font-900 text-slate-800">{t('portail.no_products', 'Aucun produit trouvé')}</Typography>
                             <Typography className="mb-40 text-slate-500 max-w-md mx-auto text-lg leading-relaxed">
-                                Nous n'avons trouvé aucun produit correspondant à "<strong>{q || 'votre recherche'}</strong>".
-                                Essayez de modifier vos filtres ou d'explorer d'autres catégories.
+                                {t('portail.no_products_desc', 'Nous n\'avons trouvé aucun produit correspondant à votre recherche.')}
                             </Typography>
                             <div className="flex gap-16">
                                 <Button variant="contained" color="primary" onClick={() => props.history.push('/')} className="px-32 py-12 rounded-12 font-bold shadow-lg">
-                                    Retour à l'accueil
+                                    {t('portail.back_home', "Retour à l'accueil")}
                                 </Button>
                                 <Button variant="outlined" onClick={() => props.history.goBack()} className="px-32 py-12 rounded-12 font-bold border-slate-200">
-                                    Page précédente
+                                    {t('portail.prev_page', 'Page précédente')}
                                 </Button>
                             </div>
                         </Paper>

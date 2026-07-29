@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import { Icon, IconButton, Select, Button, Tooltip } from "@material-ui/core";
 import * as Actions from "../store/actions";
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const stringToColor = (string) => {
   if (!string) return '#94a3b8';
@@ -214,6 +216,7 @@ function ProduitListItem(props) {
   const loading = useSelector(({ produitsApp }) => produitsApp.produits.loading);
   const parametres = useSelector(({ produitsApp }) => produitsApp.produits.parametres);
   const { classes } = props;
+  const { t, i18n } = useTranslation();
 
   function scrollToTop() {
     // Try the Fuse layout scroll container first
@@ -256,7 +259,9 @@ function ProduitListItem(props) {
     <div className={classes.root}>
       <div className={classes.gridContainer}>
         {produits && produits.length > 0 ? (
-          produits.map((produit, index) => (
+          produits.map((produit, index) => {
+            const translatedTitre = getTranslatedField(produit, 'titre', i18n.language);
+            return (
             <div className={classes.productCard} key={index}>
               <Link
                 to={`/detail-produit/${produit.sousSecteurs ? produit.sousSecteurs.slug : 'slug'}/${produit.categorie ? produit.categorie.slug : 'slug'}/${produit.id}-${produit.slug}`}
@@ -266,7 +271,7 @@ function ProduitListItem(props) {
                 {produit.featuredImageId ? (
                   <img
                     className={classes.img}
-                    alt={produit.titre}
+                    alt={translatedTitre}
                     src={getImageUrl(produit.featuredImageId.url, '/images/produits/')}
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
@@ -274,7 +279,7 @@ function ProduitListItem(props) {
                   <div 
                     className={classes.img} 
                     style={{
-                      backgroundColor: stringToColor(produit.titre),
+                      backgroundColor: stringToColor(translatedTitre),
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -284,7 +289,7 @@ function ProduitListItem(props) {
                       textTransform: 'uppercase'
                     }}
                   >
-                    {getInitials(produit.titre)}
+                    {getInitials(translatedTitre)}
                   </div>
                 )}
                 <div className={classes.imageOverlay}>
@@ -294,13 +299,13 @@ function ProduitListItem(props) {
 
               <div className={classes.content}>
                 <div className={classes.category}>
-                  {produit.categorie ? produit.categorie.name : 'Produit'}
+                  {produit.categorie ? getTranslatedField(produit.categorie, 'name', i18n.language) : 'Produit'}
                 </div>
                 <Link
                   className={classes.title}
                   to={`/detail-produit/${produit.sousSecteurs ? produit.sousSecteurs.slug : 'slug'}/${produit.categorie ? produit.categorie.slug : 'slug'}/${produit.id}-${produit.slug}`}
                 >
-                  {produit.titre}
+                  {translatedTitre}
                 </Link>
 
                 <div className="flex items-center text-slate-500 text-xs font-semibold mb-20 bg-slate-50 w-fit px-10 py-6 rounded-8 border border-slate-100">
@@ -311,7 +316,7 @@ function ProduitListItem(props) {
                   <div className={classes.price}>
                     {produit.pu && parseFloat(produit.pu) > 0
                       ? parseFloat(produit.pu).toLocaleString(undefined, { minimumFractionDigits: 0 }) + " " + (produit.currency ? (produit.currency.name || produit.currency) : "MAD")
-                      : <span className="text-sm font-bold bg-slate-100 text-slate-600 px-12 py-6 rounded-full inline-block" style={{ fontSize: '0.85rem' }}>PRIX SUR DEVIS</span>
+                      : <span className="text-sm font-bold bg-slate-100 text-slate-600 px-12 py-6 rounded-full inline-block" style={{ fontSize: '0.85rem' }}>{t('portail.products.priceOnQuote', 'PRIX SUR DEVIS')}</span>
                     }
                   </div>
 
@@ -328,7 +333,8 @@ function ProduitListItem(props) {
                 </div>
               </div>
             </div>
-          ))
+          );
+          })
         ) : null}
       </div>
 

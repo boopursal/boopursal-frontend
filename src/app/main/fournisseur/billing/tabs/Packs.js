@@ -47,7 +47,7 @@ function Packs(props) {
   const classes = useStyles();
   const { currency } = props;
   const dispatch = useDispatch();
-  const commande = useSelector(({ billingApp }) => billingApp.commande);
+  const commande = useSelector(({ billingApp }) => billingApp?.commande);
 
   useEffect(() => {
     dispatch(Actions.getOffres());

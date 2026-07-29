@@ -4,6 +4,7 @@ import TarifDetail from "./TarifDetail";
 import HeaderTarif from "./HeaderTarif";
 import clsx from "clsx";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,14 +26,15 @@ const useStyles = makeStyles((theme) => ({
 
 function TarifsApp(props) {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <div className={clsx(classes.root, "min-h-md")}>
       <Helmet>
-        <title>Tarifs & Plans | Boopursal</title>
+        <title>{t('tarifs.title', 'Tarification & Formules')} | Boopursal</title>
         <meta
           name="description"
-          content="Découvrez les tarifs, abonnements et jetons pour fournisseurs et acheteurs sur Boopursal."
+          content={t('tarifs.subtitle', 'Boopursal: Votre partenaire business B2B')}
         />
       </Helmet>
 

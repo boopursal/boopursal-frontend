@@ -22,34 +22,33 @@ const useStyles = makeStyles(theme => ({
     input: {
         background: '#ffffff',
         borderRadius: 40,
-        height: 72, // Plus haut
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
+        height: 64, // Sleeker height
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)',
         transition: 'all 0.3s ease',
         '& .MuiOutlinedInput-notchedOutline': {
             borderRadius: 40,
-            border: '1.5px solid #e2e8f0',
+            border: 'none', // No border to match the clean pill look
         },
         '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#2563eb',
+            border: 'none',
         },
         '&.Mui-focused': {
-            boxShadow: '0 10px 30px rgba(37, 99, 235, 0.1)',
+            boxShadow: '0 10px 30px rgba(37, 99, 235, 0.08)',
             '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#2563eb',
-                borderWidth: '2px',
+                border: 'none',
             },
         }
     },
     mainPaper: {
-        borderRadius: "20px",
-        marginTop: (props) => props.inline ? 40 : 8,
-        padding: "24px",
-        border: '1.5px solid #e2e8f0',
+        borderRadius: (props) => props.inline ? "0px" : "20px",
+        marginTop: (props) => props.inline ? 20 : 8,
+        padding: (props) => props.inline ? "0px" : "24px",
+        border: (props) => props.inline ? 'none' : '1.5px solid #e2e8f0',
         boxShadow: (props) => props.inline ? 'none' : '0 20px 60px rgba(0, 0, 0, 0.15)',
         overflow: 'hidden',
         width: (props) => props.inline ? '100%' : '1600px',
         maxWidth: (props) => props.inline ? '100%' : '95vw',
-        background: '#f8fafc',
+        background: (props) => props.inline ? 'transparent' : '#f1f5f9',
         position: 'relative',
         zIndex: 10,
         transition: 'all 0.3s ease-out',
@@ -67,19 +66,20 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         background: '#ffffff',
         borderRadius: '16px',
-        border: '1px solid #e2e8f0',
+        border: 'none', // Removed border as per screenshot
         overflow: 'hidden',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.03)', // Soft shadow for the cards
     },
     columnHeader: {
-        padding: '24px 20px',
+        padding: '20px',
         background: '#ffffff',
-        borderBottom: '2px solid #1e3a8a',
+        borderBottom: '1.5px solid #1C2434', // Thin navy line from screenshot
         textAlign: 'center',
+        margin: '0 16px', // Line doesn't touch the very edges in the screenshot usually, wait, in screenshot it touches edges? Let's look closely. Actually it touches the edges.
         '& h4': {
-            fontSize: '1.2rem', // Plus grand
+            fontSize: '0.95rem',
             fontWeight: 800,
-            color: '#1e3a8a',
+            color: '#1C2434',
             margin: 0,
             letterSpacing: '0.02em',
         }
@@ -164,10 +164,11 @@ const useStyles = makeStyles(theme => ({
         }
     },
     noResults: {
-        padding: 60,
+        padding: "60px 20px",
         textAlign: 'center',
-        color: '#94a3b8',
-        fontSize: '1rem',
+        color: '#94a3b8', // subtle gray
+        fontSize: '0.85rem',
+        fontWeight: 500,
     }
 }));
 

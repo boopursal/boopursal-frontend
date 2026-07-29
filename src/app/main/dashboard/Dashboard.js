@@ -7,8 +7,10 @@ import DashboardAdmin from '../administration/dashboard/DashboardAdmin';
 import DashboardAppMediateur from '../mediateur/dashboard/DashboardApp';
 
 import { Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function Dashboard(props) {
+    const { t } = useTranslation();
     const user = useSelector(({ auth }) => auth.user);
     const role = user.role;
 
@@ -58,7 +60,7 @@ function Dashboard(props) {
     return (
         <div className="flex flex-1 items-center justify-center p-24">
             <Typography variant="h5" color="textSecondary">
-                Chargement de votre espace... ({String(role)})
+                {t('common.loading')} ({String(role)})
             </Typography>
         </div>
     );

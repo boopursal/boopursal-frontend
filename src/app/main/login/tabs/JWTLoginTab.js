@@ -10,6 +10,7 @@ import * as Actions from "app/store/actions";
 import { Link } from "react-router-dom";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -70,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
 
 function JWTLoginTab() {
   const classes = useStyles();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const login = useSelector(({ auth }) => auth.login);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -89,7 +91,7 @@ function JWTLoginTab() {
       dispatch(
         Actions.showMessage({
           message: login.error.message === "Invalid credentials."
-            ? "Email ou mot de passe incorrect."
+            ? t('login.invalidCredentials', 'Email ou mot de passe incorrect.')
             : login.error.message,
           autoHideDuration: 6000,
           anchorOrigin: { vertical: "top", horizontal: "right" },
@@ -118,9 +120,9 @@ function JWTLoginTab() {
           className={clsx(classes.input, "mb-20")}
           type="email"
           name="email"
-          label="Adresse Email"
+          label={t('login.emailLabel', 'Adresse Email')}
           validations="isEmail"
-          validationErrors={{ isEmail: "L'adresse email n'est pas valide" }}
+          validationErrors={{ isEmail: t('login.emailInvalid', "L'adresse email n'est pas valide") }}
           variant="outlined"
           fullWidth
           required
@@ -137,10 +139,10 @@ function JWTLoginTab() {
           className={classes.input}
           type={values.showPassword ? "text" : "password"}
           name="password"
-          label="Mot de passe"
+          label={t('login.passwordLabel', 'Mot de passe')}
           onChange={handleChange("password")}
           validations={{ minLength: 6 }}
-          validationErrors={{ minLength: "La longueur minimale est de 6 caractères" }}
+          validationErrors={{ minLength: t('login.passwordMinLength', 'La longueur minimale est de 6 caractères') }}
           variant="outlined"
           fullWidth
           required
@@ -164,7 +166,7 @@ function JWTLoginTab() {
         />
 
         <Link className={classes.forgotLink} to="/forgot-password">
-          Mot de passe oublié ?
+          {t('login.forgotPassword', 'Mot de passe oublié ?')}
         </Link>
 
         <Button
@@ -174,7 +176,7 @@ function JWTLoginTab() {
           className={classes.submitButton}
           disabled={!isFormValid || login.loading}
         >
-          {login.loading ? <CircularProgress size={24} color="inherit" /> : "Se connecter maintenant"}
+          {login.loading ? <CircularProgress size={24} color="inherit" /> : t('login.submitBtn', 'Se connecter maintenant')}
         </Button>
       </Formsy>
     </div>

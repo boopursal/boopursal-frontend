@@ -28,6 +28,7 @@ import InfoEntreprise from "./tabs/InfoEntreprise";
 import Produits from "./tabs/Produits";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { showMessage } from "app/store/actions/fuse";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -233,6 +234,7 @@ const LI_ICON = <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5
 const WA_ICON = <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.891 11.891-11.891 3.181 0 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.481 8.403 0 6.556-5.332 11.891-11.891 11.891-2.001 0-3.961-.503-5.713-1.457l-6.28 1.675zm11.913-21.493c-5.299 0-9.613 4.312-9.613 9.611 0 2.023.626 3.992 1.796 5.632l-1.077 3.93 4.02-1.073c1.554.912 3.321 1.394 5.122 1.394 5.301 0 9.615-4.314 9.615-9.613 0-2.559-1.002-4.965-2.822-6.786-1.815-1.815-4.223-2.815-6.821-2.815zm5.286 12.875c-.289-.145-1.714-.847-1.98-.943-.264-.097-.457-.145-.65.145-.195.289-.749.943-.917 1.137-.168.194-.336.216-.624.072-.288-.145-1.22-.449-2.324-1.434-.86-.766-1.44-1.713-1.609-2.002-.168-.288-.018-.444.126-.587.13-.129.288-.337.433-.505.144-.169.192-.289.288-.481.096-.192.048-.36-.024-.505-.072-.144-.65-1.566-.891-2.144-.233-.563-.473-.487-.65-.496-.168-.009-.36-.009-.553-.009-.192 0-.505.072-.769.36-.264.289-1.01 0.985-1.01 2.404s1.033 2.784 1.177 2.977c.144.192 2.031 3.102 4.921 4.352.686.297 1.222.474 1.639.607.69.219 1.319.189 1.815.115.553-.083 1.714-.699 1.956-1.374.24-.675.24-1.253.168-1.374-.072-.121-.264-.193-.552-.338z" /></svg>;
 
 function FicheFournisseur(props) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const classes = useStyles();
   const [value, setValue] = useState(0);
@@ -301,7 +303,7 @@ function FicheFournisseur(props) {
             <div className={classes.infoContainer}>
               <div className={classes.infoItem}>
                 <Icon style={{ fontSize: 20 }} className="text-slate-300">business</Icon>
-                <span>Identifiant Commun (ICE): <span className="text-slate-900 font-900 ml-4">{data.ice || 'Contactez-nous'}</span></span>
+                <span>{t('fournisseur.ice', 'Identifiant Commun (ICE):')} <span className="text-slate-900 font-900 ml-4">{data.ice || t('fournisseur.contactUs', 'Contactez-nous')}</span></span>
               </div>
               {data.website && (
                 <div className={classes.infoItem}>
@@ -328,8 +330,8 @@ function FicheFournisseur(props) {
             textColor="primary"
             className="w-full"
           >
-            <Tab label="NOTRE PRÉSENTATION" className={classes.tab} />
-            <Tab label="CATALOGUE PRODUITS" className={classes.tab} />
+            <Tab label={t('fournisseur.tabPresentation', 'NOTRE PRÉSENTATION')} className={classes.tab} />
+            <Tab label={t('fournisseur.tabProducts', 'CATALOGUE PRODUITS')} className={classes.tab} />
           </Tabs>
         </div>
 
@@ -346,7 +348,7 @@ function FicheFournisseur(props) {
 
             <Grid item md={4} xs={12}>
               <div className={classes.contactCard}>
-                <Typography className={classes.contactTitle}>Partage & Contact</Typography>
+                <Typography className={classes.contactTitle}>{t('fournisseur.shareContact', 'Partage & Contact')}</Typography>
 
                 <div className={classes.shareGrid}>
                   <Tooltip title="Facebook" placement="top">
@@ -369,7 +371,7 @@ function FicheFournisseur(props) {
                 <div className={classes.contactItem}>
                   <Icon>location_on</Icon>
                   <div>
-                    <Typography className="text-13 font-900 text-slate-800 uppercase tracking-widest mb-4">Siège Social</Typography>
+                    <Typography className="text-13 font-900 text-slate-800 uppercase tracking-widest mb-4">{t('fournisseur.headquarters', 'Siège Social')}</Typography>
                     <Typography className="text-15 text-slate-500 leading-relaxed font-600">
                       {data.adresse1}<br />
                       {data.ville?.name}, {data.pays?.name}
@@ -385,7 +387,7 @@ function FicheFournisseur(props) {
                     className={clsx(classes.actionBtn, classes.primaryBtn)}
                     onClick={() => dispatch(Actions.openNewContactFournisseurDialog(data.id))}
                   >
-                    <Icon className="mr-12">send</Icon> Envoyer un message
+                    <Icon className="mr-12">send</Icon> {t('fournisseur.sendMessage', 'Envoyer un message')}
                   </Button>
 
                   {fournisseur.showPhone ? (
@@ -402,14 +404,14 @@ function FicheFournisseur(props) {
                       onClick={() => dispatch(Actions.updateVuPhoneFournisseur(data.id))}
                     >
                       <Icon className="mr-12">call</Icon>
-                      {fournisseur.loadingsPhone ? <CircularProgress size={20} className="mr-8" /> : "Afficher le téléphone"}
+                      {fournisseur.loadingsPhone ? <CircularProgress size={20} className="mr-8" /> : t('fournisseur.showPhone', 'Afficher le téléphone')}
                     </Button>
                   )}
                 </div>
 
                 <div className={classes.copyInput}>
                   <Typography className="text-11 text-slate-400 flex-1 truncate font-800">{window.location.href}</Typography>
-                  <CopyToClipboard text={window.location.href} onCopy={() => dispatch(showMessage({ message: "URL copiée !", anchorOrigin: { vertical: "top", horizontal: "right" }, variant: "success" }))}>
+                  <CopyToClipboard text={window.location.href} onCopy={() => dispatch(showMessage({ message: t('fournisseur.urlCopied', 'URL copiée !'), anchorOrigin: { vertical: "top", horizontal: "right" }, variant: "success" }))}>
                     <IconButton size="small" color="primary"><Icon className="text-18">content_copy</Icon></IconButton>
                   </CopyToClipboard>
                 </div>

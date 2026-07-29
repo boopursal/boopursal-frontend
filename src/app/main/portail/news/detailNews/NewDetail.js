@@ -11,6 +11,7 @@ import { InlineShareButtons } from "sharethis-reactjs";
 import _ from "@lodash";
 import { URL_SITE } from "@fuse/Constants";
 import clsx from "clsx";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,47 +71,55 @@ function NewDetail(props) {
                     </Typography>
                 </div>
             );
+            );
         }
     */
+
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language === 'fr' ? '' : `_${i18n.language}`;
+  
+  const translatedTitre = actualite?.data ? (actualite.data[`titre${currentLang}`] || actualite.data.titre) : '';
+  const translatedApercu = actualite?.data ? (actualite.data[`apercu${currentLang}`] || actualite.data.apercu) : '';
+  const translatedDesc = actualite?.data ? (actualite.data[`description${currentLang}`] || actualite.data.description) : '';
 
   return (
     <>
       {actualite.data && (
         <Helmet>
           <title>
-            {_.truncate(actualite.data.titre, { length: 70, separator: " " })}
+            {_.truncate(translatedTitre, { length: 70, separator: " " })}
           </title>
           <meta
             name="description"
-            content={_.truncate(actualite.data.apercu, {
+            content={_.truncate(translatedApercu, {
               length: 160,
               separator: " ",
             })}
           />
           <meta
             property="og:title"
-            content={_.truncate(actualite.data.titre, {
+            content={_.truncate(translatedTitre, {
               length: 70,
               separator: " ",
             })}
           />
           <meta
             property="og:description"
-            content={_.truncate(actualite.data.apercu, {
+            content={_.truncate(translatedApercu, {
               length: 160,
               separator: " ",
             })}
           />
           <meta
             property="twitter:title"
-            content={_.truncate(actualite.data.titre, {
+            content={_.truncate(translatedTitre, {
               length: 70,
               separator: " ",
             })}
           />
           <meta
             property="twitter:description"
-            content={_.truncate(actualite.data.apercu, {
+            content={_.truncate(translatedApercu, {
               length: 160,
               separator: " ",
             })}
@@ -169,7 +178,7 @@ function NewDetail(props) {
                           component="h1"
                           color="primary"
                         >
-                          {actualite.data.titre}
+                          {translatedTitre}
                         </Typography>
                         <Typography color="textSecondary">
                           Publiée le{" "}
@@ -208,9 +217,9 @@ function NewDetail(props) {
                                 actualite.data.image &&
                                 URL_SITE + "/images/actualite/" + actualite.data.image.url, // (defaults to og:image or twitter:image)
                               //description: 'custom text',       // (defaults to og:description or twitter:description)
-                              title: actualite.data.titre, // (defaults to og:title or twitter:title)
+                              title: translatedTitre, // (defaults to og:title or twitter:title)
                               //message: 'custom email text',     // (only for email sharing)
-                              subject: actualite.data.titre, // (only for email sharing)
+                              subject: translatedTitre, // (only for email sharing)
                               //username: 'custom twitter handle' // (only for twitter sharing)
                             }}
                           />
@@ -230,7 +239,7 @@ function NewDetail(props) {
 
                     <CKEditor
                       editor={ClassicEditor}
-                      data={actualite.data.description}
+                      data={translatedDesc}
                       config={{
                         language: "fr",
                         toolbar: [],
@@ -261,7 +270,7 @@ function NewDetail(props) {
   href="/actualites"
   className="whitespace-no-wrap border border-secondary text-secondary px-4 py-2 rounded hover:bg-secondary hover:text-black transition-all inline-flex items-center"
 >
-  Toute l'actualité
+  {t('newsApp.all_news', "Toute l'actualité")}
   <span className="ml-4 arrow-icon material-icons">keyboard_arrow_right</span>
 </a>
                     </div>

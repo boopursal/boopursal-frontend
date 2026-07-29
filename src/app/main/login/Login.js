@@ -7,6 +7,8 @@ import clsx from 'clsx';
 import JWTLoginTab from './tabs/JWTLoginTab';
 import { Helmet } from "react-helmet";
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from 'app/fuse-layouts/shared-components/LanguageSwitcher';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -169,6 +171,7 @@ const useStyles = makeStyles(theme => ({
 
 function Login() {
     const classes = useStyles();
+    const { t } = useTranslation();
     const login = useSelector(({ auth }) => auth.login);
 
     if (login.relogin) {
@@ -178,8 +181,8 @@ function Login() {
     return (
         <div className={classes.root}>
             <Helmet>
-                <title>Connexion & Inscription | Boopursal</title>
-                <meta name="description" content="Espace membre professionnel Boopursal." />
+                <title>{t('login.pageTitle', 'Connexion & Inscription | Boopursal')}</title>
+                <meta name="description" content={t('login.pageDesc', 'Espace membre professionnel Boopursal.')} />
             </Helmet>
 
             <div className={classes.backgroundArt} />
@@ -191,21 +194,21 @@ function Login() {
                     <div className={classes.loginPane}>
                         <img className={classes.logo} src="/assets/images/logos/icon.png" alt="Boopursal" />
                         <Typography className={classes.title}>Boopursal</Typography>
-                        <Typography className={classes.subtitle}>Accédez à votre écosystème d'achats professionnel.</Typography>
+                        <Typography className={classes.subtitle}>{t('login.subtitle', 'Accédez à votre écosystème d\'achats professionnel.')}</Typography>
 
                         <JWTLoginTab />
 
                         <Link to="/" className={classes.footerLink}>
                             <Icon className="text-16 mr-8">keyboard_backspace</Icon>
-                            Portail Boopursal
+                            {t('login.backToPortal', 'Portail Boopursal')}
                         </Link>
                     </div>
 
                     {/* LE CÔTÉ INSCRIPTION (PARALLÈLE) */}
                     <div className={classes.registerPane}>
-                        <Typography className={classes.sectionTitle}>Nouveau sur la plateforme ?</Typography>
+                        <Typography className={classes.sectionTitle}>{t('login.newUser', 'Nouveau sur la plateforme ?')}</Typography>
                         <Typography className="text-24 font-900 text-slate-800 mb-24 tracking-tight leading-tight">
-                            Rejoignez le premier réseau B2B du Maroc.
+                            {t('login.joinNetwork', 'Rejoignez le premier réseau B2B du Maroc.')}
                         </Typography>
 
                         <div className={classes.ctaBox}>
@@ -218,8 +221,8 @@ function Login() {
                                     <Icon style={{ color: '#f59e0b' }}>storefront</Icon>
                                 </div>
                                 <div>
-                                    <Typography className={classes.optionTitle}>Vendeur / Fournisseur</Typography>
-                                    <Typography className={classes.optionDesc}>Boostez vos ventes aujourd'hui.</Typography>
+                                    <Typography className={classes.optionTitle}>{t('login.supplierOption', 'Vendeur / Fournisseur')}</Typography>
+                                    <Typography className={classes.optionDesc}>{t('login.supplierOptionDesc', 'Boostez vos ventes aujourd\'hui.')}</Typography>
                                 </div>
                                 <Icon className="ml-auto text-slategray opacity-30">chevron_right</Icon>
                             </ButtonBase>
@@ -233,8 +236,8 @@ function Login() {
                                     <Icon style={{ color: '#3b82f6' }}>shopping_cart</Icon>
                                 </div>
                                 <div>
-                                    <Typography className={classes.optionTitle}>Directeur Achat</Typography>
-                                    <Typography className={classes.optionDesc}>Optimisez votre sourcing.</Typography>
+                                    <Typography className={classes.optionTitle}>{t('login.buyerOption', 'Directeur Achat')}</Typography>
+                                    <Typography className={classes.optionDesc}>{t('login.buyerOptionDesc', 'Optimisez votre sourcing.')}</Typography>
                                 </div>
                                 <Icon className="ml-auto text-slategray opacity-30">chevron_right</Icon>
                             </ButtonBase>
@@ -242,10 +245,10 @@ function Login() {
 
                         <div className="mt-48 p-24 bg-white border border-slate-100 rounded-20">
                             <Typography className="text-13 font-700 text-slate-600 italic">
-                                "La plateforme idéale pour sécuriser ses approvisionnements."
+                                {t('login.testimonial', '"La plateforme idéale pour sécuriser ses approvisionnements."')}
                             </Typography>
                             <Typography className="text-11 font-800 text-blue mt-8 uppercase tracking-widest">
-                                — Expert Secteur Industriel
+                                {t('login.testimonialAuthor', '— Expert Secteur Industriel')}
                             </Typography>
                         </div>
                     </div>

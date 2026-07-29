@@ -22,6 +22,8 @@
         "downshift": "3.2.10",
         "formsy-react": "1.1.5",
         "google-map-react": "1.1.4",
+        "i18next": "^21.10.0",
+        "i18next-browser-languagedetector": "^6.1.8",
         "jsonwebtoken": "8.5.1",
         "jss": "10.0.0-alpha.16",
         "jss-extend": "6.2.0",
@@ -53,6 +55,7 @@
         "react-helmet": "^5.2.1",
         "react-highlight-words": "^0.16.0",
         "react-html-parser": "^2.0.2",
+        "react-i18next": "^11.18.6",
         "react-image-lightbox": "^5.1.1",
         "react-mailchimp-subscribe": "^2.1.0",
         "react-masonry-css": "1.0.12",
@@ -80,7 +83,11 @@
     },
     "resolutions": {
         "react": "16.8.6",
-        "react-dom": "16.8.6"
+        "react-dom": "16.8.6",
+        "react-error-overlay": "6.0.9"
+    },
+    "overrides": {
+        "react-error-overlay": "6.0.9"
     },
     "devDependencies": {
         "@babel/core": "7.4.5",

@@ -28,6 +28,8 @@ import _ from "@lodash";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { URL_SITE, getImageUrl } from "@fuse/Constants";
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -257,6 +259,7 @@ function DetailProduit(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const produit = useSelector(({ produitsApp }) => produitsApp.detailProduit);
+  const { t, i18n } = useTranslation();
 
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -303,7 +306,7 @@ function DetailProduit(props) {
   return (
     <div className={classes.root}>
       <Helmet>
-        <title>{`${data.titre} | Boopursal`}</title>
+        <title>{`${getTranslatedField(data, 'titre', i18n.language)} | Boopursal`}</title>
       </Helmet>
 
       <Paper className={classes.mainPaper}>
@@ -314,12 +317,12 @@ function DetailProduit(props) {
               <img
                 src={images[photoIndex]}
                 className={classes.mainImg}
-                alt={data.titre}
+                alt={getTranslatedField(data, 'titre', i18n.language)}
               />
             ) : (
               <div className="flex flex-col items-center gap-16">
                 <Icon className="text-128 text-slate-200">image</Icon>
-                <Typography className="text-slate-300 font-bold uppercase tracking-widest text-xs">Aucun visuel disponible</Typography>
+                <Typography className="text-slate-300 font-bold uppercase tracking-widest text-xs">{t('portail.products.no_visual', 'Aucun visuel disponible')}</Typography>
               </div>
             )}
           </div>
@@ -341,22 +344,22 @@ function DetailProduit(props) {
         {/* Info Section */}
         <div className={classes.rightCol}>
           <div className={classes.categoryLabel}>
-            {data.sousSecteurs?.name || 'Catégorie'} • Réf: {data.reference || 'N/A'}
+            {data.sousSecteurs ? getTranslatedField(data.sousSecteurs, 'name', i18n.language) : 'Catégorie'} • Réf: {data.reference || 'N/A'}
           </div>
 
           <Typography className={classes.productTitle}>
-            {data.titre}
+            {getTranslatedField(data, 'titre', i18n.language)}
           </Typography>
 
           <div className={classes.priceBadge}>
             <span className="val">
-              {data.pu ? parseFloat(data.pu).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) : "Sur demande"}
+              {data.pu ? parseFloat(data.pu).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) : t('portail.products.on_demand', "Sur demande")}
             </span>
-            {data.pu ? <span className="cur">{data.currency?.name || 'MAD'} HT</span> : <span className="cur">Estimation gratuite</span>}
+            {data.pu ? <span className="cur">{data.currency?.name || 'MAD'} HT</span> : <span className="cur">{t('portail.products.free_estimate', 'Estimation gratuite')}</span>}
           </div>
 
           <Typography className={classes.description}>
-            {_.truncate(data.description, { length: 450 })}
+            {_.truncate(getTranslatedField(data, 'description', i18n.language), { length: 450 })}
           </Typography>
 
           <Button
@@ -366,7 +369,7 @@ function DetailProduit(props) {
             onClick={() => dispatch(Actions.openNewDemandeDevisDialog(data["@id"]))}
           >
             <Icon>receipt_long</Icon>
-            Demander un devis personnalisé
+            {t('portail.products.request_custom_quote', 'Demander un devis personnalisé')}
           </Button>
 
           {/* Supplier Info */}
@@ -397,14 +400,14 @@ function DetailProduit(props) {
       <div className={classes.infoTabs}>
         <Grid container spacing={4}>
           <Grid item md={7} xs={12}>
-            <Typography variant="h6" className="font-900 text-slate-800 mb-16 uppercase text-14 tracking-widest">Description Complète</Typography>
+            <Typography variant="h6" className="font-900 text-slate-800 mb-16 uppercase text-14 tracking-widest">{t('portail.products.full_description', 'Description Complète')}</Typography>
             <Typography className="text-slate-500 whitespace-pre-line leading-relaxed">
-              {data.description}
+              {getTranslatedField(data, 'description', i18n.language)}
             </Typography>
 
             {data.videos && (
               <div className="mt-40">
-                <Typography variant="h6" className="font-900 text-slate-800 mb-24 uppercase text-14 tracking-widest">Présentation Vidéo</Typography>
+                <Typography variant="h6" className="font-900 text-slate-800 mb-24 uppercase text-14 tracking-widest">{t('portail.products.video_presentation', 'Présentation Vidéo')}</Typography>
                 <div className="rounded-24 overflow-hidden shadow-xl">
                   <YouTube videoId={data.videos} opts={{ width: '100%', playerVars: { rel: 0 } }} />
                 </div>
@@ -415,21 +418,21 @@ function DetailProduit(props) {
             {data.ficheTechnique && (
               <div className="p-32 bg-slate-50 rounded-24 flex flex-col items-center border border-slate-100">
                 <Icon className="text-64 text-blue-500 mb-16">cloud_download</Icon>
-                <Typography variant="h6" className="font-900 text-slate-800 mb-8">Documentation</Typography>
-                <Typography className="text-slate-400 text-center mb-32 text-13">Consultez la fiche technique détaillée (PDF) pour plus de caractéristiques.</Typography>
+                <Typography variant="h6" className="font-900 text-slate-800 mb-8">{t('portail.products.documentation', 'Documentation')}</Typography>
+                <Typography className="text-slate-400 text-center mb-32 text-13">{t('portail.products.doc_desc', 'Consultez la fiche technique détaillée (PDF) pour plus de caractéristiques.')}</Typography>
                 <Button
                   variant="contained"
                   color="primary"
                   className="rounded-12 font-bold px-32 shadow-xl"
                   onClick={() => dispatch(Actions.getFile(data.ficheTechnique))}
                 >
-                  Télécharger
+                  {t('common.download', 'Télécharger')}
                 </Button>
               </div>
             )}
 
             <div className="mt-32 p-32 bg-white rounded-24 border border-slate-100">
-              <Typography className="font-black text-slate-300 uppercase text-xs tracking-widest mb-16">Partager le produit</Typography>
+              <Typography className="font-black text-slate-300 uppercase text-xs tracking-widest mb-16">{t('portail.products.share_product', 'Partager le produit')}</Typography>
               <InlineShareButtons
                 key={data.id}
                 config={{
@@ -438,7 +441,7 @@ function DetailProduit(props) {
                   networks: ['whatsapp', 'messenger', 'linkedin', 'facebook', 'email'],
                   radius: 12,
                   size: 36,
-                  title: data.titre
+                  title: getTranslatedField(data, 'titre', i18n.language)
                 }}
               />
             </div>
@@ -451,7 +454,7 @@ function DetailProduit(props) {
         <div className="mt-64">
           <div className="flex items-center gap-16 mb-40">
             <div className="w-12 h-32 bg-yellow-400 rounded-full" />
-            <Typography variant="h4" className="font-900 text-slate-800 tracking-tight">Ceci peut vous intéresser</Typography>
+            <Typography variant="h4" className="font-900 text-slate-800 tracking-tight">{t('portail.products.might_interest', 'Ceci peut vous intéresser')}</Typography>
           </div>
           <Slider {...similarSliderSettings}>
             {produit.produitsSimilaires.map((item, idx) => (

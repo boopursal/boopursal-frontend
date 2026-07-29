@@ -78,9 +78,9 @@ function CommandeDialog(props) {
     suggestions: [],
   };
   const dispatch = useDispatch();
-  const commande = useSelector(({ billingApp }) => billingApp.commande);
+  const commande = useSelector(({ billingApp }) => billingApp?.commande);
   const commandeDialog = useSelector(
-    ({ billingApp }) => billingApp.commande.commandeDialog
+    ({ billingApp }) => billingApp?.commande?.commandeDialog || { type: 'new', props: { open: false }, data: null }
   );
   const [activeStep, setActiveStep] = useState(0);
   const [selectedPack, setSelectedPack] = useState(defaultFormState);

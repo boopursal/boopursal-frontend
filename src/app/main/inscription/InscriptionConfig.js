@@ -5,7 +5,7 @@ export const InscriptionConfig = {
     auth: [], // Accessible uniquement aux visiteurs non connectés (guest)
     settings: {
         layout: {
-            style: 'layout1',
+            style: 'layout3',
             config: {
                 mode: 'fullwidth',
                 scroll: 'content',
@@ -13,10 +13,10 @@ export const InscriptionConfig = {
                     display: false
                 },
                 toolbar: {
-                    display: false
+                    display: true
                 },
                 footer: {
-                    display: false,
+                    display: true,
                     style: 'static'
                 },
                 leftSidePanel: {

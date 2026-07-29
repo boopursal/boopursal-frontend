@@ -11,6 +11,8 @@ import {
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { URL_SITE } from "@fuse/Constants";
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CardSecteur(props) {
   const classes = useStyles();
   const { secteur } = props;
+  const { t, i18n } = useTranslation();
   const targetUrl = `/annuaire-entreprises/${secteur.id}-${secteur.slug}`;
 
   // Reliable placeholder for business/industrial sectors
@@ -91,7 +94,7 @@ export default function CardSecteur(props) {
       >
         <div className={classes.header}>
           <Typography className={classes.title}>
-            {secteur.name}
+            {getTranslatedField(secteur, 'name', i18n.language)}
           </Typography>
         </div>
 
@@ -104,12 +107,12 @@ export default function CardSecteur(props) {
                 : URL_SITE + "/images/secteur/" + secteur.url
               : defaultImage
           }
-          title={secteur.name}
+          title={getTranslatedField(secteur, 'name', i18n.language)}
         />
 
         <div className={classes.cardActions}>
           <span className={classes.viewText}>
-            Explorer le secteur
+            {t('secteurs.explore_sector', 'Explorer le secteur')}
           </span>
           <Icon size="small" style={{ color: '#cbd5e1' }}>arrow_forward</Icon>
         </div>

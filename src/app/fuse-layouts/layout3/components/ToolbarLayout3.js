@@ -7,8 +7,10 @@ import { Menu, Close } from "@material-ui/icons";
 import LogoPortail from "app/fuse-layouts/shared-components/LogoPortail";
 import { useSelector } from "react-redux";
 import UserMenu from "app/fuse-layouts/shared-components/UserMenu";
+import LanguageSwitcher from "app/fuse-layouts/shared-components/LanguageSwitcher";
 import history from "@history";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,18 +58,80 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     padding: "0 20px",
   },
+  "@keyframes borderGlow": {
+    "0%, 100%": {
+      boxShadow: "0 0 0 0 rgba(245, 166, 35, 0.0), inset 0 0 0 0 rgba(245, 166, 35, 0)"
+    },
+    "50%": {
+      boxShadow: "0 0 20px 4px rgba(245, 166, 35, 0.25), inset 0 0 0 0 rgba(245, 166, 35, 0)"
+    }
+  },
+  pulseButton: {
+    position: "relative",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    animation: "$borderGlow 2.4s ease-in-out infinite",
+    background: "#1C2434", // Marine profond — couleur principale du logo
+    color: "#F5A623",      // Doré — couleur accent du logo
+    fontWeight: 800,
+    fontSize: "0.88rem",
+    textTransform: "uppercase",
+    letterSpacing: "0.8px",
+    borderRadius: "12px",
+    padding: "10px 22px",
+    marginRight: "12px",
+    border: "1.5px solid #F5A623",
+    boxShadow: "0 4px 16px rgba(28, 36, 52, 0.2)",
+    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    textDecoration: "none",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    // Trait doré vertical à gauche (accent)
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      top: "20%",
+      bottom: "20%",
+      width: 3,
+      borderRadius: "0 2px 2px 0",
+      background: "#F5A623",
+      transition: "all 0.3s ease"
+    },
+    "&:hover": {
+      background: "#F5A623",
+      color: "#1C2434",
+      borderColor: "#F5A623",
+      textDecoration: "none",
+      transform: "translateY(-2px)",
+      boxShadow: "0 8px 24px rgba(245, 166, 35, 0.4)",
+      "&::before": {
+        background: "#1C2434"
+      }
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 0,
+      marginBottom: "16px",
+      width: "100%",
+      padding: "16px",
+      fontSize: "0.9rem",
+      borderRadius: "12px",
+      justifyContent: "center"
+    }
+  },
   navLink: {
-    fontSize: "1.4rem",
-    fontWeight: 700,
-    color: "#1e293b", // Slate 800 - Very dark for high visibility
+    fontSize: "1.4rem", // Restored and enlarged text size
+    fontWeight: 600,
+    color: "#475569", 
     textDecoration: "none",
     padding: "10px 18px",
     borderRadius: "12px",
     transition: "all 0.2s ease",
     whiteSpace: "nowrap",
     "&:hover": {
-      color: "#0f172a", // Slate 900
-      background: "rgba(15, 23, 42, 0.04)", // Light gray hover background
+      color: "#0f172a", 
+      background: "rgba(15, 23, 42, 0.04)", 
     },
     "&.active": {
       color: "var(--portal-primary)",
@@ -116,19 +180,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ToolbarLayout3(props) {
+  const { t } = useTranslation();
   const config = useSelector(({ fuse }) => fuse.settings.current.layout.config);
   const toolbarTheme = useSelector(({ fuse }) => fuse.settings.toolbarTheme);
   const user = useSelector(({ auth }) => auth.user);
   const path = history.location.pathname;
-  const isAuthPage = path.startsWith("/login") || path.startsWith("/register");
+  const isAuthPage = path.startsWith("/login") || path.startsWith("/register") || path.startsWith("/forgot-password");
 
   const isHome = path === "/" || path === "/portail";
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const classes = useStyles({ isHome });
-
-  if (isAuthPage) {
-    return null;
-  }
 
   return (
     <ThemeProvider theme={toolbarTheme}>
@@ -153,43 +214,50 @@ function ToolbarLayout3(props) {
                 to="/"
                 className={clsx(classes.navLink, (path === "/" || path === "/portail") && "active")}
               >
-                Accueil
+                {t('common.home', 'Accueil')}
               </Link>
               <Link
                 to="/annuaire-entreprises"
                 className={clsx(classes.navLink, path === "/annuaire-entreprises" && "active")}
               >
-                Secteurs
+                {t('common.sectors', 'Secteurs')}
               </Link>
               <Link
                 to="/vente-produits"
                 className={clsx(classes.navLink, path === "/vente-produits" && "active")}
               >
-                Produits
+                {t('common.products', 'Produits')}
               </Link>
               <Link
                 to="/entreprises"
                 className={clsx(classes.navLink, path.startsWith("/entreprise") && "active")}
               >
-                Entreprises
+                {t('common.companies', 'Entreprises')}
               </Link>
               <Link
                 to="/tarifs/plans"
                 className={clsx(classes.navLink, path === "/tarifs/plans" && "active")}
               >
-                Tarifs
+                {t('common.pricing', 'Tarifs')}
               </Link>
               <Link
                 to="/actualites"
                 className={clsx(classes.navLink, path === "/actualites" && "active")}
               >
-                Actualités
+                {t('common.news', 'Actualités')}
               </Link>
             </div>
           </Hidden>
 
           <div className={classes.userMenuWrapper}>
             <Hidden smDown>
+              <Button component={Link} to="/register/1" className={classes.pulseButton}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+                {t('start_free', 'Commencez gratuitement')}
+              </Button>
+              <LanguageSwitcher />
               <UserMenu />
             </Hidden>
           </div>
@@ -211,12 +279,12 @@ function ToolbarLayout3(props) {
           </div>
           <List>
             {[
-              { label: "Accueil", to: "/" },
-              { label: "Secteurs", to: "/annuaire-entreprises" },
-              { label: "Produits", to: "/vente-produits" },
-              { label: "Entreprises", to: "/entreprises" },
-              { label: "Tarifs", to: "/tarifs/plans" },
-              { label: "Actualités", to: "/actualites" },
+              { label: t('common.home', 'Accueil'), to: "/" },
+              { label: t('common.sectors', 'Secteurs'), to: "/annuaire-entreprises" },
+              { label: t('common.products', 'Produits'), to: "/vente-produits" },
+              { label: t('common.companies', 'Entreprises'), to: "/entreprises" },
+              { label: t('common.pricing', 'Tarifs'), to: "/tarifs/plans" },
+              { label: t('common.news', 'Actualités'), to: "/actualites" },
             ].map((link) => (
               <ListItem
                 button
@@ -234,8 +302,22 @@ function ToolbarLayout3(props) {
             ))}
           </List>
 
+          <div className="flex justify-center my-16">
+              <LanguageSwitcher />
+          </div>
+
           {!user.role || user.role.length === 0 ? (
             <Box className="mt-24 px-10">
+              <Button
+                component={Link}
+                to="/register/1"
+                fullWidth
+                variant="contained"
+                className={classes.pulseButton}
+                onClick={() => setMobileDrawerOpen(false)}
+              >
+                {t('start_free', 'Commencez gratuitement')}
+              </Button>
               <Button
                 component={Link}
                 to="/login"
@@ -253,7 +335,7 @@ function ToolbarLayout3(props) {
                   textTransform: 'none'
                 }}
               >
-                Se connecter
+                {t('auth.login', 'Se connecter')}
               </Button>
             </Box>
           ) : (
@@ -274,7 +356,7 @@ function ToolbarLayout3(props) {
                   textTransform: 'none'
                 }}
               >
-                Tableau de bord
+                {t('nav.dashboard', 'Tableau de bord')}
               </Button>
             </Box>
           )}

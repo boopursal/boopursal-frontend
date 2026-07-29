@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import _ from "@lodash";
 import { URL_SITE, getImageUrl } from "@fuse/Constants";
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../utils/translationHelper';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -142,6 +144,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Produit(props) {
   const classes = useStyles();
   const { produit } = props;
+  const { i18n } = useTranslation();
 
   if (!produit) return null;
 
@@ -194,7 +197,7 @@ export default function Produit(props) {
 
         <CardContent className={classes.cardContent}>
           <Typography className={classes.title}>
-            {_.capitalize(produit.titre)}
+            {_.capitalize(getTranslatedField(produit, 'titre', i18n.language))}
           </Typography>
 
           <div className={classes.referenceWrapper}>

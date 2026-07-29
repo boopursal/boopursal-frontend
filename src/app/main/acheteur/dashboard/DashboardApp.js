@@ -15,6 +15,7 @@ import ContentLoader from 'react-content-loader';
 import { Helmet } from "react-helmet";
 import moment from 'moment';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -121,6 +122,7 @@ const useStyles = makeStyles((theme) => ({
 
 function DashboardApp(props) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const widgets = useSelector(({ dashboardApp }) => dashboardApp.widgets);
     const [activeTab, setActiveTab] = useState(0);
@@ -136,7 +138,7 @@ function DashboardApp(props) {
     return (
         <div className={classes.root}>
             <Helmet>
-                <title>Espace Acheteur | Boopursal Dashboard</title>
+                <title>{t('dashboard.acheteur.pageTitle', 'Espace Acheteur | Boopursal Dashboard')}</title>
             </Helmet>
 
             <div className={classes.headerWrapper}>
@@ -144,8 +146,8 @@ function DashboardApp(props) {
                 <Container maxWidth="xl" style={{ position: 'relative', zIndex: 2 }}>
                     <Grid container alignItems="center" justify="space-between">
                         <Grid item xs={12} md={7}>
-                            <Typography className={classes.title}>Espace Acheteur Stratégique</Typography>
-                            <Typography className={classes.subtitle}>Supervisez vos approvisionnements, centralisez vos RFQ et optimisez vos budgets.</Typography>
+                            <Typography className={classes.title}>{t('dashboard.acheteur.title', 'Espace Acheteur Stratégique')}</Typography>
+                            <Typography className={classes.subtitle}>{t('dashboard.acheteur.subtitle', 'Supervisez vos approvisionnements, centralisez vos RFQ et optimisez vos budgets.')}</Typography>
                         </Grid>
                         
                         <Grid item xs={12} md={5} style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 16 }}>
@@ -162,9 +164,9 @@ function DashboardApp(props) {
                         variant="scrollable"
                         scrollButtons="auto"
                     >
-                        <Tab className={classes.tab} label="Aperçu Global" />
-                        <Tab className={classes.tab} label="Mes Demandes RFQ" />
-                        <Tab className={classes.tab} label="Fournisseurs Favoris" />
+                        <Tab className={classes.tab} label={t('dashboard.acheteur.tab1', 'Aperçu Global')} />
+                        <Tab className={classes.tab} label={t('dashboard.acheteur.tab2', 'Mes Demandes RFQ')} />
+                        <Tab className={classes.tab} label={t('dashboard.acheteur.tab3', 'Fournisseurs Favoris')} />
                     </Tabs>
                 </Container>
             </div>
@@ -198,7 +200,7 @@ function DashboardApp(props) {
 
                                 {activeTab === 2 && (
                                     <div className={classes.emptySpace}>
-                                        <Typography variant="h5" style={{ fontWeight: 900, color: '#0f172a', marginBottom: 24 }}>Fournisseurs & Réseau</Typography>
+                                        <Typography variant="h5" style={{ fontWeight: 900, color: '#0f172a', marginBottom: 24 }}>{t('dashboard.acheteur.suppliersNetwork', 'Fournisseurs & Réseau')}</Typography>
                                         <Widget5 />
                                     </div>
                                 )}

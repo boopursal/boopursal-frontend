@@ -56,7 +56,7 @@ function MonAbonnement() {
 
     const dispatch = useDispatch();
     const [tabValue, setTabValue] = useState(0);
-    const commande = useSelector(({ billingApp }) => billingApp.commande);
+    const commande = useSelector(({ billingApp }) => billingApp?.commande);
     const user = useSelector(({ auth }) => auth.user);
     const abonnement = useSelector(({ auth }) => auth.user.abonnement);
     const loadingAbonnement = useSelector(({ auth }) => auth.user.loadingAbonnement);
@@ -255,8 +255,8 @@ function MonAbonnement() {
 
                     </Grid>
                     {
-                        commande.loadingC ? 'Chargement...' :
-                            commande.data &&
+                        commande?.loadingC ? 'Chargement...' :
+                            commande?.data &&
                             <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
                                 <div className="flex items-center justify-between">
                                     <Typography variant="h6" className="uppercase">

@@ -11,6 +11,7 @@ import HistoriqueFacturation from './tabs/HistoriqueFacturation';
 import { useDispatch, useSelector } from 'react-redux';
 import CommandeDialog from './tabs/CommandeDialog';
 import * as Actions from './store/actions';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -23,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 function FacturationApp(props) {
 
     const classes = useStyles(props);
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     
     const pageLayout = useRef(null);
@@ -68,7 +70,7 @@ function FacturationApp(props) {
     return (
         <>
             <Helmet>
-                <title>Facturations | Les Achats Industriels</title>
+                <title>{t('billing.title', 'Facturations')} | Boopursal</title>
                 <meta name="robots" content="noindex, nofollow" />
                 <meta name="googlebot" content="noindex" />
             </Helmet>
@@ -81,7 +83,7 @@ function FacturationApp(props) {
                 header={
                     <div className="flex flex-col justify-between flex-1 px-24 pt-24">
                         <div className="flex justify-between">
-                            <Typography className="py-0 sm:py-24" variant="h4">Facturations</Typography>
+                            <Typography className="py-0 sm:py-24" variant="h4">{t('billing.title', 'Facturations')}</Typography>
 
                         </div>
                     </div>
@@ -96,9 +98,9 @@ function FacturationApp(props) {
                         scrollButtons="off"
                         className="w-full border-b-1 px-24"
                     >
-                        <Tab className="text-14 font-600 normal-case" label="Mon abonnement" />
-                        <Tab className="text-14 font-600 normal-case" label="Mon historique de facturation" />
-                        <Tab className="text-14 font-600 normal-case" label="Les Packs d'abonnements" />
+                        <Tab className="text-14 font-600 normal-case" label={t('billing.mySubscription', 'Mon abonnement')} />
+                        <Tab className="text-14 font-600 normal-case" label={t('billing.invoiceHistory', 'Mon historique de facturation')} />
+                        <Tab className="text-14 font-600 normal-case" label={t('billing.packs', 'Les Packs d\'abonnements')} />
                     </Tabs>
                 }
                 content={

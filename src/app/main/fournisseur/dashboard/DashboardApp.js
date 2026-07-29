@@ -17,6 +17,7 @@ import { Helmet } from "react-helmet";
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -145,6 +146,7 @@ const useStyles = makeStyles((theme) => ({
 
 function DashboardApp(props) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const widgets = useSelector(({ dashboardApp }) => dashboardApp.widgets);
     const abonnement = useSelector(({ auth }) => auth.user.abonnement);
@@ -166,7 +168,7 @@ function DashboardApp(props) {
     return (
         <div className={classes.root}>
             <Helmet>
-                <title>Tableau de bord Fournisseur | Boopursal</title>
+                <title>{t('dashboard.fournisseur.pageTitle', 'Tableau de bord Fournisseur | Boopursal')}</title>
             </Helmet>
 
             <div className={classes.headerWrapper}>
@@ -174,8 +176,8 @@ function DashboardApp(props) {
                 <Container maxWidth="xl" style={{ position: 'relative', zIndex: 2 }}>
                     <Grid container alignItems="center" justify="space-between">
                         <Grid item xs={12} md={6}>
-                            <Typography className={classes.title}>Espace Fournisseur</Typography>
-                            <Typography className={classes.subtitle}>Supervisez vos performances commerciales et gérez vos offres avec précision.</Typography>
+                            <Typography className={classes.title}>{t('dashboard.fournisseur.title', 'Espace Fournisseur')}</Typography>
+                            <Typography className={classes.subtitle}>{t('dashboard.fournisseur.subtitle', 'Supervisez vos performances commerciales et gérez vos offres avec précision.')}</Typography>
                         </Grid>
 
                         <Grid item xs={12} md={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -183,17 +185,17 @@ function DashboardApp(props) {
                                 <div className={classes.subscriptionCard}>
                                     <div>
                                         <Typography variant="overline" style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 800, display: 'block', lineHeight: 1.2 }}>
-                                            Mon Forfait
+                                            {t('dashboard.fournisseur.myPlan', 'Mon Forfait')}
                                         </Typography>
                                         <Typography variant="h6" style={{ color: '#fff', fontWeight: 900, fontSize: '1.2rem', marginBottom: 4 }}>
                                             {abonnement.offre?.name || 'Standard'}
                                         </Typography>
                                         <Typography className={isExpired ? classes.subStatusExpired : classes.subStatusActive}>
-                                            {isExpired ? 'Expiré' : `${daysRemaining} jours restants`}
+                                            {isExpired ? t('dashboard.fournisseur.expired', 'Expiré') : t('dashboard.fournisseur.daysRemaining', '{{count}} jours restants', { count: daysRemaining })}
                                         </Typography>
                                     </div>
                                     <Button component={Link} to="/billing/renew" className={classes.actionBtn} disableElevation>
-                                        Gérer l'accès
+                                        {t('dashboard.fournisseur.manageAccess', 'Gérer l\'accès')}
                                     </Button>
                                 </div>
                             )}
@@ -207,9 +209,9 @@ function DashboardApp(props) {
                         variant="scrollable"
                         scrollButtons="auto"
                     >
-                        <Tab className={classes.tab} label="Vue Globale" />
-                        <Tab className={classes.tab} label="Conversions & Produits" />
-                        <Tab className={classes.tab} label="Abonnement" />
+                        <Tab className={classes.tab} label={t('dashboard.fournisseur.tab1', 'Vue Globale')} />
+                        <Tab className={classes.tab} label={t('dashboard.fournisseur.tab2', 'Conversions & Produits')} />
+                        <Tab className={classes.tab} label={t('dashboard.fournisseur.tab3', 'Abonnement')} />
                     </Tabs>
                 </Container>
             </div>
@@ -244,7 +246,7 @@ function DashboardApp(props) {
 
                                 {activeTab === 2 && (
                                     <div className={classes.emptySpace}>
-                                        <Typography variant="h5" style={{ fontWeight: 900, color: '#0f172a', marginBottom: 24 }}>Mon Abonnement Pro</Typography>
+                                        <Typography variant="h5" style={{ fontWeight: 900, color: '#0f172a', marginBottom: 24 }}>{t('dashboard.fournisseur.mySubscription', 'Mon Abonnement Pro')}</Typography>
                                         <MonAbonnement />
                                     </div>
                                 )}

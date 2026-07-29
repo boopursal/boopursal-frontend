@@ -11,6 +11,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { FuseAnimate, LOCAL_CURRENCY, FuseAnimateGroup } from "@fuse";
 import clsx from "clsx";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -146,48 +147,49 @@ const useStyles = makeStyles((theme) => ({
 
 const PricingFournisseur = (props) => {
   const classes = useStyles();
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const plans = [
     {
-      name: "Standard",
+      name: t('tarifs.plan_standard_name', 'Standard'),
       price: 0,
-      subtitle: "Parfait pour lancer votre activité professionnelle",
+      subtitle: t('tarifs.plan_standard_subtitle', 'Parfait pour lancer votre activité professionnelle'),
       features: [
-        { lab: "1 secteur d'activité", val: "✔" },
-        { lab: "Catalogue produits en ligne", val: "✔" },
-        { lab: "Mini-site de présentation", val: "✔" },
-        { lab: "Photos et Vidéos", val: "Max 5" },
-        { lab: "Gestion commerciale", val: "✗" },
+        { lab: t('tarifs.f_1_sector', "1 secteur d'activité"), val: "\u2714" },
+        { lab: t('tarifs.f_catalog', 'Catalogue produits en ligne'), val: "\u2714" },
+        { lab: t('tarifs.f_minisite', 'Mini-site de présentation'), val: "\u2714" },
+        { lab: t('tarifs.f_photos', 'Photos et Vidéos'), val: "Max 5" },
+        { lab: t('tarifs.f_commercial', 'Gestion commerciale'), val: "\u2717" },
       ],
-      cta: "Commencer gratuitement"
+      cta: t('tarifs.plan_standard_cta', 'Commencer gratuitement')
     },
     {
-      name: "Business",
+      name: t('tarifs.plan_business_name', 'Business'),
       price: 35,
-      subtitle: "Recommandé pour les leaders à fort potentiel",
+      subtitle: t('tarifs.plan_business_subtitle', 'Recommandé pour les leaders à fort potentiel'),
       popular: true,
       features: [
-        { lab: "5 secteurs d'activité", val: "✔" },
-        { lab: "Gestion commerciale incluse", val: "✔" },
-        { lab: "Suivi des ventes & Clients", val: "✔" },
-        { lab: "Affectation aux agences", val: "✔" },
-        { lab: "Catalogue spécifique PDF", val: "10 p." },
+        { lab: t('tarifs.f_5_sectors', "5 secteurs d'activité"), val: "\u2714" },
+        { lab: t('tarifs.f_commercial_incl', 'Gestion commerciale incluse'), val: "\u2714" },
+        { lab: t('tarifs.f_sales_tracking', 'Suivi des ventes & Clients'), val: "\u2714" },
+        { lab: t('tarifs.f_agency', 'Affectation aux agences'), val: "\u2714" },
+        { lab: t('tarifs.f_catalog_pdf_10', 'Catalogue spécifique PDF'), val: "10 p." },
       ],
-      cta: "S'abonner maintenant"
+      cta: t('tarifs.plan_business_cta', "S'abonner maintenant")
     },
     {
-      name: "Performance",
+      name: t('tarifs.plan_performance_name', 'Performance'),
       price: 45,
-      subtitle: "Puissance et visibilité maximale pour expert",
+      subtitle: t('tarifs.plan_performance_subtitle', 'Puissance et visibilité maximale pour expert'),
       features: [
-        { lab: "Secteurs d'activité illimités", val: "✔" },
-        { lab: "Présentation en '1ère Page'", val: "2 prod." },
-        { lab: "Campagne bannière publicitaire", val: "3 mois" },
-        { lab: "Catalogue spécifique PDF", val: "20 p." },
-        { lab: "Support technique VIP", val: "24/7" },
+        { lab: t('tarifs.f_unlimited_sectors', "Secteurs d'activité illimités"), val: "\u2714" },
+        { lab: t('tarifs.f_first_page', "Présentation en '1ère Page'"), val: "2 prod." },
+        { lab: t('tarifs.f_banner', 'Campagne bannière publicitaire'), val: "3 mois" },
+        { lab: t('tarifs.f_catalog_pdf_20', 'Catalogue spécifique PDF'), val: "20 p." },
+        { lab: t('tarifs.f_vip_support', 'Support technique VIP'), val: "24/7" },
       ],
-      cta: "S'abonner maintenant"
+      cta: t('tarifs.plan_performance_cta', "S'abonner maintenant")
     },
   ];
 
@@ -204,7 +206,7 @@ const PricingFournisseur = (props) => {
         {plans.map((p, i) => (
           <Grid item xs={12} md={4} key={i}>
             <Paper className={clsx(classes.card, p.popular && classes.highlightedCard)} elevation={0}>
-              {p.popular && <div className={classes.ribbon}>Recommandé</div>}
+              {p.popular && <div className={classes.ribbon}>{t('tarifs.recommended', 'Recommandé')}</div>}
 
               <div className={classes.cardHeader}>
                 <Typography className={classes.planName}>{p.name}</Typography>
@@ -212,10 +214,10 @@ const PricingFournisseur = (props) => {
                 <Typography className={classes.subtitle}>{p.subtitle}</Typography>
 
                 <div className={classes.priceBox}>
-                  <span className={classes.priceLabel}>à partir de</span>
+                  <span className={classes.priceLabel}>{t('tarifs.from_price', 'à partir de')}</span>
                   <div className="flex items-baseline justify-center">
                     <span className={classes.priceValue}>{getPrice(p.price)}</span>
-                    <span className="text-red-700 font-900 ml-4 text-16">{curr}/mois</span>
+                    <span className="text-red-700 font-900 ml-4 text-16">{curr}{t('tarifs.per_month', '/mois')}</span>
                   </div>
                 </div>
               </div>
@@ -241,7 +243,7 @@ const PricingFournisseur = (props) => {
               </div>
 
               <Typography className="text-center pb-24 text-12 text-amber-800 font-bold cursor-pointer hover:underline">
-                Voir toutes les fonctionnalités
+                {t('tarifs.see_all_features', 'Voir toutes les fonctionnalités')}
               </Typography>
             </Paper>
           </Grid>

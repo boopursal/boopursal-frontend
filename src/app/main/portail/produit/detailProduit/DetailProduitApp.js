@@ -12,6 +12,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import { Link } from 'react-router-dom';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import _ from '@lodash';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -123,6 +125,8 @@ function DetailProduitApp(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const produit = useSelector(({ produitsApp }) => produitsApp.detailProduit);
+    const { t, i18n } = useTranslation();
+    const translatedTitre = produit?.data ? getTranslatedField(produit.data, 'titre', i18n.language) : t('common.loading', 'Chargement...');
 
     useEffect(() => {
         const { id } = props.match.params;
@@ -142,26 +146,26 @@ function DetailProduitApp(props) {
                                 onClick={() => props.history.goBack()}
                                 style={{ width: 'fit-content' }}
                             >
-                                <Icon className="text-18 mr-8">arrow_back</Icon> Retour
+                                <Icon className="text-18 mr-8">arrow_back</Icon> {t('common.back', 'Retour')}
                             </Button>
 
                             {produit.data && (
                                 <Breadcrumbs separator={<NavigateNextIcon fontSize="small" className="text-white opacity-40" />} className={classes.breadcrumbs}>
-                                    <Link to="/" className="flex items-center opacity-80"><HomeIcon style={{ fontSize: 14 }} className="mr-4" /> Accueil</Link>
-                                    <Link to="/vente-produits" className="opacity-80">Produits</Link>
-                                    {produit.data.sousSecteurs && <Link to={`/vente-produits/${produit.data.secteur?.slug}/${produit.data.sousSecteurs.slug}`} className="opacity-80">{produit.data.sousSecteurs.name}</Link>}
-                                    <Typography className="font-bold text-white text-12">{_.capitalize(produit.data.titre)}</Typography>
+                                    <Link to="/" className="flex items-center opacity-80"><HomeIcon style={{ fontSize: 14 }} className="mr-4" /> {t('common.home', 'Accueil')}</Link>
+                                    <Link to="/vente-produits" className="opacity-80">{t('common.products', 'Produits')}</Link>
+                                    {produit.data.sousSecteurs && <Link to={`/vente-produits/${produit.data.secteur?.slug}/${produit.data.sousSecteurs.slug}`} className="opacity-80">{getTranslatedField(produit.data.sousSecteurs, 'name', i18n.language)}</Link>}
+                                    <Typography className="font-bold text-white text-12">{_.capitalize(translatedTitre)}</Typography>
                                 </Breadcrumbs>
                             )}
 
                             <Typography variant="h4" className="font-900 text-white tracking-tight">
-                                {produit.data ? _.capitalize(produit.data.titre) : 'Chargement...'}
+                                {_.capitalize(translatedTitre)}
                             </Typography>
                         </div>
 
                         <div className={classes.switchContainer}>
-                            <Button className={clsx(classes.switchBtn, "active")}>Produits</Button>
-                            <Button onClick={() => props.history.push('/entreprises')} className={clsx(classes.switchBtn, "inactive")}>Entreprises</Button>
+                            <Button className={clsx(classes.switchBtn, "active")}>{t('common.products', 'Produits')}</Button>
+                            <Button onClick={() => props.history.push('/entreprises')} className={clsx(classes.switchBtn, "inactive")}>{t('common.companies', 'Entreprises')}</Button>
                         </div>
                     </div>
                 </div>

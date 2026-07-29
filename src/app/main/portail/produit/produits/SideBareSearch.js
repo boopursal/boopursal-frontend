@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { Icon, List, ListItem, ListItemText, Typography, Chip, IconButton, LinearProgress } from '@material-ui/core';
 import { FuseAnimateGroup } from '@fuse';
 import _ from '@lodash';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -123,6 +124,7 @@ function useQuery(location) {
 
 function SideBareSearch(props) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const loadingSecteurs = useSelector(({ produitsApp }) => produitsApp.produits.loadingSecteurs);
     const secteurs = useSelector(({ produitsApp }) => produitsApp.produits.secteurs);
     const loadingActivites = useSelector(({ produitsApp }) => produitsApp.produits.loadingActivites);
@@ -183,7 +185,7 @@ function SideBareSearch(props) {
             <div className={classes.sectionCard}>
                 <div className={classes.sectionHeader}>
                     <Icon className={classes.headerIcon}>public</Icon>
-                    <Typography className={classes.headerTitle}>Localisation</Typography>
+                    <Typography className={classes.headerTitle}>{t('filters.location', 'Localisation')}</Typography>
                 </div>
 
                 {pays && produits.length > 0 && (
@@ -242,7 +244,7 @@ function SideBareSearch(props) {
             <div className={classes.sectionCard}>
                 <div className={classes.sectionHeader}>
                     <Icon className={classes.headerIcon}>category</Icon>
-                    <Typography className={classes.headerTitle}>Catégories</Typography>
+                    <Typography className={classes.headerTitle}>{t('filters.categories', 'Catégories')}</Typography>
                 </div>
 
                 <div className="flex flex-col">
@@ -338,7 +340,7 @@ function SideBareSearch(props) {
                 <div className={classes.sectionCard}>
                     <div className={classes.sectionHeader}>
                         <Icon className={classes.headerIcon}>tag</Icon>
-                        <Typography className={classes.headerTitle}>Recherche Active</Typography>
+                        <Typography className={classes.headerTitle}>{t('filters.active_search', 'Recherche Active')}</Typography>
                     </div>
                     <Chip
                         label={_.capitalize(q)}

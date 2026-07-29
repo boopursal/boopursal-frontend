@@ -83,16 +83,16 @@ export function getVilles(pays_id) {
 
 export function setStep2(data, fournisseur_id, history) {
 
-    if(data.pays)
-    data.pays = data.pays.value;
-    if(data.ville)
-    data.ville = data.ville.value;
+    if(data.pays && typeof data.pays === 'object')
+        data.pays = data.pays.value;
+    if(data.ville && typeof data.ville === 'object')
+        data.ville = data.ville.value;
 
     data.redirect = '/register/fournisseur2';
     data.step = 2;
 
-    if(data.currency)
-    data.currency = data.currency.value;
+    if(data.currency && typeof data.currency === 'object')
+        data.currency = data.currency.value;
     return (dispatch, getState) => {
 
         const request = agent.put(`/api/fournisseurs/${fournisseur_id}`, data);

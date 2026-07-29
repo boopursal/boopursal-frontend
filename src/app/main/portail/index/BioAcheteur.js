@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Card, CardContent, Icon, Button, Box, Grid } from '@material-ui/core';
 import { NavLinkAdapter } from '@fuse';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -61,6 +62,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BioAcheteur() {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     return (
         <Card className={classes.card} style={{ 
@@ -86,20 +88,19 @@ export default function BioAcheteur() {
                     </div>
                 </Box>
 
-                <Typography variant="h3" style={{ fontWeight: 900, marginBottom: "20px", color: "#0f172a", fontSize: "2.5rem", letterSpacing: "-0.04em" }}>
-                    Vous êtes un <br/>Acheteur ?
+                <Typography variant="h3" style={{ fontWeight: 900, marginBottom: "20px", color: "#0f172a", fontSize: "2.5rem", letterSpacing: "-0.04em" }} dangerouslySetInnerHTML={{__html: t('portail.acheteur.title', "Vous êtes un <br/>Acheteur ?")}}>
                 </Typography>
 
                 <Typography style={{ color: "#64748b", marginBottom: "48px", fontSize: "1.1rem", lineHeight: 1.6 }}>
-                    Trouvez les meilleurs fournisseurs et recevez vos devis en un temps record.
+                    {t('portail.acheteur.subtitle', "Trouvez les meilleurs fournisseurs et recevez vos devis en un temps record.")}
                 </Typography>
 
                 <Grid container spacing={2} style={{ marginBottom: "48px" }}>
                     <Grid item xs={12}>
-                        <Typography style={{ color: "#0f172a", fontWeight: 700, fontSize: "1rem" }}>✓ 100% Gratuit</Typography>
+                        <Typography style={{ color: "#0f172a", fontWeight: 700, fontSize: "1rem" }}>{t('portail.acheteur.benefit1', "✓ 100% Gratuit")}</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography style={{ color: "#0f172a", fontWeight: 700, fontSize: "1rem" }}>✓ Devis Rapides</Typography>
+                        <Typography style={{ color: "#0f172a", fontWeight: 700, fontSize: "1rem" }}>{t('portail.acheteur.benefit2', "✓ Devis Rapides")}</Typography>
                     </Grid>
                 </Grid>
 
@@ -118,7 +119,7 @@ export default function BioAcheteur() {
                         width: "100%"
                     }}
                 >
-                    S'inscrire comme Acheteur
+                    {t('portail.acheteur.button', "S'inscrire comme Acheteur")}
                 </Button>
             </CardContent>
         </Card>

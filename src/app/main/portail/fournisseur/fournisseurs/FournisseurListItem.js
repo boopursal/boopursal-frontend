@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from 'react-i18next';
 import { FuseAnimateGroup, FuseAnimate } from "@fuse";
 import { URL_SITE } from "@fuse/Constants";
 import _ from "@lodash";
@@ -9,6 +10,7 @@ import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { Icon, IconButton, Select, Button, Tooltip, Chip } from "@material-ui/core";
 import * as Actions from "../store/actions";
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const stringToColor = (string) => {
   if (!string) return '#94a3b8';
@@ -177,6 +179,7 @@ const styles = (theme) => ({
 });
 
 function FournisseurListItem(props) {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const pageCount = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.pageCount);
   const fournisseurs = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.data);
@@ -227,7 +230,7 @@ function FournisseurListItem(props) {
               to={`/entreprise/${fournisseur.id}-${fournisseur.slug}`}
               className={classes.imageWrapper}
             >
-              <div className={classes.badge}>Fournisseur</div>
+              <div className={classes.badge}>{t('portail.supplier', 'Fournisseur')}</div>
               {fournisseur.avatar ? (
                 <img
                   className={classes.logoScale}
@@ -258,17 +261,17 @@ function FournisseurListItem(props) {
                 className={classes.title}
                 to={`/entreprise/${fournisseur.id}-${fournisseur.slug}`}
               >
-                {fournisseur.societe}
+                {getTranslatedField(fournisseur, 'societe', i18n.language)}
               </Link>
 
               <div className={classes.location}>
                 <Icon className="text-14">location_on</Icon>
-                {(fournisseur.pays ? fournisseur.pays.name : "") + (fournisseur.ville ? `, ${fournisseur.ville.name}` : "")}
+                {(fournisseur.pays ? getTranslatedField(fournisseur.pays, 'name', i18n.language) : "") + (fournisseur.ville ? `, ${getTranslatedField(fournisseur.ville, 'name', i18n.language)}` : "")}
               </div>
 
               <div className={classes.categoryWrapper}>
                 {fournisseur.categories && fournisseur.categories.slice(0, 2).map((item, idx) => (
-                  <Chip key={idx} label={item.name} className={classes.catChip} />
+                  <Chip key={idx} label={getTranslatedField(item, 'name', i18n.language)} className={classes.catChip} />
                 ))}
               </div>
 
@@ -279,7 +282,7 @@ function FournisseurListItem(props) {
                 className={classes.actionBtn}
                 onClick={() => dispatch(Actions.openNewContactFournisseurDialog(fournisseur.id))}
               >
-                Contactez-nous
+                {t('portail.contactUs', 'Contactez-nous')}
               </Button>
             </div>
           </div>

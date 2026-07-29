@@ -11,11 +11,12 @@ import clsx from 'clsx';
 import ContentLoader from 'react-content-loader'
 import { Helmet } from "react-helmet";
 import { FuseUtils } from '@fuse';
+import { useTranslation } from 'react-i18next';
+
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        // minHeight      : '100%',
         position: 'relative',
         flex: '1 0 auto',
         height: 'auto',
@@ -52,6 +53,7 @@ const useStyles = makeStyles(theme => ({
         marginBottom: 16,
     },
 }));
+
 function generate(element) {
     return [0, 1, 2, 3].map(value =>
         React.cloneElement(element, {
@@ -59,9 +61,11 @@ function generate(element) {
         }),
     );
 }
+
 function Secteurs(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const secteurs = useSelector(({ parcourirSecteurs }) => parcourirSecteurs.pSecteurs);
     const [filteredData, setFilteredData] = useState(null);
 
@@ -96,15 +100,13 @@ function Secteurs(props) {
 
 
     return (
-
-
         <div className={clsx(classes.root, props.innerScroll && classes.innerScroll, 'min-h-md')}>
             {
                 <Helmet>
-                    <title>{'Tous les secteurs d’activités | Les Achats Industriels'}</title>
-                    <meta name="description" content='Tous les secteurs d’activités | Les Achats Industriels' />
-                    <meta property="og:title" content='Tous les secteurs d’activités | Les Achats Industriels' />
-                    <meta property="og:description" content='Tous les secteurs d’activités | Les Achats Industriels' />
+                    <title>{t('secteurs.page_title', 'Tous les secteurs d\'activités | Boopursal')}</title>
+                    <meta name="description" content={t('secteurs.page_title', 'Tous les secteurs d\'activités | Boopursal')} />
+                    <meta property="og:title" content={t('secteurs.page_title', 'Tous les secteurs d\'activités | Boopursal')} />
+                    <meta property="og:description" content={t('secteurs.page_title', 'Tous les secteurs d\'activités | Boopursal')} />
                 </Helmet>
             }
             <div
@@ -120,18 +122,18 @@ function Secteurs(props) {
                     <Paper variant="outlined" className={clsx(classes.paper, 'p-32 my-16')}>
 
                         <Typography className={classes.title} component="h1" color="primary">
-                            Découvrez <span className="font-bold">Boopursal</span> à travers ces secteurs d'activités.
+                            {t('secteurs.discover_boopursal', 'Découvrez')} <span className="font-bold">Boopursal</span> {t('secteurs.through_sectors', 'à travers ces secteurs d\'activités.')}
                         </Typography>
                         <Paper className="flex items-center w-full mb-16 px-8 py-4 rounded-8" elevation={1}>
                             <Icon className="mr-8" color="action">search</Icon>
                             <Input
-                                placeholder="Parcourir les secteurs d’activités"
+                                placeholder={t('secteurs.search_placeholder', 'Parcourir les secteurs d\'activités')}
                                 className="flex flex-1"
                                 disableUnderline
                                 fullWidth
                                 value={secteurs.searchText}
                                 inputProps={{
-                                    'aria-label': 'Rechercher'
+                                    'aria-label': t('common.search', 'Rechercher')
                                 }}
                                 onChange={ev => dispatch(Actions.setSearchText(ev))}
 
@@ -183,12 +185,6 @@ function Secteurs(props) {
                         </Grid>
                     </Paper>
                 </Grid>
-                {/*  <Grid item xs={12} sm={4} className="sticky top-0">
-                     <Paper className="w-full h-200 p-32 mt-16 text-center">
-                        Ads
-                    </Paper> 
-                </Grid> 
-                */}
             </Grid>
         </div >
 

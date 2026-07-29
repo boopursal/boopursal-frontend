@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Card, CardContent, Icon, Button, Box, Grid } from '@material-ui/core';
 import { NavLinkAdapter } from '@fuse';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -57,6 +58,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BioFournisseur() {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     return (
         <Card className={classes.card} style={{ 
@@ -81,20 +83,19 @@ export default function BioFournisseur() {
                     </div>
                 </Box>
 
-                <Typography variant="h3" style={{ fontWeight: 900, marginBottom: "20px", color: "#ffffff", fontSize: "2.5rem", letterSpacing: "-0.04em" }}>
-                    Vous êtes <br/>Fournisseur ?
+                <Typography variant="h3" style={{ fontWeight: 900, marginBottom: "20px", color: "#ffffff", fontSize: "2.5rem", letterSpacing: "-0.04em" }} dangerouslySetInnerHTML={{__html: t('portail.fournisseur.title', "Vous êtes <br/>Fournisseur ?")}}>
                 </Typography>
 
                 <Typography style={{ color: "#94a3b8", marginBottom: "48px", fontSize: "1.1rem", lineHeight: 1.6 }}>
-                    Propulsez vos ventes B2B et touchez des acheteurs qualifiés dans toute l'Europe.
+                    {t('portail.fournisseur.subtitle', "Propulsez vos ventes B2B et touchez des acheteurs qualifiés dans toute l'Europe.")}
                 </Typography>
 
                 <Grid container spacing={2} style={{ marginBottom: "48px" }}>
                     <Grid item xs={12}>
-                        <Typography style={{ color: "#ffffff", fontWeight: 700, fontSize: "1rem" }}>✓ Visibilité Maximale</Typography>
+                        <Typography style={{ color: "#ffffff", fontWeight: 700, fontSize: "1rem" }}>{t('portail.fournisseur.benefit1', "✓ Visibilité Maximale")}</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography style={{ color: "#ffffff", fontWeight: 700, fontSize: "1rem" }}>✓ Gestion de Devis</Typography>
+                        <Typography style={{ color: "#ffffff", fontWeight: 700, fontSize: "1rem" }}>{t('portail.fournisseur.benefit2', "✓ Gestion de Devis")}</Typography>
                     </Grid>
                 </Grid>
 
@@ -113,7 +114,7 @@ export default function BioFournisseur() {
                         width: "100%"
                     }}
                 >
-                    S'inscrire comme Fournisseur
+                    {t('portail.fournisseur.button', "S'inscrire comme Fournisseur")}
                 </Button>
             </CardContent>
         </Card>

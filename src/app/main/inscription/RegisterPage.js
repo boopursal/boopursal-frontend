@@ -7,6 +7,8 @@ import { Link, withRouter } from 'react-router-dom';
 import FournisseurTab from './tabs/FournisseurTab';
 import AcheteurTab from './tabs/AcheteurTab';
 import { Helmet } from "react-helmet";
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from 'app/fuse-layouts/shared-components/LanguageSwitcher';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -157,6 +159,7 @@ const useStyles = makeStyles(theme => ({
 
 function RegisterPage(props) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const params = props.match.params;
     const { page } = params;
     const [selectedTab, setSelectedTab] = useState(page <= 2 && page >= 1 ? page - 1 : 0);
@@ -172,8 +175,8 @@ function RegisterPage(props) {
     return (
         <div className={classes.root}>
             <Helmet>
-                <title>Inscription | Boopursal</title>
-                <meta name="description" content="Créez votre compte professionnel sur Boopursal." />
+                <title>{t('register.pageTitle', 'Inscription | Boopursal')}</title>
+                <meta name="description" content={t('register.pageDesc', 'Créez votre compte professionnel sur Boopursal.')} />
             </Helmet>
 
             <div className={classes.backgroundArt} />
@@ -182,8 +185,8 @@ function RegisterPage(props) {
                 <Card className={classes.card} elevation={0}>
                     <img className={classes.logo} src="/assets/images/logos/icon.png" alt="Boopursal" />
 
-                    <Typography className={classes.title}>Inscription</Typography>
-                    <Typography className={classes.subtitle}>Sélectionnez votre profil pour commencer l'aventure Boopursal</Typography>
+                    <Typography className={classes.title}>{t('register.title', 'Inscription')}</Typography>
+                    <Typography className={classes.subtitle}>{t('register.subtitle', 'Sélectionnez votre profil pour commencer l\'aventure Boopursal')}</Typography>
 
                     <Tabs
                         value={selectedTab}
@@ -191,8 +194,8 @@ function RegisterPage(props) {
                         variant="fullWidth"
                         className={classes.tabs}
                     >
-                        <Tab className={classes.tab} label="Espace Fournisseur" />
-                        <Tab className={classes.tab} label="Espace Acheteur" />
+                        <Tab className={classes.tab} label={t('register.supplierTab', 'Espace Fournisseur')} />
+                        <Tab className={classes.tab} label={t('register.buyerTab', 'Espace Acheteur')} />
                     </Tabs>
 
                     <Box mt={2}>
@@ -200,13 +203,13 @@ function RegisterPage(props) {
                     </Box>
 
                     <div className={classes.switchPrompt}>
-                        Déjà inscrit sur la plateforme ?
-                        <Link to="/login" className={classes.loginLink}>Se connecter</Link>
+                        {t('register.alreadyMember', 'Déjà inscrit sur la plateforme ?')}
+                        <Link to="/login" className={classes.loginLink}>{t('register.loginLink', 'Se connecter')}</Link>
                     </div>
 
                     <Link to="/" className={classes.footerLink}>
                         <Icon className="text-18 mr-8">arrow_back</Icon>
-                        Retour sur Boopursal.com
+                        {t('register.backToPortal', 'Retour sur Boopursal.com')}
                     </Link>
                 </Card>
             </FuseAnimate>

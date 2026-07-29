@@ -16,6 +16,7 @@ import _ from "@lodash";
 import moment from "moment";
 import { URL_SITE } from "@fuse/Constants";
 import "moment/locale/fr";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   mediaNews: {
@@ -35,19 +36,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function News(props) {
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
   const { news } = props;
+  
+  const currentLang = i18n.language === 'fr' ? '' : `_${i18n.language}`;
+  const translatedTitre = news[`titre${currentLang}`] || news.titre;
   return (
     <Card className={classes.card}>
       <CardActionArea component="a" href={`/actualite/${news.id}-${news.slug}`}>
         <CardMedia
           className={classes.mediaNews}
           image={news.image ? URL_SITE + "/images/actualite/" + news.image.url : "/assets/images/ecommerce/product-placeholder.jpg"}
-          title={news.titre}
+          title={translatedTitre}
         />
         <CardContent className={classes.cardContent}>
           <Typography gutterBottom variant="h6" className={classes.titre}>
             {_.capitalize(
-              _.truncate(news.titre, {
+              _.truncate(translatedTitre, {
                 length: 45,
               })
             )}
@@ -70,7 +75,7 @@ export default function News(props) {
         />
 
         <Button size="small" color="primary">
-          Lire la suite
+          {t('news.read_more', 'Lire la suite')}
         </Button>
       </CardActions>
     </Card>

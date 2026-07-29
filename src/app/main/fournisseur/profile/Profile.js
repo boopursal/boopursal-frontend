@@ -20,6 +20,7 @@ import Paper from '@material-ui/core/Paper';
 import Highlighter from "react-highlight-words";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -127,6 +128,7 @@ function Profile(props) {
     const [categories, setCategories] = React.useState([]);
     const params = props.match.params;
     const { tab } = params;
+    const { t } = useTranslation();
 
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -447,11 +449,11 @@ function Profile(props) {
                                 scrollButtons="auto"
                                 classes={{ root: "w-full h-64" }}
                             >
-                                <Tab className="h-64 normal-case" label="Infos société" />
-                                <Tab className="h-64 normal-case" label="Produits" />
-                                <Tab className="h-64 normal-case" label="Infos utilisateur" />
-                                <Tab className="h-64 normal-case" label="Photo" />
-                                <Tab className="h-64 normal-case" label="Mot de passe" />
+                                <Tab className="h-64 normal-case" label={t("profile.company_info", "Infos société")} />
+                                <Tab className="h-64 normal-case" label={t("profile.products", "Produits")} />
+                                <Tab className="h-64 normal-case" label={t("profile.user_info", "Infos utilisateur")} />
+                                <Tab className="h-64 normal-case" label={t("profile.photo", "Photo")} />
+                                <Tab className="h-64 normal-case" label={t("profile.password", "Mot de passe")} />
 
                             </Tabs>)
                         :
@@ -479,7 +481,7 @@ function Profile(props) {
 
                                                         <TextFieldFormsy
                                                             className=""
-                                                            label="Raison sociale"
+                                                            label={t("onboarding.company_name", "Raison sociale")}
                                                             autoFocus
                                                             id="societe"
                                                             name="societe"
@@ -512,7 +514,7 @@ function Profile(props) {
                                                             name="fix"
                                                             value={form.fix}
                                                             onChange={handleChange}
-                                                            label="Fixe"
+                                                            label={t("onboarding.pro_phone", "Fixe")}
                                                             autoComplete="fix"
                                                             validations={{
                                                                 minLength: 10,
@@ -540,7 +542,7 @@ function Profile(props) {
                                                             name="ice"
                                                             value={form.ice}
                                                             onChange={handleChange}
-                                                            label="ICE"
+                                                            label={t("onboarding.fiscal_id", "ICE")}
                                                             autoComplete="ice"
                                                             validations={{
                                                               minLength: 15,
@@ -574,7 +576,7 @@ function Profile(props) {
                                                             value={form.website}
                                                             onChange={handleChange}
                                                             autoComplete="website"
-                                                            label="Site Web"
+                                                            label={t("onboarding.website", "Site Web")}
                                                             validations="isUrl"
                                                             validationErrors={{
                                                                 isUrl: 'Exemple : http://www.exemple.com',
@@ -603,7 +605,7 @@ function Profile(props) {
                                                             value={form.adresse1}
                                                             onChange={handleChange}
                                                             autoComplete="adresse"
-                                                            label="Adresse 1"
+                                                            label={t("profile.address1", "Adresse 1")}
                                                             validations={{
                                                                 minLength: 10,
                                                             }}
@@ -628,9 +630,9 @@ function Profile(props) {
                                                         value={
                                                             pays
                                                         }
-                                                        placeholder="Sélectionner une Pays"
+                                                        placeholder={t("onboarding.select_country", "Sélectionner un pays")}
                                                         textFieldProps={{
-                                                            label: 'Pays',
+                                                            label: t("onboarding.country", "Pays"),
                                                             InputLabelProps: {
                                                                 shrink: true
                                                             },
@@ -653,7 +655,7 @@ function Profile(props) {
                                                             value={form.adresse2}
                                                             onChange={handleChange}
                                                             autoComplete="adresse"
-                                                            label="Adresse 2"
+                                                            label={t("profile.address2", "Adresse 2")}
                                                             validations={{
                                                                 minLength: 10,
                                                             }}
@@ -686,7 +688,7 @@ function Profile(props) {
                                                                 maxLength: 'La longueur maximale de caractère est 10',
                                                             }}
                                                             autoComplete="codepostal"
-                                                            label="Code Postal"
+                                                            label={t("profile.postal_code", "Code Postal")}
                                                             variant="outlined"
                                                             fullWidth
 
@@ -701,9 +703,9 @@ function Profile(props) {
                                                         value={
                                                             ville
                                                         }
-                                                        placeholder="Sélectionner une ville"
+                                                        placeholder={t("onboarding.select_city", "Sélectionner une ville")}
                                                         textFieldProps={{
-                                                            label: 'Ville',
+                                                            label: t("onboarding.city", "Ville"),
                                                             InputLabelProps: {
                                                                 shrink: true
                                                             },
@@ -731,7 +733,7 @@ function Profile(props) {
                                                         name="description"
                                                         value={form.description}
                                                         onChange={handleChange}
-                                                        label="Présentation"
+                                                        label={t("onboarding.description", "Présentation")}
                                                         autoComplete="description"
                                                         validations={{
                                                             minLength: 10,

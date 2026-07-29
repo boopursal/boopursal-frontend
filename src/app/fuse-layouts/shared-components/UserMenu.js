@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Avatar, Button, Icon, ListItemIcon, ListItemText, Popover, MenuItem, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import * as authActions from "app/auth/store/actions";
 import { Link } from "react-router-dom";
 import { URL_SITE } from "@fuse";
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 function UserMenu() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const user = useSelector(({ auth }) => auth.user);
   const [userMenu, setUserMenu] = useState(null);
 
@@ -63,7 +65,7 @@ function UserMenu() {
   if (!user.role || user.role.length === 0) {
     return (
         <Button component={Link} to="/login" className={classes.connexionBtn}>
-            Connexion
+            {t('auth.login')}
         </Button>
     )
   }
@@ -105,11 +107,11 @@ function UserMenu() {
       >
         <div className="p-8">
            <div className="px-16 py-8 border-b border-gray-100 mb-8">
-               <Typography className="text-12 font-800 uppercase tracking-widest text-gray-400">Compte Admin</Typography>
+               <Typography className="text-12 font-800 uppercase tracking-widest text-gray-400">{user.role}</Typography>
            </div>
           <MenuItem component={Link} to="/dashboard" onClick={userMenuClose} style={{ borderRadius: 8, padding: '12px 16px' }}>
             <ListItemIcon style={{ minWidth: 40 }}><Icon className="text-18" style={{ color: 'var(--portal-text)' }}>dashboard</Icon></ListItemIcon>
-            <ListItemText primary={<Typography style={{ fontWeight: 600, color: 'var(--portal-text)' }}>Tableau de bord</Typography>} />
+            <ListItemText primary={<Typography style={{ fontWeight: 600, color: 'var(--portal-text)' }}>{t('nav.dashboard')}</Typography>} />
           </MenuItem>
 
           <MenuItem
@@ -120,7 +122,7 @@ function UserMenu() {
             style={{ borderRadius: 8, padding: '12px 16px', color: '#f5365c' }}
           >
             <ListItemIcon style={{ minWidth: 40 }}><Icon className="text-18" style={{ color: '#f5365c' }}>exit_to_app</Icon></ListItemIcon>
-            <ListItemText primary={<Typography style={{ fontWeight: 600 }}>Déconnexion</Typography>} />
+            <ListItemText primary={<Typography style={{ fontWeight: 600 }}>{t('nav.logout')}</Typography>} />
           </MenuItem>
         </div>
       </Popover>

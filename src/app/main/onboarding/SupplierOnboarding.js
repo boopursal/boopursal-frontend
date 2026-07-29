@@ -16,6 +16,9 @@ import * as Step3Actions from '../inscription/steps/step3/store/actions';
 import * as searchCategoriesActions from '../inscription/steps/step3/store/actions/searchCategories.actions';
 import * as MessageActions from 'app/store/actions/fuse/message.actions';
 import withReducer from 'app/store/withReducer';
+import { useTranslation } from 'react-i18next';
+import IceVerificationField from '../shared/IceVerificationField';
+import { getIdConfigByCountry } from '../shared/countryIdConfig';
 
 import step2ModuleReducer from '../inscription/steps/step2/store/reducers';
 import step3ModuleReducer from '../inscription/steps/step3/store/reducers';
@@ -36,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 function SupplierOnboarding(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [activeStep, setActiveStep] = useState(0);
     const user = useSelector(({ auth }) => auth.user);
     
@@ -52,7 +56,11 @@ function SupplierOnboarding(props) {
 
 
 
-    const steps = ['Profil Société', 'Catalogue / Produits', 'Finalisation'];
+    const steps = [
+        t('onboarding.step_profile'),
+        t('onboarding.step_catalog'),
+        t('onboarding.step_finish')
+    ];
 
     useEffect(() => {
         dispatch(Actions.getPays());
@@ -60,13 +68,25 @@ function SupplierOnboarding(props) {
     }, [dispatch]);
 
     const [isMaroc, setIsMaroc] = useState(false);
+    const [idConfig, setIdConfig] = useState(null); // Config identifiant selon le pays
+    const [iceValue, setIceValue] = useState('');
+    const [iceData, setIceData] = useState(null);
+    const formsyRef = useRef(null);
+
+    const handleIceSuccess = (data) => {
+        setIceData(data);
+    };
 
     const handleCountryChange = (val) => {
         if (val && val.value) {
             dispatch(Actions.getVilles(val.value));
-            // Vérification si c'est le Maroc (ID 144 ou label Maroc)
             const countryLabel = val.label || "";
-            setIsMaroc(countryLabel.toLowerCase().includes("maroc"));
+            const isM = countryLabel.toLowerCase().includes("maroc");
+            setIsMaroc(isM);
+            setIdConfig(getIdConfigByCountry(countryLabel));
+            // Reset ICE si on change de pays
+            setIceValue('');
+            setIceData(null);
         }
     };
 
@@ -95,8 +115,24 @@ function SupplierOnboarding(props) {
 
     const submitStep1 = (model) => {
         console.log("[ONBOARDING] Submitting Step 1 (Valid):", model);
-        const data = {
+        const enrichedModel = iceData ? {
             ...model,
+            ice: iceValue,
+            typeIdentifiant: idConfig?.type || 'ICE',
+            societe: model.societe || iceData.companyName || '',
+            formeJuridique: iceData.legalForm || '',
+            rc: iceData.rc || '',
+            capitalSocial: iceData.capital || '',
+            dateCreation: iceData.creationDate || '',
+            activite: iceData.activity || '',
+        } : {
+            ...model,
+            ice: isMaroc ? iceValue : (model.ice || ''),
+            typeIdentifiant: idConfig?.type || 'FISCAL_ID',
+        };
+
+        const data = {
+            ...enrichedModel,
             pays: model.pays?.value || model.pays,
             ville: model.ville?.value || model.ville,
             currency: model.currency?.value || model.currency,
@@ -105,6 +141,7 @@ function SupplierOnboarding(props) {
         dispatch(Actions.setStep2(data, user.data.id, props.history));
         handleNext();
     };
+
 
     const handleAddProduit = (suggestion) => {
         if (!_.find(produitsSuggestion, ["id", suggestion.id])) {
@@ -138,56 +175,17 @@ function SupplierOnboarding(props) {
                             className="flex flex-col"
                         >
                             <Typography variant="h6" className="mb-24 font-800 text-blue-900 border-b pb-8">
-                                Identification de votre structure
+                                {t('onboarding.company_id')}
                             </Typography>
+
+                            {/* Etape 1 : Pays en PREMIER pour déclencher le bon champ ICE */}
                             <Grid container spacing={3}>
-                                <Grid item xs={12} sm={6}>
-                                    <TextFieldFormsy
-                                        name="societe"
-                                        label="Raison sociale"
-                                        variant="outlined"
-                                        fullWidth
-                                        required
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start"><Icon color="action">business</Icon></InputAdornment>,
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextFieldFormsy
-                                        name="ice"
-                                        label={isMaroc ? "ICE (15 chiffres)" : "Identifiant Fiscal / No. Enregistrement"}
-                                        variant="outlined"
-                                        fullWidth
-                                        validations={isMaroc ? {
-                                            isNumeric: true,
-                                            minLength: 15,
-                                            maxLength: 15
-                                        } : {}}
-                                        validationErrors={{
-                                            isNumeric: 'L\'ICE doit être composé uniquement de chiffres',
-                                            minLength: '15 chiffres requis',
-                                            maxLength: '15 chiffres requis'
-                                        }}
-                                    />
-                                    <Typography variant="caption" className="flex items-center mt-4">
-                                        <Icon className="text-12 mr-4 text-blue-600">info</Icon>
-                                        <a 
-                                            href={isMaroc ? "https://ice.marocfacture.com/" : "https://www.google.com/search?q=business+registry"} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline font-600"
-                                        >
-                                            {isMaroc ? "Vérifier l'ICE sur MarocFacture" : "Aide à l'identification fiscale"}
-                                        </a>
-                                    </Typography>
-                                </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <SelectReactFormsy
                                         name="pays"
-                                        placeholder="Sélectionner un pays"
+                                        placeholder={t('onboarding.select_country')}
                                         textFieldProps={{
-                                            label: 'Pays d\'origine',
+                                            label: t('onboarding.country_origin'),
                                             InputLabelProps: { shrink: true },
                                             variant: 'outlined',
                                             required: true
@@ -198,12 +196,87 @@ function SupplierOnboarding(props) {
                                         onChange={handleCountryChange}
                                     />
                                 </Grid>
+
+                                <Grid item xs={12} sm={6}>
+                                    <TextFieldFormsy
+                                        name="societe"
+                                        label={t('onboarding.company_name')}
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                        value={iceData?.companyName || undefined}
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start"><Icon color="action">business</Icon></InputAdornment>,
+                                        }}
+                                    />
+                                </Grid>
+
+                                {/* === CAS 1 : MAROC — IceVerificationField avec vérification auto === */}
+                                {idConfig && isMaroc && (
+                                    <Grid item xs={12}>
+                                        <div style={{ padding: '16px', background: '#f0f7ff', border: '1px solid #bfdbfe', borderRadius: 12, marginBottom: 4 }}>
+                                            <Typography variant="caption" style={{ color: '#1d4ed8', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4, marginBottom: 10 }}>
+                                                <Icon style={{ fontSize: 16 }}>verified</Icon>
+                                                ICE — Identifiant Commun de l'Entreprise · Vérification automatique disponible 🇲🇦
+                                            </Typography>
+                                            <IceVerificationField
+                                                value={iceValue}
+                                                onChange={(val) => setIceValue(val)}
+                                                onVerifySuccess={handleIceSuccess}
+                                            />
+                                            <input type="hidden" name="ice" value={iceValue} />
+                                        </div>
+                                        {iceData && (
+                                            <div style={{ marginTop: 8, padding: '10px 16px', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                <Icon style={{ color: '#16a34a', fontSize: 20 }}>check_circle</Icon>
+                                                <Typography variant="caption" style={{ color: '#15803d', fontWeight: 600 }}>
+                                                    ✅ <strong>{iceData.companyName}</strong> — Données auto-remplies et prêtes à être sauvegardées.
+                                                </Typography>
+                                            </div>
+                                        )}
+                                    </Grid>
+                                )}
+
+                                {/* === CAS 2 : AUTRES PAYS — Champ texte adaptatif selon le pays === */}
+                                {idConfig && !isMaroc && (
+                                    <Grid item xs={12} sm={6}>
+                                        <TextFieldFormsy
+                                            name="ice"
+                                            label={idConfig.label}
+                                            placeholder={idConfig.placeholder}
+                                            variant="outlined"
+                                            fullWidth
+                                            inputProps={{ maxLength: idConfig.maxLength }}
+                                        />
+                                        {idConfig.helpUrl && (
+                                            <Typography variant="caption" className="flex items-center mt-4">
+                                                <Icon className="text-12 mr-4 text-blue-600">info</Icon>
+                                                <a href={idConfig.helpUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-600">
+                                                    {idConfig.helpText}
+                                                </a>
+                                            </Typography>
+                                        )}
+                                    </Grid>
+                                )}
+
+                                {/* === CAS 3 : Aucun pays sélectionné — champ neutre === */}
+                                {!idConfig && (
+                                    <Grid item xs={12} sm={6}>
+                                        <TextFieldFormsy
+                                            name="ice"
+                                            label={t('onboarding.fiscal_id')}
+                                            variant="outlined"
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                )}
+                                
                                 <Grid item xs={12} sm={6}>
                                     <SelectReactFormsy
                                         name="ville"
-                                        placeholder="Sélectionner une ville"
+                                        placeholder={t('onboarding.select_city')}
                                         textFieldProps={{
-                                            label: 'Ville',
+                                            label: t('onboarding.city'),
                                             InputLabelProps: { shrink: true },
                                             variant: 'outlined',
                                             required: (villes && villes.length > 0)
@@ -216,7 +289,7 @@ function SupplierOnboarding(props) {
                                 <Grid item xs={12} sm={6}>
                                     <TextFieldFormsy
                                         name="adresse1"
-                                        label="Siège social"
+                                        label={t('onboarding.headquarters')}
                                         variant="outlined"
                                         fullWidth
                                         required
@@ -225,7 +298,7 @@ function SupplierOnboarding(props) {
                                 <Grid item xs={12} sm={6}>
                                     <TextFieldFormsy
                                         name="fix"
-                                        label="Téléphone Professionnel"
+                                        label={t('onboarding.pro_phone')}
                                         variant="outlined"
                                         fullWidth
                                         required
@@ -234,9 +307,9 @@ function SupplierOnboarding(props) {
                                 <Grid item xs={12} sm={6}>
                                     <SelectReactFormsy
                                         name="currency"
-                                        placeholder="Devise de facturation"
+                                        placeholder={t('onboarding.billing_currency')}
                                         textFieldProps={{
-                                            label: 'Devise de facturation',
+                                            label: t('onboarding.billing_currency'),
                                             InputLabelProps: { shrink: true },
                                             variant: 'outlined',
                                             required: true

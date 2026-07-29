@@ -25,6 +25,8 @@ import HeaderSecteur from "./HeaderSecteur";
 import { URL_SITE } from "@fuse/Constants";
 import { Link } from "react-router-dom";
 import ContentLoader from "react-content-loader";
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,6 +127,7 @@ const useStyles = makeStyles((theme) => ({
 function Secteur(props) {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
   const activites = useSelector(
     ({ parcourirSecteurs }) => parcourirSecteurs.pSecteur
   );
@@ -151,15 +154,15 @@ function Secteur(props) {
     >
       {activites.secteur && (
         <Helmet>
-          <title>{activites.secteur.name + " | Les Achats Industriels"}</title>
+          <title>{getTranslatedField(activites.secteur, 'name', i18n.language) + " | " + t('common.boopursal', 'Les Achats Industriels')}</title>
           <meta
             name="description"
-            content={activites.secteur.name + " | Les Achats Industriels"}
+            content={getTranslatedField(activites.secteur, 'name', i18n.language) + " | " + t('common.boopursal', 'Les Achats Industriels')}
           />
-          <meta property="og:title" content={activites.secteur.name} />
+          <meta property="og:title" content={getTranslatedField(activites.secteur, 'name', i18n.language)} />
           <meta
             property="og:description"
-            content={activites.secteur.name + " | Les Achats Industriels"}
+            content={getTranslatedField(activites.secteur, 'name', i18n.language) + " | " + t('common.boopursal', 'Les Achats Industriels')}
           />
         </Helmet>
       )}
@@ -211,14 +214,14 @@ function Secteur(props) {
                   color="primary"
                 >
                   {activites.loadingSecteur
-                    ? "Chargement ..."
-                    : activites.secteur && activites.secteur.name}
+                    ? t('common.loading', 'Chargement ...')
+                    : activites.secteur && getTranslatedField(activites.secteur, 'name', i18n.language)}
                 </Typography>
               </div>
             </div>
             <div className={clsx("p-32 ")}>
               <Typography variant="h6" color="primary">
-                Affinez votre recherche
+                {t('secteurs.refine_search', 'Affinez votre recherche')}
               </Typography>
               <Grid container spacing={4} className="">
                 {activites.loading ? (
@@ -333,7 +336,7 @@ function Secteur(props) {
                                           type="body2"
                                           style={{ fontSize: 12 }}
                                         >
-                                          {sousSecteur.name +
+                                          {getTranslatedField(sousSecteur, 'name', i18n.language) +
                                             " (" +
                                             sousSecteur.count +
                                             ")"}
@@ -373,7 +376,7 @@ function Secteur(props) {
                                           type="body2"
                                           style={{ fontSize: 12 }}
                                         >
-                                          {sousSecteur.name +
+                                          {getTranslatedField(sousSecteur, 'name', i18n.language) +
                                             " (" +
                                             sousSecteur.count +
                                             ")"}
@@ -400,7 +403,7 @@ function Secteur(props) {
 
               <div className="bg-gray-300 text-center p-16 mt-16">
                 <Typography variant="h6">
-                  Et VOTRE entreprise, est-elle référencée dans ce secteur?
+                  {t('secteurs.your_company_referenced', 'Et VOTRE entreprise, est-elle référencée dans ce secteur?')}
                 </Typography>
                 <Button
                   component={Link}
@@ -409,7 +412,7 @@ function Secteur(props) {
                   color="secondary"
                   variant="contained"
                 >
-                  <span>Inscrivez-vous mantenant</span>
+                  <span>{t('secteurs.register_now', 'Inscrivez-vous maintenant')}</span>
                   <Icon className="ml-4 arrow-icon">keyboard_arrow_right</Icon>
                 </Button>
               </div>
@@ -421,8 +424,8 @@ function Secteur(props) {
             <div className={classes.top5Header}>
               <div className="flex items-center justify-between relative z-10">
                 <div>
-                  <Typography className={classes.top5Title}>Top 5</Typography>
-                  <Typography className={classes.top5Subtitle}>Entreprises à la une</Typography>
+                  <Typography className={classes.top5Title}>{t('secteurs.top_5', 'Top 5')}</Typography>
+                  <Typography className={classes.top5Subtitle}>{t('secteurs.featured_companies', 'Entreprises à la une')}</Typography>
                 </div>
                 <Icon className={classes.top5Icon}>stars</Icon>
               </div>
@@ -460,10 +463,10 @@ function Secteur(props) {
                             <div className="mr-16 relative">
                               <Avatar
                                 className="w-48 h-48 border-2 border-white shadow-sm"
-                                alt={fournisseur.societe}
+                                alt={getTranslatedField(fournisseur, 'societe', i18n.language)}
                                 src={fournisseur.avatar ? URL_SITE + "/images/avatar/" + fournisseur.avatar.url : null}
                               >
-                                {fournisseur.societe[0]}
+                                {getTranslatedField(fournisseur, 'societe', i18n.language)[0]}
                               </Avatar>
                               <div
                                 className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full flex items-center justify-center text-10 font-900 text-white shadow-md"
@@ -478,11 +481,11 @@ function Secteur(props) {
 
                             <div className="flex-1 min-w-0">
                               <Typography className="font-700 text-14 truncate text-blue-900">
-                                {fournisseur.societe}
+                                {getTranslatedField(fournisseur, 'societe', i18n.language)}
                               </Typography>
                               <Typography className="text-12 text-gray-500 flex items-center">
                                 <Icon className="text-14 mr-4 text-gray-400">location_on</Icon>
-                                {fournisseur.pays ? fournisseur.pays.name : 'International'}
+                                {fournisseur.pays ? getTranslatedField(fournisseur.pays, 'name', i18n.language) : t('common.international', 'International')}
                               </Typography>
                             </div>
 
@@ -496,7 +499,7 @@ function Secteur(props) {
                 ) : (
                   <div className="p-32 text-center text-gray-400">
                     <Icon className="text-48 mb-8 opacity-20">business</Icon>
-                    <Typography>Aucune entreprise disponible</Typography>
+                    <Typography>{t('secteurs.no_companies', 'Aucune entreprise disponible')}</Typography>
                   </div>
                 )}
               </List>
@@ -507,7 +510,7 @@ function Secteur(props) {
                 to={`/entreprises?categories.sousSecteurs.secteur.id=${params.id}`}
                 className="text-12 font-700 text-blue-700"
               >
-                Voir tout le secteur
+                {t('secteurs.view_all_sector', 'Voir tout le secteur')}
               </Button>
             </div>
           </Paper>

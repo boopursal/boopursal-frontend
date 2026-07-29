@@ -28,6 +28,7 @@ import { Helmet } from "react-helmet";
 import Categories from "./Categories";
 import moment from 'moment';
 import 'moment/locale/fr';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,16 +52,34 @@ const useStyles = makeStyles((theme) => ({
   },
 
   heroTitle: {
-    fontSize: "clamp(2rem, 8vw, 5.5rem)",
+    fontSize: "clamp(1.6rem, 3.5vw, 3.2rem)",
     fontWeight: 900,
-    color: "var(--portal-text)",
-    marginBottom: "24px",
-    lineHeight: 1.1,
-    letterSpacing: "-0.04em",
-    "& span": {
-       background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
+    color: "#1C2434", // Premium Navy (middle text)
+    marginBottom: "32px",
+    lineHeight: 1.2,
+    letterSpacing: "-0.03em",
+    position: "relative",
+    display: "inline-block", // Required for the underline to match text width
+    paddingBottom: "16px",
+    // Subtly faded underline like Kerix
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      bottom: 0,
+      left: "10%",
+      right: "10%",
+      height: "2px",
+      borderRadius: "2px",
+      background: "linear-gradient(90deg, transparent, rgba(245, 166, 35, 0.7), transparent)",
+      boxShadow: "0 2px 10px rgba(245, 166, 35, 0.2)",
+    },
+    "& .gradient-text": {
+       background: "linear-gradient(90deg, #E8890A 0%, #F5A623 100%)", // Gold gradient
        "-webkit-background-clip": "text",
        "-webkit-text-fill-color": "transparent",
+    },
+    "& .accent-text": {
+       color: "#F5A623", // Solid Gold
     }
   },
 
@@ -74,44 +93,42 @@ const useStyles = makeStyles((theme) => ({
   },
 
   searchBox: {
-    background: "rgba(255, 255, 255, 0.04)",
-    borderRadius: "100px",
-    padding: "10px",
-    border: "1px solid var(--portal-border)",
-    backdropFilter: "blur(40px)",
+    background: "#f1f5f9", // Light gray container
+    borderRadius: "40px",
+    padding: "20px",
+    border: "1px solid #e2e8f0",
     maxWidth: "1400px",
     margin: "0 auto",
     transition: "all 0.5s ease",
-    boxShadow: "0 40px 100px rgba(0, 0, 0, 0.5)",
+    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.08)",
     [theme.breakpoints.down("sm")]: {
       borderRadius: "20px",
-      padding: "6px",
+      padding: "12px",
     },
     "&:focus-within": {
-      borderColor: "var(--portal-primary)",
-      boxShadow: "0 10px 40px rgba(255, 90, 90, 0.15)",
+      boxShadow: "0 20px 60px rgba(37, 99, 235, 0.12)",
     }
   },
 
   // ===== STATS =====
   statsSection: {
-    padding: "60px 20px",
+    padding: "80px 24px",
+    background: "#f8fafc",
     position: "relative",
     zIndex: 2,
     [theme.breakpoints.down("sm")]: {
-      padding: "32px 16px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "20px 12px",
+      padding: "48px 16px",
     },
   },
 
   statsContainer: {
-    maxWidth: "1300px",
+    maxWidth: "1160px",
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: "repeat(4, 1fr)", // 4 Columns on Desktop
+    gridTemplateColumns: "repeat(4, 1fr)",
     gap: "24px",
+    position: "relative",
+    zIndex: 1,
     [theme.breakpoints.down("md")]: {
       gridTemplateColumns: "repeat(2, 1fr)",
     },
@@ -121,36 +138,69 @@ const useStyles = makeStyles((theme) => ({
   },
 
   statItem: {
-    background: "var(--portal-surface)",
-    borderRadius: "32px",
-    padding: "32px 24px",
-    border: "1px solid var(--portal-border)",
+    background: "#ffffff",
+    borderRadius: "20px",
+    padding: "40px 32px",
     textAlign: "center",
-    transition: "all 0.5s ease",
-    boxShadow: "var(--portal-card-shadow)",
-    [theme.breakpoints.down("xs")]: {
-      padding: "32px 20px",
+    border: "1px solid #e8edf2",
+    boxShadow: "0 4px 24px rgba(28, 36, 52, 0.06)",
+    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+    position: "relative",
+    overflow: "hidden",
+    // Gold top accent line
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: "20%",
+      right: "20%",
+      height: "3px",
+      borderRadius: "0 0 4px 4px",
+      background: "linear-gradient(90deg, #F5A623, #FFD166, #F5A623)",
+      opacity: 0,
+      transition: "opacity 0.3s ease",
     },
     "&:hover": {
       transform: "translateY(-8px)",
-      borderColor: "var(--portal-primary)",
-      boxShadow: "0 20px 40px rgba(255, 90, 90, 0.15)",
+      boxShadow: "0 20px 48px rgba(245, 166, 35, 0.12), 0 4px 16px rgba(28,36,52,0.08)",
+      border: "1px solid rgba(245,166,35,0.3)",
+      "&::before": {
+        opacity: 1,
+      },
+    },
+    "& .stat-icon": {
+      width: "48px",
+      height: "48px",
+      borderRadius: "14px",
+      background: "rgba(245,166,35,0.1)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      margin: "0 auto 20px",
+      fontSize: "22px",
+      color: "#F5A623",
     },
     "& h3": {
-      fontSize: "2.6rem", // More professional size
+      fontSize: "2.75rem",
       fontWeight: 900,
-      color: "var(--portal-primary)",
-      marginBottom: "8px",
+      background: "linear-gradient(135deg, #1C2434 0%, #3d5a80 100%)",
+      "-webkit-background-clip": "text",
+      "-webkit-text-fill-color": "transparent",
+      backgroundClip: "text",
+      marginBottom: "10px",
+      lineHeight: 1,
+      letterSpacing: "-0.03em",
       [theme.breakpoints.down("sm")]: {
-          fontSize: "2.2rem",
+        fontSize: "2.2rem",
       }
     },
     "& p": {
-      fontSize: "0.8rem",
-      color: "var(--portal-muted)",
+      fontSize: "0.7rem",
+      color: "#94a3b8",
       fontWeight: 700,
       textTransform: "uppercase",
-      letterSpacing: "0.1em",
+      letterSpacing: "0.14em",
+      margin: 0,
     },
   },
 
@@ -542,11 +592,12 @@ function SamplePrevArrow(props) {
 }
 
 function Index(props) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const classes = useStyles(props);
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
-  const title = "Boopursal | Place de marché B2B";
-  const description = "Boopursal - La place de marché B2B qui connecte +1000 entreprises.";
+  const title = t('portail.pageTitle', "Boopursal | Place de marché B2B");
+  const description = t('portail.pageDescription', "Boopursal - La place de marché B2B qui connecte +1000 entreprises.");
   const portail = useSelector(({ IndexApp }) => IndexApp.poratilIndex);
 
   const settings = {
@@ -600,14 +651,12 @@ function Index(props) {
 
         <Container maxWidth="lg">
           <FuseAnimate animation="transition.slideUpIn" duration={800}>
-            <h1 className={classes.heroTitle}>
-              Propulsez votre <span>B2B</span><br />au niveau supérieur
-            </h1>
+            <h1 className={classes.heroTitle} dangerouslySetInnerHTML={{ __html: t('portail.heroTitle', '<span class=\'gradient-text\'>Connectez</span> acheteurs et fournisseurs sur <span class=\'accent-text\'>une seule plateforme.</span>') }} />
           </FuseAnimate>
 
           <FuseAnimate animation="transition.slideUpIn" duration={800} delay={200}>
             <p className={classes.heroSubtitle}>
-              Trouvez vos fournisseurs, recevez des devis et développez votre réseau professionnel
+              {t('portail.heroSubtitle', 'Centralisez vos demandes, recevez des devis ciblés et développez vos opportunités d’affaires.')}
             </p>
           </FuseAnimate>
 
@@ -627,10 +676,26 @@ function Index(props) {
       {/* ===================== STATS ===================== */}
       <section className={classes.statsSection}>
         <div className={classes.statsContainer}>
-          <div className={classes.statItem}><h3>+1000</h3><p>Entreprises inscrites</p></div>
-          <div className={classes.statItem}><h3>+5000</h3><p>Produits référencés</p></div>
-          <div className={classes.statItem}><h3>+200K</h3><p>Visiteurs mensuels</p></div>
-          <div className={classes.statItem}><h3>24/7</h3><p>Support disponible</p></div>
+          <div className={classes.statItem}>
+            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>business</Icon></div>
+            <h3>+1000</h3>
+            <p>{t('portail.stats.companies', 'Entreprises inscrites')}</p>
+          </div>
+          <div className={classes.statItem}>
+            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>category</Icon></div>
+            <h3>+5000</h3>
+            <p>{t('portail.stats.products', 'Produits référencés')}</p>
+          </div>
+          <div className={classes.statItem}>
+            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>people_alt</Icon></div>
+            <h3>+200K</h3>
+            <p>{t('portail.stats.visitors', 'Visiteurs mensuels')}</p>
+          </div>
+          <div className={classes.statItem}>
+            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>headset_mic</Icon></div>
+            <h3>24/7</h3>
+            <p>{t('portail.stats.support', 'Support disponible')}</p>
+          </div>
         </div>
       </section>
 
@@ -650,9 +715,9 @@ function Index(props) {
       {/* ===================== CATEGORIES ===================== */}
       <section className={classes.sectionDark}>
         <Container maxWidth="xl">
-          <h2 className={classes.sectionTitle}>Explorez nos secteurs d'activité</h2>
+          <h2 className={classes.sectionTitle}>{t('portail.categories.title', "Explorez nos secteurs d'activité")}</h2>
           <p className={classes.sectionSubtitle}>
-            Découvrez une large gamme de catégories pour trouver exactement ce dont vous avez besoin
+            {t('portail.categories.subtitle', "Découvrez une large gamme de catégories pour trouver exactement ce dont vous avez besoin")}
           </p>
           <Categories categories={portail.categories} />
         </Container>
@@ -663,13 +728,13 @@ function Index(props) {
           <div className="flex flex-col items-center justify-center text-center mb-64">
             <span className={classes.liveIndicator}>
                 <span className={classes.liveDot} />
-                EN TEMPS RÉEL
+                {t('portail.demandes.live', "EN TEMPS RÉEL")}
             </span>
             <h2 className={classes.sectionTitleLight}>
-              Dernières demandes de devis
+              {t('portail.demandes.title', "Dernières demandes de devis")}
             </h2>
             <p className={classes.sectionSubtitleLight}>
-              Découvrez les besoins de nos acheteurs certifiés et proposez vos meilleures offres.
+              {t('portail.demandes.subtitle', "Découvrez les besoins de nos acheteurs certifiés et proposez vos meilleures offres.")}
             </p>
           </div>
 
@@ -730,7 +795,7 @@ function Index(props) {
 
                       <div className={classes.demandListRight}>
                         <div className={classes.viewMoreButtonPremium}>
-                          Voir l'offre <Icon style={{ fontSize: '18px' }}>arrow_forward</Icon>
+                          {t('portail.demandes.viewOffer', "Voir l'offre")} <Icon style={{ fontSize: '18px' }}>arrow_forward</Icon>
                         </div>
                       </div>
 
@@ -760,7 +825,7 @@ function Index(props) {
                 boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                 transition: 'all 0.3s ease'
               }} onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)'; }} onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }}>
-                Toutes les demandes
+                {t('portail.demandes.viewAll', "Toutes les demandes")}
               </Button>
             </Link>
           </Box>
@@ -770,9 +835,9 @@ function Index(props) {
       {/* ===================== PRODUITS EN VEDETTE ===================== */}
       <section className={classes.produitsSection}>
         <Container maxWidth="xl">
-          <h2 className={classes.sectionTitle}>Produits en vedette</h2>
+          <h2 className={classes.sectionTitle}>{t('portail.products.title', "Produits en vedette")}</h2>
           <p className={classes.sectionSubtitle}>
-            Les produits les plus demandés par nos acheteurs certifiés
+            {t('portail.products.subtitle', "Les produits les plus demandés par nos acheteurs certifiés")}
           </p>
 
           {portail.loadingProduits ? (
@@ -791,7 +856,7 @@ function Index(props) {
             </Slider>
           ) : (
             <Typography className="text-center" style={{ color: '#64748b' }}>
-              Aucun produit en vedette pour le moment
+              {t('portail.products.empty', "Aucun produit en vedette pour le moment")}
             </Typography>
           )}
         </Container>
@@ -800,9 +865,9 @@ function Index(props) {
       {/* ===================== ACTUALITES ===================== */}
       <section className={classes.newsSection}>
         <Container maxWidth="lg">
-          <h2 className={classes.sectionTitle}>Actualités & Tendances</h2>
+          <h2 className={classes.sectionTitle}>{t('portail.news.title', "Actualités & Tendances")}</h2>
           <p className={classes.sectionSubtitle}>
-            Restez informé des dernières nouvelles du marché B2B
+            {t('portail.news.subtitle', "Restez informé des dernières nouvelles du marché B2B")}
           </p>
 
           {portail.loadingNews ? (
@@ -822,7 +887,7 @@ function Index(props) {
             </Grid>
           ) : (
             <Typography className="text-center" style={{ color: '#64748b' }}>
-              Aucune actualité pour le moment
+              {t('portail.news.empty', "Aucune actualité pour le moment")}
             </Typography>
           )}
         </Container>
@@ -831,9 +896,9 @@ function Index(props) {
       {/* ===================== CTA: FOURNISSEUR / ACHETEUR ===================== */}
       <section className={classes.ctaSection}>
         <Container maxWidth="lg">
-          <h2 className={classes.sectionTitle}>Rejoignez l'écosystème Boopursal</h2>
+          <h2 className={classes.sectionTitle}>{t('portail.cta.title', "Rejoignez l'écosystème Boopursal")}</h2>
           <p className={classes.sectionSubtitle}>
-            Que vous soyez fournisseur ou acheteur, notre plateforme vous connecte aux bonnes opportunités
+            {t('portail.cta.subtitle', "Que vous soyez fournisseur ou acheteur, notre plateforme vous connecte aux bonnes opportunités")}
           </p>
 
           <div className={classes.ctaGrid}>
@@ -851,10 +916,10 @@ function Index(props) {
       <section className={classes.newsletterSection}>
         <Container maxWidth="md">
           <h2 className={clsx(classes.sectionTitle, "mb-16")} style={{ fontSize: '2rem' }}>
-            Restez connecté
+            {t('portail.newsletter.title', "Restez connecté")}
           </h2>
           <p className={classes.sectionSubtitle} style={{ marginBottom: '32px' }}>
-            Recevez les dernières tendances et opportunités directement dans votre boîte mail
+            {t('portail.newsletter.subtitle', "Recevez les dernières tendances et opportunités directement dans votre boîte mail")}
           </p>
           <Newsletter />
         </Container>

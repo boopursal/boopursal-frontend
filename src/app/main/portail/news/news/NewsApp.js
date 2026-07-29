@@ -23,6 +23,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import * as Actions from '../store/actions';
 import News from './News';
 import ContentLoader from "react-content-loader";
+import { useTranslation } from 'react-i18next';
 
 function generate(element) {
     return Array.from({ length: 10 }).map((_, value) =>
@@ -69,6 +70,7 @@ const useStyles = makeStyles(theme => ({
 function NewsApp(props) {
     const dispatch = useDispatch();
     const classes = useStyles();
+    const { t } = useTranslation();
     const news = useSelector(({ newsApp }) => newsApp.news);
     const query = new URLSearchParams(props.location.search);
     const q = query.get('q');
@@ -131,7 +133,7 @@ function NewsApp(props) {
     return (
         <div className={clsx(classes.root, props.innerScroll && classes.innerScroll, 'min-h-md')}>
             <Helmet>
-                <title>Toutes l'Actualité | Boopursal</title>
+                <title>{t('newsApp.page_title', "Toute l'Actualité | Boopursal")}</title>
                 <meta name="description" content='' />
             </Helmet>
 
@@ -146,15 +148,15 @@ function NewsApp(props) {
                                 onClick={() => props.history.goBack()}
                                 className={clsx(classes.btn, 'mr-8')}
                             >
-                                <Icon>chevron_left</Icon><span>Retour</span>
+                                <Icon>chevron_left</Icon><span>{t('newsApp.back', 'Retour')}</span>
                             </Button>
                             <FuseAnimate animation="transition.slideLeftIn" delay={300}>
                                 <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs} aria-label="breadcrumb">
                                     <Link color="inherit" to="/" className={classes.link}>
                                         <HomeIcon className={classes.icon} />
-                                        Accueil
+                                        {t('newsApp.home', 'Accueil')}
                                     </Link>
-                                    <span className="text-white">Toute l'actualité</span>
+                                    <span className="text-white">{t('newsApp.all_news', "Toute l'actualité")}</span>
                                 </Breadcrumbs>
                             </FuseAnimate>
                         </div>
@@ -164,12 +166,12 @@ function NewsApp(props) {
 
             <Grid container spacing={2} className="max-w-2xl mx-auto sm:px-16 pt-24 items-center">
                 <Grid item xs={12} sm={8}>
-                    <Typography variant="h1" className="text-24 font-bold uppercase">Boopursal | Actualités</Typography>
+                    <Typography variant="h1" className="text-24 font-bold uppercase">{t('newsApp.title', 'Boopursal | Actualités')}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <TextField
-                        label="Rechercher"
-                        placeholder="Entrer un mot clé..."
+                        label={t('newsApp.search_label', 'Rechercher')}
+                        placeholder={t('newsApp.search_placeholder', 'Entrer un mot clé...')}
                         className="flex w-full mb-16 sm:mb-0"
                         value={news.parametres.titre}
                         inputProps={{ 'aria-label': 'Search' }}
@@ -204,10 +206,10 @@ function NewsApp(props) {
                         <Paper className="p-32 w-full my-16 text-center flex flex-col items-center justify-center min-h-md">
                             <Icon className="text-64 mb-16" color="action">article_off</Icon>
                             <Typography variant="h5" className="mb-16 font-bold text-blue-900" >
-                                Aucune actualité trouvée
+                                {t('newsApp.no_news', 'Aucune actualité trouvée')}
                             </Typography>
                             <Typography variant="body1" className="mb-32 text-gray-600 max-w-sm mx-auto">
-                                Désolé, nous n'avons trouvé aucune actualité correspondant à votre recherche "<strong>{q}</strong>".
+                                {t('newsApp.no_news_desc', "Désolé, nous n'avons trouvé aucune actualité correspondant à votre recherche")} "<strong>{q}</strong>".
                             </Typography>
                         </Paper>
                     </Grid>
@@ -216,7 +218,7 @@ function NewsApp(props) {
                 {news.data && news.data.length > 0 && (
                     <Grid container spacing={2} className="justify-between mt-16">
                         <Grid item xs={12} md={6}>
-                            Montrer:&ensp;
+                            {t('newsApp.show', 'Montrer')}:&ensp;
                             <Select
                                 className="text-13"
                                 native

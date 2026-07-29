@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState, useRef } from "react";
 import {
   Button,
@@ -79,6 +80,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 function Profile(props) {
+    const { t } = useTranslation();
+
   const dispatch = useDispatch();
   const classes = useStyles();
   const profile = useSelector(
@@ -253,7 +256,7 @@ function Profile(props) {
   return (
     <>
       <Helmet>
-        <title>Mon profil | Les Achats Industriels</title>
+        <title>{t('auto_mon_profil_les_achats_industri', "Mon profil | Les Achats Industriels")}</title>
         <meta name="robots" content="noindex, nofollow" />
         <meta name="googlebot" content="noindex" />
       </Helmet>
@@ -322,10 +325,10 @@ function Profile(props) {
                 scrollButtons="auto"
                 classes={{ root: "w-full h-64" }}
               >
-                <Tab className="h-64 normal-case" label="Infos société" />
-                <Tab className="h-64 normal-case" label="Infos utilisateur" />
-                <Tab className="h-64 normal-case" label="Photo" />
-                <Tab className="h-64 normal-case" label="Mot de passe" />
+                <Tab className="h-64 normal-case" label={t('auto_infos_soci_t_', "Infos société")} />
+                <Tab className="h-64 normal-case" label={t('auto_infos_utilisateur', "Infos utilisateur")} />
+                <Tab className="h-64 normal-case" label={t('auto_photo', "Photo")} />
+                <Tab className="h-64 normal-case" label={t('auto_mot_de_passe', "Mot de passe")} />
               </Tabs>
             )
           ) : (
@@ -351,7 +354,7 @@ function Profile(props) {
                           <div className="flex">
                             <TextFieldFormsy
                               className=""
-                              label="Raison sociale"
+                              label={t('auto_raison_sociale', "Raison sociale")}
                               autoFocus
                               id="societe"
                               name="societe"
@@ -384,7 +387,7 @@ function Profile(props) {
                               name="fix"
                               value={form.fix}
                               onChange={handleChange}
-                              label="Fixe"
+                              label={t('auto_fixe', "Fixe")}
                               autoComplete="fix"
                               validations={{
                                 minLength: 10,
@@ -416,7 +419,7 @@ function Profile(props) {
                             className=""
                             name="secteur"
                             value={secteur}
-                            placeholder="Sélectionner votre secteur d'activité"
+                            placeholder={t('auto_s_lectionner_votre_secteur_d_a', "Sélectionner votre secteur d'activité")}
                             textFieldProps={{
                               label: "Secteur d'activité",
                               InputLabelProps: {
@@ -441,7 +444,7 @@ function Profile(props) {
                               value={form.website}
                               onChange={handleChange}
                               autoComplete="website"
-                              label="Site Web"
+                              label={t('auto_site_web', "Site Web")}
                               validations="isUrl"
                               validationErrors={{
                                 isUrl: "Exemple : http://www.exemple.com",
@@ -469,7 +472,7 @@ function Profile(props) {
                                 name="ice"
                                 value={form.ice}
                                 onChange={handleChange}
-                                label="ICE"
+                                label={t('auto_ice', "ICE")}
                                 autoComplete="ice"
                                 validations={{
                                   minLength: 15,
@@ -508,7 +511,7 @@ function Profile(props) {
                               value={form.adresse1}
                               onChange={handleChange}
                               autoComplete="adresse"
-                              label="Adresse 1"
+                              label={t('auto_adresse_1', "Adresse 1")}
                               validations={{
                                 minLength: 10,
                               }}
@@ -536,7 +539,7 @@ function Profile(props) {
                             id="pays"
                             name="pays"
                             value={pays}
-                            placeholder="Sélectionner une Pays"
+                            placeholder={t('auto_s_lectionner_une_pays', "Sélectionner une Pays")}
                             textFieldProps={{
                               label: "Pays",
                               InputLabelProps: {
@@ -562,7 +565,7 @@ function Profile(props) {
                               value={form.adresse2}
                               onChange={handleChange}
                               autoComplete="adresse"
-                              label="Adresse 2"
+                              label={t('auto_adresse_2', "Adresse 2")}
                               validations={{
                                 minLength: 10,
                               }}
@@ -603,7 +606,7 @@ function Profile(props) {
                                   "La longueur maximale de caractère est 10",
                               }}
                               autoComplete="codepostal"
-                              label="Code Postal"
+                              label={t('auto_code_postal', "Code Postal")}
                               variant="outlined"
                               fullWidth
                             />
@@ -614,7 +617,7 @@ function Profile(props) {
                             id="ville"
                             name="ville"
                             value={ville}
-                            placeholder="Sélectionner une ville"
+                            placeholder={t('auto_s_lectionner_une_ville', "Sélectionner une ville")}
                             textFieldProps={{
                               label: "Ville",
                               InputLabelProps: {
@@ -643,7 +646,7 @@ function Profile(props) {
                             name="description"
                             value={form.description}
                             onChange={handleChange}
-                            label="Présentation"
+                            label={t('auto_pr_sentation', "Présentation")}
                             autoComplete="description"
                             validations={{
                               minLength: 10,
@@ -664,7 +667,7 @@ function Profile(props) {
                         variant="contained"
                         color="primary"
                         className="w-200 pr-auto mt-16 normal-case"
-                        aria-label="Sauvegarder"
+                        aria-label={t('auto_sauvegarder', "Sauvegarder")}
                         disabled={!isFormValid || profile.loading}
                         value="legacy"
                       >
@@ -691,7 +694,7 @@ function Profile(props) {
                           <SelectFormsy
                             className="mb-16"
                             name="civilite"
-                            label="Civilité"
+                            label={t('auto_civilit_', "Civilité")}
                             onChange={handleChange}
                             value={form.civilite}
                             variant="outlined"
@@ -710,7 +713,7 @@ function Profile(props) {
                             name="lastName"
                             value={form.lastName}
                             onChange={handleChange}
-                            label="Nom"
+                            label={t('auto_nom', "Nom")}
                             validations={{
                               minLength: 2,
                             }}
@@ -739,7 +742,7 @@ function Profile(props) {
                             onChange={handleChange}
                             type="text"
                             name="firstName"
-                            label="Prénom"
+                            label={t('auto_pr_nom', "Prénom")}
                             validations={{
                               minLength: 2,
                             }}
@@ -771,7 +774,7 @@ function Profile(props) {
                             type="text"
                             name="email"
                             value={form.email}
-                            label="Email"
+                            label={t('auto_email', "Email")}
                             variant="outlined"
                             disabled
                             fullWidth
@@ -784,7 +787,7 @@ function Profile(props) {
                             onChange={handleChange}
                             type="text"
                             name="phone"
-                            label="Téléphone"
+                            label={t('auto_t_l_phone', "Téléphone")}
                             validations={{
                               minLength: 10,
                               maxLength: 13,
@@ -816,7 +819,7 @@ function Profile(props) {
                         variant="contained"
                         color="primary"
                         className="w-200 pr-auto mt-16 normal-case"
-                        aria-label="Sauvegarder"
+                        aria-label={t('auto_sauvegarder', "Sauvegarder")}
                         disabled={!isFormValid || profile.loading}
                         value="legacy"
                       >
@@ -904,7 +907,7 @@ function Profile(props) {
                         className="mb-16"
                         type={values.showPassword ? "text" : "password"}
                         name="oldPassword"
-                        label="Mot de passe actuel"
+                        label={t('auto_mot_de_passe_actuel', "Mot de passe actuel")}
                         validations={{
                           minLength: 6,
                           matchRegexp: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{6,}/,
@@ -919,7 +922,7 @@ function Profile(props) {
                           endAdornment: (
                             <InputAdornment position="end">
                               <IconButton
-                                aria-label="toggle password visibility"
+                                aria-label={t('auto_toggle_password_visibility', "toggle password visibility")}
                                 onClick={handleClickShowPassword}
                                 onMouseDown={handleMouseDownPassword}
                               >
@@ -940,7 +943,7 @@ function Profile(props) {
                         className="mb-16"
                         type={values.showPassword ? "text" : "password"}
                         name="newPassword"
-                        label="Nouveau mot de passe"
+                        label={t('auto_nouveau_mot_de_passe', "Nouveau mot de passe")}
                         validations={{
                           minLength: 6,
                         }}
@@ -952,7 +955,7 @@ function Profile(props) {
                           endAdornment: (
                             <InputAdornment position="end">
                               <IconButton
-                                aria-label="toggle password visibility"
+                                aria-label={t('auto_toggle_password_visibility', "toggle password visibility")}
                                 onClick={handleClickShowPassword}
                                 onMouseDown={handleMouseDownPassword}
                               >
@@ -973,7 +976,7 @@ function Profile(props) {
                         className="mb-16"
                         type={values.showPassword ? "text" : "password"}
                         name="newConfirmpassword"
-                        label="Confirmer le mot de passe"
+                        label={t('auto_confirmer_le_mot_de_passe', "Confirmer le mot de passe")}
                         validations="equalsField:newPassword"
                         validationErrors={{
                           equalsField: "Passwords do not match",
@@ -982,7 +985,7 @@ function Profile(props) {
                           endAdornment: (
                             <InputAdornment position="end">
                               <IconButton
-                                aria-label="toggle password visibility"
+                                aria-label={t('auto_toggle_password_visibility', "toggle password visibility")}
                                 onClick={handleClickShowPassword}
                                 onMouseDown={handleMouseDownPassword}
                               >
@@ -1004,7 +1007,7 @@ function Profile(props) {
                         variant="contained"
                         color="primary"
                         className="w-200 pr-auto mt-16 normal-case"
-                        aria-label="Sauvegarder"
+                        aria-label={t('auto_sauvegarder', "Sauvegarder")}
                         disabled={!isFormValid || profile.loading}
                         value="legacy"
                       >

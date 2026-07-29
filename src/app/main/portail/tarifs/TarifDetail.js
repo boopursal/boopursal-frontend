@@ -6,6 +6,7 @@ import PricingAcheteur from "./PricingAcheteur";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 import agent from 'agent';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +78,7 @@ const euroCountries = [
 
 function TarifDetail(props) {
   const classes = useStyles();
+  const { t } = useTranslation();
   const [currency, setCurrency] = useState(0); // 0: MAD/dh, 1: EUR, 2: USD
   const [profileType, setProfileType] = useState('fournisseur');
 
@@ -95,21 +97,21 @@ function TarifDetail(props) {
   return (
     <div className={classes.root}>
       <div className={classes.header}>
-        <Typography variant="h4" className="font-950 text-slate-800 tracking-tight">Tarification & Formules</Typography>
-        <Typography className="text-14 text-slate-400 mt-8 italic">Boopursal: Votre partenaire business B2B</Typography>
+        <Typography variant="h4" className="font-950 text-slate-800 tracking-tight">{t('tarifs.title', 'Tarification & Formules')}</Typography>
+        <Typography className="text-14 text-slate-400 mt-8 italic">{t('tarifs.subtitle', 'Boopursal: Votre partenaire business B2B')}</Typography>
 
         <div className={classes.toggleContainer}>
           <button
             className={clsx(classes.toggleBtn, profileType === 'fournisseur' && classes.activeToggle)}
             onClick={() => setProfileType('fournisseur')}
           >
-            <Icon fontSize="small" className="mr-8">storefront</Icon> Fournisseur
+            <Icon fontSize="small" className="mr-8">storefront</Icon> {t('tarifs.supplier', 'Fournisseur')}
           </button>
           <button
             className={clsx(classes.toggleBtn, profileType === 'acheteur' && classes.activeToggle)}
             onClick={() => setProfileType('acheteur')}
           >
-            <Icon fontSize="small" className="mr-8">shopping_cart</Icon> Acheteur
+            <Icon fontSize="small" className="mr-8">shopping_cart</Icon> {t('tarifs.buyer', 'Acheteur')}
           </button>
         </div>
 

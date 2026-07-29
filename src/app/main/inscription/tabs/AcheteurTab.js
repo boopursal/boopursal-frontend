@@ -12,6 +12,7 @@ import Link from '@material-ui/core/Link';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Helmet } from "react-helmet";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -48,6 +49,7 @@ const useStyles = makeStyles(theme => ({
 function AcheteurTab(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const register = useSelector(({ auth }) => auth.register);
 
     const [isFormValid, setIsFormValid] = useState(false);
@@ -120,7 +122,7 @@ function AcheteurTab(props) {
                         <SelectFormsy
                             className="mb-16"
                             name="civilite"
-                            label="Civilité"
+                            label={t('register.civility', 'Civilité')}
                             value="M."
                             variant="outlined"
                             required
@@ -137,7 +139,7 @@ function AcheteurTab(props) {
                             className="mb-16"
                             type="text"
                             name="lastName"
-                            label="Nom"
+                            label={t('register.lastName', 'Nom')}
                             validations={{
                                 minLength: 2,
                                 maxLength: 100,
@@ -145,8 +147,8 @@ function AcheteurTab(props) {
                             }}
                             fullWidth
                             validationErrors={{
-                                maxLength: 'La longueur maximale de caractère est 100',
-                                minLength: 'La longueur minimale de caractère est 2',
+                                maxLength: t('register.maxLength100', 'La longueur maximale de caractère est 100'),
+                                minLength: t('register.minLength2', 'La longueur minimale de caractère est 2'),
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">person</Icon></InputAdornment>
@@ -160,15 +162,15 @@ function AcheteurTab(props) {
                             className="mb-16"
                             type="text"
                             name="firstName"
-                            label="Prénom"
+                            label={t('register.firstName', 'Prénom')}
                             validations={{
                                 minLength: 2,
                                 maxLength: 100
                             }}
                             fullWidth
                             validationErrors={{
-                                minLength: 'La longueur minimale de caractère est 2',
-                                maxLength: 'La longueur maximale de caractère est 100',
+                                minLength: t('register.minLength2', 'La longueur minimale de caractère est 2'),
+                                maxLength: t('register.maxLength100', 'La longueur maximale de caractère est 100'),
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">person</Icon></InputAdornment>
@@ -185,17 +187,16 @@ function AcheteurTab(props) {
                             className="mb-16"
                             type="text"
                             name="societe"
-                            label="Raison sociale"
+                            label={t('register.companyName', 'Raison sociale')}
                             validations={{
                                 matchRegexp: /^[a-z]|([a-z][0-9])|([0-9][a-z])|([a-z][0-9][a-z])+$/i,
                                 minLength: 2,
                                 maxLength: 20
-
                             }}
                             validationErrors={{
-                                minLength: 'Raison sociale doit dépasser 2 caractères alphanumériques',
-                                maxLength: 'Raison sociale ne peut dépasser 20 caractères alphanumériques',
-                                matchRegexp: 'Raison sociale doit contenir des caractères alphanumériques'
+                                minLength: t('register.companyMin', 'Raison sociale doit dépasser 2 caractères alphanumériques'),
+                                maxLength: t('register.companyMax', 'Raison sociale ne peut dépasser 20 caractères alphanumériques'),
+                                matchRegexp: t('register.companyAlpha', 'Raison sociale doit contenir des caractères alphanumériques')
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">work_outline</Icon></InputAdornment>
@@ -212,10 +213,10 @@ function AcheteurTab(props) {
                             className="mb-16"
                             type="text"
                             name="email"
-                            label="Email"
+                            label={t('register.email', 'Email')}
                             validations="isEmail"
                             validationErrors={{
-                                isEmail: 'Veuillez saisir un e-mail valide'
+                                isEmail: t('register.emailInvalid', 'Veuillez saisir un e-mail valide')
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">email</Icon></InputAdornment>
@@ -232,14 +233,14 @@ function AcheteurTab(props) {
                             className="mb-16"
                             type="text"
                             name="phone"
-                            label="Téléphone"
+                            label={t('register.phone', 'Téléphone')}
                             validations={{
                                 minLength: 10,
                                 maxLength: 20,
                             }}
                             validationErrors={{
-                                minLength: 'La longueur minimale de caractère est 10',
-                                maxLength: 'La longueur maximale de caractère est 20'
+                                minLength: t('register.minLength10', 'La longueur minimale de caractère est 10'),
+                                maxLength: t('register.maxLength20', 'La longueur maximale de caractère est 20')
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end"><Icon className="text-20" color="action">phone</Icon></InputAdornment>
@@ -255,15 +256,15 @@ function AcheteurTab(props) {
                         <TextFieldFormsy
                             className="mb-16"
                             name="password"
-                            label="Mot de passe"
+                            label={t('register.password', 'Mot de passe')}
                             type={values.showPassword ? 'text' : 'password'}
                             validations={{
                                 minLength: 6,
                                 matchRegexp: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{6,}/
                             }}
                             validationErrors={{
-                                minLength: 'La longueur minimale des caractères est de 6',
-                                matchRegexp: 'Le mot de passe doit être de 6 caractères minimum et contenir un lettre majuscules et des lettres minuscules et au moins un chiffre'
+                                minLength: t('register.passwordMinLength', 'La longueur minimale des caractères est de 6'),
+                                matchRegexp: t('register.passwordStrength', 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre')
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">
@@ -288,10 +289,10 @@ function AcheteurTab(props) {
                             className="mb-16"
                             type={values.showPassword ? 'text' : 'password'}
                             name="confirmpassword"
-                            label="Confirmer le mot de passe"
+                            label={t('register.confirmPassword', 'Confirmer le mot de passe')}
                             validations="equalsField:password"
                             validationErrors={{
-                                equalsField: 'les mots de passe saisis ne sont pas identiques'
+                                equalsField: t('register.passwordMismatch', 'Les mots de passe saisis ne sont pas identiques')
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">
@@ -317,7 +318,7 @@ function AcheteurTab(props) {
                     />
                 </div> */}
                 <p className="mt-16">
-                    En appuyant sur le bouton <span className="font-bold">"Enregistrer"</span>, vous acceptez les <Link href='/conditions' target="_blank" rel="noreferrer noopener">Conditions d'utilisation</Link> Politique de protection des données
+                    {t('register.legalPre', 'En appuyant sur le bouton')} <span className="font-bold">"{t('register.submitBtn', 'Enregistrer')}"</span>, {t('register.legalAccept', 'vous acceptez les')} <Link href='/conditions' target="_blank" rel="noreferrer noopener">{t('register.termsLink', "Conditions d'utilisation")}</Link> {t('register.legalPrivacy', 'Politique de protection des données')}
                 </p>
                 <Button
                     type="submit"
@@ -328,7 +329,7 @@ function AcheteurTab(props) {
                     disabled={!isFormValid || register.loading}
                     value="legacy"
                 >
-                    Enregistrer
+                    {t('register.submitBtn', 'Enregistrer')}
                     {register.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
                 </Button>
 

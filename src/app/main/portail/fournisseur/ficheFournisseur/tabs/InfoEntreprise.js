@@ -17,6 +17,7 @@ import Link2 from "@material-ui/core/Link";
 import _ from "@lodash";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   sectionTitle: {
@@ -82,8 +83,12 @@ function InfoEntreprise(props) {
   const produitsApercu = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.produitsApercu);
   const loadingProduitsApercu = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.loadingProduitsApercu);
   const loading = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.loading);
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language === 'fr' ? '' : `_${i18n.language}`;
 
   if (!data) return null;
+  
+  const translatedDesc = data[`description${currentLang}`] || data.description || "Aucune description fournie par l'entreprise.";
 
   return (
     <div className="p-0">
@@ -97,17 +102,17 @@ function InfoEntreprise(props) {
           {/* Description Section */}
           <div className={classes.sectionTitle}>
             <Icon color="primary" style={{ fontSize: 20 }}>description</Icon>
-            À PROPOS
+            {t('fournisseur.aboutSection', 'À PROPOS')}
             <div className={classes.titleLine} />
           </div>
           <Typography className="text-slate-500 leading-relaxed text-15 whitespace-pre-line mb-40">
-            {data.description || "Aucune description fournie par l'entreprise."}
+            {translatedDesc}
           </Typography>
 
           {/* Preview Section */}
           <div className={classes.sectionTitle}>
             <Icon color="primary" style={{ fontSize: 20 }}>view_module</Icon>
-            APERÇU DU CATALOGUE
+            {t('fournisseur.catalogPreview', 'APERÇU DU CATALOGUE')}
             <div className={classes.titleLine} />
           </div>
 
@@ -115,24 +120,27 @@ function InfoEntreprise(props) {
             produitsApercu.length > 0 ? (
               <>
                 <Grid container spacing={3}>
-                  {produitsApercu.map((item, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index}>
-                      <Link to={`/detail-produit/${item.sousSecteurs?.slug}/${item.categorie?.slug}/${item.id}-${item.slug}`} className="no-underline">
-                        <Paper className={classes.productCard} elevation={0}>
-                          <div className={classes.productImgWrapper}>
-                            <img
-                              src={item.featuredImageId ? getImageUrl(item.featuredImageId.url, '/images/produits/') : "/assets/images/ecommerce/product-placeholder.jpg"}
-                              alt={item.titre}
-                              className="max-h-full max-w-full object-contain"
-                            />
-                          </div>
-                          <div className="p-12 border-t border-slate-50 bg-white">
-                            <Typography className="font-bold text-slate-800 truncate text-sm">{item.titre}</Typography>
-                          </div>
-                        </Paper>
-                      </Link>
-                    </Grid>
-                  ))}
+                  {produitsApercu.map((item, index) => {
+                    const translatedTitre = item[`titre${currentLang}`] || item.titre;
+                    return (
+                      <Grid item xs={12} sm={6} md={3} key={index}>
+                        <Link to={`/detail-produit/${item.sousSecteurs?.slug}/${item.categorie?.slug}/${item.id}-${item.slug}`} className="no-underline">
+                          <Paper className={classes.productCard} elevation={0}>
+                            <div className={classes.productImgWrapper}>
+                              <img
+                                src={item.featuredImageId ? getImageUrl(item.featuredImageId.url, '/images/produits/') : "/assets/images/ecommerce/product-placeholder.jpg"}
+                                alt={translatedTitre}
+                                className="max-h-full max-w-full object-contain"
+                              />
+                            </div>
+                            <div className="p-12 border-t border-slate-50 bg-white">
+                              <Typography className="font-bold text-slate-800 truncate text-sm">{translatedTitre}</Typography>
+                            </div>
+                          </Paper>
+                        </Link>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
                 <div className="text-right mt-24">
                   <Button
@@ -141,7 +149,7 @@ function InfoEntreprise(props) {
                     color="primary"
                     className="font-bold text-13 normal-case"
                   >
-                    Voir tout le catalogue produits
+                    {t('fournisseur.viewFullCatalog', 'Voir tout le catalogue produits')}
                     <Icon className="ml-8">arrow_forward</Icon>
                   </Button>
                 </div>
@@ -149,7 +157,7 @@ function InfoEntreprise(props) {
             ) : (
               <div className="flex flex-col items-center py-40 bg-slate-50 rounded-20 border border-dashed border-slate-200">
                 <Icon className="text-48 text-slate-300 mb-12">inventory_2</Icon>
-                <Typography className="text-slate-400 font-bold">Aucun produit n'est publié par cette entreprise</Typography>
+                <Typography className="text-slate-400 font-bold">{t('fournisseur.noProducts', "Aucun produit n'est publié par cette entreprise")}</Typography>
               </div>
             )
           ) : (
@@ -161,7 +169,7 @@ function InfoEntreprise(props) {
           {/* Activities Section */}
           <div className={classes.sectionTitle}>
             <Icon color="primary" style={{ fontSize: 20 }}>business_center</Icon>
-            DOMAINES D'ACTIVITÉ
+            {t('fournisseur.activityAreas', "DOMAINES D'ACTIVITÉ")}
             <div className={classes.titleLine} />
           </div>
           <div className="flex flex-wrap gap-8">
@@ -176,7 +184,7 @@ function InfoEntreprise(props) {
                 variant="outlined"
               />
             )) : (
-              <Typography className="text-slate-400 italic text-13">Non spécifié</Typography>
+              <Typography className="text-slate-400 italic text-13">{t('fournisseur.notSpecified', 'Non spécifié')}</Typography>
             )}
           </div>
 

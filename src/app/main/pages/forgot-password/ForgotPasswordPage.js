@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Formsy from "formsy-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from 'app/fuse-layouts/shared-components/LanguageSwitcher';
 import * as Actions from "./store/actions";
 import reducer from "./store/reducers";
 import withReducer from "app/store/withReducer";
@@ -124,6 +126,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ForgotPasswordPage(props) {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const forgotpassword = useSelector(
     ({ forgotpassword }) => forgotpassword.forgotpassword
   );
@@ -161,10 +164,10 @@ function ForgotPasswordPage(props) {
   return (
     <div className={classes.root}>
       <Helmet>
-        <title>Mot de passe oublié | Boopursal</title>
+        <title>{t('forgotPassword.pageTitle', 'Mot de passe oublié | Boopursal')}</title>
         <meta
           name="description"
-          content="Modifier ou réinitialiser votre mot de passe"
+          content={t('forgotPassword.pageDesc', 'Modifier ou réinitialiser votre mot de passe')}
         />
       </Helmet>
       
@@ -174,9 +177,9 @@ function ForgotPasswordPage(props) {
           <div className={classes.megaCard}>
               <div className={classes.loginPane}>
                   <img className={classes.logo} src="/assets/images/logos/icon.png" alt="Boopursal" />
-                  <Typography className={classes.title}>Mot de passe oublié ?</Typography>
+                  <Typography className={classes.title}>{t('forgotPassword.title', 'Mot de passe oublié ?')}</Typography>
                   <Typography className={classes.subtitle}>
-                      Entrez votre adresse e-mail pour recevoir un lien de réinitialisation.
+                      {t('forgotPassword.subtitle', 'Entrez votre adresse e-mail pour recevoir un lien de réinitialisation.')}
                   </Typography>
 
                   <Formsy
@@ -190,10 +193,10 @@ function ForgotPasswordPage(props) {
                           className="mb-24"
                           type="email"
                           name="email"
-                          label="Adresse e-mail"
+                          label={t('forgotPassword.emailLabel', 'Adresse e-mail')}
                           validations="isEmail"
                           validationErrors={{
-                              isEmail: "L'adresse email n'est pas valide",
+                              isEmail: t('forgotPassword.emailInvalid', "L'adresse email n'est pas valide"),
                           }}
                           InputProps={{
                               endAdornment: (
@@ -214,10 +217,10 @@ function ForgotPasswordPage(props) {
                           name="submit"
                           color="primary"
                           className={clsx(classes.submitBtn, "w-full")}
-                          aria-label="RÉINITIALISER"
+                          aria-label={t('forgotPassword.submitBtn', 'Envoyer le lien')}
                           disabled={!isFormValid || forgotpassword.loading}
                       >
-                          Envoyer le lien
+                          {t('forgotPassword.submitBtn', 'Envoyer le lien')}
                           {forgotpassword.loading && (
                               <CircularProgress
                                   size={24}
@@ -230,7 +233,7 @@ function ForgotPasswordPage(props) {
                   <div className="flex items-center justify-between mt-16">
                       <Link to="/login" className={classes.footerLink}>
                           <Icon className="text-16 mr-8">keyboard_backspace</Icon>
-                          Retour à la connexion
+                          {t('forgotPassword.backToLogin', 'Retour à la connexion')}
                       </Link>
                   </div>
               </div>

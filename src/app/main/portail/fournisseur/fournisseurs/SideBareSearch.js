@@ -5,6 +5,8 @@ import clsx from 'clsx';
 import { Icon, List, ListItem, ListItemText, Typography, Chip, IconButton, LinearProgress } from '@material-ui/core';
 import { FuseAnimateGroup } from '@fuse';
 import _ from '@lodash';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -123,6 +125,7 @@ function useQuery(location) {
 
 function SideBareSearch(props) {
     const classes = useStyles();
+    const { t, i18n } = useTranslation();
     const loadingSecteurs = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.loadingSecteurs);
     const secteurs = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.secteurs);
     const loadingActivites = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.loadingActivites);
@@ -183,7 +186,7 @@ function SideBareSearch(props) {
             <div className={classes.sectionCard}>
                 <div className={classes.sectionHeader}>
                     <Icon className={classes.headerIcon}>public</Icon>
-                    <Typography className={classes.headerTitle}>Localisation</Typography>
+                    <Typography className={classes.headerTitle}>{t('filters.location', 'Localisation')}</Typography>
                 </div>
 
                 {pays && fournisseurs.length > 0 && (
@@ -210,7 +213,7 @@ function SideBareSearch(props) {
                                             props.history.push({ pathname: props.location.pathname, search: 'pays=' + pays + '&ville=' + item.slug + (q ? '&q=' + q : '') });
                                             scrollToTop();
                                         }}>
-                                        <ListItemText primary={<span className={classes.itemText}>{item.name}</span>} />
+                                        <ListItemText primary={<span className={classes.itemText}>{getTranslatedField(item, 'name', i18n.language)}</span>} />
                                         <span className={classes.itemCount}>{item.count}</span>
                                     </ListItem>
                                 ))}
@@ -228,7 +231,7 @@ function SideBareSearch(props) {
                                             props.history.push({ pathname: props.location.pathname, search: 'pays=' + item.slug + (q ? '&q=' + q : '') });
                                             scrollToTop();
                                         }}>
-                                        <ListItemText primary={<span className={classes.itemText}>{item.name}</span>} />
+                                        <ListItemText primary={<span className={classes.itemText}>{getTranslatedField(item, 'name', i18n.language)}</span>} />
                                         <span className={classes.itemCount}>{item.count}</span>
                                     </ListItem>
                                 ))}
@@ -242,20 +245,20 @@ function SideBareSearch(props) {
             <div className={classes.sectionCard}>
                 <div className={classes.sectionHeader}>
                     <Icon className={classes.headerIcon}>category</Icon>
-                    <Typography className={classes.headerTitle}>Secteurs & Catégories</Typography>
+                    <Typography className={classes.headerTitle}>{t('filters.sectors_categories', 'Secteurs & Catégories')}</Typography>
                 </div>
 
                 <div className="flex flex-col">
                     {secteur && fournisseurs.length > 0 && (
                         <Chip
-                            label={_.capitalize(fournisseurs[0].secteur && fournisseurs[0].secteur.name)}
+                            label={_.capitalize(getTranslatedField(fournisseurs[0].secteur, 'name', i18n.language))}
                             onDelete={handleDeletePathSecteur}
                             className={classes.activeFilterChip}
                         />
                     )}
                     {activite && fournisseurs.length > 0 && (
                         <Chip
-                            label={_.capitalize(fournisseurs[0].sousSecteurs && fournisseurs[0].sousSecteurs.name)}
+                            label={_.capitalize(getTranslatedField(fournisseurs[0].sousSecteurs, 'name', i18n.language))}
                             onDelete={handleDeletePathActivite}
                             className={clsx(classes.activeFilterChip, "mt-0")}
                         />
@@ -280,7 +283,7 @@ function SideBareSearch(props) {
                                                     scrollToTop();
                                                 }
                                             }}>
-                                            <ListItemText primary={<span className={classes.itemText}>{item.name}</span>} />
+                                            <ListItemText primary={<span className={classes.itemText}>{getTranslatedField(item, 'name', i18n.language)}</span>} />
                                             <span className={classes.itemCount}>{item.count}</span>
                                         </ListItem>
                                     ))}
@@ -299,7 +302,7 @@ function SideBareSearch(props) {
                                                 props.history.push({ pathname: '/entreprises/' + secteur + '/' + item.slug, search: (pays ? 'pays=' + pays : '') + (ville ? '&ville=' + ville : '') + searchText });
                                                 scrollToTop();
                                             }}>
-                                            <ListItemText primary={<span className={classes.itemText}>{item.name}</span>} />
+                                            <ListItemText primary={<span className={classes.itemText}>{getTranslatedField(item, 'name', i18n.language)}</span>} />
                                             <span className={classes.itemCount}>{item.count}</span>
                                         </ListItem>
                                     ))}
@@ -319,7 +322,7 @@ function SideBareSearch(props) {
                                             props.history.push({ pathname: '/entreprises/' + item.slug, search: (pays ? 'pays=' + pays : '') + (ville ? '&ville=' + ville : '') + searchText });
                                             scrollToTop();
                                         }}>
-                                        <ListItemText primary={<span className={classes.itemText}>{item.name}</span>} />
+                                        <ListItemText primary={<span className={classes.itemText}>{getTranslatedField(item, 'name', i18n.language)}</span>} />
                                         <span className={classes.itemCount}>{item.count}</span>
                                     </ListItem>
                                 ))}
@@ -334,7 +337,7 @@ function SideBareSearch(props) {
                 <div className={classes.sectionCard}>
                     <div className={classes.sectionHeader}>
                         <Icon className={classes.headerIcon}>tag</Icon>
-                        <Typography className={classes.headerTitle}>Recherche Active</Typography>
+                        <Typography className={classes.headerTitle}>{t('filters.active_search', 'Recherche Active')}</Typography>
                     </div>
                     <Chip
                         label={_.capitalize(q)}

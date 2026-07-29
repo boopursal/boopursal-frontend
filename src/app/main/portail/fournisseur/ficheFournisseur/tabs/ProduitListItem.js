@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import { Chip, Icon, IconButton, Select, CircularProgress, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import * as Actions from "../../store/actions";
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../../utils/translationHelper';
 
 const useStyles = makeStyles(theme => ({
   productCard: {
@@ -73,6 +75,7 @@ function ProduitListItem(props) {
   const produits = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.produits);
   const loadingProduits = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.loadingProduits);
   const parametres = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseur.parametres);
+  const { t, i18n } = useTranslation();
 
   function handlePreviousClick() {
     dispatch(Actions.setParametresData({ ...parametres, page: Math.max(parametres.page - 1, 1) }));
@@ -108,14 +111,14 @@ function ProduitListItem(props) {
                     <div className={classes.imageWrapper}>
                       <img
                         className={classes.img}
-                        alt={produit.titre}
+                        alt={getTranslatedField(produit, 'titre', i18n.language)}
                         src={produit.featuredImageId ? getImageUrl(produit.featuredImageId.url, '/images/produits/') : "/assets/images/ecommerce/product-placeholder.jpg"}
                       />
                     </div>
                   </Link>
                   <div className="p-20 flex-grow flex flex-col">
                     <div className="flex flex-wrap gap-4 mb-12">
-                      {produit.categorie && <Chip label={produit.categorie.name} size="small" className="text-10 font-bold bg-slate-50 text-slate-400" />}
+                      {produit.categorie && <Chip label={getTranslatedField(produit.categorie, 'name', i18n.language)} size="small" className="text-10 font-bold bg-slate-50 text-slate-400" />}
                     </div>
                     <Typography
                       variant="h6"
@@ -123,7 +126,7 @@ function ProduitListItem(props) {
                       component={Link}
                       to={`/detail-produit/${produit.sousSecteurs?.slug}/${produit.categorie?.slug}/${produit.id}-${produit.slug}`}
                     >
-                      {produit.titre}
+                      {getTranslatedField(produit, 'titre', i18n.language)}
                     </Typography>
 
                     <div className="mt-16 flex items-center justify-between gap-12">

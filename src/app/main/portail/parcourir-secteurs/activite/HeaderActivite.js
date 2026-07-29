@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Button, Icon } from '@material-ui/core';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const useStyles = makeStyles(theme => ({
     layoutRoot: {},
@@ -32,24 +34,25 @@ const useStyles = makeStyles(theme => ({
 function HeaderActivite(props) {
     const classes = useStyles();
     const activites = useSelector(({ parcourirSecteurs }) => parcourirSecteurs.pActivite);
+    const { t, i18n } = useTranslation();
 
     return (
         <div className="flex items-center">
             <Button variant="outlined" size="small" color="secondary" onClick={() => props.history.goBack()} className={clsx(classes.btn, "mr-8")}>
-                <Icon>chevron_left</Icon> <span className="transition ease-in-out duration-700 ">Retour</span>
+                <Icon>chevron_left</Icon> <span className="transition ease-in-out duration-700 ">{t('common.back', 'Retour')}</span>
             </Button>
             <FuseAnimate animation="transition.slideLeftIn" delay={300}>
 
                 <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
                     <Link color="inherit" to="/" className={classes.link}>
                         <HomeIcon className={classes.icon} />
-                            Accueil
+                            {t('common.home', 'Accueil')}
                     </Link>
                     {
                         activites.sousSecteur && activites.sousSecteur.secteur &&
                         <Link color="inherit" to={`/annuaire-entreprises/${activites.sousSecteur.secteur.id}-${activites.sousSecteur.secteur.slug}`} className={classes.link}>
                             {
-                                activites.sousSecteur.secteur.name
+                                getTranslatedField(activites.sousSecteur.secteur, 'name', i18n.language)
                             }
                         </Link>
 
@@ -57,7 +60,7 @@ function HeaderActivite(props) {
                     {
                         activites.sousSecteur &&
                         <span className="text-white">
-                            {activites.sousSecteur.name}
+                            {getTranslatedField(activites.sousSecteur, 'name', i18n.language)}
                         </span>
                     }
 

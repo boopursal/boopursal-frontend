@@ -4,6 +4,7 @@ import { makeStyles, ThemeProvider } from '@material-ui/styles';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import LogoPortail from 'app/fuse-layouts/shared-components/LogoPortail';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -88,6 +89,7 @@ const useStyles = makeStyles((theme) => ({
 function FooterLayout3(props) {
     const classes = useStyles();
     const footerTheme = useSelector(({ fuse }) => fuse.settings.footerTheme);
+    const { t } = useTranslation();
 
     return (
         <ThemeProvider theme={footerTheme}>
@@ -108,43 +110,43 @@ function FooterLayout3(props) {
                                 <LogoPortail />
                             </div>
                             <Typography className={classes.aboutText}>
-                                Boopursal est la place de marché B2B nouvelle génération connectant décideurs, acheteurs et fournisseurs à travers le monde pour des transactions fluides et sécurisées.
+                                {t('footer3.about', 'Boopursal est la place de marché B2B nouvelle génération connectant décideurs, acheteurs et fournisseurs à travers le monde pour des transactions fluides et sécurisées.')}
                             </Typography>
                         </Grid>
 
                         <Grid item xs={6} sm={4} md={2} className={classes.column}>
-                            <Typography variant="h4" component="h4">Acheter</Typography>
+                            <Typography variant="h4" component="h4">{t('footer3.buy', 'Acheter')}</Typography>
                             <ul>
-                                <li><Link to="/register/2">S'inscrire</Link></li>
-                                <li><Link to="/vente-produits">Parcourir produits</Link></li>
-                                <li><Link to="/demandes-achats">Demandes de devis</Link></li>
+                                <li><Link to="/register/2">{t('footer3.register', "S'inscrire")}</Link></li>
+                                <li><Link to="/vente-produits">{t('footer3.browse_products', 'Parcourir produits')}</Link></li>
+                                <li><Link to="/demandes-achats">{t('footer3.rfqs', 'Demandes de devis')}</Link></li>
                             </ul>
                         </Grid>
 
                         <Grid item xs={6} sm={4} md={2} className={classes.column}>
-                            <Typography variant="h4" component="h4">Vendre</Typography>
+                            <Typography variant="h4" component="h4">{t('footer3.sell', 'Vendre')}</Typography>
                             <ul>
-                                <li><Link to="/register/1">Devenir fournisseur</Link></li>
-                                <li><Link to="/tarifs/plans">Nos forfaits</Link></li>
-                                <li><Link to="/vente-produits">Publier un produit</Link></li>
+                                <li><Link to="/register/1">{t('footer3.become_supplier', 'Devenir fournisseur')}</Link></li>
+                                <li><Link to="/tarifs/plans">{t('footer3.pricing', 'Nos forfaits')}</Link></li>
+                                <li><Link to="/vente-produits">{t('footer3.publish_product', 'Publier un produit')}</Link></li>
                             </ul>
                         </Grid>
 
                         <Grid item xs={12} sm={4} md={4} className={classes.column}>
-                            <Typography variant="h4" component="h4">Navigation</Typography>
+                            <Typography variant="h4" component="h4">{t('footer3.navigation', 'Navigation')}</Typography>
                             <Grid container>
                                 <Grid item xs={6}>
                                     <ul>
-                                        <li><Link to="/annuaire-entreprises">Secteurs</Link></li>
-                                        <li><Link to="/entreprises">Entreprises</Link></li>
-                                        <li><Link to="/actualites">Actualités</Link></li>
+                                        <li><Link to="/annuaire-entreprises">{t('footer3.sectors', 'Secteurs')}</Link></li>
+                                        <li><Link to="/entreprises">{t('footer3.companies', 'Entreprises')}</Link></li>
+                                        <li><Link to="/actualites">{t('footer3.news', 'Actualités')}</Link></li>
                                     </ul>
                                 </Grid>
                                 <Grid item xs={6}>
                                     <ul>
-                                        <li><Link to="/contact">Contact</Link></li>
-                                        <li><Link to="/faqs">FAQ</Link></li>
-                                        <li><Link to="/conditions">Conditions</Link></li>
+                                        <li><Link to="/contact">{t('footer3.contact', 'Contact')}</Link></li>
+                                        <li><Link to="/faqs">{t('footer3.faq', 'FAQ')}</Link></li>
+                                        <li><Link to="/conditions">{t('footer3.terms', 'Conditions')}</Link></li>
                                     </ul>
                                 </Grid>
                             </Grid>
@@ -154,11 +156,11 @@ function FooterLayout3(props) {
                     <Divider className={classes.divider} />
 
                     <div className={classes.bottom}>
-                        <Typography>© 2026 Boopursal Platform. Tous droits réservés.</Typography>
+                        <Typography>{t('footer3.copyright_text', '© 2026 Boopursal Platform. Tous droits réservés.')}</Typography>
                         <div className={classes.bottomLinks}>
-                            <Link to="/conditions">Confidentialité</Link>
-                            <Link to="/conditions">Mentions légales</Link>
-                            <Link to="/conditions">Cookies</Link>
+                            <Link to="/conditions">{t('footer3.privacy', 'Confidentialité')}</Link>
+                            <Link to="/conditions">{t('footer3.legal', 'Mentions légales')}</Link>
+                            <Link to="/conditions">{t('footer3.cookies', 'Cookies')}</Link>
                         </div>
                     </div>
                 </Container>

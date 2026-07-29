@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import _ from '@lodash';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedField } from '../../../../../utils/translationHelper';
 
 const useStyles = makeStyles(theme => ({
     layoutRoot: {},
@@ -33,30 +35,32 @@ const useStyles = makeStyles(theme => ({
 function HeaderDetailProduit(props) {
     const classes = useStyles();
     const produit = useSelector(({ produitsApp }) => produitsApp.detailProduit);
+    const { t, i18n } = useTranslation();
+    const translatedTitre = produit?.data ? getTranslatedField(produit.data, 'titre', i18n.language) : '';
 
     return (
         produit.data  && (
             <div className="flex items-center">
                 <Button variant="outlined" size="small" color="secondary" onClick={() => props.history.goBack()} className={clsx(classes.btn, "mr-8")}>
-                    <Icon>chevron_left</Icon> <span className="transition ease-in-out duration-700 ">Retour</span>
+                    <Icon>chevron_left</Icon> <span className="transition ease-in-out duration-700 ">{t('common.back', 'Retour')}</span>
                 </Button>
                 <FuseAnimate animation="transition.slideLeftIn" delay={300}>
 
                     <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
                         <Link color="inherit" to="/" className={classes.link}>
                             <HomeIcon className={classes.icon} />
-                            Accueil
-                    </Link>
+                            {t('common.home', 'Accueil')}
+                        </Link>
                         <Link color="inherit" to={`/vente-produits/${produit.data.secteur ? produit.data.secteur.slug : ''}/${produit.data.sousSecteurs ? produit.data.sousSecteurs.slug : ''}`} className={classes.link}>
-                            {produit.data.sousSecteurs ? produit.data.sousSecteurs.name : ''}
+                            {produit.data.sousSecteurs ? getTranslatedField(produit.data.sousSecteurs, 'name', i18n.language) : ''}
                         </Link>
                         <Link color="inherit" to={`/vente-produits/${produit.data.secteur ? produit.data.secteur.slug : ''}/${produit.data.sousSecteurs ? produit.data.sousSecteurs.slug : ''}/${produit.data.categorie ? produit.data.categorie.slug : ''}`} className={classes.link}>
-                            {produit.data.categorie ? produit.data.categorie.name : ''}
+                            {produit.data.categorie ? getTranslatedField(produit.data.categorie, 'name', i18n.language) : ''}
                         </Link>
                         {
-                            produit.data.titre &&
+                            translatedTitre &&
                             <span className="text-white">
-                                {_.capitalize(produit.data.titre)}
+                                {_.capitalize(translatedTitre)}
                             </span>
 
                         }

@@ -3,6 +3,7 @@ import 'typeface-muli';
 import './react-table-defaults';
 import './react-chartjs-2-defaults';
 import './styles/index.css';
+import './i18n'; // Import i18n configuration
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'app/App';

@@ -1,7 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Typography, Select, Icon } from '@material-ui/core';
+import { Typography, Select } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import * as Actions from '../store/actions';
 
 const useStyles = makeStyles(theme => ({
@@ -34,6 +35,7 @@ const useStyles = makeStyles(theme => ({
 
 function HeaderContentList(props) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const totalItems = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.totalItems);
     const parametres = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.parametres);
     const loading = useSelector(({ fournisseursApp }) => fournisseursApp.fournisseurs.loading);
@@ -53,11 +55,11 @@ function HeaderContentList(props) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-24 py-16 bg-white border border-slate-200 rounded-20 mb-24 shadow-sm">
             <div className={classes.count}>
                 <span className="w-8 h-8 rounded-full bg-blue-500 mr-8 shadow-sm" />
-                <strong>{totalItems}</strong>&nbsp;fournisseur(s) trouvé(s)
+                <strong>{totalItems}</strong>&nbsp;{t('portail.found_count', 'fournisseur(s) trouvé(s)')}
             </div>
 
             <div className="flex items-center mt-12 sm:mt-0">
-                <Typography className={classes.sortLabel}>Trier par :</Typography>
+                <Typography className={classes.sortLabel}>{t('portail.sort_by', 'Trier par :')}</Typography>
                 <Select
                     native
                     value={parametres.filter.id}
@@ -65,8 +67,8 @@ function HeaderContentList(props) {
                     className={classes.select}
                     disableUnderline
                 >
-                    <option value='created-desc'>Plus récent</option>
-                    <option value='created-asc'>Plus ancien</option>
+                    <option value='created-desc'>{t('portail.newest', 'Plus récent')}</option>
+                    <option value='created-asc'>{t('portail.oldest', 'Plus ancien')}</option>
                 </Select>
             </div>
         </div>
