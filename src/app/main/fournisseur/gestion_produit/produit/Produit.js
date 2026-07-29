@@ -38,6 +38,7 @@ import ContentLoader from "react-content-loader";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import ReservedDialog from "../../../shared/ReservedDialog";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -660,50 +661,11 @@ function Produit(props) {
       );
     }
     return (
-      <div
-        className={clsx(
-          classes.root2,
-          "flex flex-col flex-auto flex-shrink-0 items-center justify-center p-32"
-        )}
-      >
-        <div className="flex flex-col items-center justify-center w-full">
-          <Grow in={true}>
-            <Card className="w-full ">
-              <CardContent className="flex flex-col items-center justify-center text-center p-48">
-                <Typography variant="h4" className="mb-16 text-red">
-                  Reservé à nos abonnés
-                </Typography>
-
-                <Typography color="textSecondary" className="mb-40">
-                  Pour ajouter vos produits vous devez avoir un pack
-                  d'abonnement, pour consulter les offres d'abonnements cliquer
-                  sur le bouton suivant
-                </Typography>
-
-                <Button
-                  component={Link}
-                  to="/billing/pack"
-                  className="whitespace-no-wrap"
-                  color="secondary"
-                  variant="contained"
-                >
-                  <span className="">Commander abonnement</span>
-                </Button>
-                <Typography
-                  className="mt-16 normal-case flex items-center sm:mb-12"
-                  component={Link}
-                  role="button"
-                  to="/produits"
-                  color="inherit"
-                >
-                  <Icon className="mr-4 text-20">arrow_back</Icon>
-                  Retour
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grow>
-        </div>
-      </div>
+      <ReservedDialog
+        open={true}
+        onClose={() => props.history.push('/produits')}
+        billingUrl="/billing/pack"
+      />
     );
   }
 

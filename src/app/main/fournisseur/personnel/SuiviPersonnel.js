@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Tab, Tabs, Typography, Dialog, DialogContent, Button, DialogActions, CircularProgress } from '@material-ui/core';
 import { FusePageSimple } from '@fuse';
+import ReservedDialog from '../../shared/ReservedDialog';
 import Widget7 from '../dashboard/widgets/Widget7';
 import Widget8 from '../dashboard/widgets/Widget8';
 import Widget9 from '../dashboard/widgets/Widget9';
@@ -178,37 +179,11 @@ function SuiviPersonnel(props) {
             )
         }
         return (
-            <Dialog
+            <ReservedDialog
                 open={true}
-                disableBackdropClick={true}
-                disableEscapeKeyDown={true}
                 onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogContent>
-                    <Typography variant="h4" className="my-16">
-                        Reservé à nos abonnés
-                        </Typography>
-
-                    <Typography color="textSecondary" className="mb-16">
-                    Ce service n'est pas accessible par votre Pack d'abonnement,
-                            nous vous invitons à mettre à niveau votre Pack d'abonnement pour bénéficier de cette fonctionnalité.
-                        
-                                 </Typography>
-
-                    <Button component={Link} to={`/billing/pack`} className="whitespace-no-wrap" color="secondary" variant="contained">
-                        <span className="">Commander abonnement</span>
-                    </Button>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Fermer
-                    </Button>
-
-                </DialogActions>
-            </Dialog>
-
+                billingUrl="/billing/pack"
+            />
         );
     }
 

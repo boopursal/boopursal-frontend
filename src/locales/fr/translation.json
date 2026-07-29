@@ -1135,5 +1135,8 @@
     "legalAccept": "vous acceptez les",
     "termsLink": "Conditions d'utilisation",
     "legalPrivacy": "Politique de protection des données"
+  },
+  "billing": {
+    "packs": "Les Packs d'abonnements"
   }
 }

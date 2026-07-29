@@ -9,6 +9,7 @@ import {
   DialogContentText,
   DialogActions,
   Icon,
+  IconButton,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
@@ -564,22 +565,31 @@ function CommandeDialog(props) {
   return (
     <div>
       <Dialog
-        fullWidth={true}
-        maxWidth="md"
-        classes={{ paperScrollPaper: classes.dialogPaper }}
+        classes={{
+          paper: "m-24 rounded-16 shadow-2xl",
+        }}
         {...commandeDialog.props}
+        onClose={closeComposeDialog}
+        fullWidth
+        maxWidth="md"
         disableBackdropClick={true}
         disableEscapeKeyDown={true}
-        onClose={closeComposeDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
         <DialogTitle
-          onClose={closeComposeDialog}
-          className="flex flex-col text-center"
+          disableTypography
+          className="flex flex-col text-center relative border-b border-gray-200"
           id="alert-dialog-title"
         >
-          <p className="font-extrabold uppercase">Activation d'abonnement</p>
+          <IconButton
+            onClick={closeComposeDialog}
+            style={{ position: 'absolute', right: 8, top: 8, color: '#94a3b8' }}
+            size="small"
+          >
+            <Icon>close</Icon>
+          </IconButton>
+          <Typography variant="h6" className="font-extrabold uppercase mb-16">
+            Activation d'abonnement
+          </Typography>
           {steps && (
             <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map((label) => (
@@ -604,34 +614,50 @@ function CommandeDialog(props) {
               : getStepContentEditCommande(activeStep)}
           </div>
         </DialogContent>
-        <DialogActions className="flex justify-between">
+        <DialogActions className="flex justify-end p-24 gap-12 bg-gray-50 border-t border-gray-200">
+          <Button
+            onClick={closeComposeDialog}
+            disabled={commande.loading}
+            color="default"
+            style={{ color: '#64748b' }}
+            className={clsx(
+              ((activeStep >= 4 && commandeDialog.type === "new") ||
+                (activeStep >= 5 && commandeDialog.type === "edit")) &&
+                "hidden"
+            )}
+          >
+            Annuler
+          </Button>
+          <Button
+            disabled={activeStep === 0 || commande.loading}
+            onClick={handleBack}
+            variant="outlined"
+            className={clsx(
+              ((activeStep >= 4 && commandeDialog.type === "new") ||
+                (activeStep >= 5 && commandeDialog.type === "edit")) &&
+                "hidden"
+            )}
+            style={{ borderRadius: 8, borderColor: '#cbd5e1', color: '#475569' }}
+          >
+            Précédent
+          </Button>
+          {commandeDialog.type === "new"
+            ? getButtonsNewCommande(activeStep)
+            : getButtonsEditCommande(activeStep)}
           <Button
             onClick={closeComposeDialog}
             disabled={commande.loading}
             color="primary"
+            variant="contained"
+            style={{ borderRadius: 8, padding: '8px 24px', background: 'linear-gradient(to right, #3b82f6, #2563eb)' }}
+            className={clsx(
+              !((activeStep >= 4 && commandeDialog.type === "new") ||
+                (activeStep >= 5 && commandeDialog.type === "edit")) &&
+                "hidden"
+            )}
           >
-            {(activeStep >= 4 && commandeDialog.type === "new") ||
-            (activeStep >= 5 && commandeDialog.type === "edit")
-              ? "Fermer"
-              : "Annuler"}
+            Fermer
           </Button>
-          <div>
-            <Button
-              disabled={activeStep === 0 || commande.loading}
-              onClick={handleBack}
-              className={clsx(
-                classes.backButton,
-                ((activeStep >= 4 && commandeDialog.type === "new") ||
-                  (activeStep >= 5 && commandeDialog.type === "edit")) &&
-                  "hidden"
-              )}
-            >
-              précédent
-            </Button>
-            {commandeDialog.type === "new"
-              ? getButtonsNewCommande(activeStep)
-              : getButtonsEditCommande(activeStep)}
-          </div>
         </DialogActions>
       </Dialog>
     </div>

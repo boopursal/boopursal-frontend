@@ -9,6 +9,7 @@ import * as Actions from './store/actions';
 import reducer from './store/reducers';
 import { Helmet } from "react-helmet";
 import { Dialog, CircularProgress, DialogContent, DialogActions, Button, Typography } from '@material-ui/core';
+import ReservedDialog from '../../shared/ReservedDialog';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -166,43 +167,11 @@ function BlackListesApp(props) {
             )
         }
         return (
-            <Dialog
+            <ReservedDialog
                 open={true}
-                disableBackdropClick={true}
-                disableEscapeKeyDown={true}
                 onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogContent>
-                    <Typography variant="h4" className="my-16">
-                        Reservé à nos abonnés
-                    </Typography>
-
-                    <Typography color="textSecondary" className="mb-16">
-                        Ce service n'est pas accessible par votre Pack d'abonnement,
-                        nous vous invitons à mettre à niveau votre Pack d'abonnement pour bénéficier de cette fonctionnalité.
-
-                    </Typography>
-
-                    <Button component={Link} to={`/facturation/pack`} className="whitespace-no-wrap" color="secondary" variant="contained">
-                        <span className="">Commander abonnement</span>
-                    </Button>
-                    <Typography variant="h6" className="my-16">
-                        <a href="mailto:administrateur@lesachatsindustriesl.com" className="flex items-center space-x-2">
-                            <i className="fas fa-envelope"></i>
-                            <span>administrateur@boopursal.com</span>
-                        </a>
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Fermer
-                    </Button>
-
-                </DialogActions>
-            </Dialog>
-
+                billingUrl="/facturation/pack"
+            />
         );
     }
 
