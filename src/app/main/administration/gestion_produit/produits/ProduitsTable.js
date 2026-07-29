@@ -79,12 +79,12 @@ function ProduitsTable(props) {
       columns={[
         {
           Header: "Aperçu",
-          accessor: "logo",
+          accessor: "featuredImageId",
           Cell: (row) => (
             <Avatar
               className={classes.productLogo}
-              alt={row.original.name}
-              src={row.original.logo ? URL_SITE + "/images/produits/" + row.original.logo.url : "/assets/images/ecommerce/product-placeholder.jpg"}
+              alt={row.original.reference || row.original.titre}
+              src={row.original.featuredImageId ? URL_SITE + row.original.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
               variant="rounded"
             />
           ),
@@ -92,15 +92,23 @@ function ProduitsTable(props) {
           sortable: false,
         },
         {
-          Header: "Désignation & Marque",
-          accessor: "name",
+          Header: "Désignation & Réf",
+          accessor: "titre",
           Cell: (row) => (
             <div className="flex flex-col">
-              <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>{row.original.name}</Typography>
-              <Typography variant="caption" style={{ color: '#64748B', fontWeight: 600 }}>{row.original.marque || 'SANS MARQUE'}</Typography>
+              <Typography className="font-600 text-14" style={{ color: '#1C2434' }}>{row.original.titre}</Typography>
+              <Typography variant="caption" style={{ color: '#64748B', fontWeight: 600 }}>Réf: {row.original.reference || 'N/A'}</Typography>
             </div>
           ),
           minWidth: 250
+        },
+        {
+          Header: "Produit",
+          accessor: "categorie.name",
+          Cell: (row) => (
+            <Typography variant="body2">{row.original.categorie?.name || 'SANS CATÉGORIE'}</Typography>
+          ),
+          minWidth: 150
         },
         {
           Header: "Fournisseur",
@@ -114,14 +122,14 @@ function ProduitsTable(props) {
         },
         {
           Header: "État",
-          accessor: "isactif",
+          accessor: "isValid",
           Cell: (row) => (
             <div className={clsx(
               classes.statusBadge,
-              row.original.isactif ? classes.statusActive : classes.statusInactive
+              row.original.isValid ? classes.statusActive : classes.statusInactive
             )}>
-              <div className={classes.dot} style={{ backgroundColor: row.original.isactif ? '#10B981' : '#EF4444' }} />
-              {row.original.isactif ? 'Publié' : 'Brouillon'}
+              <div className={classes.dot} style={{ backgroundColor: row.original.isValid ? '#10B981' : '#EF4444' }} />
+              {row.original.isValid ? 'Publié' : 'Brouillon'}
             </div>
           ),
           width: 130
