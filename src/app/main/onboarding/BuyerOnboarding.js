@@ -80,9 +80,20 @@ function BuyerOnboarding(props) {
     };
 
     const submitStep1 = (model) => {
+        // Formsy ne capture pas les <input type="hidden">, on injecte manuellement l'ICE
+        const enrichedModel = {
+            ...model,
+        };
+        if (iceValue) {
+            enrichedModel.ice = iceValue;
+        }
+        // Si l'ICE a auto-rempli la raison sociale, on la force
+        if (iceData && iceData.companyName) {
+            enrichedModel.societe = iceData.companyName;
+        }
         setFormData(prev => ({
             ...prev,
-            ...model,
+            ...enrichedModel,
         }));
         handleNext();
     };
@@ -152,7 +163,6 @@ function BuyerOnboarding(props) {
                                             onChange={(val) => setIceValue(val)}
                                             onVerifySuccess={handleIceSuccess}
                                         />
-                                        <input type="hidden" name="ice" value={iceValue} />
                                     </div>
                                     {iceData && (
                                         <div style={{ marginTop: 8, padding: '10px 16px', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
