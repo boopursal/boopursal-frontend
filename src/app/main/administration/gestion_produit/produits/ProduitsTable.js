@@ -84,7 +84,7 @@ function ProduitsTable(props) {
             <Avatar
               className={classes.productLogo}
               alt={row.original.reference || row.original.titre}
-              src={row.original.featuredImageId ? URL_SITE + row.original.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
+              src={row.original.featuredImageId ? URL_SITE + "/images/produits/" + row.original.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
               variant="rounded"
             />
           ),

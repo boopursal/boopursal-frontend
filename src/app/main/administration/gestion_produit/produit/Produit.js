@@ -217,7 +217,7 @@ function Produit(props) {
   useEffect(() => {
     if (produit.image) {
       setForm(_.set({ ...form }, "images", [produit.image, ...form.images]));
-      setImages([...images, URL_SITE + produit.image.url]);
+      setImages([...images, URL_SITE + "/images/produits/" + produit.image.url]);
     }
     return () => {
       dispatch(Actions.cleanImage());
@@ -236,7 +236,7 @@ function Produit(props) {
         );
         setImages(
           _.reject(images, function (i) {
-            return i === URL_SITE + produit.image_deleted.url;
+            return i === URL_SITE + "/images/produits/" + produit.image_deleted.url;
           })
         );
       } else {
@@ -320,7 +320,7 @@ function Produit(props) {
         });
       }
       if (produit.data.images) {
-        setImages(produit.data.images.map((item) => URL_SITE + item.url));
+        setImages(produit.data.images.map((item) => URL_SITE + "/images/produits/" + item.url));
       }
 
       if (produit.data.categorie) {
@@ -432,7 +432,7 @@ function Produit(props) {
                     {form.featuredImageId ? (
                       <img
                         className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
-                        src={URL_SITE + form.featuredImageId.url}
+                        src={URL_SITE + "/images/produits/" + form.featuredImageId.url}
                         alt={form.reference}
                       />
                     ) : (
