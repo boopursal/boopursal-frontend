@@ -15,6 +15,8 @@ import step4ModuleReducer from '../inscription/steps/step4/store/reducers';
 import { Helmet } from "react-helmet";
 import { combineReducers } from 'redux';
 import clsx from 'clsx';
+import IceVerificationField from '../shared/IceVerificationField';
+import { getIdConfigByCountry } from '../shared/countryIdConfig';
 import './ModernOnboarding.css';
 
 const useStyles = makeStyles(theme => ({
@@ -47,9 +49,25 @@ function BuyerOnboarding(props) {
         dispatch(Actions.getCurrency());
     }, [dispatch]);
 
+    const [isMaroc, setIsMaroc] = useState(false);
+    const [idConfig, setIdConfig] = useState(null); // Config identifiant selon le pays
+    const [iceValue, setIceValue] = useState('');
+    const [iceData, setIceData] = useState(null);
+
+    const handleIceSuccess = (data) => {
+        setIceData(data);
+    };
+
     const handleCountryChange = (val) => {
         if (val && val.value) {
             dispatch(Actions.getVilles(val.value));
+            const countryLabel = val.label || "";
+            const isM = countryLabel.toLowerCase().includes("maroc");
+            setIsMaroc(isM);
+            setIdConfig(getIdConfigByCountry(countryLabel));
+            // Reset ICE si on change de pays
+            setIceValue('');
+            setIceData(null);
         }
     };
 
@@ -108,6 +126,65 @@ function BuyerOnboarding(props) {
                                     onChange={handleCountryChange}
                                 />
                             </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextFieldFormsy
+                                    name="societe"
+                                    label="Raison sociale"
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    value={iceData?.companyName || undefined}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start"><Icon color="action">business</Icon></InputAdornment>,
+                                    }}
+                                />
+                            </Grid>
+
+                            {idConfig && isMaroc && (
+                                <Grid item xs={12}>
+                                    <div style={{ padding: '16px', background: '#f0f7ff', border: '1px solid #bfdbfe', borderRadius: 12, marginBottom: 4 }}>
+                                        <Typography variant="caption" style={{ color: '#1d4ed8', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4, marginBottom: 10 }}>
+                                            <Icon style={{ fontSize: 16 }}>verified</Icon>
+                                            ICE — Identifiant Commun de l'Entreprise · Vérification automatique disponible 🇲🇦
+                                        </Typography>
+                                        <IceVerificationField
+                                            value={iceValue}
+                                            onChange={(val) => setIceValue(val)}
+                                            onVerifySuccess={handleIceSuccess}
+                                        />
+                                        <input type="hidden" name="ice" value={iceValue} />
+                                    </div>
+                                    {iceData && (
+                                        <div style={{ marginTop: 8, padding: '10px 16px', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+                                            <Icon style={{ color: '#16a34a', fontSize: 20 }}>check_circle</Icon>
+                                            <Typography variant="caption" style={{ color: '#15803d', fontWeight: 600 }}>
+                                                ✅ <strong>{iceData.companyName}</strong> — Données auto-remplies et prêtes à être sauvegardées.
+                                            </Typography>
+                                        </div>
+                                    )}
+                                </Grid>
+                            )}
+
+                            {idConfig && !isMaroc && (
+                                <Grid item xs={12} sm={6}>
+                                    <TextFieldFormsy
+                                        name="ice"
+                                        label={idConfig.label}
+                                        placeholder={idConfig.placeholder}
+                                        variant="outlined"
+                                        fullWidth
+                                        inputProps={{ maxLength: idConfig.maxLength }}
+                                    />
+                                    {idConfig.helpUrl && (
+                                        <Typography variant="caption" color="textSecondary" style={{ display: 'block', marginTop: 4 }}>
+                                            <a href={idConfig.helpUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
+                                                Besoin d'aide pour trouver cet identifiant ?
+                                            </a>
+                                        </Typography>
+                                    )}
+                                </Grid>
+                            )}
+
                             <Grid item xs={12} sm={6}>
                                 <SelectReactFormsy
                                     name="ville"
