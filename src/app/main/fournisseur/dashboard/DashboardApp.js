@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     tabs: {
         marginTop: 32,
         '& .MuiTabs-indicator': {
-            backgroundColor: '#3b82f6',
+            primaryColor: '#3b82f6',
             height: 4,
             borderRadius: '4px 4px 0 0',
         }
@@ -253,7 +253,7 @@ function DashboardApp(props) {
                             </div>
                         </FuseAnimate>
                     ) : (
-                        <ContentLoader speed={2} width={1200} height={400} backgroundColor="#e2e8f0" foregroundColor="#cbd5e1">
+                        <ContentLoader speed={2} width={1200} height={400} primaryColor="#e2e8f0" secondaryColor="#cbd5e1">
                             <rect x="0" y="0" rx="24" ry="24" width="280" height="150" />
                             <rect x="306" y="0" rx="24" ry="24" width="280" height="150" />
                             <rect x="612" y="0" rx="24" ry="24" width="280" height="150" />

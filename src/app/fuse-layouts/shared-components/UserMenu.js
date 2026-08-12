@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { Avatar, Button, Icon, ListItemIcon, ListItemText, Popover, MenuItem, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'none'
   },
   connexionBtn: {
-    background: 'linear-gradient(135deg, #ff5a5a 0%, #ff2a2a 100%) !important',
+    background: 'linear-gradient(135deg, #f39322 0%, #e07c10 100%) !important',
     color: '#ffffff !important',
     borderRadius: '30px',
     padding: '10px 28px',
@@ -131,3 +131,4 @@ function UserMenu() {
 }
 
 export default UserMenu;
+

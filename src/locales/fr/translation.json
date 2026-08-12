@@ -399,8 +399,19 @@
   "portail": {
     "pageTitle": "Boopursal | Place de marché B2B",
     "pageDescription": "Boopursal - La place de marché B2B qui connecte +1000 entreprises.",
-    "heroTitle": "<span class='gradient-text'>Connectez</span> acheteurs et fournisseurs sur <span class='accent-text'>une seule plateforme.</span>",
+    "heroTitle": "Connectez acheteurs et fournisseurs<br />sur <span style=\"color: #274b99;\">une seule plateforme</span>",
     "heroSubtitle": "Centralisez vos demandes, recevez des devis ciblés et développez vos opportunités d’affaires.",
+    "search": {
+      "placeholder": "Rechercher un produit, fournisseur...",
+      "button": "Rechercher"
+    },
+    "popularTags": {
+      "label": "💡 Populaire :",
+      "machining": "Usinage",
+      "plastics": "Plasturgie",
+      "packaging": "Emballage",
+      "electronics": "Électronique"
+    },
     "stats": {
       "companies": "Entreprises inscrites",
       "products": "Produits référencés",
@@ -1138,5 +1149,47 @@
   },
   "billing": {
     "packs": "Les Packs d'abonnements"
+  },
+  "contact": {
+    "page_title": "Contactez-nous",
+    "hero_title": "Contactez-nous",
+    "hero_subtitle": "Nous sommes à votre écoute pour toute question liée à Boopursal.",
+    "info_title": "Nos coordonnées",
+    "info_subtitle": "Vous pouvez nous joindre par email, téléphone, ou passer directement à nos bureaux à Casablanca.",
+    "address_title": "Adresse",
+    "phone_title": "Téléphone",
+    "email_title": "Email",
+    "form_title": "Envoyez-nous un message",
+    "form_subtitle": "Nous vous répondrons sous 24h.",
+    "name": "Nom complet",
+    "name_ph": "Jean Dupont",
+    "email": "Email",
+    "subject": "Sujet",
+    "subject_ph": "Sélectionnez un sujet...",
+    "sub_info": "Demande d'information",
+    "sub_support": "Support technique",
+    "sub_commercial": "Question commerciale / Abonnement",
+    "sub_partner": "Partenariat",
+    "sub_other": "Autre",
+    "message": "Message",
+    "message_ph": "Décrivez votre besoin ou votre question...",
+    "send": "Envoyer le message",
+    "success_title": "Message envoyé !",
+    "success_msg": "Merci pour votre message. Notre équipe vous répondra dans les meilleurs délais.",
+    "new_message": "Nouveau message"
+  },
+  "chatbot": {
+    "welcome": "Bonjour 👋 Bienvenue sur Boopursal ! Je suis là pour répondre à toutes vos questions sur la plateforme, les achats industriels ou les fournisseurs. Comment puis-je vous aider ?",
+    "sugg1": "Comment publier une demande d'achat ?",
+    "sugg2": "Comment trouver un fournisseur ?",
+    "sugg3": "Quels sont les tarifs de l'abonnement ?",
+    "sugg4": "C'est quoi Boopursal ?",
+    "online": "En ligne",
+    "placeholder": "Posez votre question...",
+    "faq_title": "Questions fréquentes",
+    "clear_history": "Effacer l'historique",
+    "confirm_clear": "Voulez-vous vraiment effacer l'historique de cette conversation ?",
+    "history_cleared": "Historique effacé. Comment puis-je vous aider ?",
+    "error": "Désolé, je n'arrive pas à joindre mes serveurs pour le moment. Veuillez réessayer dans quelques instants."
   }
 }

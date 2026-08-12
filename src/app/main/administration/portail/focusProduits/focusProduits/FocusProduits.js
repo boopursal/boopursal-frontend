@@ -21,7 +21,7 @@ import {
 } from "@material-ui/core";
 import ContentLoader from "react-content-loader";
 import _ from "@lodash";
-import { URL_SITE } from "@fuse/Constants";
+import { URL_SITE, getImageUrl } from "@fuse/Constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -103,9 +103,9 @@ function FocusProduits(props) {
                                     key={slot.id}
                                     avatar={<Avatar src={
                                         slot.produit.featuredImageId 
-                                            ? URL_SITE + "/images/produits/" + slot.produit.featuredImageId.url 
+                                            ? getImageUrl(slot.produit.featuredImageId.url, '/images/produits/')
                                             : (slot.produit.images && slot.produit.images.length > 0
-                                                ? URL_SITE + "/images/produits/" + slot.produit.images[0].url
+                                                ? getImageUrl(slot.produit.images[0].url, '/images/produits/')
                                                 : '/assets/images/ecommerce/product-image-placeholder.png')
                                     } />}
                                     label={_.truncate(slot.produit.titre, { length: 25 })}
@@ -218,9 +218,9 @@ function FocusProduits(props) {
                           className={classes.media}
                           image={
                             item.featuredImageId
-                              ? URL_SITE + "/images/produits/" + item.featuredImageId.url
+                              ? getImageUrl(item.featuredImageId.url, '/images/produits/')
                               : (item.images && item.images.length > 0 
-                                  ? URL_SITE + "/images/produits/" + item.images[0].url 
+                                  ? getImageUrl(item.images[0].url, '/images/produits/')
                                   : "/assets/images/ecommerce/product-image-placeholder.png")
                           }
                           title={item.titre}

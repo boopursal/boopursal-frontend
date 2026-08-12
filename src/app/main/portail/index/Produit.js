@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -208,7 +208,7 @@ export default function Produit(props) {
           </div>
 
           <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography style={{ color: '#ff5a5a', fontWeight: 900, fontSize: '0.9rem' }}>
+            <Typography style={{ color: '#f39322', fontWeight: 900, fontSize: '0.9rem' }}>
               Demander Prix
             </Typography>
             <Icon style={{ color: '#cbd5e1' }}>more_horiz</Icon>
@@ -222,3 +222,4 @@ export default function Produit(props) {
 Produit.propTypes = {
   produit: PropTypes.object,
 };
+

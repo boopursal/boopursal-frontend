@@ -13,6 +13,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Helmet } from "react-helmet";
 import { useTranslation } from 'react-i18next';
+import ReCAPTCHA from "react-google-recaptcha";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -57,6 +58,11 @@ function AcheteurTab(props) {
     const [values, setValues] = useState({
         showPassword: false,
     });
+    const [captchaValid, setCaptchaValid] = useState(false);
+
+    const onCaptchaChange = (value) => {
+        setCaptchaValid(!!value);
+    };
 
     const handleClickShowPassword = () => {
         setValues({ ...values, showPassword: !values.showPassword });
@@ -311,12 +317,12 @@ function AcheteurTab(props) {
                         />
                     </Grid>
                 </Grid>
-                {/* <div className="flex justify-center">
+                <div className="flex justify-center mt-16">
                     <ReCAPTCHA
-                        sitekey="6LcimHwqAAAAAJgTB0sktkfNzYXWJFDndJIXOC_N"
-                        onChange={onChange}
+                        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY || "6LdSWIAtAAAAAMhfBiaaEsve64dWwdBEzOkf5gDr"}
+                        onChange={onCaptchaChange}
                     />
-                </div> */}
+                </div>
                 <p className="mt-16">
                     {t('register.legalPre', 'En appuyant sur le bouton')} <span className="font-bold">"{t('register.submitBtn', 'Enregistrer')}"</span>, {t('register.legalAccept', 'vous acceptez les')} <Link href='/conditions' target="_blank" rel="noreferrer noopener">{t('register.termsLink', "Conditions d'utilisation")}</Link> {t('register.legalPrivacy', 'Politique de protection des données')}
                 </p>
@@ -326,7 +332,7 @@ function AcheteurTab(props) {
                     color="primary"
                     className="w-full mx-auto mt-16 normal-case"
                     aria-label="REGISTER"
-                    disabled={!isFormValid || register.loading}
+                    disabled={!isFormValid || register.loading || !captchaValid}
                     value="legacy"
                 >
                     {t('register.submitBtn', 'Enregistrer')}

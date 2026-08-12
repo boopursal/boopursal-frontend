@@ -15,10 +15,28 @@ export const FRONT_URL = "https://www.boopursal.com";
  */
 export const getImageUrl = (url, subfolder = '') => {
     if (!url) return null;
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    let cleanUrl = typeof url === 'string' ? url.trim() : String(url).trim();
+    if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) return cleanUrl;
+    
     const base = URL_SITE.endsWith('/') ? URL_SITE.slice(0, -1) : URL_SITE;
-    const folder = subfolder ? (subfolder.startsWith('/') ? subfolder : '/' + subfolder) : '';
-    const path = url.startsWith('/') ? url : '/' + url;
+    
+    let folder = subfolder ? subfolder.trim() : '';
+    if (folder && !folder.startsWith('/')) folder = '/' + folder;
+    if (folder && folder.endsWith('/')) folder = folder.slice(0, -1);
+    
+    let path = cleanUrl.startsWith('/') ? cleanUrl : '/' + cleanUrl;
+
+    if (folder && path) {
+        const folderParts = folder.split('/').filter(Boolean);
+        const pathParts = path.split('/').filter(Boolean);
+        if (folderParts.length > 0 && pathParts.length > 0) {
+            if (folderParts[folderParts.length - 1] === pathParts[0]) {
+                folderParts.pop();
+                folder = folderParts.length > 0 ? '/' + folderParts.join('/') : '';
+            }
+        }
+    }
+    
     return `${base}${folder}${path}`;
 };
 export const LOCAL_CURRENCY = "MAD";

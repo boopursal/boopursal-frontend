@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Icon,
   Typography,
@@ -40,46 +40,98 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
   },
 
-  // ===== HERO =====
+  "@keyframes shine": {
+    "to": {
+      backgroundPosition: "200% center",
+    }
+  },
+  "@keyframes blob": {
+    "0%": { transform: "translate(0px, 0px) scale(1)" },
+    "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+    "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+    "100%": { transform: "translate(0px, 0px) scale(1)" }
+  },
   heroSection: {
     padding: "100px 20px 60px",
     position: "relative",
     textAlign: "center",
     zIndex: 1,
+    overflow: "hidden",
+    backgroundColor: "#f8fafc",
     [theme.breakpoints.down("sm")]: {
       padding: "160px 16px 40px",
     },
   },
+  popularTagsContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "12px",
+    flexWrap: "wrap",
+    marginTop: "24px",
+    alignItems: "center"
+  },
+  popularTagLabel: {
+    fontSize: "0.9rem",
+    color: "#64748b",
+    fontWeight: 600,
+  },
+  popularTag: {
+    background: "#ffffff",
+    border: "1px solid #e2e8f0",
+    color: "#475569",
+    borderRadius: "20px",
+    padding: "6px 16px",
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    textDecoration: "none",
+    "&:hover": {
+      background: "#f1f5f9",
+      borderColor: "#cbd5e1",
+      color: "#0f172a",
+      textDecoration: "none",
+    }
+  },
+  premiumBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "8px 16px",
+    background: "rgba(245, 166, 35, 0.1)",
+    border: "1px solid rgba(245, 166, 35, 0.2)",
+    borderRadius: "100px",
+    color: "#D96B18",
+    fontSize: "0.875rem",
+    fontWeight: 700,
+    marginBottom: "24px",
+    letterSpacing: "0.05em",
+    textTransform: "uppercase",
+  },
 
   heroTitle: {
-    fontSize: "clamp(1.6rem, 3.5vw, 3.2rem)",
-    fontWeight: 900,
-    color: "#1C2434", // Premium Navy (middle text)
+    fontFamily: "'Inter', sans-serif",
+    fontSize: "clamp(2.5rem, 4.5vw, 4.2rem)",
+    fontWeight: 800,
+    color: "#0f172a", // Slate 900
     marginBottom: "32px",
-    lineHeight: 1.2,
-    letterSpacing: "-0.03em",
+    lineHeight: 1.15,
+    letterSpacing: "-0.02em",
     position: "relative",
-    display: "inline-block", // Required for the underline to match text width
-    paddingBottom: "16px",
-    // Subtly faded underline like Kerix
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      bottom: 0,
-      left: "10%",
-      right: "10%",
-      height: "2px",
-      borderRadius: "2px",
-      background: "linear-gradient(90deg, transparent, rgba(245, 166, 35, 0.7), transparent)",
-      boxShadow: "0 2px 10px rgba(245, 166, 35, 0.2)",
-    },
+    display: "inline-block", 
     "& .gradient-text": {
-       background: "linear-gradient(90deg, #E8890A 0%, #F5A623 100%)", // Gold gradient
+       background: "linear-gradient(to right, #F5A623, #FF3D00)", // Boopursal Brand colors
        "-webkit-background-clip": "text",
        "-webkit-text-fill-color": "transparent",
+       backgroundClip: "text",
+    },
+    "& .logo-blue-text": {
+       color: "#2e4c9b",
     },
     "& .accent-text": {
-       color: "#F5A623", // Solid Gold
+       color: "#475569", // Professional slate grey
+       fontWeight: 600,
+       letterSpacing: "-0.01em",
     }
   },
 
@@ -112,17 +164,19 @@ const useStyles = makeStyles((theme) => ({
 
   // ===== STATS =====
   statsSection: {
-    padding: "80px 24px",
-    background: "#f8fafc",
+    padding: "60px 24px",
+    background: "#ffffff",
     position: "relative",
     zIndex: 2,
+    borderTop: "1px solid #f1f5f9",
+    borderBottom: "1px solid #f1f5f9",
     [theme.breakpoints.down("sm")]: {
-      padding: "48px 16px",
+      padding: "40px 16px",
     },
   },
 
   statsContainer: {
-    maxWidth: "1160px",
+    maxWidth: "1200px",
     margin: "0 auto",
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",
@@ -131,6 +185,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     [theme.breakpoints.down("md")]: {
       gridTemplateColumns: "repeat(2, 1fr)",
+      gap: "24px",
     },
     "@media (max-width: 500px)": {
       gridTemplateColumns: "1fr",
@@ -139,68 +194,82 @@ const useStyles = makeStyles((theme) => ({
 
   statItem: {
     background: "#ffffff",
-    borderRadius: "20px",
-    padding: "40px 32px",
-    textAlign: "center",
-    border: "1px solid #e8edf2",
-    boxShadow: "0 4px 24px rgba(28, 36, 52, 0.06)",
-    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+    padding: "24px",
+    borderRadius: "16px",
+    boxShadow: "0 4px 12px rgba(15, 23, 42, 0.04)",
+    border: "1px solid #e2e8f0",
+    display: "flex",
+    flexDirection: "row", // Horizontal layout!
+    alignItems: "center",
+    justifyContent: "flex-start",
+    textAlign: "left",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     position: "relative",
     overflow: "hidden",
-    // Gold top accent line
-    "&::before": {
+    "&::after": {
       content: '""',
       position: "absolute",
-      top: 0,
-      left: "20%",
-      right: "20%",
+      bottom: 0,
+      left: 0,
       height: "3px",
-      borderRadius: "0 0 4px 4px",
-      background: "linear-gradient(90deg, #F5A623, #FFD166, #F5A623)",
-      opacity: 0,
-      transition: "opacity 0.3s ease",
+      width: "0%",
+      background: "#f39322", // Brand Orange accent
+      transition: "width 0.4s ease",
     },
     "&:hover": {
-      transform: "translateY(-8px)",
-      boxShadow: "0 20px 48px rgba(245, 166, 35, 0.12), 0 4px 16px rgba(28,36,52,0.08)",
-      border: "1px solid rgba(245,166,35,0.3)",
-      "&::before": {
-        opacity: 1,
+      transform: "translateY(-4px)",
+      boxShadow: "0 12px 24px rgba(15, 23, 42, 0.08)",
+      borderColor: "#cbd5e1",
+      "&::after": {
+        width: "100%",
       },
+      "& .stat-icon": {
+        background: "#f39322", // Orange
+        color: "#ffffff",
+        transform: "scale(1.1)",
+      }
     },
     "& .stat-icon": {
-      width: "48px",
-      height: "48px",
+      width: "60px",
+      height: "60px",
+      minWidth: "60px",
       borderRadius: "14px",
-      background: "rgba(245,166,35,0.1)",
+      background: "#f8fafc", 
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      margin: "0 auto 20px",
-      fontSize: "22px",
-      color: "#F5A623",
+      marginRight: "20px",
+      color: "#1e3a8a", // Brand Blue
+      transition: "all 0.3s ease",
+      border: "1px solid #f1f5f9",
+      "& svg, & span": {
+        fontSize: "30px",
+      }
+    },
+    "& .stat-content": {
+      display: "flex",
+      flexDirection: "column",
     },
     "& h3": {
-      fontSize: "2.75rem",
+      fontSize: "2rem",
       fontWeight: 900,
-      background: "linear-gradient(135deg, #1C2434 0%, #3d5a80 100%)",
-      "-webkit-background-clip": "text",
-      "-webkit-text-fill-color": "transparent",
-      backgroundClip: "text",
-      marginBottom: "10px",
-      lineHeight: 1,
-      letterSpacing: "-0.03em",
+      color: "#1e3a8a", // Brand Blue
+      marginBottom: "4px",
+      lineHeight: 1.1,
+      letterSpacing: "-0.02em",
+      fontFamily: "'Inter', sans-serif",
       [theme.breakpoints.down("sm")]: {
-        fontSize: "2.2rem",
+        fontSize: "1.8rem",
       }
     },
     "& p": {
-      fontSize: "0.7rem",
-      color: "#94a3b8",
+      fontSize: "0.75rem",
+      color: "#64748b",
       fontWeight: 700,
       textTransform: "uppercase",
-      letterSpacing: "0.14em",
+      letterSpacing: "0.1em",
       margin: 0,
+      fontFamily: "'Inter', sans-serif",
     },
   },
 
@@ -318,16 +387,16 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: "0 12px 24px rgba(0, 0, 0, 0.08)",
       transform: "translateY(-4px)",
       "&::before": {
-         background: "#ff5a5a",
+         background: "#f39322",
       },
       "& $viewMoreButtonPremium": {
-         background: "#ff5a5a",
+         background: "#f39322",
          color: "#ffffff",
-         borderColor: "#ff5a5a",
+         borderColor: "#f39322",
          transform: "translateX(4px)",
       },
       "& $demandTitlePremium": {
-         color: "#ff5a5a",
+         color: "#f39322",
       }
     },
   },
@@ -370,7 +439,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   demandRefPremium: {
-    color: "#ff5a5a",
+    color: "#f39322",
     fontSize: "0.75rem",
     fontWeight: 700,
     background: "rgba(255, 90, 90, 0.08)",
@@ -637,26 +706,62 @@ function Index(props) {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet" />
       </Helmet>
 
       {/* ===================== HERO ===================== */}
       <section className={classes.heroSection}>
+        {/* WOW Effect Background: Animated Mesh/Aurora + Dot Pattern */}
         <div style={{
-          position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)',
-          width: '100%', maxWidth: '800px', height: '600px',
-          background: 'radial-gradient(circle, rgba(255, 90, 90, 0.07) 0%, transparent 70%)',
-          zIndex: -1, pointerEvents: 'none'
-        }} />
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          zIndex: 0, pointerEvents: 'none',
+          overflow: 'hidden'
+        }}>
+          {/* Animated Blob 1 (Brand Orange) */}
+          <div style={{
+            position: 'absolute', top: '0%', left: '15%', width: '500px', height: '500px',
+            background: 'rgba(245, 166, 35, 0.25)', borderRadius: '50%', filter: 'blur(120px)',
+            animation: '$blob 12s infinite alternate',
+            transformOrigin: 'center'
+          }} />
+          {/* Animated Blob 2 (Brand Red/Orange) */}
+          <div style={{
+            position: 'absolute', top: '20%', right: '10%', width: '450px', height: '450px',
+            background: 'rgba(255, 61, 0, 0.2)', borderRadius: '50%', filter: 'blur(100px)',
+            animation: '$blob 15s infinite alternate-reverse',
+            transformOrigin: 'bottom right'
+          }} />
+           {/* Animated Blob 3 (Warm Yellow/Gold) */}
+          <div style={{
+            position: 'absolute', bottom: '-10%', left: '40%', width: '600px', height: '600px',
+            background: 'rgba(255, 209, 102, 0.15)', borderRadius: '50%', filter: 'blur(140px)',
+            animation: '$blob 18s infinite alternate',
+            transformOrigin: 'bottom left'
+          }} />
+          {/* Subtle Dot Pattern Overlay over the blobs */}
+          <div style={{
+             position: 'absolute', inset: 0,
+             backgroundImage: "radial-gradient(rgba(100, 116, 139, 0.25) 1px, transparent 0)",
+             backgroundSize: "28px 28px",
+             maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)",
+             WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)"
+          }} />
+        </div>
 
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" style={{ position: 'relative', zIndex: 2 }}>
           <FuseAnimate animation="transition.slideUpIn" duration={800}>
-            <h1 className={classes.heroTitle} dangerouslySetInnerHTML={{ __html: t('portail.heroTitle', '<span class=\'gradient-text\'>Connectez</span> acheteurs et fournisseurs sur <span class=\'accent-text\'>une seule plateforme.</span>') }} />
+            <div>
+              <div className={classes.premiumBadge}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                LA RÉFÉRENCE B2B
+              </div>
+              <h1 className={classes.heroTitle} dangerouslySetInnerHTML={{ __html: t('portail.heroTitle', 'Connectez acheteurs et fournisseurs <br/> sur <span style="color: #274b99;">une seule plateforme</span>') }} />
+            </div>
           </FuseAnimate>
 
           <FuseAnimate animation="transition.slideUpIn" duration={800} delay={200}>
             <p className={classes.heroSubtitle}>
-              {t('portail.heroSubtitle', 'Centralisez vos demandes, recevez des devis ciblés et développez vos opportunités d’affaires.')}
+              {t('portail.heroSubtitle', 'Sécurisez vos approvisionnements et développez votre portefeuille de partenaires qualifiés au sein d\'un écosystème unifié et rigoureusement vérifié.')}
             </p>
           </FuseAnimate>
 
@@ -666,8 +771,19 @@ function Index(props) {
                 className="w-full"
                 variant="basic"
                 inline={true}
+                withButton={true}
                 onResultsVisibilityChange={setSearchResultsVisible}
               />
+            </div>
+          </FuseAnimate>
+          
+          <FuseAnimate animation="transition.slideUpIn" duration={800} delay={600}>
+            <div className={classes.popularTagsContainer}>
+              <span className={classes.popularTagLabel}>{t('portail.popularTags.label', '💡 Populaire :')}</span>
+              <Link to="/vente-produits?q=Usinage" className={classes.popularTag}>{t('portail.popularTags.machining', 'Usinage')}</Link>
+              <Link to="/vente-produits?q=Plasturgie" className={classes.popularTag}>{t('portail.popularTags.plastics', 'Plasturgie')}</Link>
+              <Link to="/vente-produits?q=Emballage" className={classes.popularTag}>{t('portail.popularTags.packaging', 'Emballage')}</Link>
+              <Link to="/vente-produits?q=Électronique" className={classes.popularTag}>{t('portail.popularTags.electronics', 'Électronique')}</Link>
             </div>
           </FuseAnimate>
         </Container>
@@ -676,26 +792,42 @@ function Index(props) {
       {/* ===================== STATS ===================== */}
       <section className={classes.statsSection}>
         <div className={classes.statsContainer}>
-          <div className={classes.statItem}>
-            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>business</Icon></div>
-            <h3>+1000</h3>
-            <p>{t('portail.stats.companies', 'Entreprises inscrites')}</p>
-          </div>
-          <div className={classes.statItem}>
-            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>category</Icon></div>
-            <h3>+5000</h3>
-            <p>{t('portail.stats.products', 'Produits référencés')}</p>
-          </div>
-          <div className={classes.statItem}>
-            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>people_alt</Icon></div>
-            <h3>+200K</h3>
-            <p>{t('portail.stats.visitors', 'Visiteurs mensuels')}</p>
-          </div>
-          <div className={classes.statItem}>
-            <div className="stat-icon"><Icon style={{ fontSize: 22 }}>headset_mic</Icon></div>
-            <h3>24/7</h3>
-            <p>{t('portail.stats.support', 'Support disponible')}</p>
-          </div>
+          <FuseAnimate animation="transition.slideUpIn" delay={100} duration={600}>
+            <div className={classes.statItem}>
+              <div className="stat-icon"><Icon>business</Icon></div>
+              <div className="stat-content">
+                <h3>+1000</h3>
+                <p>{t('portail.stats.companies', 'Entreprises inscrites')}</p>
+              </div>
+            </div>
+          </FuseAnimate>
+          <FuseAnimate animation="transition.slideUpIn" delay={200} duration={600}>
+            <div className={classes.statItem}>
+              <div className="stat-icon"><Icon>category</Icon></div>
+              <div className="stat-content">
+                <h3>+5000</h3>
+                <p>{t('portail.stats.products', 'Produits référencés')}</p>
+              </div>
+            </div>
+          </FuseAnimate>
+          <FuseAnimate animation="transition.slideUpIn" delay={300} duration={600}>
+            <div className={classes.statItem}>
+              <div className="stat-icon"><Icon>people_alt</Icon></div>
+              <div className="stat-content">
+                <h3>+200K</h3>
+                <p>{t('portail.stats.visitors', 'Visiteurs mensuels')}</p>
+              </div>
+            </div>
+          </FuseAnimate>
+          <FuseAnimate animation="transition.slideUpIn" delay={400} duration={600}>
+            <div className={classes.statItem}>
+              <div className="stat-icon"><Icon>headset_mic</Icon></div>
+              <div className="stat-content">
+                <h3>24/7</h3>
+                <p>{t('portail.stats.support', 'Support disponible')}</p>
+              </div>
+            </div>
+          </FuseAnimate>
         </div>
       </section>
 
@@ -929,3 +1061,4 @@ function Index(props) {
 }
 
 export default withReducer("IndexApp", reducer)(Index);
+

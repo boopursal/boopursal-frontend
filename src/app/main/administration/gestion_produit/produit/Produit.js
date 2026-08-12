@@ -42,7 +42,7 @@ import YouTube from "react-youtube";
 import ContentLoader from "react-content-loader";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import { URL_SITE } from "@fuse/Constants";
+import { URL_SITE, getImageUrl } from "@fuse/Constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -217,7 +217,7 @@ function Produit(props) {
   useEffect(() => {
     if (produit.image) {
       setForm(_.set({ ...form }, "images", [produit.image, ...form.images]));
-      setImages([...images, URL_SITE + "/images/produits/" + produit.image.url]);
+      setImages([...images, getImageUrl(produit.image.url, '/images/produits/')]);
     }
     return () => {
       dispatch(Actions.cleanImage());
@@ -236,7 +236,7 @@ function Produit(props) {
         );
         setImages(
           _.reject(images, function (i) {
-            return i === URL_SITE + "/images/produits/" + produit.image_deleted.url;
+            return i === getImageUrl(produit.image_deleted.url, '/images/produits/');
           })
         );
       } else {
@@ -320,7 +320,7 @@ function Produit(props) {
         });
       }
       if (produit.data.images) {
-        setImages(produit.data.images.map((item) => URL_SITE + "/images/produits/" + item.url));
+        setImages(produit.data.images.map((item) => getImageUrl(item.url, '/images/produits/')));
       }
 
       if (produit.data.categorie) {
@@ -432,7 +432,7 @@ function Produit(props) {
                     {form.featuredImageId ? (
                       <img
                         className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
-                        src={URL_SITE + "/images/produits/" + form.featuredImageId.url}
+                        src={getImageUrl(form.featuredImageId.url, '/images/produits/')}
                         alt={form.reference}
                       />
                     ) : (
@@ -944,7 +944,7 @@ function Produit(props) {
                         </Tooltip>
                         <img
                           className="max-w-none w-auto h-full"
-                          src={URL_SITE + "/images/produits/" + media.url}
+                          src={getImageUrl(media.url, '/images/produits/')}
                           alt="produit"
                         />
                         {isOpen && (

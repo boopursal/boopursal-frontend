@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Icon, IconButton, Tooltip, Avatar, Typography } from '@material-ui/core';
-import { URL_SITE, FuseUtils } from '@fuse';
+import { URL_SITE, FuseUtils, getImageUrl } from '@fuse';
 import { withRouter } from 'react-router-dom';
 import * as Actions from '../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -84,7 +84,7 @@ function ProduitsTable(props) {
             <Avatar
               className={classes.productLogo}
               alt={row.original.reference || row.original.titre}
-              src={row.original.featuredImageId ? URL_SITE + "/images/produits/" + row.original.featuredImageId.url : "/assets/images/ecommerce/product-placeholder.jpg"}
+              src={row.original.featuredImageId ? getImageUrl(row.original.featuredImageId.url, '/images/produits') : "/assets/images/ecommerce/product-placeholder.jpg"}
               variant="rounded"
             />
           ),

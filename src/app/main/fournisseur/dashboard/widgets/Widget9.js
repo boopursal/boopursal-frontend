@@ -173,7 +173,7 @@ function Widget9(props) {
         return (
             <div className={classes.root} style={{ padding: 24 }}>
                 {Array(5).fill('').map((_, i) => (
-                    <ContentLoader key={i} height={40} width={900} speed={2} backgroundColor="#e2e8f0" foregroundColor="#cbd5e1" style={{ opacity: 1 - (i * 0.15) }}>
+                    <ContentLoader key={i} height={40} width={900} speed={2} primaryColor="#e2e8f0" secondaryColor="#cbd5e1" style={{ opacity: 1 - (i * 0.15) }}>
                         <rect x="0" y="10" rx="6" ry="6" width={600 + Math.random() * 200} height="16" />
                         <rect x="0" y="36" rx="6" ry="6" width="900" height="1" />
                     </ContentLoader>

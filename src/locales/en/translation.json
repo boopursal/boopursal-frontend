@@ -399,8 +399,19 @@
   "portail": {
     "pageTitle": "Boopursal | B2B Marketplace",
     "pageDescription": "Boopursal - The B2B marketplace connecting +1000 companies.",
-    "heroTitle": "Take your <span>B2B</span><br />to the next level",
+    "heroTitle": "Connect buyers and suppliers<br />on <span style=\"color: #274b99;\">a single platform</span>",
     "heroSubtitle": "Find suppliers, receive quotes and grow your professional network",
+    "search": {
+      "placeholder": "Search for a product, supplier...",
+      "button": "Search"
+    },
+    "popularTags": {
+      "label": "💡 Popular:",
+      "machining": "Machining",
+      "plastics": "Plastics",
+      "packaging": "Packaging",
+      "electronics": "Electronics"
+    },
     "stats": {
       "companies": "Registered companies",
       "products": "Listed products",
@@ -1143,5 +1154,47 @@
     "noProducts": "No products have been published by this company",
     "activityAreas": "AREAS OF ACTIVITY",
     "notSpecified": "Not specified"
+  },
+  "contact": {
+    "page_title": "Contact Us",
+    "hero_title": "Contact Us",
+    "hero_subtitle": "We are here to answer all your questions related to Boopursal.",
+    "info_title": "Our Contact Information",
+    "info_subtitle": "You can reach us by email, phone, or visit our offices in Casablanca.",
+    "address_title": "Address",
+    "phone_title": "Phone",
+    "email_title": "Email",
+    "form_title": "Send Us a Message",
+    "form_subtitle": "We will reply within 24 hours.",
+    "name": "Full Name",
+    "name_ph": "John Smith",
+    "email": "Email",
+    "subject": "Subject",
+    "subject_ph": "Select a subject...",
+    "sub_info": "Information Request",
+    "sub_support": "Technical Support",
+    "sub_commercial": "Commercial Question / Subscription",
+    "sub_partner": "Partnership",
+    "sub_other": "Other",
+    "message": "Message",
+    "message_ph": "Describe your need or question...",
+    "send": "Send Message",
+    "success_title": "Message Sent!",
+    "success_msg": "Thank you for your message. Our team will reply as soon as possible.",
+    "new_message": "New Message"
+  },
+  "chatbot": {
+    "welcome": "Hello 👋 I am your Boopursal assistant. I can answer all your questions about industrial procurement, suppliers, or how the platform works. How can I help you?",
+    "sugg1": "How do I publish a purchase request?",
+    "sugg2": "How do I find a supplier?",
+    "sugg3": "What are the subscription prices?",
+    "sugg4": "What is Boopursal?",
+    "online": "Online",
+    "placeholder": "Ask your question...",
+    "faq_title": "Frequently Asked Questions",
+    "clear_history": "Clear History",
+    "confirm_clear": "Do you really want to clear the conversation history?",
+    "history_cleared": "History cleared. How can I help you?",
+    "error": "Sorry, I cannot reach my servers at the moment. Please try again later."
   }
 }

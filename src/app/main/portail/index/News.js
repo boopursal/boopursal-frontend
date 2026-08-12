@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import PropTypes from "prop-types";
 import { Typography, Card, CardActionArea, CardContent, CardActions, Button, CardMedia, Chip, Icon } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
         transform: "scale(1.05)",
       },
       "& $readMore": {
-        color: "#ff8a8a",
+        color: "#f5b05a",
         gap: 8,
       }
     },
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     top: 16,
     left: 16,
     background: "rgba(255, 90, 90, 0.15)",
-    color: "#ff5a5a",
+    color: "#f39322",
     fontWeight: 800,
     fontSize: "0.7rem",
     textTransform: "uppercase",
@@ -91,14 +91,14 @@ const useStyles = makeStyles((theme) => ({
   readMore: {
     fontSize: "0.95rem",
     fontWeight: 800,
-    color: "#ff5a5a",
+    color: "#f39322",
     textDecoration: "none",
     display: "flex",
     alignItems: "center",
     gap: 6,
     transition: "all 0.3s ease",
     "&:hover": {
-      color: "#ff8a8a",
+      color: "#f5b05a",
     }
   }
 }));
@@ -142,3 +142,4 @@ export default function News(props) {
 News.propTypes = {
   news: PropTypes.object,
 };
+

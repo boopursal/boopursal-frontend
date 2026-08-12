@@ -399,8 +399,19 @@
   "portail": {
     "pageTitle": "Boopursal | Mercado B2B",
     "pageDescription": "Boopursal - El mercado B2B que conecta a +1000 empresas.",
-    "heroTitle": "Lleva tu <span>B2B</span><br />al siguiente nivel",
+    "heroTitle": "Conecte compradores y proveedores<br />en <span style=\"color: #274b99;\">una sola plataforma</span>",
     "heroSubtitle": "Encuentra proveedores, recibe cotizaciones y desarrolla tu red profesional",
+    "search": {
+      "placeholder": "Buscar un producto, proveedor...",
+      "button": "Buscar"
+    },
+    "popularTags": {
+      "label": "💡 Popular:",
+      "machining": "Mecanizado",
+      "plastics": "Plásticos",
+      "packaging": "Embalaje",
+      "electronics": "Electrónica"
+    },
     "stats": {
       "companies": "Empresas registradas",
       "products": "Productos listados",
@@ -1113,5 +1124,47 @@
     "noProducts": "Ninguna empresa ha publicado productos",
     "activityAreas": "ÁREAS DE ACTIVIDAD",
     "notSpecified": "No especificado"
+  },
+  "contact": {
+    "page_title": "Contáctenos",
+    "hero_title": "Contáctenos",
+    "hero_subtitle": "Estamos aquí para responder todas sus preguntas relacionadas con Boopursal.",
+    "info_title": "Nuestra Información de Contacto",
+    "info_subtitle": "Puede contactarnos por correo electrónico, teléfono, o visitar nuestras oficinas en Casablanca.",
+    "address_title": "Dirección",
+    "phone_title": "Teléfono",
+    "email_title": "Correo Electrónico",
+    "form_title": "Envíenos un Mensaje",
+    "form_subtitle": "Le responderemos en 24 horas.",
+    "name": "Nombre Completo",
+    "name_ph": "Juan García",
+    "email": "Correo Electrónico",
+    "subject": "Asunto",
+    "subject_ph": "Seleccione un asunto...",
+    "sub_info": "Solicitud de Información",
+    "sub_support": "Soporte Técnico",
+    "sub_commercial": "Pregunta Comercial / Suscripción",
+    "sub_partner": "Asociación",
+    "sub_other": "Otro",
+    "message": "Mensaje",
+    "message_ph": "Describa su necesidad o pregunta...",
+    "send": "Enviar Mensaje",
+    "success_title": "¡Mensaje Enviado!",
+    "success_msg": "Gracias por su mensaje. Nuestro equipo le responderá lo antes posible.",
+    "new_message": "Nuevo Mensaje"
+  },
+  "chatbot": {
+    "welcome": "¡Hola! 👋 Soy su asistente Boopursal. Puedo responder todas sus preguntas sobre compras industriales, proveedores o el funcionamiento de la plataforma. ¿Cómo puedo ayudarle?",
+    "sugg1": "¿Cómo publico una solicitud de compra?",
+    "sugg2": "¿Cómo encuentro un proveedor?",
+    "sugg3": "¿Cuáles son los precios de suscripción?",
+    "sugg4": "¿Qué es Boopursal?",
+    "online": "En línea",
+    "placeholder": "Haga su pregunta...",
+    "faq_title": "Preguntas Frecuentes",
+    "clear_history": "Borrar Historial",
+    "confirm_clear": "¿Realmente desea borrar el historial de esta conversación?",
+    "history_cleared": "Historial borrado. ¿Cómo puedo ayudarle?",
+    "error": "Lo siento, no puedo llegar a mis servidores en este momento. Por favor, inténtelo de nuevo más tarde."
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { AppBar, Hidden, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Box } from "@material-ui/core";
 import { Brightness4 } from "@material-ui/icons";
 import { makeStyles, ThemeProvider } from "@material-ui/styles";
@@ -325,7 +325,7 @@ function ToolbarLayout3(props) {
                 variant="contained"
                 onClick={() => setMobileDrawerOpen(false)}
                 style={{
-                  background: 'linear-gradient(135deg, #ff5a5a 0%, #ff2a2a 100%)',
+                  background: 'linear-gradient(135deg, #f39322 0%, #e07c10 100%)',
                   color: '#ffffff',
                   borderRadius: '16px',
                   padding: '16px',
@@ -367,3 +367,4 @@ function ToolbarLayout3(props) {
 }
 
 export default ToolbarLayout3;
+

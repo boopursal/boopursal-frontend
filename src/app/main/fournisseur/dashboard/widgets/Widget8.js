@@ -136,7 +136,7 @@ function Widget8(props) {
     if (widgets.loadingPotentiels !== false || !widgets.potentiels?.['gagner']) {
         return (
             <div className={classes.root} style={{ padding: 24 }}>
-                <ContentLoader height={200} width={600} speed={2} backgroundColor="#e2e8f0" foregroundColor="#cbd5e1">
+                <ContentLoader height={200} width={600} speed={2} primaryColor="#e2e8f0" secondaryColor="#cbd5e1">
                     <rect x="0" y="0" rx="8" ry="8" width="200" height="16" />
                     <rect x="0" y="30" rx="8" ry="8" width="400" height="60" />
                     <rect x="0" y="110" rx="8" ry="8" width="400" height="60" />

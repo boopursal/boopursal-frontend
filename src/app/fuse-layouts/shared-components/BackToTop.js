@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Fab, Zoom, Icon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 30,
     left: 30,
     zIndex: 999,
-    background: 'linear-gradient(135deg, #ff5a5a 0%, #ff2a2a 100%) !important',
+    background: 'linear-gradient(135deg, #f39322 0%, #e07c10 100%) !important',
     color: '#ffffff !important',
     boxShadow: '0 8px 25px rgba(255, 90, 90, 0.4) !important',
     '&:hover': {
@@ -62,3 +62,4 @@ function BackToTop() {
 }
 
 export default BackToTop;
+

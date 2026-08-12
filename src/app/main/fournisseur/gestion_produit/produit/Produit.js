@@ -275,7 +275,7 @@ function Produit(props) {
         }
       }
       if (produit.data.images) {
-        setImages(produit.data.images.map((item) => getImageUrl(item.url)));
+        setImages(produit.data.images.map((item) => getImageUrl(item.url, '/images/produits/')));
       }
 
       if (produit.data.sousSecteurs) {
@@ -355,7 +355,7 @@ function Produit(props) {
     if (produit.image) {
       setForm(_.set({ ...form }, "images", [produit.image, ...form.images]));
       if (produit.data.images) {
-        setImages([...images, getImageUrl(produit.image.url)]);
+        setImages([...images, getImageUrl(produit.image.url, '/images/produits/')]);
       }
       setCountFreeImages(countFreeImages + 1);
     }
@@ -377,7 +377,7 @@ function Produit(props) {
         );
         setImages(
           _.reject(images, function (i) {
-            return i === getImageUrl(produit.image_deleted.url);
+            return i === getImageUrl(produit.image_deleted.url, '/images/produits/');
           })
         );
         setCountFreeImages(countFreeImages - 1);
@@ -697,7 +697,7 @@ function Produit(props) {
                   {form.images.length > 0 && form.featuredImageId ? (
                     <img
                       className="w-32 sm:w-48 mr-8 sm:mr-16 rounded"
-                      src={getImageUrl(form.featuredImageId.url)}
+                      src={getImageUrl(form.featuredImageId.url, '/images/produits/')}
                       alt={form.reference}
                     />
                   ) : (
@@ -1129,7 +1129,7 @@ function Produit(props) {
                       </Tooltip>
                       <img
                         className="max-w-none w-auto h-full"
-                        src={getImageUrl(media.url)}
+                        src={getImageUrl(media.url, '/images/produits/')}
                         alt="produit"
                       />
                     </div>
@@ -1203,7 +1203,7 @@ function Produit(props) {
                       key={form.ficheTechnique.id}
                       onClick={() =>
                         window.open(
-                          getImageUrl(form.ficheTechnique.url),
+                          getImageUrl(form.ficheTechnique.url, '/images/produits/'),
                           "_blank"
                         )
                       }
@@ -1222,7 +1222,7 @@ function Produit(props) {
                       {_.split(form.ficheTechnique, "/", 1)[0] === "image" ? (
                         <img
                           className="max-w-none w-auto h-full"
-                          src={getImageUrl(form.ficheTechnique.url)}
+                          src={getImageUrl(form.ficheTechnique.url, '/images/produits/')}
                           alt="fiche"
                         />
                       ) : (

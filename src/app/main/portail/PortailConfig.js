@@ -7,8 +7,11 @@ import { faqsConfig } from './faqs/faqsConfig';
 import { parcourirSecteursConfig } from './parcourir-secteurs/parcourirSecteursConfig';
 import { ConditionsConfig } from './conditions/ConditionsConfig';
 import { TarifsConfig } from './tarifs/TarifsConfig';
+import { ContactConfig } from './contact/ContactConfig';
+import { SearchConfig } from './Search/SearchConfig';
 
 export const PortailConfig = [
+    SearchConfig,
     ProduitConfig,
     FournisseurConfig,
     IndexConfig,
@@ -17,5 +20,6 @@ export const PortailConfig = [
     parcourirSecteursConfig,
     faqsConfig,
     ConditionsConfig,
-    TarifsConfig
+    TarifsConfig,
+    ContactConfig
 ];

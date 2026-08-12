@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Card, CardContent, Icon, Button, Box, Grid } from '@material-ui/core';
 import { NavLinkAdapter } from '@fuse';
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
         border: "1px solid rgba(255, 90, 90, 0.2)",
     },
     icon: {
-        color: "#ff5a5a",
+        color: "#f39322",
         fontSize: 36,
     },
     benefitItem: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
         marginTop: "48px",
         padding: "16px 32px",
         borderRadius: 14,
-        background: "linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)",
+        background: "linear-gradient(135deg, #f39322 0%, #f5b05a 100%)",
         color: "#ffffff",
         fontWeight: 800,
         textTransform: "none",
@@ -84,7 +84,7 @@ export default function BioAcheteur() {
                         display: "flex", alignItems: "center", justifyContent: "center",
                         border: "1px solid rgba(255, 90, 90, 0.2)"
                     }}>
-                        <Icon style={{ color: "#ff5a5a", fontSize: 36 }}>shopping_cart</Icon>
+                        <Icon style={{ color: "#f39322", fontSize: 36 }}>shopping_cart</Icon>
                     </div>
                 </Box>
 
@@ -108,7 +108,7 @@ export default function BioAcheteur() {
                     component={NavLinkAdapter}
                     to="/register/2"
                     style={{ 
-                        background: "#ff5a5a", 
+                        background: "#f39322", 
                         color: "#ffffff",
                         padding: '20px 40px',
                         borderRadius: "16px",
@@ -125,3 +125,4 @@ export default function BioAcheteur() {
         </Card>
     );
 }
+

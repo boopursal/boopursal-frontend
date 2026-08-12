@@ -14,6 +14,8 @@ import { StylesProvider, jssPreset, createGenerateClassName } from '@material-ui
 import CookieConsent from "react-cookie-consent";
 //import routesConfig from './fuse-configs/routesConfig'; // Assurez-vous que le chemin est correct
 import NavigationLoader from 'app/fuse-components/NavigationLoader';
+import ChatbotWidget from 'app/fuse-components/ChatbotWidget';
+import WhatsAppWidget from 'app/fuse-components/WhatsAppWidget';
 
 const jss = create({
     ...jssPreset(),
@@ -50,6 +52,8 @@ const App = () => {
                                     >
                                         En poursuivant votre navigation sur ce site, vous acceptez l’utilisation de cookies pour nous permettre de réaliser des statistiques de visites.
                                     </CookieConsent>
+                                    <ChatbotWidget />
+                                    <WhatsAppWidget />
                                 </FuseTheme>
                             </FuseAuthorization>
                         </Router>

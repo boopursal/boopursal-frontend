@@ -197,11 +197,17 @@ function Secteur(props) {
               )}
               style={{
                 backgroundImage:
-                  activites.secteur &&
-                  activites.secteur.image &&
-                  (activites.secteur.image.url.startsWith("http")
-                    ? "url(" + activites.secteur.image.url + ")"
-                    : "url(" + URL_SITE + "/images/secteur/" + activites.secteur.image.url + ")"),
+                  activites.secteur && activites.secteur.image
+                    ? (typeof activites.secteur.image === 'string'
+                        ? (activites.secteur.image.startsWith("http")
+                            ? "url(" + activites.secteur.image + ")"
+                            : "url(" + URL_SITE + "/images/secteur/" + activites.secteur.image + ")")
+                        : (activites.secteur.image.url
+                            ? (activites.secteur.image.url.startsWith("http")
+                                ? "url(" + activites.secteur.image.url + ")"
+                                : "url(" + URL_SITE + "/images/secteur/" + activites.secteur.image.url + ")")
+                            : "none"))
+                    : "none",
               }}
             >
               <div className={clsx(classes.divTitle)}>

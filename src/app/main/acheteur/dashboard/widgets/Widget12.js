@@ -120,7 +120,7 @@ function Widget12(props) {
     if (widgets.loadingTeamPotentiels !== false) {
         return (
             <div className={classes.root} style={{ padding: 24 }}>
-                <ContentLoader height={200} width={800} speed={2} backgroundColor="#e2e8f0" foregroundColor="#cbd5e1">
+                <ContentLoader height={200} width={800} speed={2} primaryColor="#e2e8f0" secondaryColor="#cbd5e1">
                     <rect x="0" y="0" rx="8" ry="8" width="800" height="16" />
                     <rect x="0" y="28" rx="8" ry="8" width="600" height="16" />
                     <rect x="0" y="56" rx="8" ry="8" width="700" height="16" />

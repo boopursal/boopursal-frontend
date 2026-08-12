@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import MailchimpSubscribe from "react-mailchimp-subscribe"
 import { Grid, Button, Icon, Paper, makeStyles } from '@material-ui/core';
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
         height: '100%',
         padding: '12px 32px',
         borderRadius: 12,
-        background: 'linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%)',
+        background: 'linear-gradient(135deg, #f39322 0%, #f5b05a 100%)',
         color: '#ffffff',
         fontWeight: 700,
         textTransform: 'none',
@@ -122,3 +122,4 @@ export default function Newsletter() {
         />
     )
 }
+

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 * {
@@ -104,7 +104,7 @@ body {
 
 /* Premium Buttons - Quantix Glow */
 .btn-premium {
-    background: linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%) !important;
+    background: linear-gradient(135deg, #f39322 0%, #f5b05a 100%) !important;
     color: #ffffff !important;
     border-radius: 16px !important;
     padding: 14px 40px !important;
@@ -121,7 +121,7 @@ body {
 
 /* Accent Glow Text */
 .accent-gradient {
-    background: linear-gradient(135deg, #ff5a5a 0%, #ff8a8a 100%);
+    background: linear-gradient(135deg, #f39322 0%, #f5b05a 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
