@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Icon, CircularProgress } from '@material-ui/core';
 import ReCAPTCHA from "react-google-recaptcha";
-import axios from 'axios';
+import axios from '../../../agent';
 
 const ORANGE = '#F48D35';
 const ORANGE_DARK = '#E07820';
