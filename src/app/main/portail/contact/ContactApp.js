@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Icon } from '@material-ui/core';
+import { Icon, CircularProgress } from '@material-ui/core';
+import ReCAPTCHA from "react-google-recaptcha";
+import axios from 'axios';
 
 const ORANGE = '#F48D35';
 const ORANGE_DARK = '#E07820';
@@ -10,15 +12,34 @@ const ORANGE_DARK = '#E07820';
 function ContactApp() {
     const { t } = useTranslation();
     const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [focused, setFocused] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const recaptchaRef = useRef(null);
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simule l'envoi — à connecter au backend si souhaité
-        setSubmitted(true);
+        setErrorMsg('');
+        
+        const recaptchaToken = recaptchaRef.current ? recaptchaRef.current.getValue() : null;
+        if (!recaptchaToken) {
+            setErrorMsg(t('contact.recaptcha_required', 'Veuillez valider le reCAPTCHA.'));
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await axios.post('/api/contact', { ...form, recaptchaToken });
+            setSubmitted(true);
+            if (recaptchaRef.current) recaptchaRef.current.reset();
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi:', error);
+            setErrorMsg(t('contact.error_send', 'Une erreur est survenue lors de l\'envoi du message.'));
+        } finally {
+            setLoading(false);
+        }
     };
 
     const contactItems = [
@@ -263,20 +284,40 @@ function ContactApp() {
                                         />
                                     </div>
 
-                                    <button
-                                        type="submit"
-                                        className="bp-contact-btn"
-                                        style={{
-                                            width: '100%', padding: '14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                                            background: `linear-gradient(135deg, ${ORANGE} 0%, ${ORANGE_DARK} 100%)`,
-                                            color: 'white', fontSize: '16px', fontWeight: 700,
-                                            boxShadow: `0 4px 16px rgba(244, 141, 53, 0.3)`,
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                                        }}
-                                    >
-                                        <Icon style={{ fontSize: '20px' }}>send</Icon>
-                                        {t('contact.send', 'Envoyer le message')}
-                                    </button>
+                                        <div style={{ margin: '10px 0', display: 'flex', justifyContent: 'center' }}>
+                                            <ReCAPTCHA
+                                                ref={recaptchaRef}
+                                                sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY || "6LdSWIAtAAAAAMhfBiaaEsve64dWwdBEzOkf5gDr"}
+                                                hl={t('common.language_code', 'fr')}
+                                            />
+                                        </div>
+
+                                        {errorMsg && (
+                                            <div style={{ color: '#EF4444', fontSize: '14px', textAlign: 'center', marginBottom: '10px', fontWeight: 500 }}>
+                                                {errorMsg}
+                                            </div>
+                                        )}
+
+                                        <button
+                                            type="submit"
+                                            disabled={loading}
+                                            className="bp-contact-btn"
+                                            style={{
+                                                width: '100%', padding: '14px', borderRadius: '12px', border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+                                                background: `linear-gradient(135deg, ${ORANGE} 0%, ${ORANGE_DARK} 100%)`,
+                                                color: 'white', fontSize: '16px', fontWeight: 700,
+                                                boxShadow: `0 4px 16px rgba(244, 141, 53, 0.3)`,
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                                                opacity: loading ? 0.7 : 1
+                                            }}
+                                        >
+                                            {loading ? <CircularProgress size={24} style={{ color: 'white' }} /> : (
+                                                <>
+                                                    <Icon style={{ fontSize: '20px' }}>send</Icon>
+                                                    {t('contact.send', 'Envoyer le message')}
+                                                </>
+                                            )}
+                                        </button>
                                 </form>
                             )}
                         </div>
