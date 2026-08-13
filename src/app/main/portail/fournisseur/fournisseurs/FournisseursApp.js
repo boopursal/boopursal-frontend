@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => ({
         position: 'relative',
         flex: '1 0 auto',
         height: 'auto',
-        backgroundColor: '#f8fafc'
+        backgroundColor: '#f8fafc',
+        overflowX: 'hidden'
     },
     header: {
         backgroundColor: '#0f172a',
@@ -97,7 +98,8 @@ const useStyles = makeStyles(theme => ({
         display: 'inline-flex',
         alignItems: 'center',
         border: '1px solid rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(8px)'
+        backdropFilter: 'blur(8px)',
+        alignSelf: 'flex-start'
     },
     switchBtn: {
         borderRadius: 8,
