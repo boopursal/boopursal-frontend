@@ -202,6 +202,36 @@ const ChatbotWidget = () => {
                 .bp-feedback-btn { transition: all 0.2s; opacity: 0.5; cursor: pointer; padding: 2px; }
                 .bp-feedback-btn:hover { opacity: 1; transform: scale(1.1); color: ${ORANGE}; }
                 .bp-feedback-active { opacity: 1 !important; color: ${ORANGE} !important; }
+
+                /* Chat Window Responsive Styles */
+                .bp-chat-window {
+                    position: fixed;
+                    bottom: 28px;
+                    right: 28px;
+                    width: 380px;
+                    height: 680px;
+                    max-height: calc(100vh - 56px);
+                    background: white;
+                    border-radius: 20px;
+                    box-shadow: 0 24px 64px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+                    overflow: hidden;
+                    z-index: 9999;
+                    display: flex;
+                    flex-direction: column;
+                    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+                    animation: bpSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+                }
+
+                @media (max-width: 480px) {
+                    .bp-chat-window {
+                        bottom: 0;
+                        right: 0;
+                        width: 100vw;
+                        height: 100vh;
+                        max-height: 100vh;
+                        border-radius: 0;
+                    }
+                }
             `}</style>
 
             {/* FAB Button */}
@@ -231,16 +261,7 @@ const ChatbotWidget = () => {
 
             {/* Chat Window */}
             {isOpen && (
-                <div style={{
-                    position: 'fixed', bottom: '28px', right: '28px',
-                    width: '380px', height: '680px',
-                    background: 'white', borderRadius: '20px',
-                    boxShadow: '0 24px 64px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)',
-                    overflow: 'hidden', zIndex: 9999,
-                    display: 'flex', flexDirection: 'column',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif',
-                    animation: 'bpSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both'
-                }}>
+                <div className="bp-chat-window">
                     {/* Header */}
                     <div style={{ position: 'relative', flexShrink: 0, overflow: 'hidden' }}>
                         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${ORANGE} 0%, ${ORANGE_DARK} 100%)` }} />
