@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Icon, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { URL_SITE } from '@fuse/Constants';
 
 const ChatbotWidget = () => {
     const { t } = useTranslation();
@@ -66,7 +67,8 @@ const ChatbotWidget = () => {
 
         try {
             // Appel à l'API NestJS / Gemini
-            const response = await fetch('http://localhost:3002/api/chatbot/message', {
+            const apiUrl = URL_SITE.endsWith('/') ? URL_SITE.slice(0, -1) : URL_SITE;
+            const response = await fetch(`${apiUrl}/api/chatbot/message`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -224,12 +226,12 @@ const ChatbotWidget = () => {
 
                 @media (max-width: 480px) {
                     .bp-chat-window {
-                        bottom: 0;
-                        right: 0;
-                        width: 100vw;
-                        height: 100vh;
-                        max-height: 100vh;
-                        border-radius: 0;
+                        bottom: 16px;
+                        right: 16px;
+                        width: calc(100vw - 32px);
+                        height: calc(100vh - 100px);
+                        max-height: 600px;
+                        border-radius: 20px;
                     }
                 }
             `}</style>
