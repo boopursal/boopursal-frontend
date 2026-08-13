@@ -1,53 +1,80 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Chip, Typography, Select } from '@material-ui/core';
+import { Typography, Select, Icon } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import * as Actions from '../store/actions';
 
 const useStyles = makeStyles(theme => ({
-    root: {
+    wrapper: {
         display: 'flex',
-        flexDirection: 'column',
-        sm: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-        },
-        padding: '16px 24px',
-        backgroundColor: '#f8fafc',
-        borderRadius: 16,
-        marginBottom: 20,
-        border: '1px solid #e2e8f0'
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 24,
+        flexWrap: 'wrap',
+        gap: 12
     },
-    count: {
-        fontSize: '0.875rem',
-        color: '#64748b',
-        fontWeight: 500,
+    countBadge: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 10,
+        backgroundColor: 'white',
+        border: '1px solid #e2e8f0',
+        borderRadius: 40,
+        padding: '10px 20px',
+        boxShadow: '0 2px 8px -2px rgba(0,0,0,0.06)'
+    },
+    countDot: {
+        width: 10,
+        height: 10,
+        borderRadius: '50%',
+        backgroundColor: theme.palette.primary.main,
+        boxShadow: `0 0 0 3px ${theme.palette.primary.main}22`
+    },
+    countText: {
+        fontSize: '1rem',
+        color: '#475569',
+        fontWeight: 600,
+        '& strong': {
+            color: '#0f172a',
+            fontSize: '1.1rem',
+            fontWeight: 800
+        }
+    },
+    sortWrapper: {
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: 10,
+        backgroundColor: 'white',
+        border: '1px solid #e2e8f0',
+        borderRadius: 40,
+        padding: '8px 16px 8px 20px',
+        boxShadow: '0 2px 8px -2px rgba(0,0,0,0.06)'
+    },
+    sortIcon: {
+        fontSize: 18,
+        color: '#94a3b8'
     },
     sortLabel: {
-        fontSize: '0.875rem',
+        fontSize: '0.9rem',
         color: '#64748b',
-        marginRight: 12
+        fontWeight: 600,
+        whiteSpace: 'nowrap'
     },
     select: {
-        fontSize: '0.875rem',
-        fontWeight: 600,
-        color: '#1e293b',
-        backgroundColor: 'white',
-        borderRadius: 8,
-        padding: '6px 12px',
-        border: '1px solid #e2e8f0',
-        '&:focus': {
-            borderColor: theme.palette.primary.main,
-            backgroundColor: 'white'
-        }
+        fontSize: '0.9rem',
+        fontWeight: 700,
+        color: theme.palette.primary.main,
+        '& select': {
+            paddingRight: '24px !important'
+        },
+        '&:before, &:after': { display: 'none' }
     }
 }));
 
 function HeaderContentList(props) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const totalItems = useSelector(({ produitsApp }) => produitsApp.produits.totalItems);
     const parametres = useSelector(({ produitsApp }) => produitsApp.produits.parametres);
     const loading = useSelector(({ produitsApp }) => produitsApp.produits.loading);
@@ -64,14 +91,17 @@ function HeaderContentList(props) {
     if (loading && !totalItems) return null;
 
     return (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-24 py-16 bg-white border border-slate-200 rounded-16 mb-24 shadow-sm">
-            <div className={classes.count}>
-                <span className="w-8 h-8 rounded-full bg-blue-500 mr-8" />
-                <strong>{totalItems}</strong>&nbsp;produit(s) / service(s) trouvé(s)
+        <div className={classes.wrapper}>
+            <div className={classes.countBadge}>
+                <span className={classes.countDot} />
+                <Typography className={classes.countText}>
+                    <strong>{totalItems}</strong>&nbsp;{t('portail.found_products', 'produit(s) / service(s) trouvé(s)')}
+                </Typography>
             </div>
 
-            <div className="flex items-center mt-12 sm:mt-0">
-                <Typography className={classes.sortLabel}>Trier par :</Typography>
+            <div className={classes.sortWrapper}>
+                <Icon className={classes.sortIcon}>sort</Icon>
+                <Typography className={classes.sortLabel}>{t('portail.sort_by', 'Trier par :')}</Typography>
                 <Select
                     native
                     value={parametres.filter.id}
@@ -79,10 +109,10 @@ function HeaderContentList(props) {
                     className={classes.select}
                     disableUnderline
                 >
-                    <option value='created-desc'>Plus récent</option>
-                    <option value='created-asc'>Plus ancien</option>
-                    <option value='pu-asc'>Prix : Croissant</option>
-                    <option value='pu-desc'>Prix : Décroissant</option>
+                    <option value='created-desc'>{t('portail.newest', 'Plus récent')}</option>
+                    <option value='created-asc'>{t('portail.oldest', 'Plus ancien')}</option>
+                    <option value='pu-asc'>{t('portail.price_asc', 'Prix : Croissant')}</option>
+                    <option value='pu-desc'>{t('portail.price_desc', 'Prix : Décroissant')}</option>
                 </Select>
             </div>
         </div>

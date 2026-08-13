@@ -6,25 +6,11 @@ import { FuseAnimateGroup } from "@fuse";
 import { URL_SITE, getImageUrl } from "@fuse/Constants";
 import _ from "@lodash";
 import { Link } from "react-router-dom";
-import { Icon, IconButton, Select, Button, Tooltip } from "@material-ui/core";
+import { Icon, IconButton, Select, Button, Tooltip, Avatar, Chip } from "@material-ui/core";
 import * as Actions from "../store/actions";
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { getTranslatedField } from '../../../../../utils/translationHelper';
-
-const stringToColor = (string) => {
-  if (!string) return '#94a3b8';
-  let hash = 0;
-  for (let i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  let color = '#';
-  for (let i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  return color;
-};
 
 const getInitials = (name) => {
   if (!name) return '?';
@@ -37,148 +23,170 @@ const styles = (theme) => ({
   },
   gridContainer: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
     gap: '20px',
-    paddingTop: '24px'
+    paddingTop: '8px',
+    width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '10px',
+      paddingTop: '4px'
+    },
+    [theme.breakpoints.down('xs')]: {
+      gridTemplateColumns: '1fr',
+      gap: '10px'
+    }
   },
-  productCard: {
+  card: {
     display: 'flex',
     flexDirection: 'column',
     borderRadius: 24,
     overflow: 'hidden',
     backgroundColor: 'white',
-    border: '1px solid rgba(226, 232, 240, 0.6)',
-    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    border: '1px solid #f1f5f9',
+    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
     position: 'relative',
     height: '100%',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02)',
+    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)',
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderRadius: 24,
+        boxShadow: `0 0 0 2px ${theme.palette.primary.main}`,
+        opacity: 0,
+        transition: 'opacity 0.4s ease',
+        pointerEvents: 'none'
+    },
     '&:hover': {
       transform: 'translateY(-8px)',
-      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.08), 0 0 0 2px rgba(255, 90, 90, 0.1)',
-      '& $imageOverlay': {
-        opacity: 1
+      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
+      borderColor: 'transparent',
+      '&::after': {
+          opacity: 1
       },
-      '& $img': {
-        transform: 'scale(1.08)'
+      '& $logoScale, & $fallbackAvatar': {
+        transform: 'scale(1.1)'
+      },
+      '& $title': {
+        color: theme.palette.primary.main
       }
     }
   },
   imageWrapper: {
     position: 'relative',
-    paddingTop: '100%', // Square ratio
-    background: 'radial-gradient(circle, #ffffff 0%, #f8fafc 100%)',
+    paddingTop: '60%',
+    backgroundColor: '#f8fafc',
     overflow: 'hidden',
-    borderBottom: '1px solid rgba(226, 232, 240, 0.6)'
+    borderBottom: '1px solid #f1f5f9',
   },
-  img: {
+  logoScale: {
     position: 'absolute',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
     objectFit: 'contain',
-    padding: '24px',
+    padding: '30px',
     transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
   },
-  imageOverlay: {
+  fallbackWrapper: {
     position: 'absolute',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    backdropFilter: 'blur(2px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0,
-    transition: 'opacity 0.4s ease',
-    zIndex: 5
   },
-  badge: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    zIndex: 10,
-    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Emerald gradient
-    color: 'white',
-    padding: '6px 14px',
-    borderRadius: 8,
-    fontSize: '0.75rem',
+  fallbackAvatar: {
+    width: 80,
+    height: 80,
+    fontSize: '2.5rem',
     fontWeight: 800,
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-    boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+    backgroundColor: theme.palette.primary.main,
+    color: 'white',
+    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.15)',
+    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
   },
   content: {
-    padding: '24px',
+    padding: '16px',
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
+    textAlign: 'center',
     [theme.breakpoints.down('sm')]: {
-      padding: '20px',
+      padding: '12px',
     }
   },
-  category: {
-    fontSize: '0.75rem',
-    fontWeight: 700,
-    color: '#64748b',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-    marginBottom: 8
-  },
   title: {
-    fontSize: '1.15rem',
+    fontSize: '1.25rem',
     fontWeight: 800,
-    color: '#0f172a',
+    color: '#1e293b',
     textDecoration: 'none',
-    marginBottom: 16,
-    lineHeight: 1.4,
-    height: '2.8em',
+    marginBottom: 12,
+    lineHeight: 1.3,
+    transition: 'color 0.2s',
     overflow: 'hidden',
     display: '-webkit-box',
     '-webkit-line-clamp': 2,
     '-webkit-box-orient': 'vertical',
-    transition: 'color 0.2s',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.05rem',
-      marginBottom: 12,
+      fontSize: '1.15rem',
     },
     '&:hover': {
       color: theme.palette.primary.main
     }
   },
-  priceRow: {
+  location: {
+    fontSize: '1.1rem',
+    color: theme.palette.primary.main,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 'auto',
-    paddingTop: '20px',
-    borderTop: '1px dashed #e2e8f0'
+    justifyContent: 'center',
+    gap: '6px',
+    marginBottom: 16,
+    fontWeight: 800
   },
-  price: {
-    fontSize: '1.5rem',
-    fontWeight: 900,
-    color: theme.palette.primary.main,
-    letterSpacing: '-0.02em',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '1.35rem',
+  categoryWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '4px',
+    justifyContent: 'center',
+    marginBottom: 20
+  },
+  catChip: {
+    fontSize: '0.95rem',
+    height: 'auto',
+    padding: '6px 12px',
+    backgroundColor: 'rgba(241, 245, 249, 0.8)',
+    color: '#475569',
+    border: '1px solid rgba(226, 232, 240, 0.8)',
+    fontWeight: 700,
+    borderRadius: 12,
+    backdropFilter: 'blur(4px)',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+        color: 'white',
+        borderColor: theme.palette.primary.main
     }
   },
-  quoteBtn: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: '#f8fafc',
-    color: '#475569',
-    border: '1px solid #e2e8f0',
-    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  actionBtn: {
+    marginTop: 'auto',
+    borderRadius: 40,
+    fontWeight: 700,
+    fontSize: '1rem',
+    textTransform: 'none',
+    padding: '10px 0',
+    letterSpacing: 0,
+    boxShadow: 'none',
     '&:hover': {
-      backgroundColor: theme.palette.primary.main,
-      borderColor: theme.palette.primary.main,
-      color: 'white',
-      transform: 'translateY(-4px) rotate(-5deg)',
-      boxShadow: '0 10px 20px -5px rgba(255, 90, 90, 0.4)'
+        boxShadow: `0 8px 20px -4px ${theme.palette.primary.main}66`
     }
   },
   paginationContainer: {
@@ -189,10 +197,13 @@ const styles = (theme) => ({
     padding: '8px',
     borderRadius: 50,
     boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-    marginTop: 64,
+    marginTop: 48,
     border: '1px solid #f1f5f9',
     width: 'fit-content',
-    margin: '64px auto 0'
+    margin: '48px auto 80px',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 96 // give space for the floating filter button on mobile
+    }
   },
   pageBtn: {
     minWidth: 44,
@@ -238,16 +249,13 @@ function ProduitListItem(props) {
   if (loading) {
     return (
       <div className={classes.gridContainer}>
-        {[1, 2, 3, 4, 5, 6].map(n => (
-          <div key={n} className="bg-white rounded-20 overflow-hidden border border-slate-100 shadow-sm animate-pulse h-450">
-            <div className="bg-slate-50 h-280" />
-            <div className="p-24 space-y-16">
+        {[1, 2, 3, 4, 5, 6, 7, 8].map(n => (
+          <div key={n} className="bg-white rounded-20 overflow-hidden border border-slate-100 animate-pulse h-350">
+            <div className="bg-slate-50 h-160" />
+            <div className="p-20 space-y-12 flex flex-col items-center">
               <div className="h-20 bg-slate-50 rounded-full w-3/4" />
-              <div className="h-24 bg-slate-50 rounded-full w-full" />
-              <div className="flex justify-between items-center pt-12">
-                <div className="h-32 bg-slate-50 rounded-full w-100" />
-                <div className="h-44 bg-slate-50 rounded-12 w-44" />
-              </div>
+              <div className="h-16 bg-slate-50 rounded-full w-1/2" />
+              <div className="h-36 bg-slate-50 rounded-12 w-full mt-12" />
             </div>
           </div>
         ))}
@@ -262,45 +270,28 @@ function ProduitListItem(props) {
           produits.map((produit, index) => {
             const translatedTitre = getTranslatedField(produit, 'titre', i18n.language);
             return (
-            <div className={classes.productCard} key={index}>
+            <div className={classes.card} key={index}>
               <Link
                 to={`/detail-produit/${produit.sousSecteurs ? produit.sousSecteurs.slug : 'slug'}/${produit.categorie ? produit.categorie.slug : 'slug'}/${produit.id}-${produit.slug}`}
                 className={classes.imageWrapper}
               >
-                <div className={classes.badge}>Premium</div>
                 {produit.featuredImageId ? (
                   <img
-                    className={classes.img}
+                    className={classes.logoScale}
                     alt={translatedTitre}
                     src={getImageUrl(produit.featuredImageId.url, '/images/produits/')}
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                 ) : (
-                  <div 
-                    className={classes.img} 
-                    style={{
-                      backgroundColor: stringToColor(translatedTitre),
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontSize: '4rem',
-                      fontWeight: 800,
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    {getInitials(translatedTitre)}
+                  <div className={classes.fallbackWrapper}>
+                    <Avatar className={classes.fallbackAvatar}>
+                      {getInitials(translatedTitre)}
+                    </Avatar>
                   </div>
                 )}
-                <div className={classes.imageOverlay}>
-                  <Icon className="text-white text-48 drop-shadow-lg">visibility</Icon>
-                </div>
               </Link>
 
               <div className={classes.content}>
-                <div className={classes.category}>
-                  {produit.categorie ? getTranslatedField(produit.categorie, 'name', i18n.language) : 'Produit'}
-                </div>
                 <Link
                   className={classes.title}
                   to={`/detail-produit/${produit.sousSecteurs ? produit.sousSecteurs.slug : 'slug'}/${produit.categorie ? produit.categorie.slug : 'slug'}/${produit.id}-${produit.slug}`}
@@ -308,29 +299,28 @@ function ProduitListItem(props) {
                   {translatedTitre}
                 </Link>
 
-                <div className="flex items-center text-slate-500 text-xs font-semibold mb-20 bg-slate-50 w-fit px-10 py-6 rounded-8 border border-slate-100">
-                  <span className="text-slate-400 mr-4">REF:</span> {produit.reference || 'N/A'}
-                </div>
 
-                <div className={classes.priceRow}>
-                  <div className={classes.price}>
-                    {produit.pu && parseFloat(produit.pu) > 0
-                      ? parseFloat(produit.pu).toLocaleString(undefined, { minimumFractionDigits: 0 }) + " " + (produit.currency ? (produit.currency.name || produit.currency) : "MAD")
-                      : <span className="text-sm font-bold bg-slate-100 text-slate-600 px-12 py-6 rounded-full inline-block" style={{ fontSize: '0.85rem' }}>{t('portail.products.priceOnQuote', 'PRIX SUR DEVIS')}</span>
-                    }
-                  </div>
 
-                  {produit["@id"] && (
-                    <Tooltip title="Demander un devis" placement="top">
-                      <IconButton
-                        className={classes.quoteBtn}
-                        onClick={() => dispatch(Actions.openNewDemandeDevisDialog(produit["@id"]))}
-                      >
-                        <Icon>shopping_cart</Icon>
-                      </IconButton>
-                    </Tooltip>
+                <div className={classes.categoryWrapper}>
+                  {produit.categorie && (
+                    <Chip label={getTranslatedField(produit.categorie, 'name', i18n.language)} className={classes.catChip} />
+                  )}
+                  {produit.reference && (
+                    <Chip label={`REF: ${produit.reference}`} className={classes.catChip} />
                   )}
                 </div>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  className={classes.actionBtn}
+                  onClick={(e) => {
+                    if (produit["@id"]) dispatch(Actions.openNewDemandeDevisDialog(produit["@id"]));
+                  }}
+                >
+                  {t('portail.ask_quote', 'Demander un devis')}
+                </Button>
               </div>
             </div>
           );
@@ -350,10 +340,9 @@ function ProduitListItem(props) {
 
           {[...Array(pageCount)].map((_, i) => {
             const pageNum = i + 1;
-            const isEdge = pageNum === 1 || pageNum === pageCount;
-            const isNear = Math.abs(pageNum - parametres.page) <= 1;
+            const isVisible = pageNum === 1 || pageNum === pageCount || Math.abs(pageNum - parametres.page) <= 1;
 
-            if (isEdge || isNear) {
+            if (isVisible) {
               return (
                 <Button
                   key={pageNum}

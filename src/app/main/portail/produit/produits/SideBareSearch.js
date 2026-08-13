@@ -16,31 +16,35 @@ const useStyles = makeStyles(theme => ({
         gap: '24px'
     },
     sectionCard: {
-        borderRadius: 20,
-        border: '1px solid #f1f5f9',
-        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.01)',
-        backgroundColor: 'white',
+        borderRadius: 24,
+        border: '1px solid rgba(255,255,255,0.8)',
+        boxShadow: '0 15px 35px -5px rgba(0,0,0,0.04)',
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        backdropFilter: 'blur(20px)',
         overflow: 'hidden',
-        transition: 'all 0.3s ease',
+        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         '&:hover': {
-            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.05)',
-            borderColor: '#e2e8f0'
+            boxShadow: '0 25px 45px -10px rgba(0,0,0,0.08)',
+            transform: 'translateY(-2px)'
         }
     },
     sectionHeader: {
-        padding: '20px 24px',
-        backgroundColor: '#f8fafc',
-        borderBottom: '1px solid #f1f5f9',
+        padding: '20px 20px',
+        background: 'linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.4))',
+        borderBottom: '1px solid rgba(0,0,0,0.03)',
         display: 'flex',
         alignItems: 'center',
-        gap: '12px'
+        gap: '12px',
+        [theme.breakpoints.down('md')]: {
+            padding: '16px'
+        }
     },
     headerIcon: {
         color: theme.palette.primary.main,
         fontSize: 20
     },
     headerTitle: {
-        fontSize: '0.875rem',
+        fontSize: '1.15rem',
         fontWeight: 800,
         color: '#1e293b',
         textTransform: 'uppercase',
@@ -62,31 +66,40 @@ const useStyles = makeStyles(theme => ({
         },
     },
     listItem: {
-        padding: '10px 24px',
-        transition: 'all 0.2s ease',
+        padding: '10px 20px',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        borderLeft: '4px solid transparent',
+        [theme.breakpoints.down('md')]: {
+            padding: '8px 16px'
+        },
         '&:hover': {
-            backgroundColor: '#f8fafc',
-            paddingLeft: '30px', // Micro-interaction effect
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            paddingLeft: '28px',
+            borderLeft: `4px solid ${theme.palette.primary.light}`,
             '& $itemText': {
-                color: theme.palette.primary.main
+                color: theme.palette.primary.main,
+                transform: 'translateX(4px)'
             }
         },
         '&.Mui-selected': {
-            backgroundColor: 'rgba(25, 118, 210, 0.05)',
+            backgroundColor: 'rgba(25, 118, 210, 0.08)',
             borderLeft: `4px solid ${theme.palette.primary.main}`,
+            boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
             '& $itemText': {
                 color: theme.palette.primary.main,
-                fontWeight: 700
+                fontWeight: 800
             }
         }
     },
     itemText: {
-        fontSize: '0.875rem',
+        fontSize: '1.25rem',
         color: '#475569',
-        fontWeight: 500
+        fontWeight: 600,
+        transition: 'all 0.3s ease',
+        display: 'inline-block'
     },
     itemCount: {
-        fontSize: '0.75rem',
+        fontSize: '1.1rem',
         color: '#94a3b8',
         fontWeight: 600,
         backgroundColor: '#f1f5f9',
@@ -95,10 +108,10 @@ const useStyles = makeStyles(theme => ({
     },
     activeFilterChip: {
         margin: '16px 24px',
-        height: 32,
+        height: 38,
         borderRadius: 10,
         fontWeight: 700,
-        fontSize: '0.8rem',
+        fontSize: '1.15rem',
         backgroundColor: 'rgba(25, 118, 210, 0.08)',
         color: theme.palette.primary.main,
         border: `1px solid rgba(25, 118, 210, 0.2)`,
