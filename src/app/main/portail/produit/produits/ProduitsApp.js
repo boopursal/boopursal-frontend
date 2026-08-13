@@ -107,7 +107,10 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         border: '1px solid rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(8px)',
-        alignSelf: 'flex-start'
+        alignSelf: 'flex-start',
+        [theme.breakpoints.down('sm')]: {
+            marginTop: 20
+        }
     },
     switchBtn: {
         borderRadius: 8,
