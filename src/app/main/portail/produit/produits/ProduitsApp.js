@@ -69,6 +69,15 @@ const useStyles = makeStyles(theme => ({
             fontSize: '1.75rem'
         }
     },
+    locationSubtitle: {
+        fontSize: '1.15rem',
+        color: '#cbd5e1',
+        display: 'flex',
+        alignItems: 'center',
+        marginTop: '8px',
+        fontWeight: 500,
+        gap: '8px'
+    },
     container: {
         maxWidth: 1400,
         margin: '0 auto',
@@ -191,6 +200,7 @@ function ProduitsApp(props) {
 
     useEffect(() => {
         dispatch(Actions.getProduits(params, pays, parametres, ville, q));
+        if (isMobile) setFilterDrawerOpen(false);
     }, [dispatch, params, pays, parametres, ville, q]);
 
     useEffect(() => {
@@ -250,7 +260,7 @@ function ProduitsApp(props) {
 
                         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-24">
                             <div className="flex-1">
-                                <Typography className={classes.mainTitle}>
+                                <Typography component="div" className={classes.mainTitle}>
                                     <Icon style={{ fontSize: '2.5rem', color: theme.palette.primary.main }}>inventory</Icon>
                                     <div>
                                         {t('common.products', 'Produits')} {getBreadcrumbTitle() && <span style={{ color: theme.palette.primary.light }}>{getBreadcrumbTitle()}</span>}
@@ -258,8 +268,8 @@ function ProduitsApp(props) {
                                     {q && <span className="text-primary-main ml-8 text-xl">#{q}</span>}
                                 </Typography>
                                 {pays && (
-                                    <div className="flex items-center mt-6 text-slate-400 font-medium text-sm">
-                                        <Icon className="text-18 mr-4" style={{ color: theme.palette.primary.main }}>location_on</Icon>
+                                    <div className={classes.locationSubtitle}>
+                                        <Icon style={{ fontSize: '1.2rem', color: theme.palette.primary.main }}>location_on</Icon>
                                         {t('portail.location', 'Localisation')}: {_.capitalize(pays)} {ville && `, ${_.capitalize(ville)}`}
                                     </div>
                                 )}

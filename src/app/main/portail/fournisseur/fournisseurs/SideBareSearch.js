@@ -202,12 +202,11 @@ function SideBareSearch(props) {
                     <Typography className={classes.headerTitle}>{t('filters.location', 'Localisation')}</Typography>
                 </div>
 
-                {pays && fournisseurs.length > 0 && (
+                {pays && (
                     <Chip
-                        label={_.capitalize(fournisseurs[0].pays && fournisseurs[0].pays.name)}
+                        label={_.capitalize((payss && payss.find(p => p.slug === pays)?.name) || pays)}
                         onDelete={handleDeleteQueryPays}
                         className={classes.activeFilterChip}
-                        color="primary"
                     />
                 )}
 
@@ -262,16 +261,22 @@ function SideBareSearch(props) {
                 </div>
 
                 <div className="flex flex-col">
-                    {secteur && fournisseurs.length > 0 && (
+                    {secteur && (
                         <Chip
-                            label={_.capitalize(getTranslatedField(fournisseurs[0].secteur, 'name', i18n.language))}
+                            label={_.capitalize(
+                                (secteurs && secteurs.find(x => x.slug === secteur)?.name) ||
+                                secteur.replace(/-/g, ' ')
+                            )}
                             onDelete={handleDeletePathSecteur}
                             className={classes.activeFilterChip}
                         />
                     )}
-                    {activite && fournisseurs.length > 0 && (
+                    {activite && (
                         <Chip
-                            label={_.capitalize(getTranslatedField(fournisseurs[0].sousSecteurs, 'name', i18n.language))}
+                            label={_.capitalize(
+                                (activites && activites.find(x => x.slug === activite)?.name) ||
+                                activite.replace(/-/g, ' ')
+                            )}
                             onDelete={handleDeletePathActivite}
                             className={clsx(classes.activeFilterChip, "mt-0")}
                         />

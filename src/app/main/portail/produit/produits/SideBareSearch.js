@@ -201,12 +201,11 @@ function SideBareSearch(props) {
                     <Typography className={classes.headerTitle}>{t('filters.location', 'Localisation')}</Typography>
                 </div>
 
-                {pays && produits.length > 0 && (
+                {pays && (
                     <Chip
-                        label={_.capitalize(produits[0].pays && produits[0].pays.name)}
+                        label={_.capitalize((payss && payss.find(p => p.slug === pays)?.name) || pays)}
                         onDelete={handleDeleteQueryPays}
                         className={classes.activeFilterChip}
-                        color="primary"
                     />
                 )}
 
@@ -261,16 +260,22 @@ function SideBareSearch(props) {
                 </div>
 
                 <div className="flex flex-col">
-                    {secteur && produits.length > 0 && (
+                    {secteur && (
                         <Chip
-                            label={_.capitalize(produits[0].secteur && produits[0].secteur.name)}
+                            label={_.capitalize(
+                                (secteurs && secteurs.find(x => x.slug === secteur)?.name) ||
+                                secteur.replace(/-/g, ' ')
+                            )}
                             onDelete={handleDeletePathSecteur}
                             className={classes.activeFilterChip}
                         />
                     )}
-                    {activite && produits.length > 0 && (
+                    {activite && (
                         <Chip
-                            label={_.capitalize(produits[0].sousSecteurs && produits[0].sousSecteurs.name)}
+                            label={_.capitalize(
+                                (activites && activites.find(x => x.slug === activite)?.name) ||
+                                activite.replace(/-/g, ' ')
+                            )}
                             onDelete={handleDeletePathActivite}
                             className={clsx(classes.activeFilterChip, "mt-0")}
                         />
