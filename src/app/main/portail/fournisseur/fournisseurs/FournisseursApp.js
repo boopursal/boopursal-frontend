@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React, { useEffect, useState } from 'react';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
-import { Typography, Grid, Breadcrumbs, Button, LinearProgress, Paper, Icon } from '@material-ui/core';
+import { Typography, Grid, Breadcrumbs, Button, LinearProgress, Paper, Icon, Drawer, Fab } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../store/actions';
@@ -27,46 +28,43 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#f8fafc'
     },
     header: {
-        background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
-        color: 'white',
-        padding: '40px 0 80px',
+        backgroundColor: '#0f172a',
+        backgroundImage: 'radial-gradient(circle at 100% 0%, #1e293b 0%, transparent 50%), radial-gradient(circle at 0% 100%, #1e293b 0%, transparent 50%)',
+        borderBottom: '1px solid #1e293b',
+        padding: '32px 0 40px',
         position: 'relative',
-        overflow: 'hidden',
-        [theme.breakpoints.down('sm')]: {
-            padding: '100px 0 60px',
-        },
-        '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'url("/assets/images/backgrounds/pattern-dot.svg") repeat',
-            opacity: 0.1
-        }
+        zIndex: 10
     },
     headerContent: {
         position: 'relative',
         zIndex: 10
     },
     breadcrumbs: {
-        color: 'rgba(255,255,255,0.7)',
-        fontSize: '0.8125rem',
-        marginBottom: 16,
+        color: '#94a3b8',
+        fontSize: '0.85rem',
+        marginBottom: 12,
         '& a': {
-            color: 'white',
+            color: '#cbd5e1',
             textDecoration: 'none',
+            fontWeight: 500,
+            transition: 'color 0.2s',
             '&:hover': {
-                textDecoration: 'underline'
+                color: 'white'
             }
+        },
+        '& .MuiTypography-root': {
+            color: 'white',
+            fontWeight: 700
         }
     },
     mainTitle: {
-        fontSize: '2.5rem',
-        fontWeight: 900,
+        fontSize: '2.25rem',
+        fontWeight: 800,
+        color: 'white',
         letterSpacing: '-0.02em',
-        textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
         [theme.breakpoints.down('xs')]: {
             fontSize: '1.75rem'
         }
@@ -77,51 +75,93 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         padding: '0 24px',
         [theme.breakpoints.down('sm')]: {
-            padding: '0 16px',
+            padding: '0 12px',
+        },
+        [theme.breakpoints.down('xs')]: {
+            padding: '0 8px',
         }
     },
     contentWrapper: {
-        marginTop: -40,
+        marginTop: 24,
         position: 'relative',
         zIndex: 20,
-        paddingBottom: 80
+        paddingBottom: 64,
+        [theme.breakpoints.down('sm')]: {
+            paddingBottom: 96
+        }
     },
     switchContainer: {
-        backgroundColor: 'rgba(0,0,0,0.1)',
-        padding: '6px',
-        borderRadius: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        padding: '4px',
+        borderRadius: 12,
         display: 'inline-flex',
         alignItems: 'center',
-        border: '1px solid rgba(255,255,255,0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(8px)'
     },
     switchBtn: {
-        borderRadius: 16,
-        padding: '10px 28px',
-        fontWeight: 800,
-        fontSize: '0.875rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        minWidth: 160,
+        borderRadius: 8,
+        padding: '10px 24px',
+        fontWeight: 600,
+        fontSize: '0.9rem',
+        textTransform: 'none',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        minWidth: 130,
+        letterSpacing: '0.02em',
+        [theme.breakpoints.down('xs')]: {
+            minWidth: 100,
+            padding: '8px 16px',
+            fontSize: '0.85rem'
+        },
         '&.active': {
-            backgroundColor: 'white',
-            color: '#f39c12',
-            boxShadow: '0 10px 20px -5px rgba(0,0,0,0.2)',
-            zIndex: 1,
-            '&:hover': {
-                backgroundColor: 'white',
-            }
+            backgroundColor: theme.palette.primary.main,
+            color: 'white',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            zIndex: 1
         },
         '&.inactive': {
             backgroundColor: 'transparent',
-            color: 'rgba(255,255,255,0.9)',
+            color: '#94a3b8',
             '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.1)',
                 color: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)'
             }
         }
+    },
+    filterFab: {
+        position: 'fixed',
+        bottom: 24,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 900,
+        fontWeight: 700,
+        fontSize: '0.9rem',
+        textTransform: 'none',
+        padding: '0 18px',
+        borderRadius: 40,
+        height: 44,
+        boxShadow: '0 4px 16px -4px rgba(0,0,0,0.3)',
+        backgroundColor: theme.palette.primary.main,
+        color: 'white',
+        '&:hover': {
+            backgroundColor: theme.palette.primary.dark
+        }
+    },
+    drawerPaper: {
+        width: '85vw',
+        maxWidth: 360,
+        padding: '24px 16px',
+        backgroundColor: '#f8fafc'
+    },
+    drawerHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 24,
+        paddingBottom: 16,
+        borderBottom: '1px solid #e2e8f0'
     }
+
 }));
 
 function useQuery(location) {
@@ -131,6 +171,9 @@ function useQuery(location) {
 function FournisseursApp(props) {
     const classes = useStyles();
     const { t } = useTranslation();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
     const dispatch = useDispatch();
     const query = useQuery(props.location);
     const params = props.match.params;
@@ -198,21 +241,24 @@ function FournisseursApp(props) {
             <div className={classes.header}>
                 <div className={classes.container}>
                     <div className={classes.headerContent}>
-                        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} className={classes.breadcrumbs}>
+                        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" style={{ color: '#64748b' }} />} className={classes.breadcrumbs}>
                             <Link to="/" className="flex items-center"><HomeIcon className="text-16 mr-4" /> {t('portail.home', 'Accueil')}</Link>
                             <Link to="/entreprises">{t('portail.companies', 'Entreprises')}</Link>
-                            {secteur && <Typography color="inherit" className="font-bold text-white">{getBreadcrumbTitle()}</Typography>}
+                            {secteur && <Typography color="inherit">{getBreadcrumbTitle()}</Typography>}
                         </Breadcrumbs>
 
                         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-24">
                             <div className="flex-1">
                                 <Typography className={classes.mainTitle}>
-                                    {t('portail.companies', 'Entreprises')} {getBreadcrumbTitle() && <span>{getBreadcrumbTitle()}</span>}
-                                    {q && <span className="text-yellow-400"> #{q}</span>}
+                                    <Icon style={{ fontSize: '2.5rem', color: theme.palette.primary.main }}>storefront</Icon>
+                                    <div>
+                                        {t('portail.companies', 'Entreprises')} {getBreadcrumbTitle() && <span style={{ color: theme.palette.primary.light }}>{getBreadcrumbTitle()}</span>}
+                                    </div>
+                                    {q && <span className="text-primary-main ml-8 text-xl">#{q}</span>}
                                 </Typography>
                                 {pays && (
-                                    <div className="flex items-center mt-8 text-blue-100 font-medium">
-                                        <Icon className="text-18 mr-4">location_on</Icon>
+                                    <div className="flex items-center mt-6 text-slate-400 font-medium text-sm">
+                                        <Icon className="text-18 mr-4" style={{ color: theme.palette.primary.main }}>location_on</Icon>
                                         {t('portail.location', 'Localisation')}: {_.capitalize(pays)} {ville && `, ${_.capitalize(ville)}`}
                                     </div>
                                 )}
@@ -234,28 +280,33 @@ function FournisseursApp(props) {
             <div className={classes.container}>
                 <div className={classes.contentWrapper}>
                     {fournisseurs.length === 0 ? (
-                        <Paper className="p-64 w-full text-center flex flex-col items-center justify-center rounded-32 shadow-xl border-0">
-                            <div className="w-120 h-120 bg-slate-50 rounded-full flex items-center justify-center mb-24">
-                                <Icon className="text-64 text-slate-300">business_off</Icon>
+                        <Paper className="p-32 sm:p-64 w-full text-center flex flex-col items-center justify-center rounded-20 sm:rounded-32 border-0" style={{ boxShadow: '0 30px 60px -15px rgba(0,0,0,0.05)', background: 'linear-gradient(to bottom, #ffffff, #f8fafc)' }}>
+                            <div className="relative mb-24 sm:mb-32">
+                                <div className="absolute inset-0 bg-primary-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+                                <div className="w-96 h-96 sm:w-144 sm:h-144 bg-white rounded-full shadow-2xl flex items-center justify-center relative z-10 border-4 border-slate-50">
+                                    <Icon style={{ fontSize: isMobile ? 48 : 72 }} className="text-primary-main">storefront</Icon>
+                                </div>
                             </div>
-                            <Typography variant="h4" className="mb-16 font-900 text-slate-800">{t('portail.no_results', 'Aucun résultat trouvé')}</Typography>
-                            <Typography className="mb-40 text-slate-500 max-w-md mx-auto text-lg leading-relaxed">
+                            <Typography variant={isMobile ? 'h5' : 'h3'} className="mb-16 font-black text-slate-800 tracking-tight">{t('portail.no_results', 'Aucun résultat trouvé')}</Typography>
+                            <Typography className="mb-32 text-slate-500 max-w-md mx-auto text-base sm:text-lg leading-relaxed">
                                 {t('portail.no_results_desc', "Nous n'avons trouvé aucune entreprise correspondant à votre recherche.")}
                             </Typography>
-                            <div className="flex gap-16">
-                                <Button variant="contained" color="primary" onClick={() => props.history.push('/')} className="px-32 py-12 rounded-12 font-bold shadow-lg">
+                            <div className="flex flex-col sm:flex-row gap-12">
+                                <Button variant="contained" color="primary" onClick={() => props.history.push('/')} className="px-24 sm:px-32 py-12 rounded-12 font-bold shadow-lg">
                                     {t('portail.back_home', "Retour à l'accueil")}
                                 </Button>
-                                <Button variant="outlined" onClick={() => props.history.goBack()} className="px-32 py-12 rounded-12 font-bold border-slate-200">
+                                <Button variant="outlined" onClick={() => props.history.goBack()} className="px-24 sm:px-32 py-12 rounded-12 font-bold border-slate-200">
                                     {t('portail.prev_page', 'Page précédente')}
                                 </Button>
                             </div>
                         </Paper>
                     ) : (
-                        <Grid container spacing={4}>
-                            <Grid item lg={3} md={4} xs={12} className="sticky top-24">
-                                <SideBareSearch {...props} />
-                            </Grid>
+                        <Grid container spacing={isMobile ? 2 : 4}>
+                            {!isMobile && (
+                                <Grid item lg={3} md={4} style={{ position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
+                                    <SideBareSearch {...props} />
+                                </Grid>
+                            )}
                             <Grid item lg={9} md={8} xs={12}>
                                 <ContentList />
                             </Grid>
@@ -264,6 +315,39 @@ function FournisseursApp(props) {
                 </div>
             </div>
 
+            {/* Mobile filter drawer */}
+            {isMobile && fournisseurs.length > 0 && (
+                <>
+                    <Fab
+                        className={classes.filterFab}
+                        variant="extended"
+                        onClick={() => setFilterDrawerOpen(true)}
+                    >
+                        <Icon className="mr-8">tune</Icon>
+                        {t('filters.title', 'Filtres')}
+                    </Fab>
+
+                    <Drawer
+                        anchor="left"
+                        open={filterDrawerOpen}
+                        onClose={() => setFilterDrawerOpen(false)}
+                        classes={{ paper: classes.drawerPaper }}
+                    >
+                        <div className={classes.drawerHeader}>
+                            <Typography style={{ fontWeight: 800, fontSize: '1.1rem', color: '#0f172a' }}>
+                                {t('filters.title', 'Filtres')}
+                            </Typography>
+                            <Button
+                                onClick={() => setFilterDrawerOpen(false)}
+                                style={{ minWidth: 40, padding: 8, borderRadius: 12 }}
+                            >
+                                <Icon>close</Icon>
+                            </Button>
+                        </div>
+                        <SideBareSearch {...props} />
+                    </Drawer>
+                </>
+            )}
             <ContactFournisseurDialog />
         </div>
     );

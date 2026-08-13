@@ -10,9 +10,9 @@ const useStyles = makeStyles((theme) => ({
     root: {
         background: "var(--portal-footer-bg)",
         color: "var(--portal-footer-text)",
-        padding: "60px 0 40px", 
+        padding: "60px 0 40px",
         position: 'relative',
-        zIndex: 10,
+        zIndex: 1100,
         borderTop: "1px solid var(--portal-border)",
     },
     container: {
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     },
     column: {
         '& h4': {
-            fontSize: "0.95rem",
+            fontSize: "1.05rem",
             fontWeight: 800,
             marginBottom: "24px",
             color: "var(--portal-footer-text)",
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
         '& a': {
             color: "#64748b",
             textDecoration: "none",
-            fontSize: "0.95rem",
+            fontSize: "1rem",
             fontWeight: 500,
             transition: "color 0.2s ease",
             '&:hover': {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
     aboutText: {
         color: "#64748b",
-        fontSize: "1rem",
+        fontSize: "1.05rem",
         fontWeight: 400,
         lineHeight: 1.7,
         marginBottom: "24px",
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
         gap: "16px",
         '& p': {
             color: "#94a3b8",
-            fontSize: "0.95rem",
+            fontSize: "1rem",
             fontWeight: 400,
         }
     },
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
         gap: "32px",
         '& a': {
             color: "#94a3b8",
-            fontSize: "0.95rem",
+            fontSize: "1rem",
             fontWeight: 400,
             textDecoration: 'none',
             transition: "all 0.3s ease",

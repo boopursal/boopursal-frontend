@@ -8,28 +8,11 @@ import { URL_SITE } from "@fuse/Constants";
 import _ from "@lodash";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { Icon, IconButton, Select, Button, Tooltip, Chip } from "@material-ui/core";
+import { Icon, IconButton, Select, Button, Tooltip, Chip, Avatar } from "@material-ui/core";
 import * as Actions from "../store/actions";
 import { getTranslatedField } from '../../../../../utils/translationHelper';
 
-const stringToColor = (string) => {
-  if (!string) return '#94a3b8';
-  let hash = 0;
-  for (let i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  let color = '#';
-  for (let i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  return color;
-};
 
-const getInitials = (name) => {
-  if (!name) return '?';
-  return name.charAt(0).toUpperCase();
-};
 
 const styles = (theme) => ({
   root: {
@@ -37,38 +20,65 @@ const styles = (theme) => ({
   },
   gridContainer: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
     gap: '20px',
-    paddingTop: '24px'
+    paddingTop: '8px',
+    width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '10px',
+      paddingTop: '4px'
+    },
+    [theme.breakpoints.down('xs')]: {
+      gridTemplateColumns: '1fr',
+      gap: '10px'
+    }
   },
   card: {
     display: 'flex',
     flexDirection: 'column',
-    borderRadius: 20,
+    borderRadius: 24,
     overflow: 'hidden',
     backgroundColor: 'white',
     border: '1px solid #f1f5f9',
-    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
     position: 'relative',
     height: '100%',
+    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)',
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderRadius: 24,
+        boxShadow: `0 0 0 2px ${theme.palette.primary.main}`,
+        opacity: 0,
+        transition: 'opacity 0.4s ease',
+        pointerEvents: 'none'
+    },
     '&:hover': {
-      transform: 'translateY(-10px)',
-      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.12)',
-      borderColor: theme.palette.primary.light,
-      '& $logoScale': {
+      transform: 'translateY(-8px)',
+      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
+      borderColor: 'transparent',
+      '&::after': {
+          opacity: 1
+      },
+      '& $logoScale, & $fallbackAvatar': {
         transform: 'scale(1.1)'
+      },
+      '& $title': {
+        color: theme.palette.primary.main
       }
     }
   },
   imageWrapper: {
     position: 'relative',
-    paddingTop: '75%', // 4:3 ratio for supplier cards
-    backgroundColor: '#fff',
+    paddingTop: '60%',
+    backgroundColor: '#f8fafc',
     overflow: 'hidden',
     borderBottom: '1px solid #f1f5f9',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   logoScale: {
     position: 'absolute',
@@ -80,52 +90,58 @@ const styles = (theme) => ({
     padding: '30px',
     transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
   },
-  badge: {
+  fallbackWrapper: {
     position: 'absolute',
-    top: 12,
-    right: 12,
-    zIndex: 10,
-    backgroundColor: '#3b82f6',
-    color: 'white',
-    padding: '2px 10px',
-    borderRadius: 30,
-    fontSize: '0.65rem',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fallbackAvatar: {
+    width: 80,
+    height: 80,
+    fontSize: '2.5rem',
     fontWeight: 800,
-    textTransform: 'uppercase',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
+    backgroundColor: theme.palette.primary.main,
+    color: 'white',
+    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.15)',
+    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
   },
   content: {
-    padding: '20px',
+    padding: '16px',
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
     textAlign: 'center',
     [theme.breakpoints.down('sm')]: {
-      padding: '16px',
+      padding: '12px',
     }
   },
   title: {
-    fontSize: '1rem',
+    fontSize: '1.5rem',
     fontWeight: 800,
     color: '#1e293b',
     textDecoration: 'none',
-    marginBottom: 8,
+    marginBottom: 12,
     lineHeight: 1.3,
     transition: 'color 0.2s',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '0.9rem',
+      fontSize: '1.25rem',
     },
     '&:hover': {
       color: theme.palette.primary.main
     }
   },
   location: {
-    fontSize: '0.75rem',
+    fontSize: '1.1rem',
     color: '#64748b',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '4px',
+    gap: '6px',
     marginBottom: 16
   },
   categoryWrapper: {
@@ -136,19 +152,34 @@ const styles = (theme) => ({
     marginBottom: 20
   },
   catChip: {
-    fontSize: '0.65rem',
-    height: 20,
-    backgroundColor: '#f8fafc',
-    color: '#64748b',
-    border: '0',
-    fontWeight: 600
+    fontSize: '0.95rem',
+    height: 'auto',
+    padding: '6px 12px',
+    backgroundColor: 'rgba(241, 245, 249, 0.8)',
+    color: '#475569',
+    border: '1px solid rgba(226, 232, 240, 0.8)',
+    fontWeight: 700,
+    borderRadius: 12,
+    backdropFilter: 'blur(4px)',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+        color: 'white',
+        borderColor: theme.palette.primary.main
+    }
   },
   actionBtn: {
     marginTop: 'auto',
-    borderRadius: 12,
+    borderRadius: 40,
     fontWeight: 700,
+    fontSize: '1rem',
     textTransform: 'none',
-    padding: '8px 0'
+    padding: '10px 0',
+    letterSpacing: 0,
+    boxShadow: 'none',
+    '&:hover': {
+        boxShadow: `0 8px 20px -4px ${theme.palette.primary.main}66`
+    }
   },
   paginationContainer: {
     display: 'flex',
@@ -158,10 +189,13 @@ const styles = (theme) => ({
     padding: '8px',
     borderRadius: 50,
     boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-    marginTop: 64,
+    marginTop: 48,
     border: '1px solid #f1f5f9',
     width: 'fit-content',
-    margin: '64px auto 0'
+    margin: '48px auto 80px',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 96 // give space for the floating filter button on mobile
+    }
   },
   pageBtn: {
     minWidth: 44,
@@ -230,7 +264,6 @@ function FournisseurListItem(props) {
               to={`/entreprise/${fournisseur.id}-${fournisseur.slug}`}
               className={classes.imageWrapper}
             >
-              <div className={classes.badge}>{t('portail.supplier', 'Fournisseur')}</div>
               {fournisseur.avatar ? (
                 <img
                   className={classes.logoScale}
@@ -239,19 +272,10 @@ function FournisseurListItem(props) {
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               ) : (
-                <div 
-                  className={classes.logoScale} 
-                  style={{
-                    backgroundColor: stringToColor(fournisseur.societe),
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '3.5rem',
-                    fontWeight: 800
-                  }}
-                >
-                  {getInitials(fournisseur.societe)}
+                <div className={classes.fallbackWrapper}>
+                  <Avatar className={classes.fallbackAvatar}>
+                    {fournisseur.societe ? fournisseur.societe.charAt(0).toUpperCase() : 'B'}
+                  </Avatar>
                 </div>
               )}
             </Link>

@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
     objectFit: "contain"
   },
   companyBadge: {
-    fontSize: '0.8rem',
+    fontSize: '0.9rem',
     fontWeight: 900,
     color: theme.palette.primary.main,
     textTransform: 'uppercase',
@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block'
   },
   companyName: {
-    fontSize: '2.75rem',
+    fontSize: '3.25rem',
     fontWeight: 900,
     color: '#0f172a',
     lineHeight: 1,
@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     gap: 12,
-    fontSize: '0.95rem',
+    fontSize: '1.1rem',
     fontWeight: 700,
     color: '#475569'
   },
@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
   tab: {
     minHeight: 80,
     fontWeight: 800,
-    fontSize: "0.9rem",
+    fontSize: "1rem",
     color: "#94a3b8",
     marginRight: 40,
     '&.Mui-selected': {
@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 10px 30px -5px rgba(0,0,0,0.03)"
   },
   contactTitle: {
-    fontSize: '0.75rem',
+    fontSize: '0.9rem',
     fontWeight: 900,
     textTransform: 'uppercase',
     letterSpacing: '0.2em',
@@ -291,9 +291,7 @@ function FicheFournisseur(props) {
             {data.avatar ? (
               <img src={URL_SITE + data.avatar.url} className={classes.logo} alt={data.societe} />
             ) : (
-              <Typography variant="h2" color="primary" className="font-black text-48">
-                {data.societe?.substring(0, 2).toUpperCase()}
-              </Typography>
+              <img src="/assets/images/logos/logo.png" className={classes.logo} style={{ padding: '20px', opacity: 0.15, filter: 'grayscale(100%)' }} alt="Default Supplier Logo" />
             )}
           </div>
           <div className="flex-1">
@@ -371,8 +369,8 @@ function FicheFournisseur(props) {
                 <div className={classes.contactItem}>
                   <Icon>location_on</Icon>
                   <div>
-                    <Typography className="text-13 font-900 text-slate-800 uppercase tracking-widest mb-4">{t('fournisseur.headquarters', 'Siège Social')}</Typography>
-                    <Typography className="text-15 text-slate-500 leading-relaxed font-600">
+                    <Typography className="text-15 font-900 text-slate-800 uppercase tracking-widest mb-4">{t('fournisseur.headquarters', 'Siège Social')}</Typography>
+                    <Typography className="text-17 text-slate-500 leading-relaxed font-600">
                       {data.adresse1}<br />
                       {data.ville?.name}, {data.pays?.name}
                     </Typography>
