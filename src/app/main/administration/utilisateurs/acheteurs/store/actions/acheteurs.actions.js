@@ -60,23 +60,35 @@ export function activeAccount(acheteur, active, parametres) {
 }
 
 export function deleteAcheteur(id, parametres) {
-    return (dispatch) => {
-        const request = agent.delete(`/api/acheteurs/${id}`);
-        return request.then(() =>
-            Promise.all([
-                dispatch(showMessage({
-                    message: 'Acheteur supprimé avec succès!',
-                    anchorOrigin: { vertical: 'top', horizontal: 'right' },
-                    variant: 'success'
-                }))
-            ]).then(() => dispatch(getAcheteurs(parametres)))
-        ).catch(() => {
+    return async (dispatch) => {
+        try {
+            dispatch({ type: REQUEST_ACHETEURS });
+            await agent.delete(`/api/acheteurs/${id}`);
+            dispatch(showMessage({
+                message: 'Acheteur supprimé avec succès!',
+                anchorOrigin: { vertical: 'top', horizontal: 'right' },
+                variant: 'success'
+            }));
+            // On force un nouveau fetch après confirmation du DELETE
+            const search = parametres.search && parametres.search.length > 0
+                ? parametres.search
+                    .filter(item => item.value)
+                    .map(item => item.id === 'created'
+                        ? `&${item.id}[after]=${item.value}`
+                        : `&${item.id}=${item.value}`)
+                    .join('')
+                : '';
+            const response = await agent.get(
+                `/api/acheteurs?page=${parametres.page}${search}&order[${parametres.filter.id}]=${parametres.filter.direction}`
+            );
+            dispatch({ type: GET_ACHETEURS, payload: response.data });
+        } catch (error) {
             dispatch(showMessage({
                 message: 'Erreur lors de la suppression',
                 anchorOrigin: { vertical: 'top', horizontal: 'right' },
                 variant: 'error'
             }));
-        });
+        }
     };
 }
 
