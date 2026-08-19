@@ -357,6 +357,103 @@ function FournisseurDetails(props) {
 
 
                                 </Grid>
+                                {/* Section données entreprise (ICE) */}
+                                {(fournisseur.data.formeJuridique || fournisseur.data.rc || fournisseur.data.capitalSocial || fournisseur.data.dateCreation || fournisseur.data.activite) && (
+                                    <>
+                                        <Divider />
+                                        <Typography variant="subtitle1" className="mt-16 mb-8 font-bold text-gray-700">
+                                            <Icon className="mr-8 text-20 align-middle" color="action">business</Icon>
+                                            Données entreprise (issues de la vérification ICE)
+                                        </Typography>
+                                        <Grid container spacing={3} className="mb-5">
+                                            {fournisseur.data.typeIdentifiant && (
+                                                <Grid item xs={12} sm={4}>
+                                                    <TextFieldFormsy
+                                                        className=""
+                                                        type="text"
+                                                        name="typeIdentifiant"
+                                                        id="typeIdentifiant"
+                                                        value={fournisseur.data.typeIdentifiant}
+                                                        label="Type d'identifiant"
+                                                        fullWidth
+                                                        InputProps={{ readOnly: true }}
+                                                    />
+                                                </Grid>
+                                            )}
+                                            {fournisseur.data.formeJuridique && (
+                                                <Grid item xs={12} sm={4}>
+                                                    <TextFieldFormsy
+                                                        className=""
+                                                        type="text"
+                                                        name="formeJuridique"
+                                                        id="formeJuridique"
+                                                        value={fournisseur.data.formeJuridique}
+                                                        label="Forme juridique"
+                                                        fullWidth
+                                                        InputProps={{ readOnly: true }}
+                                                    />
+                                                </Grid>
+                                            )}
+                                            {fournisseur.data.rc && (
+                                                <Grid item xs={12} sm={4}>
+                                                    <TextFieldFormsy
+                                                        className=""
+                                                        type="text"
+                                                        name="rc"
+                                                        id="rc"
+                                                        value={fournisseur.data.rc}
+                                                        label="Registre de commerce (RC)"
+                                                        fullWidth
+                                                        InputProps={{ readOnly: true }}
+                                                    />
+                                                </Grid>
+                                            )}
+                                            {fournisseur.data.capitalSocial && (
+                                                <Grid item xs={12} sm={4}>
+                                                    <TextFieldFormsy
+                                                        className=""
+                                                        type="text"
+                                                        name="capitalSocial"
+                                                        id="capitalSocial"
+                                                        value={fournisseur.data.capitalSocial}
+                                                        label="Capital social"
+                                                        fullWidth
+                                                        InputProps={{ readOnly: true }}
+                                                    />
+                                                </Grid>
+                                            )}
+                                            {fournisseur.data.dateCreation && (
+                                                <Grid item xs={12} sm={4}>
+                                                    <TextFieldFormsy
+                                                        className=""
+                                                        type="text"
+                                                        name="dateCreation"
+                                                        id="dateCreation"
+                                                        value={fournisseur.data.dateCreation}
+                                                        label="Date de création"
+                                                        fullWidth
+                                                        InputProps={{ readOnly: true }}
+                                                    />
+                                                </Grid>
+                                            )}
+                                            {fournisseur.data.activite && (
+                                                <Grid item xs={12} sm={8}>
+                                                    <TextFieldFormsy
+                                                        className=""
+                                                        type="text"
+                                                        name="activite"
+                                                        id="activite"
+                                                        value={fournisseur.data.activite}
+                                                        label="Activité principale"
+                                                        fullWidth
+                                                        multiline
+                                                        InputProps={{ readOnly: true }}
+                                                    />
+                                                </Grid>
+                                            )}
+                                        </Grid>
+                                    </>
+                                )}
                                 <Divider />
 
 

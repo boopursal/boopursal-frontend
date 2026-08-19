@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Icon, IconButton, Tooltip, Avatar, Typography } from "@material-ui/core";
+import { Icon, IconButton, Tooltip, Avatar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core";
 import { URL_SITE, FuseUtils } from "@fuse";
 import { withRouter } from "react-router-dom";
 import * as Actions from "../store/actions";
@@ -46,6 +46,7 @@ function FournisseursTable(props) {
   const searchText = useSelector(({ fournisseursAdminApp }) => fournisseursAdminApp.fournisseurs.searchText);
 
   const [filteredData, setFilteredData] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null); // id du fournisseur à supprimer
 
   useEffect(() => {
     if (fournisseurs) {
@@ -57,6 +58,27 @@ function FournisseursTable(props) {
   if (!filteredData) return null;
 
   return (
+    <>
+      <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
+        <DialogTitle>Confirmer la suppression</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Êtes-vous sûr de vouloir supprimer ce fournisseur ? Cette action est irréversible.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDelete(null)} color="default">Annuler</Button>
+          <Button
+            onClick={() => {
+              dispatch(Actions.deleteFournisseur(confirmDelete, parametres));
+              setConfirmDelete(null);
+            }}
+            style={{ color: '#EF4444' }}
+          >
+            Supprimer
+          </Button>
+        </DialogActions>
+      </Dialog>
     <BoopursalTable
       title="Annuaire des Fournisseurs"
       data={filteredData}
@@ -139,21 +161,38 @@ function FournisseursTable(props) {
           Header: "Actions",
           sortable: false,
           Cell: (row) => (
-            <IconButton 
-                size="small" 
-                style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
-                onClick={(ev) => {
+            <div className="flex items-center gap-4">
+              <Tooltip title="Voir le profil">
+                <IconButton 
+                    size="small" 
+                    style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+                    onClick={(ev) => {
+                        ev.stopPropagation();
+                        props.history.push("/users/fournisseur/show/" + row.original.id);
+                    }}
+                >
+                  <Icon className="text-18">open_in_new</Icon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Supprimer le fournisseur">
+                <IconButton
+                  size="small"
+                  style={{ color: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.05)' }}
+                  onClick={(ev) => {
                     ev.stopPropagation();
-                    props.history.push("/users/fournisseur/show/" + row.original.id);
-                }}
-            >
-              <Icon className="text-18">open_in_new</Icon>
-            </IconButton>
+                    setConfirmDelete(row.original.id);
+                  }}
+                >
+                  <Icon className="text-18">delete_outline</Icon>
+                </IconButton>
+              </Tooltip>
+            </div>
           ),
-          width: 80
+          width: 110
         }
       ]}
     />
+    </>
   );
 }
 

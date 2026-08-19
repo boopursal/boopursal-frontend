@@ -592,6 +592,48 @@ function Profile(props) {
 
 
                                             </Grid>
+                                            {/* Section données entreprise (issues ICE) - lecture seule */}
+                                            {(form.formeJuridique || form.rc || form.capitalSocial || form.dateCreation || form.activite) && (
+                                                <>
+                                                    <Divider />
+                                                    <Typography variant="subtitle2" className="mt-16 mb-8" style={{ color: '#555', fontWeight: 'bold' }}>
+                                                        <Icon className="mr-8 text-20 align-middle">business</Icon>
+                                                        Données issues de la vérification ICE
+                                                    </Typography>
+                                                    <Grid container spacing={3} className="mb-5">
+                                                        {form.typeIdentifiant && (
+                                                            <Grid item xs={12} sm={4}>
+                                                                <TextFieldFormsy type="text" name="typeIdentifiant" value={form.typeIdentifiant} label="Type d'identifiant" fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                                            </Grid>
+                                                        )}
+                                                        {form.formeJuridique && (
+                                                            <Grid item xs={12} sm={4}>
+                                                                <TextFieldFormsy type="text" name="formeJuridique" value={form.formeJuridique} label="Forme juridique" fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                                            </Grid>
+                                                        )}
+                                                        {form.rc && (
+                                                            <Grid item xs={12} sm={4}>
+                                                                <TextFieldFormsy type="text" name="rc" value={form.rc} label="Registre de commerce (RC)" fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                                            </Grid>
+                                                        )}
+                                                        {form.capitalSocial && (
+                                                            <Grid item xs={12} sm={4}>
+                                                                <TextFieldFormsy type="text" name="capitalSocial" value={form.capitalSocial} label="Capital social" fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                                            </Grid>
+                                                        )}
+                                                        {form.dateCreation && (
+                                                            <Grid item xs={12} sm={4}>
+                                                                <TextFieldFormsy type="text" name="dateCreation" value={form.dateCreation} label="Date de création" fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+                                                            </Grid>
+                                                        )}
+                                                        {form.activite && (
+                                                            <Grid item xs={12} sm={8}>
+                                                                <TextFieldFormsy type="text" name="activite" value={form.activite} label="Activité principale" fullWidth variant="outlined" multiline InputProps={{ readOnly: true }} />
+                                                            </Grid>
+                                                        )}
+                                                    </Grid>
+                                                </>
+                                            )}
                                             <Divider />
 
                                             <Grid container spacing={3} className="mb-5">

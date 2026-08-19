@@ -4,6 +4,7 @@ import agent from "agent";
 export const REQUEST_FOURNISSEURS = '[FOURNISSEURS ADMIN APP] REQUEST FOURNISSEURS';
 export const SET_PARAMETRES_DATA = '[FOURNISSEURS ADMIN APP] SET PARAMETRES DATA';
 export const GET_FOURNISSEURS = '[FOURNISSEURS ADMIN APP] GET FOURNISSEURS';
+export const DELETE_FOURNISSEUR = '[FOURNISSEURS ADMIN APP] DELETE FOURNISSEUR';
 export const SET_FOURNISSEURS_SEARCH_TEXT = '[FOURNISSEURS ADMIN APP] SET FOURNISSEURS SEARCH TEXT';
 
 export function getFournisseurs(parametres) {
@@ -59,10 +60,35 @@ export function activeAccount(fournisseur, active, parametres) {
     };
 }
 
+export function deleteFournisseur(id, parametres) {
+    return (dispatch) => {
+        const request = agent.delete(`/api/fournisseurs/${id}`);
+        return request.then(() =>
+            Promise.all([
+                dispatch(showMessage({
+                    message: 'Fournisseur supprimé avec succès!',
+                    anchorOrigin: { vertical: 'top', horizontal: 'right' },
+                    variant: 'success'
+                }))
+            ]).then(() => dispatch(getFournisseurs(parametres)))
+        ).catch(() => {
+            dispatch(showMessage({
+                message: 'Erreur lors de la suppression',
+                anchorOrigin: { vertical: 'top', horizontal: 'right' },
+                variant: 'error'
+            }));
+        });
+    };
+}
+
 export function setParametresData(parametres) {
     return {
         type: SET_PARAMETRES_DATA,
-        parametres
+        parametres: {
+            ...parametres,
+            filter: { ...parametres.filter },
+            search: [...(parametres.search || [])]
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Icon, IconButton, Tooltip, Avatar, Typography } from "@material-ui/core";
+import { Icon, IconButton, Tooltip, Avatar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core";
 import { URL_SITE, FuseUtils } from "@fuse";
 import { withRouter } from "react-router-dom";
 import * as Actions from "../store/actions";
@@ -45,6 +45,7 @@ function AcheteursTable(props) {
   const searchText = useSelector(({ acheteursAdminApp }) => acheteursAdminApp.acheteurs.searchText);
 
   const [filteredData, setFilteredData] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null); // id de l'acheteur à supprimer
 
   useEffect(() => {
     if (acheteurs) {
@@ -56,6 +57,27 @@ function AcheteursTable(props) {
   if (!filteredData) return null;
 
   return (
+    <>
+      <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
+        <DialogTitle>Confirmer la suppression</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Êtes-vous sûr de vouloir supprimer cet acheteur ? Cette action est irréversible.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDelete(null)} color="default">Annuler</Button>
+          <Button
+            onClick={() => {
+              dispatch(Actions.deleteAcheteur(confirmDelete, parametres));
+              setConfirmDelete(null);
+            }}
+            style={{ color: '#EF4444' }}
+          >
+            Supprimer
+          </Button>
+        </DialogActions>
+      </Dialog>
     <BoopursalTable
       title="Répertoire des Acheteurs"
       data={filteredData}
@@ -135,21 +157,38 @@ function AcheteursTable(props) {
           Header: "Actions",
           sortable: false,
           Cell: (row) => (
-            <IconButton 
-                size="small" 
-                style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
-                onClick={(ev) => {
+            <div className="flex items-center gap-4">
+              <Tooltip title="Voir le profil">
+                <IconButton 
+                    size="small" 
+                    style={{ color: '#3C50E0', backgroundColor: 'rgba(60, 80, 224, 0.05)' }}
+                    onClick={(ev) => {
+                        ev.stopPropagation();
+                        props.history.push("/users/acheteur/show/" + row.original.id);
+                    }}
+                >
+                  <Icon className="text-18">person_search</Icon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Supprimer l'acheteur">
+                <IconButton
+                  size="small"
+                  style={{ color: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.05)' }}
+                  onClick={(ev) => {
                     ev.stopPropagation();
-                    props.history.push("/users/acheteur/show/" + row.original.id);
-                }}
-            >
-              <Icon className="text-18">person_search</Icon>
-            </IconButton>
+                    setConfirmDelete(row.original.id);
+                  }}
+                >
+                  <Icon className="text-18">delete_outline</Icon>
+                </IconButton>
+              </Tooltip>
+            </div>
           ),
-          width: 80
+          width: 110
         }
       ]}
     />
+    </>
   );
 }
 
