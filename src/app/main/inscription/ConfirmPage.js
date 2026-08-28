@@ -20,23 +20,34 @@ function ConfirmPage(props) {
     }, [dispatch, confirmationToken]);
 
     useEffect(() => {
-        if (user) {
-            const role = user.role || (user.data && user.data.role);
+        if (login.success && user) {
+            const discr = user.data?.discr || user.discr;
+            const role = typeof user.role === 'string' ? user.role : (user.data && typeof user.data.role === 'string' ? user.data.role : null);
             const roles = (user.data && Array.isArray(user.data.roles)) ? user.data.roles : (role ? [role] : []);
 
-            if (roles.includes('ROLE_FOURNISSEUR_PRE') || role === 'ROLE_FOURNISSEUR_PRE') {
-                props.history.push('/onboarding/fournisseur');
-            } else if (roles.includes('ROLE_ACHETEUR_PRE') || role === 'ROLE_ACHETEUR_PRE') {
-                props.history.push('/onboarding/acheteur');
+            console.log('[ConfirmPage] Successful email confirmation. Discr:', discr, 'Role:', role, 'Roles:', roles);
+
+            if (discr === 'fournisseur' || roles.includes('ROLE_FOURNISSEUR_PRE') || role === 'ROLE_FOURNISSEUR_PRE') {
+                if (user.data?.fournisseur?.is_complet) {
+                    props.history.push('/boopursal/fournisseur/dashboard');
+                } else {
+                    props.history.push('/onboarding/fournisseur');
+                }
+            } else if (discr === 'acheteur' || roles.includes('ROLE_ACHETEUR_PRE') || role === 'ROLE_ACHETEUR_PRE') {
+                if (user.data?.acheteur?.is_complet) {
+                    props.history.push('/boopursal/acheteur/dashboard');
+                } else {
+                    props.history.push('/onboarding/acheteur');
+                }
             } else if (roles.includes('ROLE_FOURNISSEUR') || role === 'ROLE_FOURNISSEUR') {
                 props.history.push('/boopursal/fournisseur/dashboard');
             } else if (roles.includes('ROLE_ACHETEUR') || role === 'ROLE_ACHETEUR') {
                 props.history.push('/boopursal/acheteur/dashboard');
-            } else if (role) {
-                props.history.push('/');
+            } else {
+                props.history.push('/dashboard');
             }
         }
-    }, [user, props.history]);
+    }, [login.success, user, props.history]);
 
     useEffect(() => {
         if (login.error && (login.error.confirmationToken || login.error.Erreur)) {
