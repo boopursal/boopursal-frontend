@@ -20,16 +20,19 @@ function ConfirmPage(props) {
     }, [dispatch, confirmationToken]);
 
     useEffect(() => {
-        if (user && user.role) {
-            if (user.role === 'ROLE_FOURNISSEUR_PRE') {
-                props.history.push('/register/fournisseur');
-            } else if (user.role === 'ROLE_ACHETEUR_PRE') {
-                props.history.push('/register/acheteur');
-            } else if (user.role === 'ROLE_FOURNISSEUR') {
+        if (user) {
+            const role = user.role || (user.data && user.data.role);
+            const roles = (user.data && Array.isArray(user.data.roles)) ? user.data.roles : (role ? [role] : []);
+
+            if (roles.includes('ROLE_FOURNISSEUR_PRE') || role === 'ROLE_FOURNISSEUR_PRE') {
+                props.history.push('/onboarding/fournisseur');
+            } else if (roles.includes('ROLE_ACHETEUR_PRE') || role === 'ROLE_ACHETEUR_PRE') {
+                props.history.push('/onboarding/acheteur');
+            } else if (roles.includes('ROLE_FOURNISSEUR') || role === 'ROLE_FOURNISSEUR') {
                 props.history.push('/boopursal/fournisseur/dashboard');
-            } else if (user.role === 'ROLE_ACHETEUR') {
+            } else if (roles.includes('ROLE_ACHETEUR') || role === 'ROLE_ACHETEUR') {
                 props.history.push('/boopursal/acheteur/dashboard');
-            } else {
+            } else if (role) {
                 props.history.push('/');
             }
         }
