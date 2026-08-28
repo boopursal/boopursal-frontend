@@ -53,17 +53,16 @@ class FuseAuthorization extends Component {
         let redirectPath = '';
 
         if (userRole === 'ROLE_ADMIN' || userRole === 'ROLE_ACHETEUR' || userRole === 'ROLE_FOURNISSEUR') {
-
-            redirectPath = 'dashboard';
-
+            redirectPath = '/dashboard';
+        } else if (userRole === 'ROLE_FOURNISSEUR_PRE') {
+            redirectPath = '/onboarding/fournisseur';
+        } else if (userRole === 'ROLE_ACHETEUR_PRE') {
+            redirectPath = '/onboarding/acheteur';
+        } else {
+            redirectPath = (user && user.data && user.data.redirect) || (user && user.redirect) || '/';
         }
-        else {
-            redirectPath = user.data.redirect;
 
-        }
-        const redirectUrl = state && state.redirectUrl ? state.redirectUrl : redirectPath;
-        //const redirectUrl = user.data.redirect;
-
+        const redirectUrl = (state && state.redirectUrl) ? state.redirectUrl : redirectPath;
 
         /*
         User is guest
@@ -82,7 +81,7 @@ class FuseAuthorization extends Component {
         */
         else {
             history.push({
-                pathname: redirectUrl
+                pathname: redirectUrl || '/'
             });
         }
     }
